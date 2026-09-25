@@ -586,42 +586,154 @@ function RemoteProvider(cfg) {
   };
 }
 
+/* ─── موصّل Gemini (AI Studio): مفتاحٌ مجّاني بلا بطاقة ───
+   يُخرج PCM خامًا، فنلفّه بترويسة WAV لنشغّله في المتصفّح. */
+const AR_GEMINI = {
+  athar:    { v: "Leda",  s: "بصوت طفلٍ مرح ودود، متحمّس قليلًا" },
+  narrator: { v: "Kore",  s: "بصوتٍ دافئ متمهّل، كمن يحكي لطفل" },
+  sacred:   { v: "Charon", s: "بصوتٍ وقور متمهّل، مع وقفاتٍ واضحة" },
+  friend:   { v: "Puck",  s: "بصوت طفلٍ ودود" }
+};
+function pcmToWav(b64, rate) {
+  const bin = atob(b64), n = bin.length;
+  const buf = new ArrayBuffer(44 + n), dv = new DataView(buf);
+  const put = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+  put(0, "RIFF"); dv.setUint32(4, 36 + n, true); put(8, "WAVEfmt ");
+  dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, rate, true); dv.setUint32(28, rate * 2, true);
+  dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+  put(36, "data"); dv.setUint32(40, n, true);
+  const u8 = new Uint8Array(buf);
+  for (let i = 0; i < n; i++) u8[44 + i] = bin.charCodeAt(i);
+  let s = ""; const CH = 0x8000;
+  for (let i = 0; i < u8.length; i += CH) s += String.fromCharCode.apply(null, u8.subarray(i, i + CH));
+  return "data:audio/wav;base64," + btoa(s);
+}
+function geminiTTS(key) {
+  return async function (text, voice) {
+    const g = AR_GEMINI[voice] || AR_GEMINI.narrator;
+    const H = { "Content-Type": "application/json", "x-goog-api-key": key };
+    const RATE = 24000;
+
+    /* الواجهة الحديثة */
+    try {
+      const r = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+        method: "POST", headers: H, body: JSON.stringify({
+          model: "gemini-3.8-flash-tts",
+          input: [{ type: "user_input", content: [{ type: "text", text,
+            annotations: [{ type: "speech_metadata", style: g.s }] }] }],
+          response_format: { type: "audio", mime_type: "audio/l16", sample_rate: RATE },
+          generation_config: { speech_config: [{ voice: g.v }] }
+        })
+      });
+      if (r.ok) {
+        const j = await r.json();
+        const b64 = findAudio(j);
+        if (b64) return pcmToWav(b64, RATE);
+      }
+    } catch {}
+
+    /* الواجهة السابقة — احتياطًا */
+    const r2 = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",
+      { method: "POST", headers: H, body: JSON.stringify({
+        contents: [{ parts: [{ text: g.s + ": " + text }] }],
+        generationConfig: { responseModalities: ["AUDIO"],
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: g.v } } } }
+      }) });
+    if (!r2.ok) throw new Error("gemini " + r2.status);
+    const j2 = await r2.json();
+    const b2 = findAudio(j2);
+    if (!b2) throw new Error("no audio");
+    return pcmToWav(b2, RATE);
+  };
+}
+/* الصوت قد يأتي في أشكالٍ مختلفة — نبحث عنه بأمان */
+function findAudio(o, d) {
+  d = d || 0;
+  if (!o || typeof o !== "object" || d > 7) return null;
+  if (typeof o.data === "string" && o.data.length > 200) return o.data;
+  if (o.inlineData && typeof o.inlineData.data === "string") return o.inlineData.data;
+  for (const k in o) { const h = findAudio(o[k], d + 1); if (h) return h; }
+  return null;
+}
+
+/* ─── موصّل Google Cloud TTS: يحتاج بطاقة، لكنّه أرخص للكمّيات ───
+   لا يرتبط المشروع بجوجل: هذه دالةٌ واحدة تُستبدل بأي خدمة. */
+const AR_GOOGLE = {
+  athar:    "ar-XA-Wavenet-D",   // أنثوي خفيف — أقرب ما يكون لطفل برفع الطبقة
+  narrator: "ar-XA-Wavenet-C",
+  sacred:   "ar-XA-Wavenet-B",
+  friend:   "ar-XA-Wavenet-A"
+};
+function googleTTS(key) {
+  return async function (text, voice, profile) {
+    const body = {
+      input: { text },
+      voice: { languageCode: "ar-XA", name: AR_GOOGLE[voice] || AR_GOOGLE.narrator },
+      audioConfig: {
+        audioEncoding: "MP3",
+        speakingRate: Math.max(.25, Math.min(4, (profile && profile.rate) || 1)),
+        pitch: Math.round((((profile && profile.pitch) || 1) - 1) * 12)  // نصف نغمة لكل درجة
+      }
+    };
+    const r = await fetch(
+      "https://texttospeech.googleapis.com/v1/text:synthesize?key=" + encodeURIComponent(key),
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error("tts " + r.status);
+    const j = await r.json();
+    return "data:audio/mp3;base64," + j.audioContent;
+  };
+}
+
 /* ٣ · صوت الجهاز — احتياطي فقط، لا حلّ نهائي.
    لكنه محسَّن: ترتيب أصوات، تقطيع، وقفات حقيقية، ونبرة لكل دور. */
 function DeviceProvider() {
-  let cancelled = false, picked = null;
+  let cancelled = false, picked = null, misses = 0, dead = false;
   function chooseVoice() {
     if (!("speechSynthesis" in window)) return null;
-    const all = speechSynthesis.getVoices().filter(v => /^ar/i.test(v.lang));
-    if (!all.length) return null;
+    const ar = speechSynthesis.getVoices().filter(v => /^ar/i.test(v.lang));
     for (const want of AR_RANK) {
-      const hit = all.find(v => v.name.includes(want));
+      const hit = ar.find(v => v.name.includes(want));
       if (hit) return hit;
     }
-    return all.find(v => /ar[-_]SA/i.test(v.lang)) || all[0];
+    return ar.find(v => /ar[-_]SA/i.test(v.lang)) || ar[0] || null;
   }
   return {
     name: "device",
     quality: "صوت الجهاز",
     get voiceName() { picked = picked || chooseVoice(); return picked ? picked.name : "—"; },
-    available: () => "speechSynthesis" in window && !!chooseVoice(),
+    /* لا نشترط صوتًا عربيًّا: بعض الأجهزة تنطق العربية بلا صوتٍ مُعلَن.
+       الصمت التامّ أسوأ من نطقٍ ناقص. */
+    /* لا نشترط صوتًا عربيًّا معلنًا: بعض الأجهزة تنطق بلا إعلان.
+       لكن إن ثبت أنّه لا ينطق فعلًا، نتوقّف عن محاولته. */
+    available: () => "speechSynthesis" in window && !dead,
     canPlay: () => true,
     play(e, onEnd) {
       this.stop(); cancelled = false;
-      picked = picked || chooseVoice();
+      picked = chooseVoice() || picked;        // يُعاد الاختيار كلّما توفّرت أصوات
       const p = VOICES[e.voice] || VOICES.narrator;
       const parts = segment(e.text);
       let i = 0;
       const step = () => {
         if (cancelled) return;
         if (i >= parts.length) { onEnd && onEnd(); return; }
-        const u = new SpeechSynthesisUtterance(parts[i++]);
+        const txt = parts[i++];
+        const u = new SpeechSynthesisUtterance(txt);
         if (picked) u.voice = picked;
         u.lang = (picked && picked.lang) || "ar-SA";
-        u.rate = p.rate; u.pitch = p.pitch;
-        u.onend = () => setTimeout(step, p.gap);   // وقفة حقيقية بين المقاطع
-        u.onerror = () => setTimeout(step, p.gap);
-        try { speechSynthesis.speak(u); } catch { setTimeout(step, p.gap); }
+        u.rate = p.rate; u.pitch = p.pitch; u.volume = 1;
+        let moved = false;
+        const next = () => { if (!moved) { moved = true; setTimeout(step, p.gap); } };
+        u.onend = next;
+        u.onerror = next;
+        /* حارس: إن لم يبدأ النطق خلال مهلةٍ معقولة، لا نعلق صامتين */
+        const guard = setTimeout(() => {
+          if (++misses >= 3) dead = true;      // لا ينطق — لا نضيّع الوقت بعد اليوم
+          next();
+        }, 900 + txt.length * 95);
+        u.onstart = () => { misses = 0; clearTimeout(guard); };
+        try { speechSynthesis.speak(u); } catch { clearTimeout(guard); next(); }
       };
       step();
     },
@@ -634,7 +746,8 @@ function SilentProvider() {
   return {
     name: "silent", quality: "بلا صوت",
     available: () => true, canPlay: () => true,
-    play(e, onEnd) { const ms = Math.min(6000, 700 + normalize(e.text).length * 62);
+    /* بلا صوت، الإيقاع هو كل شيء: وقتٌ يكفي لقراءة السطر بتمهّل */
+    play(e, onEnd) { const ms = Math.min(7500, 900 + normalize(e.text).length * 78);
       this._t = setTimeout(() => onEnd && onEnd(), ms); },
     stop() { clearTimeout(this._t); }
   };
@@ -666,14 +779,75 @@ const Engine = {
         SilentProvider()
       ];
     }
+    /* مفتاحٌ محفوظ من جلسةٍ سابقة؟ يُوصَّل فورًا. */
+    const saved = this.getKey();
+    if (saved && !this.cfg.fetchUrl) this.cfg.fetchUrl = geminiTTS(saved);
     if ("speechSynthesis" in window) speechSynthesis.onvoiceschanged = () => {};
     return this;
   },
 
   /* يُستدعى من أول لمسة — متطلّب iOS */
+  /* أندرويد يُعلّق النطق بعد ~١٥ ثانية. نبّهه دوريًّا. */
+  keepAlive() {
+    if (!("speechSynthesis" in window)) return;
+    clearInterval(this._ka);
+    this._ka = setInterval(() => {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        try { speechSynthesis.pause(); speechSynthesis.resume(); } catch {}
+      }
+    }, 9000);
+  },
+
+  /* أيوجد نطقٌ فعلًا؟ — للتطبيق ليُخبر الوالد مرّةً واحدة */
+  hasVoice() {
+    if (!("speechSynthesis" in window)) return false;
+    return speechSynthesis.getVoices().length > 0;
+  },
+
+  /* مفتاح الخدمة: يُحفظ في الجهاز، ويُوصَّل عند الإقلاع */
+  setKey(k) {
+    try { k ? localStorage.setItem("athar.tts", k) : localStorage.removeItem("athar.tts"); } catch {}
+    this.cfg.fetchUrl = k ? geminiTTS(k) : null;
+    this._key = k || "";
+  },
+  getKey() { try { return localStorage.getItem("athar.tts") || ""; } catch { return ""; } },
+
+  /* اختبارٌ سريع قبل الحفظ */
+  async testKey(k) {
+    /* يُجرَّب Gemini أوّلًا (مجّاني بلا بطاقة)، ثم Cloud TTS */
+    for (const [name, mk] of [["gemini", geminiTTS], ["cloud", googleTTS]]) {
+      try {
+        const url = await mk(k)("مرحبًا، أنا أثر، ورفيقك هنا", "athar", VOICES.athar);
+        await new Promise((ok, no) => {
+          const el = new Audio(url);
+          el.onended = ok; el.onerror = () => no(new Error("لم يُشغّل"));
+          el.play().catch(no);
+        });
+        this.cfg.fetchUrl = mk(k);
+        try { localStorage.setItem("athar.tts", k); localStorage.setItem("athar.tts.kind", name); } catch {}
+        return { ok: true, kind: name };
+      } catch (e) { var last = e; }
+    }
+    return { ok: false, err: String((last && last.message) || last || "فشل") };
+  },
+
+  async _unused(k) {
+    try {
+      const url = await googleTTS(k)("مرحبًا", "athar", VOICES.athar);
+      await new Promise((ok, no) => {
+        const el = new Audio(url);
+        el.onended = ok; el.onerror = no;
+        el.play().then(() => {}).catch(no);
+      });
+      return { ok: true };
+    } catch (e) { return { ok: false, err: String(e.message || e) }; }
+  },
+
   unlock() {
     try { if ("speechSynthesis" in window) {
       const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u);
+      speechSynthesis.getVoices();          // يحثّ أندرويد على تحميل الأصوات
+      this.keepAlive();
     } } catch {}
     try { this.ctx(); } catch {}
     return this;
@@ -2126,6 +2300,37 @@ const App = {
 
     World.mount(document.getElementById("stage"), document.getElementById("say"));
     document.getElementById("myv").onclick = () => this.showValley();
+    /* ضغطة مطوّلة على زرّ الصوت: إعداد الصوت السحابي — للوالد لا للطفل */
+    const snd = document.getElementById("snd");
+    if (snd) {
+      let t = null, x0 = 0, y0 = 0, fired = false;
+      const start = e => {
+        fired = false;
+        const p = (e.touches && e.touches[0]) || e;
+        x0 = p.clientX || 0; y0 = p.clientY || 0;
+        t = setTimeout(() => { fired = true; snd.style.transform = ""; this.voiceSetup(); }, 700);
+        snd.style.transform = "scale(.9)";
+      };
+      const stop = () => { clearTimeout(t); snd.style.transform = ""; };
+      const move = e => {                       // تُلغى فقط عند حركةٍ حقيقية
+        const p = (e.touches && e.touches[0]) || e;
+        if (Math.abs((p.clientX || 0) - x0) > 18 || Math.abs((p.clientY || 0) - y0) > 18) stop();
+      };
+      snd.addEventListener("touchstart", start, { passive: true });
+      snd.addEventListener("mousedown", start);
+      snd.addEventListener("touchmove", move, { passive: true });
+      ["touchend","touchcancel","mouseup","mouseleave"].forEach(ev =>
+        snd.addEventListener(ev, stop, { passive: true }));
+      /* لا يُبدَّل كتم الصوت إن كانت الضغطة مطوّلة */
+      snd.addEventListener("click", e => { if (fired) { e.stopPropagation(); e.preventDefault(); } }, true);
+    }
+
+    /* ═══ ٢ · رابط مباشر: …/athar.html#voice ═══ */
+    const openByHash = () => {
+      if (location.hash === "#voice") { location.hash = ""; setTimeout(() => this.voiceSetup(), 400); }
+    };
+    addEventListener("hashchange", openByHash);
+    setTimeout(openByHash, 1500);
     Director.init({ panel: document.getElementById("panel"), world: World });
     World.phase(State.data.phase || 0);
     this.paint();
@@ -2138,8 +2343,28 @@ const App = {
       if (!State.data.intro) { this.intro(0); return; }
       World.athar("app.welcome", "hi", 3400);
       this.paint();
+      setTimeout(() => this.noVoiceNote(), 1200);
       setTimeout(() => this.offerDaily(), 3600);
     }, 900);
+  },
+
+  /* يُقال للوالد مرّةً واحدة: التطبيق يعمل، لكن بلا صوت */
+  noVoiceNote() {
+    if (State.data.voiceNoted) return;
+    setTimeout(() => {
+      if (AtharAudio.hasVoice() || AtharAudio.getKey()) return;
+      State.data.voiceNoted = true; State.save();
+      const host = document.getElementById("nextup");
+      host.innerHTML = `<div class="ncard">
+        <div class="ntag">ملاحظة للوالد</div>
+        <p>جهازك بلا محرّك نطق، فيعمل التطبيق <b>بلا صوت</b> — والدروس كلّها تُقرأ.</p>
+        <p class="nwhere" style="margin-top:8px">ويمكن تشغيله بمفتاحٍ مجّاني من Google AI Studio.</p>
+        <button class="nbtn" id="vopen">شغّل الصوت</button>
+        <button class="nghost" id="vskip">لاحقًا</button></div>`;
+      host.classList.add("on");
+      host.querySelector("#vskip").onclick = () => host.classList.remove("on");
+      host.querySelector("#vopen").onclick = () => { host.classList.remove("on"); setTimeout(() => this.voiceSetup(), 300); };
+    }, 1500);
   },
 
   /* ═══ التمهيد ═══
@@ -2169,6 +2394,40 @@ const App = {
     AtharAudio.bindReadable(host);
     AtharAudio.say("intro." + (i + 1));
     host.querySelector(".ibtn").onclick = () => { AtharAudio.sfx("tap"); this.intro(i + 1); };
+  },
+
+  /* ═══ إعداد الصوت السحابي ═══
+     للوالد: يُلصق مفتاحًا مرّة، فيعمل الصوت على كل جهاز بلا محرّك نطق. */
+  voiceSetup() {
+    const host = document.getElementById("nextup");
+    const cur = AtharAudio.getKey();
+    host.innerHTML = `<div class="ncard">
+      <div class="ntag">إعداد الصوت — للوالد</div>
+      <p class="ngoal" style="font-size:15px">جهازك بلا محرّك نطق. الصق مفتاح Google TTS ليعمل الصوت على كل جهاز.</p>
+      <input id="kbox" type="text" placeholder="AIza..." value="${cur}"
+        style="width:100%;margin-top:11px;padding:13px;border:3px solid #DCCDAE;border-radius:14px;
+        font:inherit;font-size:15px;direction:ltr;text-align:left">
+      <div id="kmsg" style="font-size:14px;margin-top:8px;min-height:20px"></div>
+      <button class="nbtn" id="ktest">جرّب واحفظ</button>
+      <button class="nghost" id="kclose">إغلاق</button></div>`;
+    host.classList.add("on");
+    const msg = host.querySelector("#kmsg");
+    host.querySelector("#kclose").onclick = () => host.classList.remove("on");
+    host.querySelector("#ktest").onclick = async () => {
+      const k = host.querySelector("#kbox").value.trim();
+      if (!k) { AtharAudio.setKey(""); msg.textContent = "أُزيل المفتاح."; return; }
+      msg.textContent = "يُجرَّب الآن…"; msg.style.color = "#7A6B55";
+      const r = await AtharAudio.testKey(k);
+      if (r.ok) {
+        AtharAudio.setKey(k);
+        msg.textContent = "✓ يعمل — سمعتَ أثر الآن. حُفظ المفتاح.";
+        msg.style.color = "#2F6B3E";
+        setTimeout(() => host.classList.remove("on"), 2200);
+      } else {
+        msg.textContent = "✗ لم ينجح: " + r.err;
+        msg.style.color = "#B85C78";
+      }
+    };
   },
 
   /* ═══ واديي ═══
