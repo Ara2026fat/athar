@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1E6F5C">
+<title>أثر — جرّب الصوت</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--em:#1E6F5C;--cream:#F0E6D2;--gold:#F0A93B;--ink:#20342E;--soft:#7A6B55;
+  --line:#3A2E24;--wood:#7A5334;--paper:#FDFAF3}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--cream);color:var(--ink);font-family:Rubik,system-ui,sans-serif;line-height:1.8}
+#app{max-width:560px;margin-inline:auto;min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+header{background:linear-gradient(#1E6F5C,#14513F);color:#fff;
+  padding:calc(15px + env(safe-area-inset-top)) 16px 13px;position:sticky;top:0;z-index:20}
+header h1{font-size:20px;font-weight:700}
+header p{font-size:12.5px;opacity:.82}
+main{padding:15px 13px 30px}
+h2{font-size:18px;font-weight:700;color:var(--em);margin:16px 0 8px}
+h2:first-child{margin-top:0}
+
+.card{background:var(--paper);border:3px solid #E4D9C2;border-radius:18px;padding:14px;margin-bottom:11px}
+.warn{background:#FBEBD4;border-color:#E8C98C}
+.ok{background:#EAF6EF;border-color:#A8D4BE}
+.card b{display:block;font-size:13.5px;margin-bottom:4px;color:var(--wood)}
+.ok b{color:#2A8067}.warn b{color:#B87A19}
+.card p{font-size:15.5px}
+
+select{width:100%;padding:13px;border:3px solid #DCCDAE;border-radius:14px;background:#fff;
+  font:inherit;font-size:16px;color:var(--ink);margin-bottom:9px}
+.row{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.row label{flex:0 0 58px;font-size:14.5px;color:var(--soft);font-weight:500}
+.row input[type=range]{flex:1;accent-color:var(--em);height:28px}
+.row output{flex:0 0 46px;text-align:center;font-size:15px;font-weight:700;color:var(--em);
+  background:#fff;border:2.5px solid #DCCDAE;border-radius:10px;padding:2px 0}
+
+button{font:inherit;cursor:pointer}
+.play{width:100%;padding:16px;border:3.5px solid var(--line);border-radius:19px;
+  background:linear-gradient(#F7BC5C,#E8992B);color:#3A2E24;font-size:19px;font-weight:500;
+  box-shadow:0 5px 0 #B87A19;margin-bottom:10px}
+.play:active{transform:translateY(5px);box-shadow:none}
+.line{width:100%;text-align:start;background:#fff;border:2.5px solid #E4D9C2;border-radius:13px;
+  padding:11px 13px;font-size:16px;color:var(--ink);margin-bottom:6px;display:flex;
+  justify-content:space-between;align-items:center;gap:9px}
+.line span{flex:1}
+.line i{font-style:normal;font-size:18px;color:var(--em)}
+.line.on{background:#EAF6EF;border-color:#4E9E63}
+
+.presets{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:11px}
+.pre{padding:12px 8px;border:3px solid #DCCDAE;border-radius:15px;background:#fff;
+  font-size:14.5px;font-weight:500;color:var(--soft);text-align:center}
+.pre.on{border-color:var(--em);background:var(--em);color:#fff}
+.pre small{display:block;font-size:11.5px;opacity:.75;font-weight:400}
+
+pre{background:#132A22;color:#9FE8C8;border-radius:13px;padding:13px;font-family:ui-monospace,monospace;
+  font-size:13.5px;direction:ltr;text-align:left;overflow-x:auto;margin:9px 0}
+.copy{width:100%;padding:13px;border:3px solid var(--line);border-radius:15px;
+  background:linear-gradient(#2A8067,#186352);color:#fff;font-size:16px;font-weight:500;
+  box-shadow:0 4px 0 var(--line)}
+.copy:active{transform:translateY(4px);box-shadow:none}
+#none{display:none;background:#FDEEF2;border-color:#EBBECB}
+#none b{color:#B85C78}
+footer{text-align:center;color:var(--soft);font-size:12px;padding:6px 0 18px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header>
+  <h1>جرّب صوت أثر</h1>
+  <p>اسمع بنفسك · واضبطه · ثم أرسل لي الإعداد</p>
+</header>
+
+<main>
+
+<div class="card warn"><b>اقرأ هذا أوّلًا</b>
+  <p>هذه أصوات <b>جهازك أنت</b> — تختلف من جوالٍ لآخر. ولا يوجد فيها صوت طفلٍ حقيقيّ، لكنّ رفع الطبقة يُقرّبه كثيرًا.</p>
+  <p style="margin-top:6px">جرّب الأصوات كلّها، واختر أقربها، ثم أرسل لي السطر الأخير.</p></div>
+
+<div class="card" id="none"><b>لا أصوات عربية في جهازك</b>
+  <p>افتح: الإعدادات ← إدارة عامّة ← النصّ إلى كلام ← تنزيل صوت عربي. ثم أعد فتح هذه الصفحة.</p></div>
+
+<h2>١ · اختر الصوت</h2>
+<select id="voice"></select>
+
+<h2>٢ · جرّب إعدادًا جاهزًا</h2>
+<div class="presets" id="presets"></div>
+
+<h2>٣ · أو اضبطه بنفسك</h2>
+<div class="row"><label>الطبقة</label><input type="range" id="pitch" min="0.5" max="2" step="0.05" value="1.5"><output id="pv">1.50</output></div>
+<div class="row"><label>السرعة</label><input type="range" id="rate" min="0.5" max="1.6" step="0.02" value="1.02"><output id="rv">1.02</output></div>
+
+<h2>٤ · اسمع</h2>
+<button class="play" id="play">▶ شغّل جملة أثر</button>
+<div id="lines"></div>
+
+<h2>٥ · أرسل لي هذا السطر</h2>
+<pre id="out">athar: { rate: 1.02, pitch: 1.50 }  ← الصوت: —</pre>
+<button class="copy" id="copy">انسخ السطر</button>
+
+<div class="card ok" style="margin-top:14px"><b>وإن لم يعجبك أيّ صوت</b>
+  <p>فالحلّ الحقيقيّ: <b>توليد ٢١٨ ملفًا مرّةً واحدة</b> بصوتٍ طفوليّ من خدمةٍ سحابية، ثم يعمل التطبيق بها بلا إنترنت وبلا تكرار.</p>
+  <p style="margin-top:6px">أخبرني إن أردتَ ذلك، وأُعدّ لك دليلًا كدليل الشخصية.</p></div>
+
+</main>
+<footer>ARAFAT ALRAJHI © 2026</footer>
+</div>
+
+<script>
+"use strict";
+const LINES = [
+  "أهلًا! أنا أثر، ورفيقك هنا",
+  "الغداء جاهز! ماذا نقول قبل أن نأكل؟",
+  "أوه… نسينا!",
+  "أحسنت! انظر إلى الشجرة",
+  "صار لنا صديق في الوادي",
+  "عندي لك مهمّةٌ اليوم",
+  "أثرُك يزداد عمقًا",
+  "كبرتَ قليلًا… انظر، اتّسع وادينا"
+];
+const PRESETS = [
+  { n:"طفل صغير", r:1.00, p:1.70, d:"طبقة عالية" },
+  { n:"طفل هادئ", r:0.96, p:1.50, d:"الإعداد الحالي" },
+  { n:"طفل مرح",  r:1.10, p:1.60, d:"أسرع قليلًا" },
+  { n:"صوت طبيعي", r:0.98, p:1.20, d:"أقرب للواقع" }
+];
+
+const S = window.speechSynthesis;
+const sel = document.getElementById("voice");
+const pitch = document.getElementById("pitch"), rate = document.getElementById("rate");
+const pv = document.getElementById("pv"), rv = document.getElementById("rv");
+const out = document.getElementById("out");
+let voices = [], cur = null, li = 0;
+
+function load(){
+  const all = S ? S.getVoices() : [];
+  voices = all.filter(v => /^ar/i.test(v.lang));
+  if(!voices.length) voices = all;
+  document.getElementById("none").style.display =
+    all.some(v => /^ar/i.test(v.lang)) ? "none" : "block";
+  sel.innerHTML = voices.map((v,i) =>
+    `<option value="${i}">${v.name} — ${v.lang}</option>`).join("")
+    || `<option>لا توجد أصوات</option>`;
+  cur = voices[0] || null;
+  stamp();
+}
+if(S){ load(); S.onvoiceschanged = load; }
+
+sel.onchange = () => { cur = voices[+sel.value]; stamp(); say(); };
+
+document.getElementById("presets").innerHTML = PRESETS.map((p,i) =>
+  `<button class="pre" data-i="${i}">${p.n}<small>${p.d}</small></button>`).join("");
+document.querySelectorAll(".pre").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".pre").forEach(x => x.classList.remove("on"));
+  b.classList.add("on");
+  const p = PRESETS[+b.dataset.i];
+  rate.value = p.r; pitch.value = p.p; stamp(); say();
+});
+
+[pitch, rate].forEach(x => x.oninput = () => {
+  document.querySelectorAll(".pre").forEach(b => b.classList.remove("on"));
+  stamp();
+});
+[pitch, rate].forEach(x => x.onchange = say);
+
+function stamp(){
+  pv.value = (+pitch.value).toFixed(2);
+  rv.value = (+rate.value).toFixed(2);
+  out.textContent = `athar: { rate: ${(+rate.value).toFixed(2)}, pitch: ${(+pitch.value).toFixed(2)} }`
+    + `  ← الصوت: ${cur ? cur.name : "—"}`;
+}
+
+document.getElementById("lines").innerHTML = LINES.map((t,i) =>
+  `<button class="line" data-i="${i}"><span>${t}</span><i>▶</i></button>`).join("");
+document.querySelectorAll(".line").forEach(b => b.onclick = () => {
+  li = +b.dataset.i; say();
+});
+
+function say(){
+  if(!S) return;
+  S.cancel();
+  document.querySelectorAll(".line").forEach((b,k) => b.classList.toggle("on", k === li));
+  const u = new SpeechSynthesisUtterance(LINES[li]);
+  if(cur) u.voice = cur;
+  u.lang = (cur && cur.lang) || "ar-SA";
+  u.rate = +rate.value; u.pitch = +pitch.value;
+  S.speak(u);
+}
+document.getElementById("play").onclick = () => {
+  li = (li + 1) % LINES.length; say();
+};
+
+document.getElementById("copy").onclick = () => {
+  const t = out.textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(t).catch(fb);
+  else fb();
+  function fb(){
+    const a = document.createElement("textarea");
+    a.value = t; a.style.position = "fixed"; a.style.opacity = "0";
+    document.body.append(a); a.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    a.remove();
+  }
+  const b = document.getElementById("copy");
+  b.textContent = "نُسخ ✓";
+  setTimeout(() => b.textContent = "انسخ السطر", 1800);
+};
+</script>
+</body>
+</html>

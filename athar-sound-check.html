@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1E6F5C">
+<title>أثر — فحص الصوت</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--em:#1E6F5C;--cream:#F0E6D2;--ink:#20342E;--soft:#7A6B55;--line:#3A2E24;--paper:#FDFAF3}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--cream);color:var(--ink);font-family:Rubik,system-ui,sans-serif;line-height:1.8}
+#app{max-width:560px;margin-inline:auto;min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+header{background:linear-gradient(#1E6F5C,#14513F);color:#fff;
+  padding:calc(15px + env(safe-area-inset-top)) 16px 13px}
+header h1{font-size:20px;font-weight:700}
+header p{font-size:12.5px;opacity:.82}
+main{padding:15px 13px 30px}
+h2{font-size:17px;font-weight:700;color:var(--em);margin:18px 0 8px}
+h2:first-child{margin-top:0}
+
+.t{display:flex;gap:11px;background:var(--paper);border:3px solid #E4D9C2;border-radius:15px;
+  padding:12px 13px;margin-bottom:8px;align-items:flex-start}
+.t i{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-style:normal;font-size:15px;font-weight:700;color:#fff;background:#C9BCA4;margin-top:2px}
+.t.pass i{background:#4E9E63}.t.fail i{background:#C9564E}.t.warn i{background:#E8992B}
+.t.pass{border-color:#A8D4BE;background:#EAF6EF}
+.t.fail{border-color:#EBBECB;background:#FDEEF2}
+.t.warn{border-color:#E8C98C;background:#FBEBD4}
+.t div{flex:1}
+.t b{display:block;font-size:16px}
+.t span{font-size:14px;color:var(--soft)}
+
+button{font:inherit;cursor:pointer;width:100%;padding:15px;border:3.5px solid var(--line);
+  border-radius:18px;font-size:17px;font-weight:500;margin-bottom:9px}
+.go{background:linear-gradient(#F7BC5C,#E8992B);color:#3A2E24;box-shadow:0 5px 0 #B87A19}
+.go2{background:linear-gradient(#2A8067,#186352);color:#fff;box-shadow:0 5px 0 var(--line)}
+button:active{transform:translateY(5px);box-shadow:none}
+
+.fix{background:#FBEBD4;border:3px solid #E8C98C;border-radius:17px;padding:14px;margin-bottom:11px;display:none}
+.fix.on{display:block}
+.fix b{display:block;font-size:15.5px;color:#B87A19;margin-bottom:6px}
+.fix p{font-size:15.5px;margin-bottom:6px}
+.fix ol{padding-inline-start:20px;font-size:15.5px}
+.fix li{margin:5px 0}
+.info{background:#132A22;color:#9FE8C8;border-radius:13px;padding:12px;font-family:ui-monospace,monospace;
+  font-size:12px;direction:ltr;text-align:left;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.copy{background:#fff;color:var(--em);border-color:#DCCDAE;box-shadow:0 4px 0 #CFC3A6}
+footer{text-align:center;color:var(--soft);font-size:12px;padding:6px 0 18px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header>
+  <h1>فحص الصوت</h1>
+  <p>اضغط الزرّين بالترتيب · والصفحة تخبرك بالعلّة</p>
+</header>
+
+<main>
+
+<h2>١ · هل يعمل صوت جهازك أصلًا؟</h2>
+<button class="go" id="beep">🔊 اضغط لتسمع نغمة</button>
+<div class="t" id="t0"><i>؟</i><div><b>نغمة اختبار</b><span>لم تُجرَّب بعد</span></div></div>
+
+<h2>٢ · هل يوجد محرّك نطق؟</h2>
+<button class="go2" id="talk">🗣️ اضغط ليتكلّم أثر</button>
+<div class="t" id="t1"><i>؟</i><div><b>محرّك النطق</b><span>لم يُفحص بعد</span></div></div>
+<div class="t" id="t2"><i>؟</i><div><b>أصوات الجهاز</b><span>—</span></div></div>
+<div class="t" id="t3"><i>؟</i><div><b>صوت عربي</b><span>—</span></div></div>
+<div class="t" id="t4"><i>؟</i><div><b>النطق الفعليّ</b><span>—</span></div></div>
+<div class="t" id="t5"><i>؟</i><div><b>طريقة فتح الملف</b><span>—</span></div></div>
+
+<div class="fix" id="fixUri"><b>العلّة: طريقة فتح الملف</b>
+  <p>أنت تفتحه من <b>التنزيلات</b> مباشرة، والمتصفّح يمنع النطق في هذا الوضع.</p>
+  <ol>
+    <li>افتح تطبيق <b>الملفات</b></li>
+    <li>اضغط مطوّلًا على <code>athar.html</code> ← <b>فتح باستخدام</b> ← <b>Chrome</b></li>
+    <li>أو ارفعه على GitHub Pages وافتحه برابط <code>https</code> — وهذا الأضمن</li>
+  </ol></div>
+
+<div class="fix" id="fixVoice"><b>العلّة: لا محرّك نطق في جهازك</b>
+  <p>كثير من أجهزة هواوي تأتي بلا محرّك نطق. والحلّ:</p>
+  <ol>
+    <li><b>الإعدادات</b> ← <b>إمكانية الوصول</b> ← <b>تحويل النصّ إلى كلام</b></li>
+    <li>إن لم تجد محرّكًا، نزّل <b>Google Speech Services</b> من متجرك</li>
+    <li>ثم نزّل <b>اللغة العربية</b> من داخله</li>
+    <li>أعد فتح هذه الصفحة</li>
+  </ol>
+  <p style="margin-top:8px">وإن تعذّر ذلك، فالحلّ الأفضل: <b>ملفات صوتية مسجّلة</b> تُشحن مع التطبيق ولا تحتاج محرّكًا أصلًا.</p></div>
+
+<div class="fix" id="fixAr"><b>العلّة: لا صوت عربي</b>
+  <p>المحرّك موجود لكن بلا لغة عربية.</p>
+  <ol>
+    <li><b>الإعدادات</b> ← <b>تحويل النصّ إلى كلام</b> ← أيقونة الإعدادات بجانب المحرّك</li>
+    <li><b>تثبيت بيانات الصوت</b> ← <b>العربية</b> ← نزّلها</li>
+    <li>أعد فتح الصفحة</li>
+  </ol></div>
+
+<h2>٣ · أرسل لي هذا</h2>
+<div class="info" id="info">اضغط الزرّين أوّلًا…</div>
+<button class="copy" id="cp" style="margin-top:9px">انسخ التقرير</button>
+
+</main>
+<footer>ARAFAT ALRAJHI © 2026</footer>
+</div>
+
+<script>
+"use strict";
+const R = {};
+function set(id, state, b, s){
+  const el = document.getElementById(id);
+  el.className = "t " + state;
+  el.querySelector("i").textContent = state === "pass" ? "✓" : state === "fail" ? "✗" : "!";
+  el.querySelector("b").textContent = b;
+  el.querySelector("span").textContent = s;
+}
+function show(id){ document.getElementById(id).classList.add("on"); }
+
+/* ── ١ · نغمة: هل مخرج الصوت يعمل؟ ── */
+document.getElementById("beep").onclick = () => {
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC){ set("t0","fail","نغمة اختبار","المتصفّح لا يدعم الصوت"); R.audio="no-ac"; return stamp(); }
+    const c = new AC();
+    if(c.state === "suspended") c.resume();
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = "sine"; o.frequency.value = 660;
+    g.gain.setValueAtTime(.0001, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(.25, c.currentTime + .04);
+    g.gain.exponentialRampToValueAtTime(.0001, c.currentTime + .5);
+    o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .55);
+    set("t0","pass","نغمة اختبار","شُغّلت — إن لم تسمعها فارفع صوت الجهاز");
+    R.audio = "ok:" + c.state;
+  }catch(e){ set("t0","fail","نغمة اختبار","فشل: " + e.message); R.audio = "err"; }
+  stamp();
+};
+
+/* ── ٢ · النطق ── */
+document.getElementById("talk").onclick = () => {
+  const S = window.speechSynthesis;
+  R.proto = location.protocol;
+
+  /* طريقة الفتح */
+  if(/^(content|file):/.test(location.protocol)){
+    set("t5","warn","طريقة فتح الملف", location.protocol + " — قد يمنع النطق");
+    show("fixUri");
+  } else {
+    set("t5","pass","طريقة فتح الملف", location.protocol + " — سليمة");
+  }
+
+  if(!S){
+    set("t1","fail","محرّك النطق","غير موجود في هذا المتصفّح");
+    R.tts = "none"; show("fixVoice"); return stamp();
+  }
+  set("t1","pass","محرّك النطق","موجود");
+
+  const all = S.getVoices();
+  R.voices = all.length;
+  if(!all.length){
+    set("t2","fail","أصوات الجهاز","صفر — لا محرّك نطق مثبّت");
+    set("t3","fail","صوت عربي","لا يوجد");
+    show("fixVoice"); return stamp();
+  }
+  set("t2","pass","أصوات الجهاز", all.length + " صوتًا");
+
+  const ar = all.filter(v => /^ar/i.test(v.lang));
+  R.ar = ar.map(v => v.name + "|" + v.lang);
+  if(!ar.length){
+    set("t3","fail","صوت عربي","لا يوجد — سيُنطق بلكنةٍ أجنبية أو لا يُنطق");
+    show("fixAr");
+  } else {
+    set("t3","pass","صوت عربي", ar.length + ": " + ar.map(v => v.name).join("، "));
+  }
+
+  /* النطق الفعليّ */
+  set("t4","warn","النطق الفعليّ","يُجرَّب الآن…");
+  try{
+    S.cancel();
+    const u = new SpeechSynthesisUtterance("أهلًا! أنا أثر، ورفيقك هنا");
+    if(ar[0]) u.voice = ar[0];
+    u.lang = (ar[0] && ar[0].lang) || "ar-SA";
+    u.rate = 1.0; u.pitch = 1.5; u.volume = 1;
+    let started = false;
+    u.onstart = () => { started = true; set("t4","pass","النطق الفعليّ","بدأ — هل سمعتَه؟"); R.spoke = "start"; stamp(); };
+    u.onerror = e => { set("t4","fail","النطق الفعليّ","خطأ: " + (e.error || "?")); R.spoke = "err:" + e.error; show("fixVoice"); stamp(); };
+    u.onend = () => { if(started){ R.spoke = "end"; stamp(); } };
+    S.speak(u);
+    setTimeout(() => {
+      if(!started){
+        set("t4","fail","النطق الفعليّ","لم يبدأ خلال ٣ ثوانٍ");
+        R.spoke = "silent";
+        show(/^(content|file):/.test(location.protocol) ? "fixUri" : "fixVoice");
+        stamp();
+      }
+    }, 3000);
+  }catch(e){ set("t4","fail","النطق الفعليّ","فشل: " + e.message); R.spoke = "throw"; stamp(); }
+  stamp();
+};
+if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged = () => {};
+
+function stamp(){
+  R.ua = navigator.userAgent;
+  document.getElementById("info").textContent = JSON.stringify(R, null, 1);
+}
+document.getElementById("cp").onclick = () => {
+  const t = document.getElementById("info").textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(t).catch(fb); else fb();
+  function fb(){
+    const a = document.createElement("textarea");
+    a.value = t; a.style.position = "fixed"; a.style.opacity = "0";
+    document.body.append(a); a.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    a.remove();
+  }
+  const b = document.getElementById("cp");
+  b.textContent = "نُسخ ✓"; setTimeout(() => b.textContent = "انسخ التقرير", 1800);
+};
+</script>
+</body>
+</html>
