@@ -313,6 +313,12 @@ body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);display:flex;align-
 #gate.off{opacity:0;pointer-events:none;transition:opacity .8s}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="أثر">
+<meta name="mobile-web-app-capable" content="yes">
 </head>
 <body>
 <div id="app">
@@ -2685,6 +2691,10 @@ document.getElementById("snd").onclick = e => {
   if (!m) AtharAudio.sfx("tap");
 };
 App.boot(ATHAR_DATA);
+</script>
+<script>
+if ("serviceWorker" in navigator) addEventListener("load", () =>
+  navigator.serviceWorker.register("sw.js").catch(() => {}));
 </script>
 </body>
 </html>
