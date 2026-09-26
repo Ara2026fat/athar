@@ -1,29 +1,55 @@
-/* أثر — يعمل بلا إنترنت بعد أوّل فتح */
-const C = "athar-v1";
-const FILES = ["athar.html", "manifest.json", "icon-192.png", "icon-512.png"];
-self.addEventListener("install", e => {
-  e.waitUntil(caches.open(C).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+/* أثر — Service Worker
+   يخزّن هيكل التطبيق فقط (الصفحة + الأيقونات)، ولا يتدخّل إطلاقًا في:
+   - تلاوة القرآن (everyayah.com)
+   - توليد الصوت (Gemini / Google TTS)
+   بحيث لا تتأثّر قاعدة "الآيات دائمًا بصوت الحصري" بأي تخزين مؤقت خاطئ. */
+
+const CACHE = "athar-shell-v1";
+const SHELL = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./apple-touch-icon.png"
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => cache.addAll(SHELL)).catch(() => {})
+  );
+  self.skipWaiting();
 });
-self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(k =>
-    Promise.all(k.filter(x => x !== C && x.indexOf("athar-audio") !== 0).map(x => caches.delete(x))))
-    .then(() => self.clients.claim()));
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
 });
-self.addEventListener("fetch", e => {
-  const u = new URL(e.request.url);
-  if (e.request.method !== "GET") return;
-  /* الصوت والتلاوات: من الشبكة ثم يُخزَّن */
-  if (u.hostname !== location.hostname) {
-    e.respondWith(caches.open("athar-ext").then(c =>
-      c.match(e.request).then(hit => hit ||
-        fetch(e.request).then(r => { if (r.ok) c.put(e.request, r.clone()); return r; })
-        .catch(() => hit))));
-    return;
-  }
-  /* ملفات التطبيق: من المخزن أوّلًا */
-  e.respondWith(caches.match(e.request).then(hit => hit ||
-    fetch(e.request).then(r => {
-      if (r.ok) caches.open(C).then(c => c.put(e.request, r.clone()));
-      return r;
-    }).catch(() => caches.match("athar.html"))));
+
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
+  // لا نتدخّل أبدًا في الطلبات لخارج نفس الأصل (القرآن، الصوت السحابي، أي API)
+  if (url.origin !== self.location.origin) return;
+  if (event.request.method !== "GET") return;
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      const fetchPromise = fetch(event.request)
+        .then((res) => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+          }
+          return res;
+        })
+        .catch(() => cached);
+      // شبكة أولًا مع سقوط فوري للنسخة المخزّنة عند الفشل، لتفادي تقديم نسخة قديمة من الصفحة
+      return fetchPromise || cached;
+    })
+  );
 });

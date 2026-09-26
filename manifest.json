@@ -1,15 +1,15 @@
 {
   "name": "أثر",
   "short_name": "أثر",
-  "description": "بيئةٌ يحبّها الطفل، وتترك أثرًا في أعماقه",
+  "description": "تعلّم واترك أثرًا طيبًا",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "athar.html",
-  "scope": ".",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#F0E6D2",
-  "theme_color": "#1E6F5C",
+  "background_color": "#8FCDEA",
+  "theme_color": "#2A8067",
   "icons": [
     {
       "src": "icon-192.png",
@@ -20,12 +20,6 @@
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-1024.png",
-      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     },
