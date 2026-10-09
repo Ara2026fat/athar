@@ -4,7 +4,7 @@
    - توليد الصوت (Gemini / Google TTS)
    بحيث لا تتأثّر قاعدة "الآيات دائمًا بصوت الحصري" بأي تخزين مؤقت خاطئ. */
 
-const CACHE = "athar-shell-v1";
+const CACHE = "athar-shell-v3";
 const SHELL = [
   "./",
   "./index.html",
@@ -18,7 +18,8 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) => cache.addAll(SHELL)).catch(() => {})
   );
-  self.skipWaiting();
+  // لا نستدعي skipWaiting() هنا عمدًا — يبقى الإصدار الجديد "بانتظار"
+  // حتى يضغط الوالد زر «تحديث» في الشريط، فيصله رسالة SKIP_WAITING أدناه.
 });
 
 self.addEventListener("activate", (event) => {
@@ -28,6 +29,10 @@ self.addEventListener("activate", (event) => {
     )
   );
   self.clients.claim();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
