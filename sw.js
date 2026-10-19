@@ -1,60 +1,69 @@
-/* أثر — Service Worker
-   يخزّن هيكل التطبيق فقط (الصفحة + الأيقونات)، ولا يتدخّل إطلاقًا في:
-   - تلاوة القرآن (everyayah.com)
-   - توليد الصوت (Gemini / Google TTS)
-   بحيث لا تتأثّر قاعدة "الآيات دائمًا بصوت الحصري" بأي تخزين مؤقت خاطئ. */
+/* ═══════════════════════════════════════════════════════════════
+   أثر — الوادي · Service Worker (v3)
+   نمط الوادي: صدفة صغيرة تُخزَّن، والتحديث بإذن الوالد.
 
-const CACHE = "athar-shell-v3";
-const SHELL = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./apple-touch-icon.png"
-];
+   - CACHE = athar-shell-v5: غيّر الرقم عند كل تعديل في الصدفة.
+   - لا skipWaiting تلقائي: النسخة الجديدة تنتظر حتى تصلها رسالة
+     {type:"SKIP_WAITING"} من شريط التحديث (يضغطه الوالد).
+   - لا يعترض أي طلب خارج الأصل (خطوط، Gemini، everyayah…): تمرّ كما هي.
+   - audio/index.json يُخزَّن بحذر (فشله لا يُفشل التثبيت)، وحزم sp_*.bin
+     لا يعترضها العامل: تخزّنها الصفحة في athar-packs-v1.
+   ═══════════════════════════════════════════════════════════════ */
+const CACHE = "athar-shell-v6";
+const SHELL = ["./", "./index.html"];
+/* مسار أثر القرآن نسبةً إلى نطاق هذا العامل (يعمل في أي مستودع/مجلد فرعي) */
+const QURAN_PATH = new URL("quran/", self.registration.scope).pathname;
+const OPTIONAL = ["./audio/index.json", "./sequence.json"];   /* قد لا توجد: لا تُفشل التثبيت */
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(SHELL)).catch(() => {})
-  );
-  // لا نستدعي skipWaiting() هنا عمدًا — يبقى الإصدار الجديد "بانتظار"
-  // حتى يضغط الوالد زر «تحديث» في الشريط، فيصله رسالة SKIP_WAITING أدناه.
+self.addEventListener("install", e => {
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await Promise.all(SHELL.map(u => c.add(u).catch(() => {})));
+    await Promise.all(OPTIONAL.map(async u => {
+      try { const r = await fetch(u, { cache: "no-cache" }); if (r && r.ok) await c.put(u, r); } catch {}
+    }));
+    /* عمدًا: لا self.skipWaiting() */
+  })());
 });
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+self.addEventListener("activate", e => {
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k.startsWith("athar-shell-") && k !== CACHE).map(k => caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+self.addEventListener("message", e => {
+  if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
+self.addEventListener("fetch", e => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;                 /* لا اعتراض خارج الأصل */
+  /* [موقع موحَّد] /quran/ تطبيق مستقلّ بعامله الخاص: لا نعترض أي طلب منه (ولا ننسخه في ذاكرتنا) */
+  if (url.pathname.startsWith(QURAN_PATH)) return;
+  if (req.headers.has("range")) return;                            /* الصوت/الحزم تُخدَم مباشرة */
+  if (/\/audio\/sp_[^/]+\.bin$/.test(url.pathname)) return;
 
-  // لا نتدخّل أبدًا في الطلبات لخارج نفس الأصل (القرآن، الصوت السحابي، أي API)
-  if (url.origin !== self.location.origin) return;
-  if (event.request.method !== "GET") return;
+  const isShell = req.mode === "navigate" || /\/(index\.html|sequence\.json|audio\/index\.json)$/.test(url.pathname)
+                  || url.pathname.endsWith("/");
+  if (!isShell) return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetchPromise = fetch(event.request)
-        .then((res) => {
-          if (res && res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-          }
-          return res;
-        })
-        .catch(() => cached);
-      // شبكة أولًا مع سقوط فوري للنسخة المخزّنة عند الفشل، لتفادي تقديم نسخة قديمة من الصفحة
-      return fetchPromise || cached;
-    })
-  );
+  /* شبكة أولًا (ليرى الوالد التحديث)، ثم الذاكرة عند الانقطاع */
+  e.respondWith((async () => {
+    const c = await caches.open(CACHE);
+    try {
+      const net = await fetch(req);
+      if (net && net.ok) { try { await c.put(req, net.clone()); } catch {} }
+      return net;
+    } catch {
+      const hit = await c.match(req, { ignoreSearch: true });
+      if (hit) return hit;
+      if (req.mode === "navigate") { const home = await c.match("./index.html") || await c.match("./"); if (home) return home; }
+      return new Response("", { status: 504, statusText: "offline" });
+    }
+  })());
 });

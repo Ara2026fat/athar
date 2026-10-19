@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "note": "ملف حزم العمل دون إنترنت: كل ما يلزم تنزيله مرة واحدة. يُقرأ من الإعدادات. الخطوط من مصدرها الأصلي ولا تُستضاف هنا.",
+  "packs": [
+    {
+      "id": "fonts-juz",
+      "title": "خطوط جزء عمّ",
+      "desc": "تلزم لعرض آيات المصحف وسور جزء عمّ ولعبة «اسألني في الآيات»",
+      "size": "نحو ٣ ميغا",
+      "required": true,
+      "bases": [
+        "https://cdn.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2/",
+        "https://fastly.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2/",
+        "https://gcore.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2/"
+      ],
+      "files": ["QCF4_Hafs_01_W.woff2", "QCF4_Hafs_45_W.woff2", "QCF4_Hafs_46_W.woff2", "QCF4_Hafs_47_W.woff2", "QCF4_QBSML.woff2"]
+    },
+    {
+      "id": "fonts-mushaf",
+      "title": "خطوط المصحف كاملًا",
+      "desc": "لتصفّح المصحف كله (٦٠٤ صفحات) دون إنترنت — اختياري",
+      "size": "نحو ٣٦ ميغا، يُفضَّل واي فاي",
+      "required": false,
+      "bases": [
+        "https://cdn.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2/",
+        "https://fastly.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2/",
+        "https://gcore.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2/"
+      ],
+      "range": { "pattern": "QCF4_Hafs_{n}_W.woff2", "from": 1, "to": 47, "pad": 2 }
+    },
+    {
+      "id": "pages-mushaf",
+      "title": "صفحات المصحف كاملةً",
+      "desc": "بيانات الصفحات ٦٠٤ — مع الخطوط أعلاه يعمل المصحف كاملًا دون إنترنت — اختياري",
+      "size": "نحو ٢٠ ميغا، يُفضَّل واي فاي",
+      "required": false,
+      "bases": [
+        "https://cdn.jsdelivr.net/gh/Ara2026fat/quran-qcf4@main/pages/",
+        "https://fastly.jsdelivr.net/gh/Ara2026fat/quran-qcf4@main/pages/",
+        "https://raw.githubusercontent.com/Ara2026fat/quran-qcf4/main/pages/"
+      ],
+      "range": { "pattern": "{n}.json", "from": 1, "to": 604, "pad": 3 }
+    }
+  ]
+}
