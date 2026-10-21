@@ -1,15 +1,15 @@
 {
-  "name": "أثر | القرآن",
-  "short_name": "أثر القرآن",
-  "description": "تطبيق تحفيظ جزء عمّ للأطفال — استماع، ترديد، وحفظ.",
+  "name": "أثر",
+  "short_name": "أثر",
+  "description": "تعلّم واترك أثرًا طيبًا",
+  "lang": "ar",
+  "dir": "rtl",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "lang": "ar",
-  "dir": "rtl",
-  "background_color": "#F3F7EF",
-  "theme_color": "#28522F",
+  "background_color": "#8FCDEA",
+  "theme_color": "#2A8067",
   "icons": [
     {
       "src": "icon-192.png",
