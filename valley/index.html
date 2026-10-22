@@ -55,7 +55,14 @@ body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);display:flex;align-
 .stream{stroke-dasharray:14 9;animation:flow 1.4s linear infinite}
 #eyes{transform-origin:30px 45px;animation:blinkA 7.6s ease-in-out infinite}
 #abody{transform-origin:30px 151px;animation:breathe 3.7s ease-in-out infinite}
-#sky2,#sky3,#night,#stars,#sun,#moon{transition:opacity 2.2s ease}
+#sky1,#skyD,#sky2,#sky3,#night,#stars,#moon,#hglow,#tint{transition:opacity .9s ease}
+#sun{transition:transform .9s ease,opacity .9s ease}
+#scene stop{transition:stop-color .9s ease,stop-opacity .9s ease}
+#sunCore,#clouds .cl-l,#clouds .cl-s,#cirrus{transition:fill .9s ease}
+#tint{transition:fill .9s ease,opacity .9s ease}
+#clouds .cloud{animation-timing-function:steps(35,end)}
+#clouds .cloud.b{animation-timing-function:steps(35,end)}
+@media(prefers-reduced-motion:reduce){#sky1,#skyD,#sky2,#sky3,#night,#stars,#moon,#hglow,#tint,#sun,#scene stop,#sunCore,#clouds .cl-l,#clouds .cl-s,#cirrus{transition:none}}
 
 /* ── الأماكن ── */
 .place{cursor:pointer;transition:filter .8s ease,opacity .8s ease}
@@ -434,6 +441,38 @@ body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);display:flex;align-
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
   .beckon,.plabel.ready,.btn.next:not(.off),.btn.gold{outline:5px solid var(--gold);outline-offset:3px}
 }
+
+/* ═══ r3: خلفيات المكان (بيكسار) + أثر الجديد ═══ */
+#placeBg{opacity:0;transition:opacity .7s ease;pointer-events:none}
+#placeBg image{transition:opacity .6s ease}
+#pbG{transform-origin:0 0;transition:transform .55s cubic-bezier(.3,.1,.2,1)}
+#pbBl{filter:blur(10px)}
+#pbG{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
+#panel.tight .bism{font-size:15px;margin:0 0 6px}
+#panel.tight .ayat{gap:6px}
+#panel.tight .ayah{padding:7px 12px;border-width:3px;border-radius:16px;box-shadow:0 3px 0 #A9832F;gap:8px}
+#panel.tight .ayah .txt{font-size:16.5px;line-height:1.7}
+#app.instage .stage{max-height:54vh}
+#panel.tight2 .ayat{gap:5px}
+#panel.tight2 .ayah{padding:4px 11px;min-height:46px;align-items:center;box-shadow:0 2px 0 #A9832F}
+#panel.tight2 .ayah .txt{font-size:15.5px;line-height:1.55}
+#panel.tight2 .ayah .num{flex-basis:22px;height:22px}
+#panel.tight2 .bism{display:none}
+#panel.tight2 .ask{margin-bottom:4px;font-size:15px}
+#panel.tight2 .sheet{padding-top:9px}
+#panel.tight2 .btn{margin-top:6px}
+#panel.tight2 .ayah{min-height:44px}
+#panel.tight .sheet{padding-top:14px;padding-bottom:10px}
+#panel.tight .ask{font-size:16px;line-height:1.5;margin-bottom:8px}
+#panel.tight .opts{gap:7px}
+#panel.tight .opt{padding:9px 13px}
+#panel.tight .btn{margin-top:8px;padding:10px}
+#app.instage #labels{display:none}
+#boy{pointer-events:none}
+#boyF{transform-box:fill-box;transform-origin:50% 100%;animation:boyBreathe 3.4s ease-in-out infinite}
+#boyF image{transition:opacity .22s ease}
+@keyframes boyBreathe{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-2.2px) scale(1.012,1.018)}}
+@media(prefers-reduced-motion:reduce){#boyF{animation:none}#placeBg,#placeBg image,#boyF image{transition:none}}
 </style>
 <style id="vhome-css">
 /* ═══ زر «الرئيسية» (موقع موحَّد) ═══ ثابت أعلى اليمين، ≥٦٤px، على نسق أزرار الوادي (حدّ أبيض + ظلّ سفلي) ولا يزاحم الصوت/واديي/الإعدادات */
@@ -1860,12 +1899,33 @@ const SCENE = `
  <linearGradient id="skyB" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0" stop-color="#5E6FA8"/><stop offset=".3" stop-color="#C98CA0"/>
   <stop offset=".6" stop-color="#F0A167"/><stop offset="1" stop-color="#F6C98C"/></linearGradient>
+ <linearGradient id="skyD" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#6F8CC4"/><stop offset=".3" stop-color="#B7B2D6"/>
+  <stop offset=".58" stop-color="#F6C6B4"/><stop offset=".82" stop-color="#FFDDAE"/>
+  <stop offset="1" stop-color="#FFEBC2"/></linearGradient>
+ <radialGradient id="hglG" cx=".5" cy=".5" r=".5">
+  <stop id="hgl0" offset="0" stop-color="#FFF3D0" stop-opacity=".5"/>
+  <stop id="hgl1" offset=".55" stop-color="#FFF3D0" stop-opacity=".18"/>
+  <stop offset="1" stop-color="#FFF3D0" stop-opacity="0"/></radialGradient>
+ <filter id="cloudF" x="-25%" y="-70%" width="150%" height="240%">
+  <feTurbulence type="fractalNoise" baseFrequency=".016 .036" numOctaves="3" seed="11" result="n"/>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="20" xChannelSelector="R" yChannelSelector="G" result="d"/>
+  <feGaussianBlur in="d" stdDeviation="1.8"/></filter>
+ <filter id="cirrusN" x="0" y="0" width="100%" height="100%">
+  <feTurbulence type="fractalNoise" baseFrequency=".006 .028" numOctaves="2" seed="4"/>
+  <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 6 -2.9"/></filter>
+ <linearGradient id="cirF" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".3" stop-color="#fff" stop-opacity=".9"/>
+  <stop offset=".7" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+ <mask id="cirM" maskUnits="userSpaceOnUse" x="-80" y="30" width="560" height="200">
+  <rect x="-80" y="30" width="560" height="200" filter="url(#cirrusN)" opacity=".5"/></mask>
+ <mask id="cirFade" maskUnits="userSpaceOnUse" x="-80" y="0" width="560" height="260"><rect x="-80" y="30" width="560" height="200" fill="url(#cirF)"/></mask>
  <linearGradient id="skyC" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0" stop-color="#0B1B38"/><stop offset=".5" stop-color="#1B3358"/>
   <stop offset="1" stop-color="#3A4E72"/></linearGradient>
  <radialGradient id="sunG" cx=".5" cy=".5" r=".5">
-  <stop offset="0" stop-color="#FFF9E4"/><stop offset=".4" stop-color="#FFEFC4" stop-opacity=".6"/>
-  <stop offset="1" stop-color="#FFEFC4" stop-opacity="0"/></radialGradient>
+  <stop offset="0" stop-color="#FFF9E4"/><stop id="sg1" offset=".4" stop-color="#FFEFC4" stop-opacity=".6"/>
+  <stop id="sg2" offset="1" stop-color="#FFEFC4" stop-opacity="0"/></radialGradient>
  <radialGradient id="nightG" cx=".5" cy=".3" r=".9">
   <stop offset="0" stop-color="#1A2E52" stop-opacity="0"/>
   <stop offset="1" stop-color="#050E22" stop-opacity=".6"/></radialGradient>
@@ -1874,7 +1934,7 @@ const SCENE = `
   <stop offset=".45" stop-color="#FFCE72" stop-opacity=".45"/>
   <stop offset="1" stop-color="#FFB84A" stop-opacity="0"/></radialGradient>
  <linearGradient id="hz" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#EDF5F2" stop-opacity=".9"/><stop offset="1" stop-color="#EDF5F2" stop-opacity="0"/></linearGradient>
+  <stop offset="0" stop-color="#EDF5F2" stop-opacity="0"/><stop id="hzm" offset=".5" stop-color="#EDF5F2" stop-opacity=".85"/><stop offset="1" stop-color="#EDF5F2" stop-opacity="0"/></linearGradient>
  <linearGradient id="h1" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0" stop-color="#CEDDC8"/><stop offset="1" stop-color="#B2CBAA"/></linearGradient>
  <linearGradient id="h2" x1="0" y1="0" x2="0" y2="1">
@@ -1910,12 +1970,13 @@ const SCENE = `
  <filter id="sf"><feGaussianBlur stdDeviation="2.6"/></filter>
 </defs>
 
-<rect id="sky1" width="400" height="720" fill="url(#skyA)"/>
-<ellipse cx="200" cy="360" rx="280" ry="70" fill="#FFF3D0" opacity=".28"/>
-<rect id="sky2" width="400" height="720" fill="url(#skyB)" opacity="0"/>
-<rect id="sky3" width="400" height="720" fill="url(#skyC)" opacity="0"/>
+<rect id="sky1" x="-100" width="600" height="720" fill="url(#skyA)"/>
+<rect id="skyD" x="-100" width="600" height="720" fill="url(#skyD)" opacity="0"/>
+<rect id="sky2" x="-100" width="600" height="720" fill="url(#skyB)" opacity="0"/>
+<rect id="sky3" x="-100" width="600" height="720" fill="url(#skyC)" opacity="0"/>
+<ellipse id="hglow" cx="200" cy="318" rx="360" ry="120" fill="url(#hglG)"/>
 
-<g id="stars" opacity="0">
+<g id="stars" opacity="0" style="transition:opacity .9s ease">
  <circle class="star" cx="58" cy="72" r="2" fill="#fff"/>
  <circle class="star" cx="122" cy="44" r="1.5" fill="#fff" style="animation-delay:-1s"/>
  <circle class="star" cx="196" cy="90" r="2.2" fill="#fff" style="animation-delay:-2s"/>
@@ -1923,28 +1984,30 @@ const SCENE = `
  <circle class="star" cx="330" cy="102" r="2" fill="#fff" style="animation-delay:-2.6s"/>
  <circle class="star" cx="90" cy="134" r="1.4" fill="#fff" style="animation-delay:-3s"/></g>
 
-<g id="sun" transform="translate(322 64)"><circle r="58" fill="url(#sunG)"/><circle r="26" fill="#FFF8DC"/></g>
+<g id="sun" style="transform:translate(322px,64px)"><circle r="76" fill="url(#sunG)"/><circle id="sunCore" r="26" fill="#FFF8DC"/></g>
 <g id="moon" transform="translate(302 82)" opacity="0">
  <circle r="44" fill="url(#sunG)" opacity=".5"/><circle r="20" fill="#F7F2DC"/>
  <circle cx="7" cy="-5" r="4" fill="#E4DCC0" opacity=".7"/></g>
 
-<g class="cloud">
- <ellipse cx="82" cy="86" rx="41" ry="17" fill="#fff" opacity=".95"/>
- <ellipse cx="114" cy="75" rx="28" ry="21" fill="#fff" opacity=".95"/>
- <ellipse cx="52" cy="81" rx="21" ry="14" fill="#fff" opacity=".95"/></g>
-<g class="cloud b" opacity=".78">
- <ellipse cx="290" cy="150" rx="33" ry="13" fill="#fff"/>
- <ellipse cx="266" cy="142" rx="21" ry="16" fill="#fff"/></g>
+<g mask="url(#cirFade)"><rect id="cirrus" x="-80" y="30" width="560" height="200" fill="#fff" mask="url(#cirM)"/></g>
+<g id="clouds">
+ <g class="cloud"><g filter="url(#cloudF)"><g transform="translate(82 86) scale(1.55) translate(-82 -86)">
+  <g class="cl-s" fill="#C9DCEB" style="fill:var(--cs)"><ellipse cx="86" cy="94" rx="44" ry="15"/><ellipse cx="116" cy="84" rx="26" ry="18"/><ellipse cx="56" cy="90" rx="20" ry="12"/></g>
+  <g class="cl-l" fill="#fff" style="fill:var(--cl)"><ellipse cx="82" cy="86" rx="41" ry="14"/><ellipse cx="114" cy="75" rx="26" ry="17"/><ellipse cx="52" cy="82" rx="19" ry="11"/><ellipse cx="94" cy="72" rx="20" ry="12"/></g></g></g></g>
+ <g class="cloud b" opacity=".85"><g filter="url(#cloudF)"><g transform="translate(290 150) scale(1.5) translate(-290 -150)">
+  <g class="cl-s" fill="#C9DCEB" style="fill:var(--cs)"><ellipse cx="292" cy="157" rx="36" ry="11"/><ellipse cx="266" cy="150" rx="21" ry="13"/></g>
+  <g class="cl-l" fill="#fff" style="fill:var(--cl)"><ellipse cx="290" cy="150" rx="33" ry="10"/><ellipse cx="266" cy="142" rx="19" ry="12"/><ellipse cx="306" cy="144" rx="15" ry="9"/></g></g></g></g>
+</g>
 
 <!-- جبال بعيدة جدًّا -->
-<path d="M0 268c40-30 72 2 112-16s76 6 118-18 52 12 70-4v70H0z" fill="#CBD7DC" opacity=".55"/>
-<path d="M0 300c56-40 100 4 154-20s100 4 154-24 64 14 92-6v92H0z" fill="url(#h1)" opacity=".82"/>
-<rect y="286" width="400" height="58" fill="url(#hz)"/>
-<path d="M0 348c68-30 120 14 190-8s126 12 210-18v76H0z" fill="url(#h2)"/>
-<path d="M0 400c80-28 142 18 222-8s126 16 178-14v92H0z" fill="url(#h3)"/>
+<path id="far0" d="M-60 270c52-26 110 10 172-18s76 6 118-18 52 12 70-4 60 14 110 2 80-12 130 0V344H-60z" fill="#CBD7DC" opacity=".55"/>
+<path d="M-60 300H0c56-40 100 4 154-20s100 4 154-24 64 14 92-6h60V392H-60z" fill="url(#h1)" opacity=".82"/>
+<rect x="-100" y="268" width="600" height="96" fill="url(#hz)" pointer-events="none"/>
+<path d="M-60 348H0c68-30 120 14 190-8s126 12 210-18h60V424H-60z" fill="url(#h2)"/>
+<path d="M-60 400H0c80-28 142 18 222-8s126 16 178-14h60V492H-60z" fill="url(#h3)"/>
 <!-- ظلّ غيمة يمرّ على المرج -->
 <ellipse class="cloud" cx="150" cy="448" rx="78" ry="16" fill="#3F6B28" opacity=".08"/>
-<path d="M0 470c92-24 160 18 252-8s96 16 148-10v268H0z" fill="url(#h4)"/>
+<path d="M-60 470H0c92-24 160 18 252-8s96 16 148-10h60V738H-60z" fill="url(#h4)"/>
 <path d="M0 508c72-12 124 12 196-2" stroke="#93CB63" stroke-width="3" fill="none" opacity=".4"/>
 <path d="M60 556c90-14 160 10 250-4" stroke="#9AD16C" stroke-width="2.5" fill="none" opacity=".3"/>
 <path d="M0 620c110-16 190 12 300-6" stroke="#8FC95F" stroke-width="2.5" fill="none" opacity=".25"/>
@@ -2443,6 +2506,9 @@ const SCENE = `
  <g transform="translate(268 664)"><path d="M0 14V0" stroke="#4E9E63" stroke-width="3.4" stroke-linecap="round"/>
   <g class="tuft d2"><circle cx="0" cy="-5" r="7.5" fill="#FBC8D6"/><circle cx="0" cy="-5" r="3" fill="#F0A93B"/></g></g></g>
 
+<g id="placeBg"><image id="pbBl" href="" x="-80" y="-60" width="560" height="840" preserveAspectRatio="xMidYMid slice"/><g id="pbG"><image id="pbA" href="" x="0" y="0" width="400" height="720" preserveAspectRatio="xMidYMid slice" opacity="0"/><image id="pbB" href="" x="0" y="0" width="400" height="720" preserveAspectRatio="xMidYMid slice" opacity="0"/></g></g>
+<rect id="tint" x="-100" y="0" width="600" height="720" fill="#FFB890" opacity="0" pointer-events="none"/>
+
 <g id="mFriend" transform="translate(292 520) scale(.7)" opacity="0">
  <ellipse cx="30" cy="150" rx="26" ry="7" fill="#2F5222" opacity=".2" filter="url(#sf)"/>
  <path d="M13 143V74a18 18 0 0135 0v69z" fill="url(#robe2)" stroke="#3A2E24" stroke-width="3"/>
@@ -2459,6 +2525,8 @@ const SCENE = `
 
 <!-- ══ أثر ══ -->
 <g id="athar" transform="translate(150 520) scale(.78)">
+ <g id="boy" display="none"><ellipse cx="30" cy="151" rx="26" ry="6" fill="#2F5222" opacity=".25" filter="url(#sf)"/>
+  <g id="boyF"><image id="boyImg" href="" x="-17" y="-22" width="94" height="174" preserveAspectRatio="xMidYMax meet"/><image id="boyImg2" href="" x="-17" y="-22" width="94" height="174" preserveAspectRatio="xMidYMax meet" opacity="0"/></g></g>
  <g id="rig"><g id="abody">
   <ellipse cx="30" cy="150" rx="29" ry="8" fill="#2F5222" opacity=".22" filter="url(#sf)"/>
   <path d="M14 143h16v8H14zM32 143h16v8H32z" fill="#C99A66" stroke="#3A2E24" stroke-width="2.4" stroke-linejoin="round"/>
@@ -2483,7 +2551,7 @@ const SCENE = `
    <g id="brows"></g><g id="eyes"></g><g id="mouth"></g></g>
  </g></g></g>
 
-<rect id="night" width="400" height="720" fill="url(#nightG)" opacity="0"/>
+<rect id="night" x="-100" width="600" height="720" fill="url(#nightG)" opacity="0"/>
 <rect width="400" height="720" fill="url(#vg)" pointer-events="none"/>
 </svg>`;
 
@@ -2579,15 +2647,34 @@ const World = {
     AtharAudio.sfx("up");
   },
 
-  /* ─── وقت اليوم ─── */
-  phase(p) {
-    this.el("sky2").style.opacity = p >= 1 ? 1 : 0;
-    this.el("sky3").style.opacity = p >= 2 ? 1 : 0;
-    this.el("night").style.opacity = p >= 2 ? 1 : 0;
-    this.el("stars").style.opacity = p >= 2 ? 1 : 0;
-    this.el("sun").style.opacity = p >= 2 ? 0 : 1;
-    this.el("moon").style.opacity = p >= 2 ? 1 : 0;
-    State.setPhase(p);
+  /* ─── وقت اليوم ───
+     phase: 0 نهار · 1 غروب · 2 ليل (من الدروس)، 3 فجر (فجر الرحلة: عالم لم يُتعلَّم فيه شيء بعد) */
+  PH: {
+    0:{ st:0, sun:[322,64,1],  core:"#FFF8DC", sg:["#FFEFC4",.6,.0], cl:"#FFFFFF", cs:"#C6DAEA", haze:"#EDF5F2", hzo:.85, gl:"#FFF3D0", glo:[.5,.18], tint:["#FFB890",0],   stars:0,   moon:0, night:0 },
+    3:{ st:1, sun:[338,246,1.15], core:"#FFEBC4", sg:["#FFD08A",.85,0], cl:"#FFE9DC", cs:"#D9A0B0", haze:"#FFDCC6", hzo:.8, gl:"#FFD2A8", glo:[.7,.3], tint:["#FFA880",.16], stars:.3, moon:0, night:0 },
+    1:{ st:2, sun:[292,238,1.35], core:"#FFD08A", sg:["#FF9A45",.85,0], cl:"#FFCB9A", cs:"#8E5A86", haze:"#F6B07A", hzo:.75, gl:"#FF9A55", glo:[.7,.3], tint:["#FF9A5A",.16], stars:0,  moon:0, night:0 },
+    2:{ st:3, sun:[322,64,1],  core:"#FFF8DC", sg:["#FFEFC4",.6,0], cl:"#7A8BB3", cs:"#2B3C66", haze:"#26375C", hzo:.5, gl:"#6F86C0", glo:[.35,.12], tint:["#FFB890",0], stars:1, moon:1, night:1 }
+  },
+  phase(p, keep) {
+    const P = this.PH[p] || this.PH[0];
+    ["sky1","skyD","sky2","sky3"].forEach((id, i) => { const e = this.el(id); if (e) e.style.opacity = (i <= P.st) ? 1 : 0; });
+    this.el("night").style.opacity = P.night;
+    this.el("stars").style.opacity = P.stars;
+    this.el("moon").style.opacity = P.moon;
+    const sun = this.el("sun");
+    sun.style.opacity = P.night ? 0 : 1;
+    sun.style.transform = "translate(" + P.sun[0] + "px," + P.sun[1] + "px) scale(" + P.sun[2] + ")";
+    this.el("sunCore").style.fill = P.core;
+    const g1 = this.el("sg1"), g2 = this.el("sg2");
+    g1.style.stopColor = P.sg[0]; g1.style.stopOpacity = P.sg[1]; g2.style.stopColor = P.sg[0];
+    const hz = this.el("hzm"); hz.style.stopColor = P.haze; hz.style.stopOpacity = P.hzo;
+    ["hgl0","hgl1"].forEach((id, i) => { const e = this.el(id); e.style.stopColor = P.gl; e.style.stopOpacity = P.glo[i]; });
+    const sc = this.el("scene"); sc.style.setProperty("--cl", P.cl); sc.style.setProperty("--cs", P.cs);
+    this.el("cirrus").style.fill = P.cl;
+    const t = this.el("tint"); t.style.fill = P.tint[0]; t.style.opacity = P.tint[1];
+    this.el("far0").style.fill = P.night ? "#2F4268" : (P.st === 2 ? "#B79AA6" : P.st === 1 ? "#C4BCCB" : "#CBD7DC");
+    this.root.dataset.tod = ["noon","sunset","night","dawn"][p] || "noon";
+    if (!keep) State.setPhase(p);
   },
 
   /* ─── أثر ─── */
@@ -2866,7 +2953,8 @@ const App = {
     addEventListener("hashchange", openByHash);
     setTimeout(openByHash, 1500);
     Director.init({ panel: document.getElementById("panel"), world: World });
-    World.phase(State.data.phase || 0);
+    { const ph0 = State.data.phase || 0; const fresh = ph0 === 0 && !(State.data.learned && State.data.learned.length);
+      World.phase(fresh ? 3 : ph0, fresh); }   /* فجر الرحلة في عالم لم يبدأ بعد */
     this.paint();
   },
 
@@ -3702,6 +3790,207 @@ window.addEventListener("load", () => {
   window.AtharHome = { absorb: absorb, lanterns: function () { return (rd().valley || {}).lanterns | 0; }, publishToday: publishToday };
 })();
 
+</script>
+
+<script>
+/* ═══ r3 · خلفيات الأماكن + أثر الجديد — كل شيء خلف علَم وقابل للرجوع ═══
+   ?bg=0 يطفئ الخلفيات · ?boy=0 يعيد أثر القديم · أو localStorage athar.r3 = {"bg":0,"boy":0} */
+(function(){
+  "use strict";
+  var W = window.World, A = window.App;
+  if (!W || !A) return;
+  var cfg = {bg:1, boy:1, friend:1};
+  try { var s = JSON.parse(localStorage.getItem("athar.r3") || "{}"); if (s.bg === 0) cfg.bg = 0; if (s.boy === 0) cfg.boy = 0; if (s.friend === 0) cfg.friend = 0; } catch (e) {}
+  if (/[?&]bg=0/.test(location.search)) cfg.bg = 0;
+  if (/[?&]boy=0/.test(location.search)) cfg.boy = 0;
+  if (/[?&]friend=0/.test(location.search)) cfg.friend = 0;
+  var BASE = "img/";
+  var BG = { masjid:{day:"bg/masjid_day.webp", sun:"bg/masjid_sun.webp"}, home:{day:"bg/home.webp"}, spring:{day:"bg/spring.webp"}, hill:{day:"bg/hill.webp"}, road:{day:"bg/road.webp"} };
+  var STAGE_SPOT = { masjid:[150,560], home:[150,560], spring:[150,565], hill:[150,560], road:[150,570] };
+  var POSES = ["idle","joy","think","hello","read","listen","cheer"];
+  var MOOD_POSE = { idle:"idle", hi:"hello", ask:"think", wow:"cheer", joy:"joy", calm:"idle" };
+  var app = document.getElementById("app");
+  var el = function(id){ return document.getElementById(id); };
+
+  /* ── أثر الجديد ── */
+  var cur = "idle", poseT = null, readMode = false, front = "boyImg";
+  function poseUrl(p){ return BASE + "athar/" + p + ".webp"; }
+  function setPose(p){
+    if (!cfg.boy || p === cur) return;
+    var a = el(front), b = el(front === "boyImg" ? "boyImg2" : "boyImg");
+    b.setAttribute("href", poseUrl(p)); b.style.opacity = 1; a.style.opacity = 0; front = b.id; cur = p;
+  }
+  function pose(p, ms){
+    if (!cfg.boy) return;
+    clearTimeout(poseT); setPose(p);
+    if (ms) poseT = setTimeout(function(){ setPose(readMode ? "read" : "idle"); }, ms);
+  }
+  if (cfg.boy) {
+    el("rig").setAttribute("display", "none");
+    el("boy").removeAttribute("display");
+    el("boyImg").setAttribute("href", poseUrl("idle")); el("boyImg").style.opacity = 1;
+    var fc = W.face.bind(W);
+    W.face = function(k){ fc(k); var p = MOOD_POSE[k] || "idle"; if (p === "idle" && readMode) p = "read"; if (cfg.boy) { clearTimeout(poseT); setPose(p); } };
+    try { var sfx = window.AtharAudio.sfx.bind(window.AtharAudio); window.AtharAudio.sfx = function(n){ if (n === "ok") pose("cheer", 1500); return sfx.apply(null, arguments); }; } catch (e) {}
+    /* إنصات عندما يُشغَّل صوت الدرس نفسه (لا كلام أثر) */
+    try { var sy = window.AtharAudio.say.bind(window.AtharAudio); window.AtharAudio.say = function(id, o){ var up = el("panel") && el("panel").classList.contains("up"); if (up && cur !== "listen") { clearTimeout(poseT); setPose("listen"); poseT = setTimeout(function(){ setPose(readMode ? "read" : "idle"); }, 2600); } return sy.apply(null, arguments); }; } catch (e) {}
+  }
+
+  /* ── خلفيات الأماكن ── */
+  var pbFront = "pbA", staged = null, loaded = {};
+  function bgFile(place){
+    var b = BG[place]; if (!b) return null;
+    var ph = (window.State && State.data && State.data.phase) | 0;
+    return (place === "masjid" && ph === 1 && b.sun) ? b.sun : b.day;
+  }
+  function preload(f){ if (!f || loaded[f]) return; loaded[f] = 1; var i = new Image(); i.decoding = "async"; i.src = BASE + f; }
+  function showBg(file){
+    var a = el(pbFront), b = el(pbFront === "pbA" ? "pbB" : "pbA");
+    if (a.getAttribute("href") === BASE + file && a.style.opacity === "1") return;
+    el("pbBl").setAttribute("href", BASE + file); b.setAttribute("href", BASE + file); b.style.opacity = 1; a.style.opacity = 0; pbFront = b.id;
+  }
+  W.stage = function(place){
+    if (!cfg.bg) return;
+    var f = bgFile(place); if (!f) return;
+    staged = place; app.classList.add("instage");
+    showBg(f); el("placeBg").style.opacity = 1;
+    var s = STAGE_SPOT[place]; if (s) { var a = el("athar"); a.style.transition = "transform 1.2s cubic-bezier(.34,.02,.32,1.04)"; a.setAttribute("transform", "translate(" + s[0] + " " + s[1] + ") scale(.78)"); }
+  };
+  W.unstage = function(){
+    if (!staged) return; staged = null; app.classList.remove("instage"); el("placeBg").style.opacity = 0;
+  };
+  var ph0 = W.phase.bind(W);
+  W.phase = function(p, keep){ var r = ph0(p, keep); if (staged) { var f = bgFile(staged); if (f) showBg(f); } return r; };
+
+  var open0 = A.open;
+  A.open = function(p){
+    var exp = this.nextAt(p) || this.lastAt(p);
+    readMode = !!(exp && exp.domain === "quran");
+    if (cfg.boy) setPose(readMode ? "read" : "idle");
+    if (exp) W.stage(p.place);
+    return open0.apply(this, arguments);
+  };
+  var paint0 = A.paint;
+  A.paint = function(){ W.unstage(); readMode = false; if (cfg.boy) setPose("idle"); return paint0.apply(this, arguments); };
+
+  /* تحميل كسول: مكان اليوم أولًا ثم الباقي وقت الفراغ */
+  var enter0 = A.enter;
+  A.enter = function(){
+    var r = enter0.apply(this, arguments);
+    if (cfg.bg) {
+      try { var nx = A.places.find(function(p){ return A.nextAt(p); }); if (nx) { preload(bgFile(nx.place)); if (nx.place === "masjid") preload(BG.masjid.sun); } } catch (e) {}
+      var rest = function(){ Object.keys(BG).forEach(function(k){ preload(BG[k].day); }); preload(BG.masjid.sun); POSES.forEach(function(p){ var i = new Image(); i.src = poseUrl(p); }); };
+      (window.requestIdleCallback || function(f){ setTimeout(f, 2500); })(rest, { timeout: 5000 });
+    }
+    return r;
+  };
+
+  /* ── الأصدقاء: صورة صديق المكان بدل رسم «الصديق» (?friend=0 يعيد القديم) ──
+     التوزيع المعتمد: أوس=المسجد · تميم=البيت · زياد=العين · ريان=الطريق · البراء=التل.
+     علامة mFriend تأتي من درس واحد (adab.salam في الطريق) فيظهر فيها ريان؛ المكان يُستخرج من الدرس لا من اسم ثابت. */
+  var FRIENDS = { masjid:["aws","أوس"], home:["tamim","تميم"], spring:["ziyad","زياد"], road:["rayyan","ريان"], hill:["baraa","البراء"] };
+  if (cfg.friend) {
+    try {
+      var fplace = null;
+      Object.keys(A.exps).forEach(function(id){ var e = A.exps[id]; if (e && e.leaves === "mFriend" && !fplace) fplace = (e.scene && e.scene.place) || (A.places.find(function(p){ return (p.exps||[]).indexOf(id) >= 0; }) || {}).place; });
+      var fr = FRIENDS[fplace];
+      var mf = el("mFriend");
+      if (fr && mf) {
+        var old = document.createElementNS("http://www.w3.org/2000/svg", "g"); old.setAttribute("id", "fOld"); old.setAttribute("display", "none");
+        while (mf.firstChild) old.appendChild(mf.firstChild);
+        mf.appendChild(old);
+        mf.insertAdjacentHTML("beforeend", '<ellipse cx="30" cy="151" rx="26" ry="6" fill="#2F5222" opacity=".22" filter="url(#sf)"/><g id="fNew"><image id="fImg" href="' + BASE + 'friends/' + fr[0] + '_wave.webp" x="-8" y="-22" width="76" height="174" preserveAspectRatio="xMidYMax meet"/></g>');
+        if (window.MARKS) window.MARKS.mFriend = fr[1] + " بقي في الوادي";
+        window.R3friend = { place: fplace, key: fr[0], name: fr[1] };
+        var fi = new Image(); fi.src = BASE + "friends/" + fr[0] + "_wave.webp";
+      }
+    } catch (e) {}
+  }
+
+  /* ── أصدقاء الأماكن الأربعة الباقية: يظهر صديق المكان بعد إتمام درسه (لا يمسّ العلامات ولا عدّاد المكافآت) ──
+     درس كل صديق (موضوعه الصحبة/الإحسان/المشاركة): أوس=quran.quraysh · تميم=adab.walidayn · زياد=akhlaq.ihsan · البراء=seerah.sahabah */
+  var FR_LESSON = { masjid:"quran.quraysh", home:"adab.walidayn", spring:"akhlaq.ihsan", hill:"seerah.sahabah" };
+  var FR_MAP   = { masjid:[338,426], home:[66,534], spring:[262,598], hill:[70,474] };   /* موضع القدمين على الخريطة */
+  var FR_STAGE = { masjid:[300,606], home:[300,606], spring:[300,606], hill:[300,606], road:null };
+  var frEls = {}, frShown = {};
+  function frSync(){
+    if (!cfg.friend) return;
+    Object.keys(FR_LESSON).forEach(function(pl){
+      var g = frEls[pl]; if (!g) return;
+      var learned = false; try { learned = !!window.State.isLearned(FR_LESSON[pl]); } catch (e) {}
+      var show = learned && (!staged || staged === pl);
+      var pos = (staged === pl && FR_STAGE[pl]) ? FR_STAGE[pl] : FR_MAP[pl];
+      g.setAttribute("transform", "translate(" + (pos[0] - 21) + " " + (pos[1] - 105) + ") scale(.7)");
+      g.setAttribute("opacity", show ? "1" : "0");
+      if (show && !frShown[pl]) { frShown[pl] = 1; g.style.animation = "sprout 1s cubic-bezier(.3,1.5,.5,1)"; }
+      if (!show) frShown[pl] = 0;
+    });
+    var mf = el("mFriend");   /* ريان (علامة): يُخفى على خلفية مكانٍ آخر */
+    if (mf) mf.style.display = (staged && staged !== "road") ? "none" : "";
+  }
+  if (cfg.friend) {
+    var ath = el("athar");
+    Object.keys(FR_LESSON).forEach(function(pl){
+      var f = FRIENDS[pl]; if (!f) return;
+      var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("id", "fr_" + pl); g.setAttribute("opacity", "0"); g.setAttribute("pointer-events", "none");
+      g.innerHTML = '<ellipse cx="30" cy="151" rx="26" ry="6" fill="#2F5222" opacity=".22" filter="url(#sf)"/><image href="' + BASE + 'friends/' + f[0] + '_wave.webp" x="-8" y="-22" width="76" height="174" preserveAspectRatio="xMidYMax meet"/>';
+      ath.parentNode.insertBefore(g, ath); frEls[pl] = g;
+    });
+    var am = W.applyMarks.bind(W); W.applyMarks = function(){ var r = am(); frSync(); return r; };
+    var st0 = W.stage, un0 = W.unstage;
+    W.stage = function(pl){ st0(pl); frSync(); };
+    W.unstage = function(){ un0(); frSync(); };
+    setTimeout(frSync, 300);
+    window.R3friends = { sync: frSync, lessons: FR_LESSON };
+  }
+
+  /* ── نقطة الارتكاز: يبقى العنصر الرئيس ظاهرًا فوق البطاقة مهما طالت ── */
+  var FOCAL = { masjid_day:[.19,.73], masjid_sun:[.2,.71], home:[.26,.69], road:[.22,.66], hill:[.12,.56], spring:[.28,.73] };
+  var EDGE = { masjid_day:["#2e8de8","#8a6e46"], masjid_sun:["#847983","#804a26"], home:["#4892e8","#edb374"], road:["#3c98ee","#cf9961"], hill:["#3599eb","#9c8d26"], spring:["#4f97bc","#6a8858"] };
+  var KMIN = .55, fitKey = null;
+  function focalKey(){ if (!staged) return null; var f = bgFile(staged) || ""; return f.replace(/^bg\//, "").replace(/\.webp$/, ""); }
+  function fit(){
+    var g = el("pbG"), panel = el("panel"), key = focalKey(); if (!g || !key) return;
+    var fc = FOCAL[key]; if (!fc) return;
+    var k = 1, ty = 0, tx = 0, cardTopPx = innerHeight, mm = null;
+    var up = panel.classList.contains("up"), card = up && panel.firstElementChild;
+    if (card) {
+      var svg = el("scene"), m = svg.getScreenCTM(); if (!m) return; var inv = m.inverse();
+      var cardTop = innerHeight - 8 - card.offsetHeight, topSafe = 62; cardTopPx = cardTop; mm = m;
+      var pt = svg.createSVGPoint();
+      pt.x = 0; pt.y = cardTop - 10; var yb = pt.matrixTransform(inv).y;
+      pt.y = topSafe; var yt = pt.matrixTransform(inv).y;
+      var hb = 720 * (fc[1] - fc[0]);
+      k = Math.max(KMIN, Math.min(1, (yb - yt) / hb));
+      ty = Math.min(0, yb - k * 720 * fc[1]);
+      tx = 200 * (1 - k);
+    }
+    g.style.transform = "translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px) scale(" + k.toFixed(3) + ")";
+    var fyv = ty + k * 720 * fc[1], fyt = ty + k * 720 * fc[0], M0 = mm || el("scene").getScreenCTM();
+    window.R3fitState = { key: key, k: +k.toFixed(3), ty: +ty.toFixed(1), fyBottom: M0 ? Math.round(M0.d * fyv + M0.f) : null, fyTop: M0 ? Math.round(M0.d * fyt + M0.f) : null, cardTop: Math.round(cardTopPx), up: !!card };
+  }
+  function tighten(){
+    var panel = el("panel"); if (!panel) return;
+    panel.classList.remove("tight", "tight2");
+    var c = panel.querySelector(".sheet");
+    if (c && panel.classList.contains("up") && c.offsetHeight > innerHeight * .42) panel.classList.add("tight");
+    var sg = panel.querySelector(".stage");
+    if (sg && panel.classList.contains("tight") && sg.scrollHeight > sg.clientHeight + 3) panel.classList.add("tight2");
+  }
+  var fitRaf = 0;
+  function refit(){ if (fitRaf) return; fitRaf = requestAnimationFrame(function(){ fitRaf = 0; if (!cfg.bg) return; tighten(); fit(); }); }
+  try {
+    var pn = el("panel");
+    new MutationObserver(refit).observe(pn, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    if (window.ResizeObserver) new ResizeObserver(refit).observe(pn);
+    addEventListener("resize", refit);
+  } catch (e) {}
+  var stage1 = W.stage; W.stage = function(p){ var r = stage1.apply(this, arguments); refit(); return r; };
+  var unstage1 = W.unstage; W.unstage = function(){ var r = unstage1.apply(this, arguments); el("pbG").style.transform = ""; el("panel").classList.remove("tight", "tight2"); return r; };
+  var ph1 = W.phase; W.phase = function(){ var r = ph1.apply(this, arguments); refit(); return r; };
+  window.R3 = { fitNow: function(){ tighten(); fit(); }, refit: refit, cfg: cfg, pose: pose, setPose: setPose, stage: function(p){ W.stage(p); }, unstage: function(){ W.unstage(); } };
+})();
 </script>
 </body>
 </html>
