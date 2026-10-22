@@ -9,7 +9,7 @@
    - audio/index.json يُخزَّن بحذر (فشله لا يُفشل التثبيت)، وحزم sp_*.bin
      لا يعترضها العامل: تخزّنها الصفحة في athar-packs-v1.
    ═══════════════════════════════════════════════════════════════ */
-const CACHE = "athar-shell-v7";
+const CACHE = "athar-shell-v8";
 const SHELL = ["./", "./index.html"];
 const OPTIONAL = ["./audio/index.json", "./sequence.json"];   /* قد لا توجد: لا تُفشل التثبيت */
 

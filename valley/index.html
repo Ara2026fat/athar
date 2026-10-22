@@ -3805,7 +3805,7 @@ window.addEventListener("load", () => {
   if (/[?&]boy=0/.test(location.search)) cfg.boy = 0;
   if (/[?&]friend=0/.test(location.search)) cfg.friend = 0;
   var BASE = "img/";
-  var BG = { masjid:{day:"bg/masjid_day.webp", sun:"bg/masjid_sun.webp"}, home:{day:"bg/home.webp"}, spring:{day:"bg/spring.webp"}, hill:{day:"bg/hill.webp"}, road:{day:"bg/road.webp"} };
+  var BG = { masjid:{day:"bg/masjid_day.webp", sun:"bg/masjid_sun.webp", night:"bg/masjid_night.webp"}, home:{day:"bg/home.webp", sun:"bg/home_sun.webp", night:"bg/home_night.webp"}, spring:{day:"bg/spring.webp", sun:"bg/spring_sun.webp", night:"bg/spring_night.webp"}, hill:{day:"bg/hill.webp", sun:"bg/hill_sun.webp", night:"bg/hill_night.webp"}, road:{day:"bg/road.webp", sun:"bg/road_sun.webp", night:"bg/road_night.webp"} };
   var STAGE_SPOT = { masjid:[150,560], home:[150,560], spring:[150,565], hill:[150,560], road:[150,570] };
   var POSES = ["idle","joy","think","hello","read","listen","cheer"];
   var MOOD_POSE = { idle:"idle", hi:"hello", ask:"think", wow:"cheer", joy:"joy", calm:"idle" };
@@ -3841,7 +3841,7 @@ window.addEventListener("load", () => {
   function bgFile(place){
     var b = BG[place]; if (!b) return null;
     var ph = (window.State && State.data && State.data.phase) | 0;
-    return (place === "masjid" && ph === 1 && b.sun) ? b.sun : b.day;
+    return (ph === 1 && b.sun) ? b.sun : (ph === 2 && b.night) ? b.night : b.day;
   }
   function preload(f){ if (!f || loaded[f]) return; loaded[f] = 1; var i = new Image(); i.decoding = "async"; i.src = BASE + f; }
   function showBg(file){
@@ -3878,8 +3878,8 @@ window.addEventListener("load", () => {
   A.enter = function(){
     var r = enter0.apply(this, arguments);
     if (cfg.bg) {
-      try { var nx = A.places.find(function(p){ return A.nextAt(p); }); if (nx) { preload(bgFile(nx.place)); if (nx.place === "masjid") preload(BG.masjid.sun); } } catch (e) {}
-      var rest = function(){ Object.keys(BG).forEach(function(k){ preload(BG[k].day); }); preload(BG.masjid.sun); POSES.forEach(function(p){ var i = new Image(); i.src = poseUrl(p); }); };
+      try { var nx = A.places.find(function(p){ return A.nextAt(p); }); if (nx) preload(bgFile(nx.place)); } catch (e) {}
+      var rest = function(){ Object.keys(BG).forEach(function(k){ preload(bgFile(k)); }); Object.keys(BG).forEach(function(k){ preload(BG[k].day); preload(BG[k].sun); preload(BG[k].night); }); POSES.forEach(function(p){ var i = new Image(); i.src = poseUrl(p); }); };
       (window.requestIdleCallback || function(f){ setTimeout(f, 2500); })(rest, { timeout: 5000 });
     }
     return r;
@@ -3946,7 +3946,7 @@ window.addEventListener("load", () => {
   }
 
   /* ── نقطة الارتكاز: يبقى العنصر الرئيس ظاهرًا فوق البطاقة مهما طالت ── */
-  var FOCAL = { masjid_day:[.19,.73], masjid_sun:[.2,.71], home:[.26,.69], road:[.22,.66], hill:[.12,.56], spring:[.28,.73] };
+  var FOCAL = { masjid_day:[.19,.73], masjid_sun:[.2,.71], masjid_night:[.26,.73], home:[.26,.69], home_sun:[.26,.69], home_night:[.26,.69], road:[.22,.66], road_sun:[.22,.66], road_night:[.22,.66], hill:[.12,.56], hill_sun:[.12,.56], hill_night:[.12,.56], spring:[.28,.73], spring_sun:[.28,.73], spring_night:[.28,.73] };
   var EDGE = { masjid_day:["#2e8de8","#8a6e46"], masjid_sun:["#847983","#804a26"], home:["#4892e8","#edb374"], road:["#3c98ee","#cf9961"], hill:["#3599eb","#9c8d26"], spring:["#4f97bc","#6a8858"] };
   var KMIN = .55, fitKey = null;
   function focalKey(){ if (!staged) return null; var f = bgFile(staged) || ""; return f.replace(/^bg\//, "").replace(/\.webp$/, ""); }
