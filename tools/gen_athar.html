@@ -62,7 +62,7 @@ textarea{font-size:28px;line-height:2;min-height:78px;resize:vertical;background
 <div id="big">٠ / ٤٥٢</div><div class="bar"><i id="pb"></i></div><div class="sm" id="chs"></div>
 <div class="row" style="margin-top:10px"><button id="smp">ولّد ٢٠ سطرًا تجريبيًا</button><button id="all">ولّد الكل</button><button id="stop" class="s bad" disabled>إيقاف آمن</button></div>
 <div class="row" style="margin-top:8px"><button id="clr" class="s bad">مسح المحفوظ</button></div>
-<h2>التنزيل (٧٥ ملفًا لكل ZIP)</h2><div id="zips" class="row"></div>
+<h2 style="background:#fff3c4;padding:8px 12px;border-radius:10px">⬇ التنزيل — اضغط الزر الأخضر (٧٥ ملفًا لكل ZIP)</h2><div id="zips" class="row"></div>
 <h2>الأسطر</h2>
 <div class="row flt"><button class="s on" data-f="all">الكل</button><button class="s" data-f="todo">غير المولَّد</button><button class="s" data-f="gen">مولَّد</button><button class="s" data-f="mark">معلَّم للإعادة</button></div>
 <ul id="list"></ul>
@@ -130,7 +130,7 @@ function sbar(){const al=+$("al").value,n=$("rules").value.split(/\r?\n/).filter
  e.className=bad?"bad":"";e.textContent="صيغة لفظ الجلالة: "+ANAME[al]+(bad?" ⚠ الأصل":"")+" · قواعد الاستبدال: "+n+" · النموذج: "+$("mo").value}
 function zips(){const ok=LINES.filter(([id])=>L[id].blob&&!L[id].mark),n=Math.ceil(ok.length/CPZ),b=$("zips");b.innerHTML="";
  if(!n){b.textContent="لا ملفات مولَّدة بعد.";return}
- for(let i=0;i<n;i++){const x=document.createElement("button");x.className="s";x.dataset.z=i;x.textContent=`جزء ${nAr(i+1)} من ${nAr(n)}`;b.appendChild(x)}}
+ for(let i=0;i<n;i++){const x=document.createElement("button");x.className="s";x.dataset.z=i;x.textContent=`⬇ تنزيل ZIP — جزء ${nAr(i+1)} من ${nAr(n)}`;x.style.cssText="font-size:22px;padding:16px 20px;background:#2c8a6b;color:#fff;font-weight:700";b.appendChild(x)}}
 function row(id){let li=document.getElementById("l_"+id);const l=L[id];
  if(!li){li=document.createElement("li");li.className="ln";li.id="l_"+id;li.innerHTML=`<div class="hd"><b class="n"></b><span class="badge"></span></div><div class="tx"></div><div class="m"></div><div class="sent"></div><div class="row"><button class="s" data-p="${id}">▶ استمع</button><button class="s" data-g="${id}"></button><button class="s bad" data-m="${id}"></button></div>`;li.querySelector(".n").textContent=nAr(LINES.findIndex(x=>x[0]===id)+1);li.querySelector(".tx").textContent=l.text;li.querySelector(".m").textContent=id}
  const st=l.mark?["fix","معلَّم للإعادة ✖"]:l.blob?["appr","مولَّد ✔"]:["","لم يُولَّد"];
