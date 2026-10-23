@@ -12,7 +12,7 @@ button{background:var(--g);color:#fff;border:0;font-weight:700;cursor:pointer;mi
 button:disabled{opacity:.5}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
 ul{list-style:none;padding:0}li{background:#fff;border:1px solid #e3d9bd;border-radius:12px;margin:8px 0;padding:10px 14px}
 li .t{font-size:24px;line-height:2}li .m{font-size:12px;color:var(--m);direction:ltr;text-align:right}li.ok{border-color:var(--g)}li.er{border-color:var(--r)}
-.bar{height:10px;background:#e8e0c8;border-radius:5px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:0;background:var(--g)}
+textarea{font:inherit;font-size:24px;line-height:2;width:100%;border:1px solid #cfc6a8;border-radius:10px;padding:8px 12px;background:#fffdf5;min-height:64px;resize:vertical}li.ed textarea{border-color:#c98a1d}.tr{border-top:1px dashed #cfc6a8;margin-top:8px;padding-top:6px}.tr .tx{font-size:20px}.tr.sel{background:#e9f4ef}.bar{height:10px;background:#e8e0c8;border-radius:5px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:0;background:var(--g)}
 </style></head><body>
 <h1>توليد الأسطر المشكولة</h1>
 <div class="note">تعمل هذه الأداة في متصفحك فقط. مفتاح ElevenLabs يبقى في ذاكرة الصفحة ولا يُحفظ ولا يُرسل لأي جهة سوى api.elevenlabs.io. الأسطر المولَّدة <b>اصطناعية</b> وتُوسَم في الملف <code>manifest.json</code> بـ <code>synthetic</code> ولا تُعدّ تسجيلًا بشريًا.</div>
@@ -20,10 +20,9 @@ li .t{font-size:24px;line-height:2}li .m{font-size:12px;color:var(--m);direction
 <label for="k">مفتاح ElevenLabs</label><input id="k" type="password" autocomplete="off" dir="ltr" placeholder="sk_...">
 <div class="row"><button id="bv">جلب الأصوات</button></div>
 <label for="v">الصوت</label><select id="v"><option value="">— اجلب الأصوات أولًا —</option></select>
-<label for="vid">أو ألصق معرّف الصوت (Voice ID) مباشرة</label><input id="vid" autocomplete="off" dir="ltr" placeholder="مثال: 21m00Tcm4TlvDq8ikWAM">
-<label for="mo">النموذج</label><select id="mo"><option value="eleven_multilingual_v2">eleven_multilingual_v2 (مستقر)</option><option value="eleven_v3">eleven_v3</option></select>
+<label for="vid">أو ألصق معرّف الصوت (Voice ID) مباشرة</label><input id="vid" autocomplete="off" dir="ltr" placeholder="مثال: 21m00Tcm4TlvDq8ikWAM"><label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3 (الأفضل في التشكيل)</option><option value="eleven_multilingual_v2">eleven_multilingual_v2 (مستقر)</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5 (أسرع)</option><option value="eleven_flash_v2_5">eleven_flash_v2_5 (الأسرع)</option></select>
 <label for="st">الثبات (stability): <span id="sv">0.5</span></label><input id="st" type="range" min="0" max="1" step="0.05" value="0.5">
-<label for="fo">اسم مجلد الصوت في الحزمة (حروف لاتينية صغيرة)</label><input id="fo" value="eleven_ai" dir="ltr">
+<label for="al">صيغة لفظ الجلالة (تُطبَّق عند التوليد فقط على كل «الله / لله / اللهم»، ولا تغيّر نص التطبيق)</label><select id="al"><option value="0">الأصل</option><option value="1">ألف خنجرية: اللَّٰهِ</option><option value="2">فتحة صريحة على الألف: اَللَّٰهِ</option><option value="3">كلمة قبلها: قَالَ اللَّٰهِ (في أول السطر)</option></select><label for="fo">اسم مجلد الصوت في الحزمة (حروف لاتينية صغيرة)</label><input id="fo" value="eleven_ai" dir="ltr">
 <div class="row" style="margin-top:14px"><button id="go">توليد الكل</button><button id="dl" disabled>تنزيل ZIP</button></div>
 <div class="bar"><i id="pb"></i></div><div id="msg" class="note">جاهز.</div>
 <ul id="ls"></ul>
@@ -44,24 +43,51 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
 const sha=async u=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",u))].map(b=>b.toString(16).padStart(2,"0")).join("");
 $("st").oninput=()=>$("sv").textContent=$("st").value;
 const msg=t=>$("msg").textContent=t;
-function render(){$("ls").innerHTML=DATA.units.map(u=>`<li id="u_${u.u}"><div class="t">${u.text}</div><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="row"><button class="s" data-g="${u.u}">توليد</button><button class="s" data-p="${u.u}" disabled>استماع</button></div></li>`).join("")}
+function render(){$("ls").innerHTML=DATA.units.map(u=>`<li id="u_${u.u}"><textarea class="t" id="x_${u.u}" rows="2">${u.text}</textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="row"><button class="s" data-g="${u.u}">توليد</button><button class="s" data-p="${u.u}" disabled>استماع</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-f="${u.u}">تجربة ٤ صيغ للفظ الجلالة</button></div><div id="tr_${u.u}"></div></li>`).join("");
+ DATA.units.forEach(u=>{const x=$("x_"+u.u);x.oninput=()=>$("u_"+u.u).classList.toggle("ed",x.value!==u.text)})}
 render();
-$("ls").onclick=e=>{const g=e.target.dataset.g,p=e.target.dataset.p;if(g)one(DATA.units.find(u=>u.u===g));if(p){const t=take.get(p);if(t)new Audio(URL.createObjectURL(t.blob)).play()}};
+const D="[\\u064B-\\u065F\\u0670]*",LET="\\u0621-\\u064A\\u0671";
+const ALLAH=new RegExp("(^|[^"+LET+"\\u064B-\\u065F\\u0670])([وفبت]"+D+")?((?:ا|ٱ)"+D+")?(ل"+D+")(ل"+D+")(ه)("+D+")(م"+D+")?(?![" + LET + "])","g");
+function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l1,l2,h,hd,mim)=>{
+ px=px||"";al=al||"";mim=mim||"";const bare=x=>x.replace(new RegExp(D,"g"),"");
+ const hm=(hd||"").replace(/[\u0651\u0670]/g,"")||"\u064F";
+ const core=(a,L1)=>a+L1+"ل\u0651\u064E\u0670"+"ه"+hm+mim;
+ const A=bare(al),L=al?bare(l1):l1;
+ if(v===1)return pre+px+core(A,L);
+ if(v===2)return pre+px+core(!px&&al?"ا\u064E":A,L);
+ if(v===3)return pre+(!px&&al&&pre===""?"قَالَ ":"")+px+core(A,L);
+ return m})}
+function prep(t){return allahVar(t,$("al").value)}
+$("ls").onclick=e=>{const g=e.target.dataset.g,p=e.target.dataset.p,r=e.target.dataset.r,f=e.target.dataset.f,c=e.target.dataset.c;
+ if(r){const u=DATA.units.find(u=>u.u===r);$("x_"+r).value=u.text;$("u_"+r).classList.remove("ed")}
+ if(f)trial(DATA.units.find(u=>u.u===f));
+ if(c){$("al").value=c;document.querySelectorAll(".tr").forEach(el=>el.classList.toggle("sel",el.dataset.v===c));msg("اختيرت الصيغة "+(+c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
+ if(e.target.dataset.tp){const t=take.get(e.target.dataset.tp);if(t)new Audio(URL.createObjectURL(t.blob)).play()}
+ if(g)one(DATA.units.find(u=>u.u===g));if(p){const t=take.get(p);if(t)new Audio(URL.createObjectURL(t.blob)).play()}};
 $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق المفتاح أولًا.");msg("جارٍ جلب الأصوات…");
  try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":k}});if(!r.ok)throw new Error(r.status);const j=await r.json();
   $("v").innerHTML=j.voices.map(v=>`<option value="${v.voice_id}">${v.name}${v.labels&&v.labels.accent?" — "+v.labels.accent:""}</option>`).join("");msg("وُجد "+j.voices.length+" صوتًا.")}catch(e){msg("تعذّر الجلب ("+e.message+"). تحقّق من المفتاح ومن صلاحية قراءة الأصوات.")}};
+function sttg(){let s=+$("st").value;if($("mo").value==="eleven_v3")s=s<.25?0:s<.75?.5:1;return s}
+async function tts(text){const k=$("k").value.trim(),v=$("vid").value.trim()||$("v").value;if(!k||!v)throw new Error("المفتاح والصوت مطلوبان");
+ const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text,model_id:$("mo").value,voice_settings:{stability:sttg(),similarity_boost:.8,style:0,use_speaker_boost:true}})});
+ if(!r.ok)throw new Error(r.status+" "+(await r.text()).slice(0,120));return r.blob()}
+async function trial(u){const box=$("tr_"+u.u),base=$("x_"+u.u).value;box.innerHTML="";
+ for(let i=0;i<4;i++){const tx=allahVar(base,i),d=document.createElement("div");d.className="tr";d.dataset.v=i;
+  d.innerHTML=`<div class="m">صيغة ${i+1}: ${["الأصل","ألف خنجرية","فتحة صريحة","كلمة قبلها"][i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb="${i}" disabled>استماع</button><button class="s" data-c="${i}">اختر هذه الصيغة</button></div>`;
+  d.querySelector(".tx").textContent=tx;box.appendChild(d);
+  try{const b=await tts(tx);take.set("__t"+u.u+i,{blob:b});const pb=d.querySelector("[data-tpb]");pb.disabled=false;pb.dataset.tp="__t"+u.u+i}catch(e){msg("تجربة: "+e.message);return}}
+ msg("اسمع الصيغ الأربع ثم اختر.")}
 async function one(u){const k=$("k").value.trim(),v=$("vid").value.trim()||$("v").value;if(!k||!v){msg("المفتاح والصوت مطلوبان.");return false}
  const li=$("u_"+u.u);try{
-  const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text:u.text,model_id:$("mo").value,voice_settings:{stability:+$("st").value,similarity_boost:.8,style:0,use_speaker_boost:true}})});
-  if(!r.ok)throw new Error(r.status+" "+(await r.text()).slice(0,120));
-  const blob=await r.blob();take.set(u.u,{blob,voice:v,model:$("mo").value,stab:+$("st").value,ts:Date.now()});li.className="ok";li.querySelector("[data-p]").disabled=false;$("dl").disabled=false;return true}
+  const sent=prep($("x_"+u.u).value);
+  const blob=await tts(sent);take.set(u.u,{blob,voice:v,model:$("mo").value,stab:sttg(),ts:Date.now(),sent,edited:$("x_"+u.u).value!==u.text,allah:+$("al").value});li.className="ok";li.querySelector("[data-p]").disabled=false;$("dl").disabled=false;return true}
  catch(e){li.className="er";msg(u.u+": "+e.message);return false}}
 $("go").onclick=async()=>{$("go").disabled=true;let n=0;for(const u of DATA.units){if(!take.has(u.u))await one(u);$("pb").style.width=(100*++n/DATA.units.length)+"%"}
  msg("انتهى: "+take.size+" من "+DATA.units.length+" سطرًا.");$("go").disabled=false};
 $("dl").onclick=async()=>{const fo=$("fo").value.trim();if(!validVoice(fo))return msg("اسم المجلد غير صالح.");
  const files=[],man={schema:"athar-record/1",tool:"gen.html",created:new Date().toISOString(),speaker:"elevenlabs",synthetic:true,engine:"elevenlabs",voice:fo,audio_root:"audio/"+fo+"/",format:"mp3",units:[],entries:{},incomplete:[],text_hash:{}};
  for(const u of DATA.units){const t=take.get(u.u);if(!t)continue;const data=new Uint8Array(await t.blob.arrayBuffer()),rel=fo+"/"+u.u+".mp3";
-  files.push({name:"audio/"+rel,data});man.units.push({u:u.u,file:"audio/"+rel,mime:"audio/mpeg",bytes:data.length,sha256:await sha(data),ids:u.ids,text:u.text,eleven_voice_id:t.voice,model:t.model,stability:t.stab,recorded_at:new Date(t.ts).toISOString(),synthetic:true})}
+  files.push({name:"audio/"+rel,data});man.units.push({u:u.u,file:"audio/"+rel,mime:"audio/mpeg",bytes:data.length,sha256:await sha(data),ids:u.ids,text:u.text,eleven_voice_id:t.voice,model:t.model,stability:t.stab,allah_variant:t.allah,sent_text:t.sent,edited:t.edited,recorded_at:new Date(t.ts).toISOString(),synthetic:true})}
  const have=new Set(man.units.map(x=>x.u));
  for(const[id,en] of Object.entries(DATA.entries)){if(en.every(p=>have.has(p))){man.entries[id]={file:en.length===1?fo+"/"+en[0]+".mp3":en.map(p=>fo+"/"+p+".mp3")};man.text_hash[id]=DATA.hashes[id]}else man.incomplete.push(id)}
  const enc=new TextEncoder();files.push({name:"manifest.json",data:enc.encode(JSON.stringify(man,null,1))});
