@@ -37,6 +37,9 @@ textarea{font-size:28px;line-height:2;min-height:78px;resize:vertical;background
 #sbar{position:sticky;top:0;z-index:9;background:#e9f4ef;color:var(--g);border:2px solid var(--g);border-radius:12px;padding:8px 12px;font-weight:700;font-size:16px;margin-bottom:8px}#sbar.bad{background:#fbe4e1;color:var(--r);border-color:var(--r)}
 .sent{font-size:14px;color:var(--m);margin:4px 0}.sent mark{background:#ffe9a8;color:#000;border-radius:4px;padding:0 2px}
 button.fn{margin-top:12px;background:var(--a);font-size:21px}button.fn:disabled{background:#cfc6a8}details.fin>summary{background:#e9f4ef;font-size:17px}.sm{font-size:15px;color:var(--m);text-align:center}
+.row.big{display:flex;gap:8px;flex-wrap:nowrap}.b3{flex:1 1 0;min-height:64px;font-size:19px;padding:6px 4px;border-radius:14px}.b3.ok{background:var(--g)}.b3.bad{background:#fff;color:var(--r);border:2px solid var(--r)}.sm2 button{min-height:40px;padding:4px 10px;font-size:15px}
+li.ln .tx{font-size:28px;line-height:2}li.ln.approved{background:#e2f4ea;border:3px solid var(--g)}li.ln.approved .b3.ok{background:#1b5e49}
+.more{margin-top:8px;padding:8px;background:#faf6e6;border-radius:12px}
 #msg{position:sticky;bottom:96px;z-index:5;box-shadow:0 2px 10px #0002}
 </style></head><body>
 <div id="sbar" role="button" tabindex="0">…</div>
@@ -62,7 +65,7 @@ button.fn{margin-top:12px;background:var(--a);font-size:21px}button.fn:disabled{
 </details>
 <div id="batches"></div>
 <div id="msg" class="note">جاهز.</div>
-<div id="savebar" style="position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff3c4;border-top:3px solid #2c8a6b;padding:10px 14px;display:flex;gap:10px;align-items:center"><button id="saveall" style="flex:1;font-size:24px;padding:16px;border-radius:14px;border:0;background:#2c8a6b;color:#fff;font-weight:700">💾 حفظ كل المعتمد (ZIP)</button><span id="savecnt" style="font-size:18px;font-weight:700"></span></div><div style="height:120px"></div>
+<div id="savebar" style="position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff3c4;border-top:3px solid #2c8a6b;padding:10px 14px;display:flex;gap:10px;align-items:center"><button id="saveall" style="flex:1;font-size:20px;padding:14px 8px;border-radius:14px;border:0;background:#2c8a6b;color:#fff;font-weight:700">💾 حفظ كل المعتمد (ZIP)</button><span id="savecnt" style="font-size:15px;white-space:nowrap;font-weight:700"></span></div><div style="height:120px"></div>
 <script>
 const DATA={"units":[{"u":"say.ist.1","ids":["say.ist.1"],"text":"الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ"},{"u":"say.ist.2","ids":["say.ist.2"],"text":"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ"},{"u":"say.ist.3","ids":["say.ist.3"],"text":"غُفْرَانَكَ"},{"u":"say.ist.4","ids":["say.ist.4","say.sab.1"],"text":"بِسْمِ اللَّهِ"},{"u":"say.sab.2","ids":["say.sab.2"],"text":"أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ"},{"u":"say.sab.3","ids":["say.sab.3"],"text":"بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ"},{"u":"rev.thw.1","ids":["rev.thw.1"],"text":"الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا الثَّوْبَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ."},{"u":"rev.thw.2","ids":["rev.thw.2","say.ruk.1"],"text":"بِسْمِ اللَّهِ."},{"u":"rev.thw.3","ids":["rev.thw.3"],"text":"اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ خَيْرَهُ وَخَيْرَ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ."},{"u":"rev.thw.4","ids":["rev.thw.4"],"text":"تَدْعُو لَهُ وَتَقُولُ: تُبْلِي وَيُخْلِفُ اللَّهُ تَعَالَى."},{"u":"out.thw.silent","ids":["out.thw.silent"],"text":"وَقَدْ عُلِّمْنَا أَنْ نَدْعُوَ لَهُ: تُبْلِي وَيُخْلِفُ اللَّهُ تَعَالَى."},{"u":"say.bayt.out","ids":["say.bayt.out"],"text":"بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ"},{"u":"say.bayt.in","ids":["say.bayt.in"],"text":"بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا"},{"u":"say.salam.p1","ids":["say.salam.p1"],"text":"السَّلَامُ عَلَيْكُمْ"},{"u":"say.salam.p2","ids":["say.salam.p2"],"text":"وَرَحْمَةُ اللَّهِ"},{"u":"say.salam.p3","ids":["say.salam.p3"],"text":"وَبَرَكَاتُهُ"},{"u":"friend.reply","ids":["friend.reply"],"text":"وَعَلَيْكُمُ السَّلَامُ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ"},{"u":"say.sleep.3","ids":["say.sleep.3"],"text":"بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا"},{"u":"say.suj.1","ids":["say.suj.1"],"text":"سُبْحَانَ رَبِّيَ الْأَعْلَى"},{"u":"say.suj.2","ids":["say.suj.2"],"text":"اللَّهُ أَكْبَرُ، أَرْفَعُ رَأْسِي"},{"u":"say.suj.3","ids":["say.suj.3"],"text":"رَبِّ اغْفِرْ لِي، رَبِّ اغْفِرْ لِي"},{"u":"src.sal.sigha","ids":["src.sal.sigha"],"text":"«اللهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللهُمَّ بَارِكْ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ»."},{"u":"say.sal.1","ids":["say.sal.1"],"text":"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ"},{"u":"say.ruk.2","ids":["say.ruk.2"],"text":"الْحَمْدُ لِلَّهِ"},{"u":"say.ruk.3","ids":["say.ruk.3"],"text":"سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا"},{"u":"say.ghd.1","ids":["say.ghd.1"],"text":"أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ"},{"u":"src.sidq.hadith","ids":["src.sidq.hadith"],"text":"قال النبي صلى الله عليه وسلم: «إنَّ الصِّدقَ يَهْدي إلى البِرِّ، وإنَّ البِرَّ يَهْدي إلى الجنَّةِ، وإنَّ الرَّجلَ لَيَصْدُقُ حتَّى يكونَ صِدِّيقًا»."},{"u":"say.ark2.2","ids":["say.ark2.2"],"text":"تَكْبِيرَةُ الْإِحْرَامِ: اللَّهُ أَكْبَرُ"},{"u":"say.tash.1","ids":["say.tash.1"],"text":"التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ"},{"u":"say.tash.2","ids":["say.tash.2"],"text":"السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ"},{"u":"say.tash.3","ids":["say.tash.3"],"text":"السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ"},{"u":"say.tash.4","ids":["say.tash.4"],"text":"أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ"},{"u":"rev.tash.1","ids":["rev.tash.1"],"text":"أَعُوذُ بِاللَّهِ مِنْ عَذَابِ جَهَنَّمَ."}],"entries":{"say.ist.1":["say.ist.1"],"say.ist.2":["say.ist.2"],"say.ist.3":["say.ist.3"],"say.ist.4":["say.ist.4"],"say.sab.1":["say.ist.4"],"say.sab.2":["say.sab.2"],"say.sab.3":["say.sab.3"],"rev.thw.1":["rev.thw.1"],"rev.thw.2":["rev.thw.2"],"rev.thw.3":["rev.thw.3"],"rev.thw.4":["rev.thw.4"],"out.thw.silent":["out.thw.silent"],"say.bayt.out":["say.bayt.out"],"say.bayt.in":["say.bayt.in"],"say.salam.p1":["say.salam.p1"],"say.salam.p2":["say.salam.p2"],"say.salam.p3":["say.salam.p3"],"friend.reply":["friend.reply"],"say.sleep.3":["say.sleep.3"],"say.suj.1":["say.suj.1"],"say.suj.2":["say.suj.2"],"say.suj.3":["say.suj.3"],"src.sal.sigha":["src.sal.sigha"],"say.sal.1":["say.sal.1"],"say.ruk.1":["rev.thw.2"],"say.ruk.2":["say.ruk.2"],"say.ruk.3":["say.ruk.3"],"say.ghd.1":["say.ghd.1"],"src.sidq.hadith":["src.sidq.hadith"],"say.ark2.2":["say.ark2.2"],"say.tash.1":["say.tash.1"],"say.tash.2":["say.tash.2"],"say.tash.3":["say.tash.3"],"say.tash.4":["say.tash.4"],"rev.tash.1":["rev.tash.1"]},"hashes":{"say.ist.1":"4dc08210","say.ist.2":"dc9046b7","say.ist.3":"3c48c576","say.ist.4":"e7f5b420","say.sab.1":"e7f5b420","say.sab.2":"e8409f8d","say.sab.3":"6593c790","rev.thw.1":"8db89227","rev.thw.2":"e7f5b420","rev.thw.3":"db34e018","rev.thw.4":"1f01e7da","out.thw.silent":"6ca9cc67","say.bayt.out":"8b239af8","say.bayt.in":"1579d81","say.salam.p1":"7d63bfd9","say.salam.p2":"faf0e826","say.salam.p3":"e0cef206","friend.reply":"e8d10a64","say.sleep.3":"fa3e6ee","say.suj.1":"53bdc229","say.suj.2":"6cca6b82","say.suj.3":"d27b8d5","src.sal.sigha":"5ef6fbe1","say.sal.1":"8c2165bf","say.ruk.1":"e7f5b420","say.ruk.2":"fb4ea2dd","say.ruk.3":"2129ce49","say.ghd.1":"f8654ea9","src.sidq.hadith":"4c6f467e","say.ark2.2":"dc96dcca","say.tash.1":"f87e7af6","say.tash.2":"6bde99f6","say.tash.3":"c86794cc","say.tash.4":"120d9068","rev.tash.1":"f4940e1d"}};
 const LESSONS=[{"id":"adhkar.istiqadh","title":"بعد ما أماتنا","units":["say.ist.1","say.ist.2","say.ist.3","say.ist.4"]},{"id":"adhkar.sabah","title":"حين أستيقظ","units":["say.sab.2","say.sab.3"]},{"id":"adhkar.thawb","title":"حين ألبس","units":["rev.thw.1","rev.thw.2","rev.thw.3","rev.thw.4","out.thw.silent"]},{"id":"adab.bayt","title":"عند الباب","units":["say.bayt.out","say.bayt.in","say.salam.p1"]},{"id":"adab.salam","title":"في الطريق","units":["say.salam.p2","say.salam.p3","friend.reply"]},{"id":"adhkar.sleep","title":"آخر اليوم","units":["say.sleep.3"]},{"id":"ibadah.sujud","title":"سبعة أعضاء","units":["say.suj.1","say.suj.2","say.suj.3"]},{"id":"adhkar.salatnabi","title":"أُهديه سلامي","units":["src.sal.sigha","say.sal.1"]},{"id":"adab.rukub","title":"حين نركب","units":["say.ruk.2","say.ruk.3"]},{"id":"akhlaq.sidq","title":"كلمة واحدة","units":["src.sidq.hadith"]},{"id":"akhlaq.ghadab","title":"حين أغضب","units":["say.ghd.1"]},{"id":"ibadah.arkanSalat","title":"داخل الصلاة","units":["say.ark2.2"]},{"id":"ibadah.tashahhud","title":"في آخر صلاتي","units":["say.tash.1","say.tash.2","say.tash.3","say.tash.4","rev.tash.1"]}];
@@ -106,7 +109,7 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,csz,true);e.setUint32(16,off,true);
  return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
 const sha=async u=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",u))].map(b=>b.toString(16).padStart(2,"0")).join("");
-/* ── الدفعات ── */
+/* ── الدروس ── */
 const NB=LESSONS.length;let BATCHES=[];const BIDX={},PROG={cur:0};
 function layout(){BATCHES=LESSONS.map((le,bi)=>le.units.map(id=>{const u=lineOf(id);BIDX[id]=bi;return u}))}
 const resolved=u=>isAppr(u)||!!LN[u].human;
@@ -121,10 +124,10 @@ function build(){
   d.innerHTML=`<summary><span>${fin?"✔ منتهية — ":""}الدرس ${bi+1} من ${NB}: ${esc(le.title)}</span><span class="cnt"></span></summary><div class="bd"><ul></ul><div class="bar"><i></i></div><div class="row"><button data-bg="${bi}">ولّد هذا الدرس</button><button data-bz="${bi}" disabled>💾 حفظ هذا الدرس (ZIP)</button></div>${fin?"":`<button class="fn" data-fin="${bi}" disabled>${bi===NB-1?"انتهى هذا الدرس — إنهاء كل الدروس":"انتهى هذا الدرس — الدرس التالي"}</button><div class="sm fnm"></div>`}</div>`;
   const ul=d.querySelector("ul");
   bu.forEach((u,ui)=>{const li=document.createElement("li");li.className="ln";li.dataset.u=u.u;
-   li.innerHTML=`<div class="hd"><b>سطر ${ui+1}</b><span class="badge"></span></div><textarea rows="2"></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="sent"></div><div class="row"><button class="s" data-g="${u.u}">ولّد</button><button class="s bad" data-rj="${u.u}" hidden>✖ ارفض</button><button class="s bad" data-x="${u.u}">يحتاج إعادة ✖</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button><button class="s" data-r="${u.u}">استعادة الأصل</button></div><div class="atts"></div>`;
+   li.innerHTML=`<div class="hd"><b>سطر ${ui+1}</b><span class="badge"></span></div><div class="tx"></div><div class="row big"><button class="b3" data-pl="${u.u}">▶ استمع</button><button class="b3 ok" data-ok="${u.u}">✔ راضٍ</button><button class="b3 bad" data-g="${u.u}">⟳ ولّد</button></div><div class="row sm2"><button class="s" data-tg="atts">المحاولات السابقة</button><button class="s" data-tg="more">⋯ المزيد</button><button class="s" data-sv="${u.u}">💾 احفظ هذا السطر</button></div><div class="atts" hidden></div><div class="more" hidden><div class="row"><button class="s" data-ed="${u.u}">✎ عدّل الجملة</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button></div><textarea rows="2" hidden></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="sent"></div></div>`;
    li.querySelector("textarea").value=LN[u.u].text??u.text;
-   li.querySelector("textarea").oninput=e=>{LN[u.u].text=e.target.value===u.text?null:e.target.value;li.classList.toggle("ed",LN[u.u].text!==null);saveLine(u.u)};
-   ul.appendChild(li);EL[u.u]=li;updLine(u.u)});
+   li.querySelector("textarea").oninput=e=>{LN[u.u].text=e.target.value===u.text?null:e.target.value;li.querySelector(".tx").textContent=e.target.value;li.classList.toggle("ed",LN[u.u].text!==null);saveLine(u.u)};
+   li.querySelector(".tx").textContent=LN[u.u].text??u.text;ul.appendChild(li);EL[u.u]=li;updLine(u.u)});
   root.appendChild(d);updBatch(bi);d.open=fin?!!op[d.id]:true}
  if(cur>=NB){const m=document.createElement("div");m.className="note";m.textContent="🎉 انتهت كل الدروس. احفظ الحزمة الكاملة من الشريط السفلي.";root.appendChild(m)}
  totals();sbar()}
@@ -138,15 +141,17 @@ function updLine(u){
  const st=a?["appr","معتمد ✔"]:l.rej?["fix","مرفوض ✖"]:l.human?["fix","يحتاج صوتًا بشريًا 🎙"]:l.needFix?["fix","يحتاج إعادة ✖"]:l.attempts.length?["gen","مولَّد"]:["","لم يُولَّد"];
  const bd=li.querySelector(".badge");bd.className="badge "+st[0];bd.textContent=st[1];
  li.classList.toggle("approved",!!a);li.classList.toggle("fix",!a&&(l.needFix||l.human||l.rej));li.classList.toggle("ed",l.text!==null);
- li.querySelector("[data-g]").textContent=l.attempts.length?"ولّد مرة أخرى":"ولّد";
+ li.querySelector("[data-g]").textContent=l.attempts.length?"✖ ارفض وأعد":"⟳ ولّد";
+ li.querySelector("[data-pl]").disabled=!l.attempts.length;li.querySelector("[data-ok]").disabled=!l.attempts.length;
+ li.querySelector("[data-ok]").textContent=a?"✔ راضٍ (معتمد)":"✔ راضٍ";li.querySelector("[data-sv]").disabled=!a;
+ li.querySelector(".tx").textContent=l.text??lineOf(u).text;
+ li.querySelector("[data-tg=atts]").hidden=l.attempts.length<2;
  li.querySelector("[data-h]").textContent=l.human?"✔ إزالة علامة الصوت البشري":"يحتاج صوتًا بشريًا 🎙";
- li.querySelector("[data-x]").textContent=l.needFix?"✔ إزالة علامة الإعادة":"يحتاج إعادة ✖";
  const box=li.querySelector(".atts");box.innerHTML="";
  [...l.attempts].reverse().forEach((t,i)=>{const n=l.attempts.length-i,row=document.createElement("div");row.className="att"+(t.id===l.approved?" sel":"");
   row.innerHTML=`<span class="l">محاولة ${n} · ${t.model.replace("eleven_","")} · ث${t.stab}</span><button class="s" data-p="${t.id}">▶ استمع</button><button class="s ${t.id===l.approved?"ok":""}" data-a="${t.id}" data-u="${u}">${t.id===l.approved?"✔ معتمدة":"اعتمد هذه"}</button>`;box.appendChild(row)});
   const sa=a||l.attempts[l.attempts.length-1],se=li.querySelector(".sent");
  if(sa){se.innerHTML="المُرسَل فعلًا: "+hl(sa.sent,l.text??lineOf(u).text);se.hidden=false}else se.hidden=true;
- li.querySelector("[data-rj]").hidden=!l.attempts.length;
  updBatch(BIDX[u]);totals();sbar()}
 function updBatch(bi){const d=$("b"+bi);if(!d)return;const bu=BATCHES[bi],n=bu.filter(u=>isAppr(u.u)).length;
  d.querySelector(".cnt").textContent=`معتمد ${n}/${bu.length}`;d.classList.toggle("done",n===bu.length);d.querySelector("[data-bz]").disabled=n===0;
@@ -164,18 +169,17 @@ async function gen(u,count){const l=LN[u],d=lineOf(u),text=l.text??d.text,v=$("v
  for(let i=0;i<count;i++){const sent=prep(text),blob=await tts(sent);
   l.attempts.push({id:"a"+(++seq),blob,ts:Date.now(),sent,model:$("mo").value,voice:v,stab:sttg(),allah:+$("al").value,seed:$("seed").value.trim()||null,edited:l.text!==null});
   while(l.attempts.length>3){const k=l.attempts.findIndex(a=>a.id!==l.approved);l.attempts.splice(k,1)}
-  if(count===1||i===count-1){l.approved=l.attempts[l.attempts.length-1].id}
   l.needFix=false;l.rej=false;saveLine(u);updLine(u)}}
 async function genLine(u,btn){const c=$("auto3").checked?3:1;btn&&(btn.disabled=true);try{await gen(u,c)}catch(e){EL[u].classList.add("fix");msg(u+": "+e.message)}btn&&(btn.disabled=false)}
 async function genBatch(bi,btn){btn.disabled=true;const bu=BATCHES[bi],bar=$("b"+bi).querySelector(".bar i");let n=0;bar.style.width="0";
  for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix||l.rej){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){msg(u.u+": "+e.message);break}}bar.style.width=(100*++n/bu.length)+"%"}
- msg(`انتهت الدفعة ${bi+1}: استمع واعتمد لكل سطر.`);btn.disabled=false}
+ btn.disabled=false}
 /* ── ZIP ── */
 async function zipUnits(units,tag){const fo=$("fo").value.trim();if(!validVoice(fo))return msg("اسم المجلد غير صالح.");
  const files=[],man={schema:"athar-record/1",tool:"gen.html",created:new Date().toISOString(),speaker:"elevenlabs",synthetic:true,engine:"elevenlabs",voice:fo,audio_root:"audio/"+fo+"/",format:"mp3",approved_only:true,units:[],entries:{},incomplete:[],text_hash:{}};
  for(const u of units){const t=apprAtt(u.u);if(!t)continue;const data=new Uint8Array(await t.blob.arrayBuffer()),rel=fo+"/"+u.u+".mp3";
   files.push({name:"audio/"+rel,data});man.units.push({u:u.u,file:"audio/"+rel,mime:"audio/mpeg",bytes:data.length,sha256:await sha(data),ids:u.ids,text:u.text,eleven_voice_id:t.voice,model:t.model,stability:t.stab,seed:t.seed,allah_variant:t.allah,sent_text:t.sent,edited:t.edited,recorded_at:new Date(t.ts).toISOString(),synthetic:true,approved:true})}
- if(!files.length)return msg("لا يوجد سطر معتمد في هذه الدفعة.");
+ if(!files.length)return msg("لا يوجد سطر معتمد هنا.");
  const have=new Set(man.units.map(x=>x.u));
  for(const[id,en] of Object.entries(DATA.entries)){if(en.every(p=>have.has(p))){man.entries[id]={file:en.length===1?fo+"/"+en[0]+".mp3":en.map(p=>fo+"/"+p+".mp3")};man.text_hash[id]=DATA.hashes[id]}else if(en.some(p=>have.has(p)))man.incomplete.push(id)}
  const enc=new TextEncoder();files.push({name:"manifest.json",data:enc.encode(JSON.stringify(man,null,1))});
@@ -213,15 +217,19 @@ $("ab").onclick=trial;$("twb").onclick=tryWord;
 $("exh").onclick=()=>{const o=DATA.units.filter(u=>LN[u.u].human).map(u=>({id:u.u,ids:u.ids,text:LN[u.u].text??u.text}));if(!o.length)return msg("لا أسطر معلَّمة «تحتاج صوتًا بشريًا».");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({schema:"athar-human-lines/1",lines:o},null,1)],{type:"application/json"}));a.download="athar-human-lines.json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);msg("صُدِّر "+o.length+" سطرًا للتسجيل بأداة record.html.")};
 document.body.addEventListener("click",async e=>{const t=e.target.closest("button");if(!t)return;const D=t.dataset;
- if(D.g)return genLine(D.g,t);
  if(D.bg)return genBatch(+D.bg,t);
  if(D.bz){const bi=+D.bz;return zipUnits(BATCHES[bi],"lesson"+(bi+1))}
  if(D.p){for(const u in LN){const a=LN[u].attempts.find(x=>x.id===D.p);if(a)return play(a.blob)}}
  if(D.a){const l=LN[D.u];l.approved=l.approved===D.a?null:D.a;if(l.approved)l.needFix=false;saveLine(D.u);return updLine(D.u)}
  if(D.x){const l=LN[D.x];l.needFix=!l.needFix;if(l.needFix)l.approved=null;saveLine(D.x);return updLine(D.x)}
  if(D.r){const u=lineOf(D.r);EL[D.r].querySelector("textarea").value=u.text;LN[D.r].text=null;saveLine(D.r);return updLine(D.r)}
- if(D.rj){const l=LN[D.rj];l.approved=null;l.rej=true;saveLine(D.rj);updLine(D.rj);return msg("رُفض السطر؛ ولّده مرة أخرى.")}
  if(D.fin!==undefined){const bi=+D.fin;if(BATCHES[bi].some(u=>!resolved(u.u)))return msg("لم تُحسم كل الأسطر.");PROG.cur=bi+1;put("kv","progress",{cur:PROG.cur});build();const nx=$("b"+(bi+1));if(nx)nx.scrollIntoView({behavior:"smooth"});return msg(bi+1<NB?"الدرس التالي: "+LESSONS[bi+1].title:"انتهت كل الدروس.")}
+ if(D.pl){const l=LN[D.pl],a=apprAtt(D.pl)||l.attempts[l.attempts.length-1];if(a)play(a.blob);return}
+ if(D.ok){const l=LN[D.ok],a=apprAtt(D.ok);if(a){l.approved=null}else if(l.attempts.length){l.approved=l.attempts[l.attempts.length-1].id;l.rej=false;l.needFix=false}saveLine(D.ok);return updLine(D.ok)}
+ if(D.g){const l=LN[D.g];if(l.attempts.length){l.approved=null;l.rej=false}return genLine(D.g,t)}
+ if(D.tg){const li=t.closest("li"),p=li.querySelector("."+D.tg);p.hidden=!p.hidden;return}
+ if(D.ed){const ta=EL[D.ed].querySelector("textarea");ta.hidden=!ta.hidden;if(!ta.hidden)ta.focus();return}
+ if(D.sv){return zipUnits([lineOf(D.sv)],D.sv)}
  if(D.h){const l=LN[D.h];l.human=!l.human;saveLine(D.h);return updLine(D.h)}
  if(D.tc!==undefined){const [w,alt]=TW[+D.tc];const r=$("rules");r.value=(r.value.trim()?r.value.trim()+"\n":"")+w+"=>"+alt;saveSet();document.querySelectorAll("#twbox .tr").forEach((el,i)=>{el.classList.toggle("sel",i===+D.tc);el.classList.toggle("dim",i!==+D.tc)});return msg("أُضيفت القاعدة: "+w+"=>"+alt)}
  if(D.more){document.querySelectorAll("#allahbox .more").forEach(x=>x.hidden=false);t.hidden=true;return}
