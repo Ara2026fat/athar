@@ -46,17 +46,20 @@ textarea{font-size:28px;line-height:2;min-height:78px;resize:vertical;background
 <label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3 (الأفضل في التشكيل)</option><option value="eleven_multilingual_v2">eleven_multilingual_v2 (مستقر)</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5 (أسرع)</option><option value="eleven_flash_v2_5">eleven_flash_v2_5 (الأسرع)</option></select>
 <label for="st">الثبات (stability)</label><select id="st"><option value="1">١٫٠ Robust — الأثبت (موصى به)</option><option value="0.5">٠٫٥ Natural</option><option value="0">٠٫٠ Creative — الأقل ثباتًا</option></select>
 <label for="seed">بذرة seed (اختياري — تثبيت أقرب بين المحاولات، غير مضمون)</label><input id="seed" inputmode="numeric" dir="ltr" placeholder="مثال: 12345">
-<div class="chk"><input type="checkbox" id="auto3"><label for="auto3" style="margin:0">ثلاث محاولات تلقائية لكل سطر (لتسمعها وتختار)</label></div>
+<div class="chk"><input type="checkbox" id="auto3"><label for="auto3" style="margin:0">ثلاث محاولات تلقائية لكل سطر (مطفأ افتراضيًا: محاولة واحدة، ثم «ولّد مرة أخرى» عند الحاجة)</label></div>
 <label for="al">صيغة لفظ الجلالة (تُطبَّق عند التوليد فقط ولا تغيّر نص التطبيق)</label><select id="al"><option value="0">الأصل</option><option value="1">ألف خنجرية: اللَّٰهِ</option><option value="2">فتحة صريحة على الألف: اَللَّٰهِ</option><option value="3">كلمة قبلها: قَالَ اللَّٰهِ (في أول السطر)</option><option value="4">ألف وصل: ٱللَّٰهِ</option></select>
+<div class="row"><button id="ab" class="s">جرّب صيغ لفظ الجلالة على سطر واحد</button></div><div id="allahbox"></div>
+<label for="rules">قواعد الاستبدال (سطر لكل قاعدة: <span dir="ltr">كلمة=&gt;كتابة بديلة</span>؛ تُطبَّق عند التوليد فقط)</label><textarea id="rules" rows="3" dir="rtl" style="font-size:22px" placeholder="الوضوء=>الوُضُّـوء"></textarea>
+<label for="tw">جرّب كلمة أو جزءًا من سطر</label><div class="row"><input id="tw" placeholder="مثال: الخبائث"><button id="twb" class="s">جرّب كلمة</button></div><div id="twbox"></div>
 <label for="fo">اسم مجلد الصوت في الحزمة (حروف لاتينية صغيرة)</label><input id="fo" value="eleven_ai" dir="ltr">
 <div class="bar"><i id="pb"></i></div>
 <div id="batches"></div>
-<div class="row" style="margin-top:14px"><button id="dlall" disabled>تنزيل ZIP لكل المعتمد</button><button id="clr" class="s bad">مسح المحفوظ</button></div>
+<div class="row" style="margin-top:14px"><button id="dlall" disabled>تنزيل ZIP لكل المعتمد</button><button id="exh" class="s">صدّر قائمة الأسطر البشرية</button><button id="clr" class="s bad">مسح المحفوظ</button></div>
 <details style="margin-top:12px"><summary style="font-size:17px;cursor:pointer">خيارات إضافية</summary><div class="row" style="margin-top:8px"><button id="go" class="s">توليد كل الدفعات (خيار ثانوي)</button></div></details>
 <div id="msg" class="note">جاهز.</div>
 <script>
 const DATA={"units":[{"u":"say.ist.1","ids":["say.ist.1"],"text":"الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ"},{"u":"say.ist.2","ids":["say.ist.2"],"text":"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ"},{"u":"say.ist.3","ids":["say.ist.3"],"text":"غُفْرَانَكَ"},{"u":"say.ist.4","ids":["say.ist.4","say.sab.1"],"text":"بِسْمِ اللَّهِ، قَبْلَ الْوُضُوءِ"},{"u":"say.sab.2","ids":["say.sab.2"],"text":"أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ"},{"u":"say.sab.3","ids":["say.sab.3"],"text":"بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ"},{"u":"rev.thw.1","ids":["rev.thw.1"],"text":"الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا الثَّوْبَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ."},{"u":"rev.thw.2","ids":["rev.thw.2","say.ruk.1"],"text":"بِسْمِ اللَّهِ."},{"u":"rev.thw.3","ids":["rev.thw.3"],"text":"اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ خَيْرَهُ وَخَيْرَ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ."},{"u":"rev.thw.4","ids":["rev.thw.4"],"text":"تَدْعُو لَهُ وَتَقُولُ: تُبْلِي وَيُخْلِفُ اللَّهُ تَعَالَى."},{"u":"out.thw.silent","ids":["out.thw.silent"],"text":"وَقَدْ عُلِّمْنَا أَنْ نَدْعُوَ لَهُ: تُبْلِي وَيُخْلِفُ اللَّهُ تَعَالَى."},{"u":"say.bayt.out","ids":["say.bayt.out"],"text":"بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ"},{"u":"say.bayt.in","ids":["say.bayt.in"],"text":"بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا"},{"u":"say.salam.p1","ids":["say.salam.p1"],"text":"السَّلَامُ عَلَيْكُمْ"},{"u":"say.salam.p2","ids":["say.salam.p2"],"text":"وَرَحْمَةُ اللَّهِ"},{"u":"say.salam.p3","ids":["say.salam.p3"],"text":"وَبَرَكَاتُهُ"},{"u":"friend.reply","ids":["friend.reply"],"text":"وَعَلَيْكُمُ السَّلَامُ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ"},{"u":"say.sleep.3","ids":["say.sleep.3"],"text":"بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا"},{"u":"say.suj.1","ids":["say.suj.1"],"text":"سُبْحَانَ رَبِّيَ الْأَعْلَى"},{"u":"say.suj.2","ids":["say.suj.2"],"text":"اللَّهُ أَكْبَرُ، أَرْفَعُ رَأْسِي"},{"u":"say.suj.3","ids":["say.suj.3"],"text":"رَبِّ اغْفِرْ لِي، رَبِّ اغْفِرْ لِي"},{"u":"src.sal.sigha","ids":["src.sal.sigha"],"text":"«اللهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللهُمَّ بَارِكْ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ»."},{"u":"say.sal.1","ids":["say.sal.1"],"text":"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ"},{"u":"say.ruk.2","ids":["say.ruk.2"],"text":"الْحَمْدُ لِلَّهِ"},{"u":"say.ruk.3","ids":["say.ruk.3"],"text":"سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا"},{"u":"say.ghd.1","ids":["say.ghd.1"],"text":"أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ"},{"u":"src.sidq.hadith","ids":["src.sidq.hadith"],"text":"قال النبي صلى الله عليه وسلم: «إنَّ الصِّدقَ يَهْدي إلى البِرِّ، وإنَّ البِرَّ يَهْدي إلى الجنَّةِ، وإنَّ الرَّجلَ لَيَصْدُقُ حتَّى يكونَ صِدِّيقًا»."},{"u":"say.ark2.2","ids":["say.ark2.2"],"text":"تَكْبِيرَةُ الْإِحْرَامِ: اللَّهُ أَكْبَرُ"},{"u":"say.tash.1","ids":["say.tash.1"],"text":"التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ"},{"u":"say.tash.2","ids":["say.tash.2"],"text":"السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ"},{"u":"say.tash.3","ids":["say.tash.3"],"text":"السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ"},{"u":"say.tash.4","ids":["say.tash.4"],"text":"أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ"},{"u":"rev.tash.1","ids":["rev.tash.1"],"text":"أَعُوذُ بِاللَّهِ مِنْ عَذَابِ جَهَنَّمَ."}],"entries":{"say.ist.1":["say.ist.1"],"say.ist.2":["say.ist.2"],"say.ist.3":["say.ist.3"],"say.ist.4":["say.ist.4"],"say.sab.1":["say.ist.4"],"say.sab.2":["say.sab.2"],"say.sab.3":["say.sab.3"],"rev.thw.1":["rev.thw.1"],"rev.thw.2":["rev.thw.2"],"rev.thw.3":["rev.thw.3"],"rev.thw.4":["rev.thw.4"],"out.thw.silent":["out.thw.silent"],"say.bayt.out":["say.bayt.out"],"say.bayt.in":["say.bayt.in"],"say.salam.p1":["say.salam.p1"],"say.salam.p2":["say.salam.p2"],"say.salam.p3":["say.salam.p3"],"friend.reply":["friend.reply"],"say.sleep.3":["say.sleep.3"],"say.suj.1":["say.suj.1"],"say.suj.2":["say.suj.2"],"say.suj.3":["say.suj.3"],"src.sal.sigha":["src.sal.sigha"],"say.sal.1":["say.sal.1"],"say.ruk.1":["rev.thw.2"],"say.ruk.2":["say.ruk.2"],"say.ruk.3":["say.ruk.3"],"say.ghd.1":["say.ghd.1"],"src.sidq.hadith":["src.sidq.hadith"],"say.ark2.2":["say.ark2.2"],"say.tash.1":["say.tash.1"],"say.tash.2":["say.tash.2"],"say.tash.3":["say.tash.3"],"say.tash.4":["say.tash.4"],"rev.tash.1":["rev.tash.1"]},"hashes":{"say.ist.1":"4dc08210","say.ist.2":"dc9046b7","say.ist.3":"3c48c576","say.ist.4":"8e3e989a","say.sab.1":"8e3e989a","say.sab.2":"e8409f8d","say.sab.3":"6593c790","rev.thw.1":"8db89227","rev.thw.2":"e7f5b420","rev.thw.3":"db34e018","rev.thw.4":"1f01e7da","out.thw.silent":"6ca9cc67","say.bayt.out":"8b239af8","say.bayt.in":"1579d81","say.salam.p1":"7d63bfd9","say.salam.p2":"faf0e826","say.salam.p3":"e0cef206","friend.reply":"e8d10a64","say.sleep.3":"fa3e6ee","say.suj.1":"53bdc229","say.suj.2":"6cca6b82","say.suj.3":"d27b8d5","src.sal.sigha":"5ef6fbe1","say.sal.1":"8c2165bf","say.ruk.1":"e7f5b420","say.ruk.2":"fb4ea2dd","say.ruk.3":"2129ce49","say.ghd.1":"f8654ea9","src.sidq.hadith":"4c6f467e","say.ark2.2":"dc96dcca","say.tash.1":"f87e7af6","say.tash.2":"6bde99f6","say.tash.3":"c86794cc","say.tash.4":"120d9068","rev.tash.1":"f4940e1d"}};
-const $=i=>document.getElementById(i),BATCH=5,validVoice=v=>/^[a-z0-9][a-z0-9_-]{0,40}$/.test(v);
+const $=i=>document.getElementById(i),BATCH=3,validVoice=v=>/^[a-z0-9][a-z0-9_-]{0,40}$/.test(v);
 const msg=t=>$("msg").textContent=t, ST={}, LN={}, EL={};
 let DB=null, curAudio=null;
 /* ── IndexedDB ── */
@@ -64,9 +67,9 @@ function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open("athar-
 const pq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 async function put(s,k,v){if(!DB)return;try{await pq(DB.transaction(s,"readwrite").objectStore(s).put(v,k))}catch(e){msg("تعذّر الحفظ التلقائي: "+e.message)}}
 async function getAll(s){const o=DB.transaction(s).objectStore(s),ks=await pq(o.getAllKeys()),vs=await pq(o.getAll());const m={};ks.forEach((k,i)=>m[k]=vs[i]);return m}
-const SET=["vid","mo","st","seed","al","fo"];
-function saveSet(){const o={};SET.forEach(k=>o[k]=$(k).value);o.vid=$("vid").value.trim()||$("v").value||"";o.auto3=$("auto3").checked;put("kv","settings",o)}
-function saveLine(u){const l=LN[u];put("lines",u,{text:l.text,attempts:l.attempts,approved:l.approved,needFix:l.needFix})}
+const SET=["vid","mo","st","seed","al","fo","rules"];
+function saveSet(){const o={};SET.forEach(k=>o[k]=$(k).value);o.vid=$("vid").value.trim()||$("v").value||"";o.auto3=$("auto3").checked;o.allahDone=!!window.allahDone;put("kv","settings",o)}
+function saveLine(u){const l=LN[u];put("lines",u,{text:l.text,attempts:l.attempts,approved:l.approved,needFix:l.needFix,human:l.human})}
 /* ── صيغ لفظ الجلالة ── */
 const D="[\\u064B-\\u065F\\u0670]*",LET="\\u0621-\\u064A\\u0671";
 const ALLAH=new RegExp("(^|[^"+LET+"\\u064B-\\u065F\\u0670])([وفبت]"+D+")?((?:ا|ٱ)"+D+")?(ل"+D+")(ل"+D+")(ه)("+D+")(م"+D+")?(?![" + LET + "])","g");
@@ -81,7 +84,8 @@ function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l
  if(v===4)return pre+px+core(!px&&al?"\u0671":A,L);
  return m})}
 
-function prep(t){return allahVar(t,$("al").value)}
+function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
+function prep(t){return allahVar(applyRules(t),$("al").value)}
 /* ── ZIP ── */
 const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
 const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
@@ -107,7 +111,7 @@ function build(){
   d.innerHTML=`<summary><span>الدفعة ${bi+1} من ${NB}</span><span class="cnt"></span></summary><div class="bd"><ul></ul><div class="bar"><i></i></div><div class="row"><button data-bg="${bi}">ولّد هذه الدفعة</button><button data-bz="${bi}" disabled>تنزيل ZIP هذه الدفعة</button></div></div>`;
   const ul=d.querySelector("ul");
   bu.forEach((u,ui)=>{const n=bi*BATCH+ui+1;const li=document.createElement("li");li.className="ln";li.dataset.u=u.u;
-   li.innerHTML=`<div class="hd"><b>سطر ${n}</b><span class="badge"></span></div><textarea rows="2"></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="row"><button class="s" data-g="${u.u}">ولّد</button><button class="s bad" data-x="${u.u}">يحتاج إعادة ✖</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-f="${u.u}">٥ صيغ للفظ الجلالة</button></div><div class="atts"></div><div class="trs"></div>`;
+   li.innerHTML=`<div class="hd"><b>سطر ${n}</b><span class="badge"></span></div><textarea rows="2"></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="row"><button class="s" data-g="${u.u}">ولّد</button><button class="s bad" data-x="${u.u}">يحتاج إعادة ✖</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button></div><div class="atts"></div><div class="trs"></div>`;
    li.querySelector("textarea").value=LN[u.u].text??u.text;
    li.querySelector("textarea").oninput=e=>{LN[u.u].text=e.target.value===u.text?null:e.target.value;li.classList.toggle("ed",LN[u.u].text!==null);saveLine(u.u)};
    ul.appendChild(li);EL[u.u]=li;updLine(u.u)});
@@ -117,10 +121,11 @@ function build(){
 function lineOf(u){return DATA.units.find(x=>x.u===u)}
 function updLine(u){
  const l=LN[u],li=EL[u];if(!li)return;const a=apprAtt(u);
- const st=a?["appr","معتمد ✔"]:l.needFix?["fix","يحتاج إعادة ✖"]:l.attempts.length?["gen","مولَّد"]:["","لم يُولَّد"];
+ const st=a?["appr","معتمد ✔"]:l.human?["fix","يحتاج صوتًا بشريًا 🎙"]:l.needFix?["fix","يحتاج إعادة ✖"]:l.attempts.length?["gen","مولَّد"]:["","لم يُولَّد"];
  const bd=li.querySelector(".badge");bd.className="badge "+st[0];bd.textContent=st[1];
- li.classList.toggle("approved",!!a);li.classList.toggle("fix",!a&&l.needFix);li.classList.toggle("ed",l.text!==null);
+ li.classList.toggle("approved",!!a);li.classList.toggle("fix",!a&&(l.needFix||l.human));li.classList.toggle("ed",l.text!==null);
  li.querySelector("[data-g]").textContent=l.attempts.length?"ولّد مرة أخرى":"ولّد";
+ li.querySelector("[data-h]").textContent=l.human?"✔ إزالة علامة الصوت البشري":"يحتاج صوتًا بشريًا 🎙";
  li.querySelector("[data-x]").textContent=l.needFix?"✔ إزالة علامة الإعادة":"يحتاج إعادة ✖";
  const box=li.querySelector(".atts");box.innerHTML="";
  [...l.attempts].reverse().forEach((t,i)=>{const n=l.attempts.length-i,row=document.createElement("div");row.className="att"+(t.id===l.approved?" sel":"");
@@ -159,12 +164,31 @@ async function zipUnits(units,tag){const fo=$("fo").value.trim();if(!validVoice(
  const a=document.createElement("a");a.href=URL.createObjectURL(zipBuild(files));a.download="athar-ai-"+fo+"-"+tag+"-"+new Date().toISOString().slice(0,10)+".zip";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);msg("نُزّلت الحزمة: "+(files.length-2)+" ملفًا صوتيًا معتمدًا.")}
 /* ── الأحداث ── */
 function play(blob){if(curAudio)curAudio.pause();curAudio=new Audio(URL.createObjectURL(blob));curAudio.play()}
-async function trial(u){const li=EL[u.u],box=li.querySelector(".trs"),base=li.querySelector("textarea").value;box.innerHTML="";const blobs={};
- for(let i=0;i<5;i++){const tx=allahVar(base,i),d=document.createElement("div");d.className="tr";d.dataset.v=i;
-  d.innerHTML=`<div class="m">صيغة ${i+1}: ${["الأصل","ألف خنجرية","فتحة صريحة","كلمة قبلها","ألف وصل ٱ"][i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-c="${i}">✔ اعتمد هذه الصيغة</button></div>`;
-  d.querySelector(".tx").textContent=tx;box.appendChild(d);
-  try{const b=await tts(tx);d.querySelector("[data-tpb]").disabled=false;d.querySelector("[data-tpb]").onclick=()=>play(b)}catch(e){msg("تجربة: "+e.message);return}}
- msg("اسمع الصيغ الخمس ثم اضغط «اعتمد» على أفضلها.")}
+window.allahDone=false;
+const ANAME=["الأصل","ألف خنجرية","فتحة صريحة","كلمة قبلها","ألف وصل ٱ"];
+async function trial(){if(window.allahDone)return msg("اعتُمدت صيغة لفظ الجلالة من قبل. غيّرها من القائمة إن أردت.");
+ const u=DATA.units.find(x=>{ALLAH.lastIndex=0;return ALLAH.test(x.text)});if(!u)return msg("لا سطر فيه لفظ الجلالة.");
+ const box=$("allahbox"),base=LN[u.u].text??u.text;box.innerHTML="<div class='m'>التجربة على سطر واحد: "+u.u+"</div>";
+ for(const i of [0,1,4,2,3]){const tx=allahVar(base,i),d=document.createElement("div");d.className="tr"+(i===2||i===3?" more":"");d.hidden=i===2||i===3;d.dataset.v=i;
+  d.innerHTML=`<div class="m">صيغة: ${ANAME[i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-c="${i}">✔ اعتمد هذه الصيغة</button></div>`;
+  d.querySelector(".tx").textContent=tx;box.appendChild(d)}
+ const mb=document.createElement("button");mb.className="s";mb.dataset.more="1";mb.textContent="المزيد من الصيغ";box.appendChild(mb);
+ for(const d of box.querySelectorAll(".tr")){try{const b=await tts(allahVar(base,+d.dataset.v));const p=d.querySelector("[data-tpb]");p.disabled=false;p.onclick=()=>play(b)}catch(e){msg("تجربة: "+e.message);return}}
+ msg("اسمع الصيغ ثم اعتمد أفضلها (تُعرض مرة واحدة).")}
+function variants(w){const E="صضطظخغقث",DI="[\u064B-\u065F\u0670]*";
+ const sh=w.replace(new RegExp("(["+E+"])(?!\u0651)","g"),"$1\u0651");
+ const tt=w.replace(new RegExp("(["+E+"]"+DI+")","u"),"$1\u0640");
+ const pad=tt!==w?tt:w.replace(/^(.[\u064B-\u065F\u0670]*)/,"$1\u0640");
+ return [w,sh,pad]}
+let TW=[];
+async function tryWord(){const w=$("tw").value.trim();if(!w)return msg("اكتب كلمة أولًا.");const box=$("twbox");box.innerHTML="";TW=variants(w).map(v=>[w,v]);
+ const names=["الأصل","شدّة على الحرف المفخَّم","فاصل «ـ» بعد الحرف المفخَّم"];
+ for(let i=0;i<3;i++){const d=document.createElement("div");d.className="tr";d.innerHTML=`<div class="m">${names[i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-tc="${i}">✔ اعتمد وأضف القاعدة</button></div>`;d.querySelector(".tx").textContent=TW[i][1];box.appendChild(d)}
+ let i=0;for(const d of box.querySelectorAll(".tr")){try{const b=await tts(TW[i++][1]);const p=d.querySelector("[data-tpb]");p.disabled=false;p.onclick=()=>play(b)}catch(e){msg("تجربة: "+e.message);return}}
+ msg("اسمع الصيغ ثم اعتمد؛ تُضاف القاعدة إلى «قواعد الاستبدال».")}
+$("ab").onclick=trial;$("twb").onclick=tryWord;
+$("exh").onclick=()=>{const o=DATA.units.filter(u=>LN[u.u].human).map(u=>({id:u.u,ids:u.ids,text:LN[u.u].text??u.text}));if(!o.length)return msg("لا أسطر معلَّمة «تحتاج صوتًا بشريًا».");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({schema:"athar-human-lines/1",lines:o},null,1)],{type:"application/json"}));a.download="athar-human-lines.json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);msg("صُدِّر "+o.length+" سطرًا للتسجيل بأداة record.html.")};
 document.body.addEventListener("click",async e=>{const t=e.target.closest("button");if(!t)return;const D=t.dataset;
  if(D.g)return genLine(D.g,t);
  if(D.bg)return genBatch(+D.bg,t);
@@ -173,22 +197,24 @@ document.body.addEventListener("click",async e=>{const t=e.target.closest("butto
  if(D.a){const l=LN[D.u];l.approved=l.approved===D.a?null:D.a;if(l.approved)l.needFix=false;saveLine(D.u);return updLine(D.u)}
  if(D.x){const l=LN[D.x];l.needFix=!l.needFix;if(l.needFix)l.approved=null;saveLine(D.x);return updLine(D.x)}
  if(D.r){const u=lineOf(D.r);EL[D.r].querySelector("textarea").value=u.text;LN[D.r].text=null;saveLine(D.r);return updLine(D.r)}
- if(D.f)return trial(lineOf(D.f));
- if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;saveSet();document.querySelectorAll(".tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
+ if(D.h){const l=LN[D.h];l.human=!l.human;saveLine(D.h);return updLine(D.h)}
+ if(D.tc!==undefined){const [w,alt]=TW[+D.tc];const r=$("rules");r.value=(r.value.trim()?r.value.trim()+"\n":"")+w+"=>"+alt;saveSet();document.querySelectorAll("#twbox .tr").forEach((el,i)=>{el.classList.toggle("sel",i===+D.tc);el.classList.toggle("dim",i!==+D.tc)});return msg("أُضيفت القاعدة: "+w+"=>"+alt)}
+ if(D.more){document.querySelectorAll("#allahbox .more").forEach(x=>x.hidden=false);t.hidden=true;return}
+ if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;window.allahDone=true;$("ab").hidden=true;saveSet();document.querySelectorAll("#allahbox .tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
 });
 $("dlall").onclick=()=>zipUnits(DATA.units,"all");
 $("go").onclick=async()=>{for(let i=0;i<NB;i++){await genBatch(i,$("b"+i).querySelector("[data-bg]"))}msg("انتهى توليد كل الدفعات.")};
 $("clr").onclick=async()=>{if(!confirm("مسح كل المحفوظ (النتائج والتعديلات والإعدادات)؟"))return;
  if(DB){try{const tx=DB.transaction(["kv","lines"],"readwrite");tx.objectStore("kv").clear();tx.objectStore("lines").clear();await new Promise(r=>{tx.oncomplete=tx.onerror=tx.onabort=()=>r()})}catch(e){}}
- SET.forEach(k=>{const e=$(k);if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=e.getAttribute("value")||""});$("vid").value="";$("auto3").checked=false;
- DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false});build();msg("مُسح المحفوظ.")};
+ SET.forEach(k=>{const e=$(k);if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=e.getAttribute("value")||""});$("vid").value="";$("auto3").checked=false;window.allahDone=false;$("ab").hidden=false;$("allahbox").innerHTML="";$("twbox").innerHTML="";
+ DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false});build();msg("مُسح المحفوظ.")};
 $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق المفتاح أولًا.");msg("جارٍ جلب الأصوات…");
  try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":k}});if(!r.ok)throw new Error(r.status);const j=await r.json();
   $("v").innerHTML=j.voices.map(v=>`<option value="${v.voice_id}">${v.name}${v.labels&&v.labels.accent?" — "+v.labels.accent:""}</option>`).join("");msg("وُجد "+j.voices.length+" صوتًا.")}catch(e){msg("تعذّر الجلب ("+e.message+"). ألصق معرّف الصوت مباشرة.")}};
 [...SET,"v","auto3"].forEach(k=>$(k).addEventListener("change",saveSet));$("vid").addEventListener("input",saveSet);$("seed").addEventListener("input",saveSet);
 /* ── الإقلاع: استرجاع المحفوظ ── */
-(async()=>{DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false});
- try{DB=await idb();const s=(await getAll("kv")).settings;if(s){SET.forEach(k=>{if(s[k]!=null&&k!=="vid")$(k).value=s[k]});$("vid").value=s.vid||"";$("auto3").checked=!!s.auto3}
+(async()=>{DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false});
+ try{DB=await idb();const s=(await getAll("kv")).settings;if(s){SET.forEach(k=>{if(s[k]!=null&&k!=="vid")$(k).value=s[k]});$("vid").value=s.vid||"";$("auto3").checked=!!s.auto3;window.allahDone=!!s.allahDone;$("ab").hidden=window.allahDone}
   const ls=await getAll("lines");for(const u in ls)if(LN[u])Object.assign(LN[u],ls[u])}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح — لن يُحفظ شيء.")}
  build();window.__ready=true})();
 </script></body></html>
