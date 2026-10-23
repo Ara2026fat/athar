@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أثر — توليد كلام أثر الجماعي</title>
+<style>
+:root{--g:#2A8067;--p:#FDF7E8;--ink:#1d2b26;--m:#6b7a73;--r:#b3382c;--a:#c98a1d}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--p);color:var(--ink);font:19px/1.7 "Noto Naskh Arabic","Amiri",system-ui,sans-serif;padding:14px;max-width:760px;margin-inline:auto;overflow-x:hidden}
+h1{color:var(--g);font-size:26px;margin:.2em 0}
+.note{background:#fff;border:1px solid #e3d9bd;border-radius:12px;padding:10px 14px;margin:10px 0;color:var(--m);font-size:16px}
+.warn{border-color:var(--r);color:var(--r)}
+label{display:block;font-weight:700;margin:14px 0 4px;font-size:18px}
+input,select,button,textarea{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid #cfc6a8;background:#fff;width:100%;min-width:0}
+input[type=checkbox]{width:28px;height:28px;padding:0;flex:none}
+button{background:var(--g);color:#fff;border:0;font-weight:700;cursor:pointer;min-height:56px;font-size:19px}
+button.s{background:#fff;color:var(--g);border:2px solid var(--g);width:auto;min-height:48px;padding:6px 14px;font-size:17px}
+button.bad{color:var(--r);border-color:var(--r)}button.ok{background:var(--g);color:#fff}
+button:disabled{opacity:.45}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1 1 auto}
+.chk{display:flex;gap:10px;align-items:center;margin:12px 0;font-weight:700}
+details.batch{background:#fff;border:2px solid #e3d9bd;border-radius:16px;margin:14px 0;overflow:hidden}
+details.batch.done{border-color:var(--g)}
+details.batch>summary{padding:14px 16px;font-weight:700;font-size:20px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;background:#f4efdc}
+details.batch>.bd{padding:6px 12px 14px}
+ul{list-style:none;padding:0;margin:0}
+li.ln{background:#fffdf5;border:1px solid #e3d9bd;border-radius:14px;margin:10px 0;padding:12px}
+li.ln.approved{border:2px solid var(--g)}li.ln.fix{border:2px solid var(--r)}li.ln.ed textarea{border-color:var(--a)}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.badge{font-size:16px;font-weight:700;padding:2px 12px;border-radius:99px;background:#eee;color:var(--m)}
+.badge.gen{background:#e7eefc;color:#1d4a9c}.badge.appr{background:#dff3ea;color:var(--g)}.badge.fix{background:#fbe4e1;color:var(--r)}
+textarea{font-size:28px;line-height:2;min-height:78px;resize:vertical;background:#fffdf5}
+.m{font-size:13px;color:var(--m);direction:ltr;text-align:right;margin:2px 0 8px}
+.att{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px dashed #cfc6a8;margin-top:8px;padding-top:8px}.att.sel{background:#e9f4ef;border-radius:10px}
+.att .l{flex:1 1 120px;font-size:16px}
+.bar{height:12px;background:#e8e0c8;border-radius:6px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:0;background:var(--g)}
+.tr{border-top:1px dashed #cfc6a8;margin-top:8px;padding-top:6px}.tr .tx{font-size:22px}.tr.sel{outline:3px solid #2c8a6b;border-radius:12px;background:#e9f4ef}.tr.dim{opacity:.35}
+#sbar{position:sticky;top:0;z-index:9;background:#e9f4ef;color:var(--g);border:2px solid var(--g);border-radius:12px;padding:8px 12px;font-weight:700;font-size:16px;margin-bottom:8px}#sbar.bad{background:#fbe4e1;color:var(--r);border-color:var(--r)}
+.sent{font-size:14px;color:var(--m);margin:4px 0}.sent mark{background:#ffe9a8;color:#000;border-radius:4px;padding:0 2px}
+#msg{position:sticky;bottom:6px;z-index:5;box-shadow:0 2px 10px #0002}
+</style>
+<style>
+#big{font-size:34px;font-weight:700;color:var(--g);text-align:center;margin:6px 0}
+.sm{font-size:15px;color:var(--m);text-align:center}
+.flt button.on{background:var(--g);color:#fff}
+.ln .tx{font-size:24px;line-height:1.9}
+.ln .sent{font-size:14px;color:var(--m)}
+#sbar{position:sticky;top:0;z-index:9;background:#e9f4ef;color:var(--g);border:2px solid var(--g);border-radius:12px;padding:8px 12px;font-weight:700;font-size:16px;margin-bottom:8px}#sbar.bad{background:#fbe4e1;color:var(--r);border-color:var(--r)}
+</style></head><body>
+<div id="sbar">…</div>
+<h1>توليد كلام أثر (٤ سطرًا)</h1>
+<div class="note">تعمل الأداة في متصفحك فقط. المفتاح في ذاكرة الصفحة <b>ولا يُحفظ أبدًا</b>. النتائج والإعدادات تُحفظ على جهازك، ويمكنك إغلاق الصفحة والمتابعة لاحقًا. الصوت <b>اصطناعي</b> ويُوسَم <code>synthetic</code>.</div>
+<label for="k">مفتاح ElevenLabs (لا يُحفظ)</label><input id="k" type="password" autocomplete="off" dir="ltr" placeholder="sk_...">
+<label for="vid">معرّف الصوت (athar guide)</label><input id="vid" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC">
+<label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3</option><option value="eleven_multilingual_v2">eleven_multilingual_v2</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option><option value="eleven_flash_v2_5">eleven_flash_v2_5</option></select>
+<label for="st">الثبات</label><select id="st"><option value="1">١٫٠ Robust (موصى به)</option><option value="0.5">٠٫٥ Natural</option><option value="0">٠٫٠ Creative</option></select>
+<div class="chk"><input type="checkbox" id="nt" checked><label for="nt" style="margin:0">توليد بدون تشكيل: يُرسل النص كما هو (مفعَّل افتراضيًا). عند إطفائه يُستعمل جدول التشكيل للأسطر المغطّاة إن وُجد.</label></div>
+<div class="row"><button id="tj" class="s">استيراد جدول تشكيل (JSON: معرّف ← نص مشكول)</button><input id="tjf" type="file" accept=".json,application/json" hidden></div>
+<div class="sm" id="tinfo"></div>
+<label for="al">صيغة لفظ الجلالة (تُنقل من gen.html إن وُجدت)</label><select id="al"><option value="0">الأصل</option><option value="1">ألف خنجرية</option><option value="2">فتحة صريحة على الألف</option><option value="3">كلمة قبلها (قَالَ)</option><option value="4">ألف وصل ٱ</option></select>
+<label for="rules">قواعد الاستبدال (<span dir="ltr">كلمة=&gt;بديل</span> في كل سطر)</label><textarea id="rules" rows="3" style="font-size:20px"></textarea>
+<div class="note" id="est"></div>
+<div id="big">٠ / ٤</div><div class="bar"><i id="pb"></i></div><div class="sm" id="chs"></div>
+<div class="row" style="margin-top:10px"><button id="smp">ولّد ٢٠ سطرًا تجريبيًا</button><button id="all">ولّد الكل</button><button id="stop" class="s bad" disabled>إيقاف آمن</button></div>
+<div class="row" style="margin-top:8px"><button id="clr" class="s bad">مسح المحفوظ</button></div>
+<h2>التنزيل (٧٥ ملفًا لكل ZIP)</h2><div id="zips" class="row"></div>
+<h2>الأسطر</h2>
+<div class="row flt"><button class="s on" data-f="all">الكل</button><button class="s" data-f="todo">غير المولَّد</button><button class="s" data-f="gen">مولَّد</button><button class="s" data-f="mark">معلَّم للإعادة</button></div>
+<ul id="list"></ul>
+<div id="msg" class="note">جاهز.</div>
+<script>
+const LINES=[["athar.ist.wait","يومٌ جديد… هيّا نذكر الله"],["athar.sab.wait","الصباح جميل… هيّا نذكر الله"],["athar.kas.wait","حان وقت النهوض… هيّا بنا"],["athar.sabr.wait","الصبر جميل… نصبر ونحتسب"]];
+const $=i=>document.getElementById(i),msg=t=>$("msg").textContent=t,CPZ=75,FO="athar_kid";
+const L={},TASH={};let DB=null,filt="all",stopF=false,running=false,cur=null,SAMPLE=[];
+LINES.forEach(([id,text])=>L[id]={id,text,blob:null,sent:null,mark:false,meta:null});
+const ANAME=["الأصل","ألف خنجرية","فتحة صريحة","كلمة قبلها","ألف وصل"];
+const D="[\\u064B-\\u065F\\u0670]*",LET="\\u0621-\\u064A\\u0671";
+const ALLAH=new RegExp("(^|[^"+LET+"\\u064B-\\u065F\\u0670])([وفبت]"+D+")?((?:ا|ٱ)"+D+")?(ل"+D+")(ل"+D+")(ه)("+D+")(م"+D+")?(?![" + LET + "])","g");
+function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l1,l2,h,hd,mim)=>{
+ px=px||"";al=al||"";mim=mim||"";const bare=x=>x.replace(new RegExp(D,"g"),"");
+ const hm=(hd||"").replace(/[\u0651\u0670]/g,"")||"\u064F";
+ const core=(a,L1)=>a+L1+"ل\u0651\u064E\u0670"+"ه"+hm+mim;
+ const A=bare(al),L=al?bare(l1):l1;
+ if(v===1)return pre+px+core(A,L);
+ if(v===2)return pre+px+core(!px&&al?"ا\u064E":A,L);
+ if(v===3)return pre+(!px&&al&&pre===""?"قَالَ ":"")+px+core(A,L);
+ if(v===4)return pre+px+core(!px&&al?"\u0671":A,L);
+ return m})}
+
+function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
+
+function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
+function sentOf(id){let t=L[id].text;if(!$("nt").checked&&TASH[id])t=TASH[id];return allahVar(applyRules(t),$("al").value)}
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
+function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off=0;const d=new Date(),dt=((d.getFullYear()-1980)<<9|(d.getMonth()+1)<<5|d.getDate())&0xFFFF,tm=(d.getHours()<<11|d.getMinutes()<<5|(d.getSeconds()>>1))&0xFFFF;
+ for(const f of files){const nm=enc.encode(f.name),crc=crc32(f.data),sz=f.data.length,lh=new DataView(new ArrayBuffer(30));
+  lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(10,tm,true);lh.setUint16(12,dt,true);lh.setUint32(14,crc,true);lh.setUint32(18,sz,true);lh.setUint32(22,sz,true);lh.setUint16(26,nm.length,true);
+  parts.push(lh.buffer,nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(12,tm,true);ch.setUint16(14,dt,true);ch.setUint32(16,crc,true);ch.setUint32(20,sz,true);ch.setUint32(24,sz,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);
+  central.push(ch.buffer,nm);off+=30+nm.length+sz}
+ let csz=0;central.forEach(c=>csz+=c.byteLength!==undefined?c.byteLength:c.length);const e=new DataView(new ArrayBuffer(22));
+ e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,csz,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
+const sha=async u=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",u))].map(b=>b.toString(16).padStart(2,"0")).join("");
+
+/* ── IndexedDB (قاعدة مستقلة؛ لا مفتاح) ── */
+const pq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open("athar-gen-fix4",1);r.onupgradeneeded=()=>{r.result.createObjectStore("kv");r.result.createObjectStore("lines")};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function put(s,k,v){if(!DB)return;try{await pq(DB.transaction(s,"readwrite").objectStore(s).put(v,k))}catch(e){msg("تعذّر الحفظ: "+e.message)}}
+async function all(s){const o=DB.transaction(s).objectStore(s),ks=await pq(o.getAllKeys()),vs=await pq(o.getAll()),m={};ks.forEach((k,i)=>m[k]=vs[i]);return m}
+const SET=["vid","mo","st","al","rules"];
+function saveSet(){const o={};SET.forEach(k=>o[k]=$(k).value);o.nt=$("nt").checked;o.tash=TASH;o.sample=SAMPLE;put("kv","settings",o);sbar();est()}
+const saveLine=id=>{const l=L[id];put("lines",id,{blob:l.blob,sent:l.sent,mark:l.mark,meta:l.meta})};
+/* قراءة إعدادات gen.html (قراءة فقط، دون إنشاء قاعدته إن لم توجد) */
+async function importFromGen(){try{if(!indexedDB.databases)return false;const dbs=await indexedDB.databases();if(!dbs.some(d=>d.name==="athar-gen"))return false;
+ const db=await new Promise((res,rej)=>{const r=indexedDB.open("athar-gen");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+ if(!db.objectStoreNames.contains("kv")){db.close();return false}
+ const s=await pq(db.transaction("kv").objectStore("kv").get("settings"));db.close();if(!s)return false;
+ if(s.al!=null)$("al").value=s.al;if(s.rules!=null)$("rules").value=s.rules;return true}catch(e){return false}}
+/* ── عرض ── */
+const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const done=()=>LINES.filter(([id])=>L[id].blob).length;
+function est(){const tot=LINES.reduce((a,[id])=>a+sentOf(id).length,0),dn=LINES.reduce((a,[id])=>a+(L[id].blob?(L[id].sent||"").length:0),0),rem=LINES.reduce((a,[id])=>a+(L[id].blob?0:sentOf(id).length),0);
+ $("est").innerHTML=`إجمالي المحارف: <b>${tot.toLocaleString("en")}</b> ≈ كريديت · المتبقي للتوليد: <b>${rem.toLocaleString("en")}</b>`;
+ $("chs").textContent=`محارف مستهلكة (تقريبًا): ${dn.toLocaleString("en")} من ${tot.toLocaleString("en")}`;
+ const n=done();$("big").textContent=`${nAr(n)} / ${nAr(LINES.length)}`;$("pb").style.width=(100*n/LINES.length)+"%";
+ $("all").textContent=n&&n<LINES.length?`تابع التوليد (باقي ${nAr(LINES.length-n)})`:"ولّد الكل";
+ $("tinfo").textContent=Object.keys(TASH).length?`جدول التشكيل يغطي ${Object.keys(TASH).filter(k=>L[k]).length} من ${LINES.length} سطرًا`:"لا جدول تشكيل محمَّل (التغطية ٠٪)"}
+function sbar(){const al=+$("al").value,n=$("rules").value.split(/\r?\n/).filter(x=>x.indexOf("=>")>0&&x.split("=>")[1].trim()).length,bad=al===0,e=$("sbar");
+ e.className=bad?"bad":"";e.textContent="صيغة لفظ الجلالة: "+ANAME[al]+(bad?" ⚠ الأصل":"")+" · قواعد الاستبدال: "+n+" · النموذج: "+$("mo").value}
+function zips(){const ok=LINES.filter(([id])=>L[id].blob&&!L[id].mark),n=Math.ceil(ok.length/CPZ),b=$("zips");b.innerHTML="";
+ if(!n){b.textContent="لا ملفات مولَّدة بعد.";return}
+ for(let i=0;i<n;i++){const x=document.createElement("button");x.className="s";x.dataset.z=i;x.textContent=`جزء ${nAr(i+1)} من ${nAr(n)}`;b.appendChild(x)}}
+function row(id){let li=document.getElementById("l_"+id);const l=L[id];
+ if(!li){li=document.createElement("li");li.className="ln";li.id="l_"+id;li.innerHTML=`<div class="hd"><b class="n"></b><span class="badge"></span></div><div class="tx"></div><div class="m"></div><div class="sent"></div><div class="row"><button class="s" data-p="${id}">▶ استمع</button><button class="s" data-g="${id}"></button><button class="s bad" data-m="${id}"></button></div>`;li.querySelector(".n").textContent=nAr(LINES.findIndex(x=>x[0]===id)+1);li.querySelector(".tx").textContent=l.text;li.querySelector(".m").textContent=id}
+ const st=l.mark?["fix","معلَّم للإعادة ✖"]:l.blob?["appr","مولَّد ✔"]:["","لم يُولَّد"];
+ const b=li.querySelector(".badge");b.className="badge "+st[0];b.textContent=st[1];li.classList.toggle("fix",l.mark);
+ li.querySelector("[data-g]").textContent=l.blob?"ولّد مرة أخرى":"ولّد";li.querySelector("[data-m]").textContent=l.mark?"إزالة العلامة":"علّم للإعادة";li.querySelector("[data-p]").disabled=!l.blob;
+ li.querySelector(".sent").textContent=l.sent&&l.sent!==l.text?"المُرسَل: "+l.sent:"";
+ const show=filt==="all"||(filt==="todo"&&!l.blob)||(filt==="gen"&&l.blob)||(filt==="mark"&&l.mark);li.hidden=!show;return li}
+function renderAll(){const u=$("list");if(!u.children.length)LINES.forEach(([id])=>u.appendChild(row(id)));else LINES.forEach(([id])=>row(id));est();zips()}
+/* ── API مع إعادة المحاولة ── */
+class Fatal extends Error{}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms*(window.__BACKOFF??1)));
+async function tts(text){const k=$("k").value.trim(),v=$("vid").value.trim();if(!k||!v)throw new Fatal("المفتاح ومعرّف الصوت مطلوبان");
+ const body={text,model_id:$("mo").value,voice_settings:{stability:+$("st").value,similarity_boost:.8,style:0,use_speaker_boost:true}};
+ for(let a=0;a<6;a++){let r;try{r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify(body)})}catch(e){if(a<3){await sleep(1500*(a+1));continue}throw e}
+  if(r.ok)return r.blob();const tx=(await r.text()).slice(0,300);
+  if(/quota/i.test(tx))throw new Fatal("نفد رصيد الحروف (quota). تقدّمك محفوظ؛ زد الرصيد ثم اضغط «تابع».");
+  if(r.status===401)throw new Fatal("401: المفتاح غير صالح أو منتهٍ.");
+  if(r.status===429){const ra=+r.headers.get("retry-after")||0;msg("429: ازدحام، إعادة المحاولة…");await sleep(ra?ra*1000:Math.min(30000,1500*2**a));continue}
+  if(r.status>=500&&a<3){await sleep(2000);continue}
+  throw new Error(r.status+" "+tx.slice(0,100))}
+ throw new Error("429 متكرر: خفّض السرعة وأعد المحاولة لاحقًا")}
+async function genOne(id){const sent=sentOf(id),blob=await tts(sent),l=L[id];Object.assign(l,{blob,sent,mark:false,meta:{voice:$("vid").value.trim(),model:$("mo").value,stab:+$("st").value,allah:+$("al").value,ts:Date.now()}});saveLine(id);row(id);est();zips()}
+async function runQueue(ids,label){if(running)return;ids=ids.filter(Boolean);if(!ids.length)return msg("لا شيء للتوليد.");running=true;stopF=false;$("stop").disabled=false;["all","smp"].forEach(x=>$(x).disabled=true);
+ let i=0,errs=0,fatal=null;const w=async()=>{while(!stopF&&i<ids.length){const id=ids[i++];try{await genOne(id)}catch(e){if(e instanceof Fatal){fatal=e.message;stopF=true;return}errs++;L[id].err=e.message;msg(id+": "+e.message)}}};
+ await Promise.all([w(),w()]);running=false;$("stop").disabled=true;["all","smp"].forEach(x=>$(x).disabled=false);est();
+ msg(fatal?"توقّف آمن: "+fatal:stopF?"أُوقف بأمان. يمكنك المتابعة لاحقًا.":`انتهى ${label}`+(errs?` (أخطاء: ${errs})`:"")+".")}
+function play(id){if(cur)cur.pause();cur=new Audio(URL.createObjectURL(L[id].blob));cur.play()}
+async function zipPart(i){const ok=LINES.filter(([id])=>L[id].blob&&!L[id].mark).slice(i*CPZ,(i+1)*CPZ),files=[],enc=new TextEncoder(),man={schema:"athar-record/1",tool:"gen_athar.html",created:new Date().toISOString(),speaker:"elevenlabs",synthetic:true,engine:"elevenlabs",voice:FO,audio_root:"audio/"+FO+"/",format:"mp3",part:i+1,units:[],entries:{},incomplete:[],text_hash:{}};
+ for(const[id,text] of ok){const l=L[id],data=new Uint8Array(await l.blob.arrayBuffer()),rel=FO+"/"+id+".mp3";files.push({name:"audio/"+rel,data});
+  man.units.push({u:id,file:"audio/"+rel,mime:"audio/mpeg",bytes:data.length,sha256:await sha(data),ids:[id],text,eleven_voice_id:l.meta.voice,model:l.meta.model,stability:l.meta.stab,allah_variant:l.meta.allah,sent_text:l.sent,recorded_at:new Date(l.meta.ts).toISOString(),synthetic:true});man.entries[id]={file:rel}}
+ files.push({name:"manifest.json",data:enc.encode(JSON.stringify(man,null,1))});files.push({name:"README.txt",data:enc.encode("حزمة صوت اصطناعي (ElevenLabs) لأسطر أثر. اسم الملف = معرّف السطر.\r\n")});
+ const a=document.createElement("a");a.href=URL.createObjectURL(zipBuild(files));a.download=`athar-guide-part${i+1}.zip`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);msg(`نُزّل الجزء ${i+1}: ${ok.length} ملفًا.`)}
+/* ── أحداث ── */
+document.body.addEventListener("click",async e=>{const t=e.target.closest("button");if(!t)return;const D=t.dataset;
+ if(D.p)return play(D.p);
+ if(D.g){t.disabled=true;try{await genOne(D.g)}catch(x){msg(x.message)}t.disabled=false;return}
+ if(D.m){L[D.m].mark=!L[D.m].mark;saveLine(D.m);row(D.m);zips();return}
+ if(D.z!==undefined)return zipPart(+D.z);
+ if(D.f){filt=D.f;document.querySelectorAll(".flt button").forEach(b=>b.classList.toggle("on",b===t));return renderAll()}});
+$("all").onclick=()=>runQueue(LINES.filter(([id])=>!L[id].blob&&!L[id].mark||(!L[id].blob)).map(x=>x[0]),"كل الأسطر");
+$("smp").onclick=()=>{if(!SAMPLE.length){const ids=LINES.map(x=>x[0]);for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}SAMPLE=ids.slice(0,20);saveSet()}
+ filt="gen";document.querySelectorAll(".flt button").forEach(b=>b.classList.toggle("on",b.dataset.f==="gen"));runQueue(SAMPLE.filter(id=>!L[id].blob),"العيّنة التجريبية").then(()=>renderAll())};
+$("stop").onclick=()=>{stopF=true;msg("جارٍ الإيقاف بعد الطلبات الجارية…")};
+$("tj").onclick=()=>$("tjf").click();
+$("tjf").onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());let n=0;for(const k in j)if(L[k]&&typeof j[k]==="string"){TASH[k]=j[k];n++}saveSet();est();msg("حُمّل جدول التشكيل: "+n+" سطرًا مطابقًا.")}catch(x){msg("ملف غير صالح.")}};
+$("clr").onclick=async()=>{if(!confirm("مسح كل المحفوظ؟"))return;if(DB){try{const tx=DB.transaction(["kv","lines"],"readwrite");tx.objectStore("kv").clear();tx.objectStore("lines").clear();await new Promise(r=>{tx.oncomplete=tx.onerror=tx.onabort=()=>r()})}catch(x){}}
+ LINES.forEach(([id])=>Object.assign(L[id],{blob:null,sent:null,mark:false,meta:null}));SAMPLE=[];Object.keys(TASH).forEach(k=>delete TASH[k]);renderAll();msg("مُسح المحفوظ.")};
+[...SET,"nt"].forEach(k=>$(k).addEventListener("change",saveSet));$("rules").addEventListener("input",saveSet);
+/* ── الإقلاع ── */
+(async()=>{let had=false;try{DB=await idb();const s=(await all("kv")).settings;if(s){had=true;SET.forEach(k=>{if(s[k]!=null)$(k).value=s[k]});$("nt").checked=s.nt!==false;Object.assign(TASH,s.tash||{});SAMPLE=s.sample||[]}
+  const ls=await all("lines");for(const id in ls)if(L[id])Object.assign(L[id],ls[id])}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح.")}
+ if(!had&&await importFromGen())msg("نُقلت صيغة لفظ الجلالة وقواعد الاستبدال من gen.html.");
+ renderAll();sbar();window.__ready=true})();
+</script></body></html>
