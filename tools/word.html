@@ -1,0 +1,22 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مختبر الكلمة</title>
+<style>body{font-family:system-ui,"Noto Naskh Arabic",sans-serif;background:#fdf8e8;margin:0;padding:16px;font-size:20px;color:#243}h1{color:#2c8a6b;font-size:28px}label{display:block;margin:14px 0 6px;font-weight:700}input,select{width:100%;box-sizing:border-box;font-size:22px;padding:12px;border:1px solid #cfc6a8;border-radius:10px;background:#fffdf5}button{font-size:22px;padding:14px 18px;border-radius:12px;border:2px solid #2c8a6b;background:#fff;color:#2c8a6b;font-weight:700;margin:6px 0}button.g{background:#2c8a6b;color:#fff;width:100%}.v{background:#fff;border:1px solid #cfc6a8;border-radius:12px;padding:12px;margin:10px 0}.t{font-size:30px;line-height:1.8}#m{color:#a33;margin-top:10px}</style></head><body>
+<h1>مختبر الكلمة</h1><p>يولّد الكلمة وحدها بعدّة صيغ لتسمع الأوضح. المفتاح لا يُحفظ.</p>
+<label for="k">مفتاح ElevenLabs</label><input id="k" type="password" dir="ltr" autocomplete="off">
+<label for="vid">معرّف الصوت</label><input id="vid" dir="ltr" value="SZmHEKIe92PCiLXLrj0A">
+<label for="mo">النموذج</label><select id="mo"><option>eleven_v3</option><option>eleven_multilingual_v2</option></select>
+<label for="w">الكلمة أو العبارة القصيرة</label><input id="w" value="بَعْدَ">
+<button class="g" id="go">ولّد الصيغ</button><div id="m"></div><div id="out"></div>
+<script>
+const $=i=>document.getElementById(i),TAT="ـ";
+function vars(w){const a=[["الأصل",w]];
+ a.push(["بتطويل بعد العين",w.replace(/ع/g,"ع"+TAT)]);
+ a.push(["بتطويل قبل العين وبعدها",w.replace(/ع/g,TAT+"ع"+TAT)]);
+ a.push(["مكررة مع وقف: الكلمة، الكلمة",w+"، "+w]);
+ a.push(["داخل عبارة قصيرة: قالَ "+w,"قَالَ: "+w]);return a}
+async function tts(t){const k=$("k").value.trim(),v=$("vid").value.trim();if(!k||!v)throw new Error("المفتاح والصوت مطلوبان");
+ const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text:t,model_id:$("mo").value,voice_settings:{stability:$("mo").value==="eleven_v3"?1:.6,similarity_boost:.8,style:0,use_speaker_boost:true}})});
+ if(!r.ok)throw new Error(r.status+" "+(await r.text()).slice(0,100));return r.blob()}
+$("go").onclick=async()=>{const w=$("w").value.trim();if(!w)return;$("out").innerHTML="";$("m").textContent="";
+ for(const [n,t] of vars(w)){const d=document.createElement("div");d.className="v";d.innerHTML='<div>'+n+'</div><div class="t"></div><button>▶ استمع</button>';d.querySelector(".t").textContent=t;$("out").appendChild(d);
+  try{const b=await tts(t),u=URL.createObjectURL(b);d.querySelector("button").onclick=()=>new Audio(u).play()}catch(e){$("m").textContent=e.message;d.querySelector("button").disabled=true;break}}};
+</script></body></html>
