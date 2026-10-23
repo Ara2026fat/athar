@@ -9,7 +9,8 @@
    - audio/index.json يُخزَّن بحذر (فشله لا يُفشل التثبيت)، وحزم sp_*.bin
      لا يعترضها العامل: تخزّنها الصفحة في athar-packs-v1.
    ═══════════════════════════════════════════════════════════════ */
-const CACHE = "athar-shell-v8";
+const CACHE = "athar-shell-v9";
+const KIDC = "athar-kid-v1";   /* أصوات أثر الجديدة: تُخزَّن عند أول طلب (الدرس) لا دفعة واحدة، ولا تُحذف عند تحديث الصدفة */
 const SHELL = ["./", "./index.html"];
 const OPTIONAL = ["./audio/index.json", "./sequence.json"];   /* قد لا توجد: لا تُفشل التثبيت */
 
@@ -41,6 +42,7 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;                 /* لا اعتراض خارج الأصل */
+  if (/\/audio\/athar_kid\/[^/]+\.mp3$/.test(url.pathname)) { e.respondWith(kidAudio(req, url)); return; }
   if (req.headers.has("range")) return;                            /* الصوت/الحزم تُخدَم مباشرة */
   if (/\/audio\/sp_[^/]+\.bin$/.test(url.pathname)) return;
 
@@ -63,3 +65,25 @@ self.addEventListener("fetch", e => {
     }
   })());
 });
+
+/* ملفات أصوات أثر: أول طلب كامل يُخزَّن، وطلبات Range (المشغّل) تُخدَم منه بـ 206 */
+async function kidAudio(req, url) {
+  try {
+    const c = await caches.open(KIDC);
+    let r = await c.match(url.pathname);
+    if (!r) {
+      const net = await fetch(url.href, { cache: "no-cache" });           /* بلا Range: ملف كامل */
+      if (!net || !net.ok) return fetch(req);
+      try { await c.put(url.pathname, net.clone()); } catch {}
+      r = net;
+    }
+    const range = req.headers.get("range");
+    if (!range) return r;
+    const buf = await r.arrayBuffer();
+    const m = /bytes=(\d*)-(\d*)/.exec(range);
+    let start = m && m[1] ? +m[1] : 0, end = m && m[2] ? +m[2] : buf.byteLength - 1;
+    if (end >= buf.byteLength) end = buf.byteLength - 1;
+    if (start > end) return new Response("", { status: 416, headers: { "Content-Range": "bytes */" + buf.byteLength } });
+    return new Response(buf.slice(start, end + 1), { status: 206, headers: { "Content-Type": "audio/mpeg", "Content-Range": "bytes " + start + "-" + end + "/" + buf.byteLength, "Content-Length": String(end - start + 1), "Accept-Ranges": "bytes" } });
+  } catch { return fetch(req); }
+}

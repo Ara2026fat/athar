@@ -471,6 +471,8 @@ body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);display:flex;align-
 #boy{pointer-events:none}
 #boyF{transform-box:fill-box;transform-origin:50% 100%;animation:boyBreathe 3.4s ease-in-out infinite}
 #boyF image{transition:opacity .22s ease}
+#boy{transform-box:fill-box;transform-origin:50% 100%}
+#boy.sway{transition:transform 1.1s ease-in-out}
 @keyframes boyBreathe{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-2.2px) scale(1.012,1.018)}}
 @media(prefers-reduced-motion:reduce){#boyF{animation:none}#placeBg,#placeBg image,#boyF image{transition:none}}
 </style>
@@ -1216,6 +1218,11 @@ const Engine = {
     return this;
   },
 
+  order(e) {
+    if (e && e.pri === "file") { const f = this.providers.find(p => p.name === "file"); if (f) return [f].concat(this.providers.filter(p => p !== f)); }
+    return this.providers;
+  },
+
   entry(id) {
     const m = this.manifest[id];
     if (!m) return null;
@@ -1226,7 +1233,7 @@ const Engine = {
   resolve(id) {
     const e = this.entry(id);
     if (!e) return { provider: null, reason: "معرّف غير مسجَّل" };
-    for (const p of this.providers) {
+    for (const p of this.order(e)) {
       if (this.eligible(p, e)) return { provider: p, entry: e };
     }
     return { provider: null, entry: e, reason: "لا مزوّد متاح" };
@@ -1259,8 +1266,8 @@ const Engine = {
     this.cfg.onStateChange && this.cfg.onStateChange({ id, provider: provider.name, entry });
     provider.play(entry, r => {
       if (r && r.failed) {   /* سقوط تلقائي إلى المزوّد التالي — بنفس البوّابة، لا بفحصٍ أضعف منها */
-        const i = this.providers.indexOf(provider);
-        const nx = this.providers.slice(i + 1).find(p => this.eligible(p, entry));
+        const L = this.order(entry), i = L.indexOf(provider);
+        const nx = L.slice(i + 1).find(p => this.eligible(p, entry));
         if (nx) { this._active = nx; this.cfg.onStateChange && this.cfg.onStateChange({ id, provider: nx.name, entry });
           return nx.play(entry, opts.onEnd); }
       }
@@ -1842,7 +1849,7 @@ const Director = {
       nextBtn(box, locked) {
         const b = el("button", "btn next" + (locked ? " off" : ""), I18n.t("next"));
         if (locked) b.disabled = true;
-        b.onclick = () => { AtharAudio.sfx("tap"); D.scroll(); D.step(); box.classList.add("past"); D.stage.innerHTML = ""; };
+        b.onclick = () => { AtharAudio.sfx("tap"); box.classList.add("past"); D.stage.innerHTML = ""; D.scroll(); D.step(); };
         box.append(b);
         D.scroll();
       },
@@ -2526,7 +2533,8 @@ const SCENE = `
 <!-- ══ أثر ══ -->
 <g id="athar" transform="translate(150 520) scale(.78)">
  <g id="boy" display="none"><ellipse cx="30" cy="151" rx="26" ry="6" fill="#2F5222" opacity=".25" filter="url(#sf)"/>
-  <g id="boyF"><image id="boyImg" href="" x="-17" y="-22" width="94" height="174" preserveAspectRatio="xMidYMax meet"/><image id="boyImg2" href="" x="-17" y="-22" width="94" height="174" preserveAspectRatio="xMidYMax meet" opacity="0"/></g></g>
+  <g id="boyF"><image id="boyImg" href="" x="-17" y="-22" width="94" height="174" preserveAspectRatio="xMidYMax meet"/><image id="boyImg2" href="" x="-17" y="-22" width="94" height="174" preserveAspectRatio="xMidYMax meet" opacity="0"/>
+   <g id="boyFace" pointer-events="none"><ellipse id="lidL" rx="1" ry="1" opacity="0"/><path id="lashL" fill="none" stroke="#3b2316" stroke-width=".8" stroke-linecap="round" opacity="0"/><ellipse id="lidR" rx="1" ry="1" opacity="0"/><path id="lashR" fill="none" stroke="#3b2316" stroke-width=".8" stroke-linecap="round" opacity="0"/><g id="bMouth" opacity="0"><ellipse id="bMo" rx="1" ry="1" fill="#5b1d22"/><ellipse id="bTo" rx="1" ry="1" fill="#d86b78"/></g></g></g></g>
  <g id="rig"><g id="abody">
   <ellipse cx="30" cy="150" rx="29" ry="8" fill="#2F5222" opacity=".22" filter="url(#sf)"/>
   <path d="M14 143h16v8H14zM32 143h16v8H32z" fill="#C99A66" stroke="#3A2E24" stroke-width="2.4" stroke-linejoin="round"/>
@@ -3813,7 +3821,8 @@ window.addEventListener("load", () => {
   var el = function(id){ return document.getElementById(id); };
 
   /* ── أثر الجديد ── */
-  var cur = "idle", poseT = null, readMode = false, front = "boyImg";
+  var cur = "idle", poseT = null, readMode = false, front = "boyImg", ctxP = "";
+  function rest(){ return ctxP || (readMode ? "read" : "idle"); }
   function poseUrl(p){ return BASE + "athar/" + p + ".webp"; }
   function setPose(p){
     if (!cfg.boy || p === cur) return;
@@ -3823,17 +3832,16 @@ window.addEventListener("load", () => {
   function pose(p, ms){
     if (!cfg.boy) return;
     clearTimeout(poseT); setPose(p);
-    if (ms) poseT = setTimeout(function(){ setPose(readMode ? "read" : "idle"); }, ms);
+    if (ms) poseT = setTimeout(function(){ setPose(rest()); }, ms);
   }
   if (cfg.boy) {
     el("rig").setAttribute("display", "none");
     el("boy").removeAttribute("display");
     el("boyImg").setAttribute("href", poseUrl("idle")); el("boyImg").style.opacity = 1;
     var fc = W.face.bind(W);
-    W.face = function(k){ fc(k); var p = MOOD_POSE[k] || "idle"; if (p === "idle" && readMode) p = "read"; if (cfg.boy) { clearTimeout(poseT); setPose(p); } };
+    W.face = function(k){ fc(k); var p = MOOD_POSE[k] || "idle"; if (p === "idle") p = rest(); if (cfg.boy) { clearTimeout(poseT); setPose(p); } };
     try { var sfx = window.AtharAudio.sfx.bind(window.AtharAudio); window.AtharAudio.sfx = function(n){ if (n === "ok") pose("cheer", 1500); return sfx.apply(null, arguments); }; } catch (e) {}
     /* إنصات عندما يُشغَّل صوت الدرس نفسه (لا كلام أثر) */
-    try { var sy = window.AtharAudio.say.bind(window.AtharAudio); window.AtharAudio.say = function(id, o){ var up = el("panel") && el("panel").classList.contains("up"); if (up && cur !== "listen") { clearTimeout(poseT); setPose("listen"); poseT = setTimeout(function(){ setPose(readMode ? "read" : "idle"); }, 2600); } return sy.apply(null, arguments); }; } catch (e) {}
   }
 
   /* ── خلفيات الأماكن ── */
@@ -3866,12 +3874,12 @@ window.addEventListener("load", () => {
   A.open = function(p){
     var exp = this.nextAt(p) || this.lastAt(p);
     readMode = !!(exp && exp.domain === "quran");
-    if (cfg.boy) setPose(readMode ? "read" : "idle");
+    if (cfg.boy) setPose(rest());
     if (exp) W.stage(p.place);
     return open0.apply(this, arguments);
   };
   var paint0 = A.paint;
-  A.paint = function(){ W.unstage(); readMode = false; if (cfg.boy) setPose("idle"); return paint0.apply(this, arguments); };
+  A.paint = function(){ W.unstage(); readMode = false; ctxP = ""; if (cfg.boy) setPose("idle"); return paint0.apply(this, arguments); };
 
   /* تحميل كسول: مكان اليوم أولًا ثم الباقي وقت الفراغ */
   var enter0 = A.enter;
@@ -3989,7 +3997,201 @@ window.addEventListener("load", () => {
   var stage1 = W.stage; W.stage = function(p){ var r = stage1.apply(this, arguments); refit(); return r; };
   var unstage1 = W.unstage; W.unstage = function(){ var r = unstage1.apply(this, arguments); el("pbG").style.transform = ""; el("panel").classList.remove("tight", "tight2"); return r; };
   var ph1 = W.phase; W.phase = function(){ var r = ph1.apply(this, arguments); refit(); return r; };
-  window.R3 = { fitNow: function(){ tighten(); fit(); }, refit: refit, cfg: cfg, pose: pose, setPose: setPose, stage: function(p){ W.stage(p); }, unstage: function(){ W.unstage(); } };
+
+
+
+  /* ═══ r3.4 · أصوات أثر الجديدة (ElevenLabs) — ملف لكل سطر athar، يُحمَّل عند الدرس فقط ═══
+     يُستعمل الملف فقط إن كان voice=="athar" والنصّ مطابقًا لنصّ التسجيل؛ وإلا يبقى الصوت القديم/الجهاز.
+     إن غاب الملف أو فشل: يسقط المحرّك تلقائيًا إلى pack ثم الجهاز. ?kid=0 يطفئها. */
+  var KID = {"athar.msj.open":"وأنت تدخل بيتًا من بيوت الله…","athar.msj.arch":"أضاء قوس مسجدنا","athar.ihs.open":"ما ضدّ أن تُحسن؟","athar.ihs.spring":"تدفّق نبعٌ جديد","athar.hij.open":"ثلاث عشرة سنة… وهو صابر","athar.hij.road":"امتدّ طريقٌ جديد في وادينا","athar.qur.open":"نعمتان تعيش فيهما ولا تشعر بهما","athar.qur.caravan":"مرّت قافلةٌ في وادينا","athar.mao.open":"سورةٌ تسأل سؤالًا… ثم تجيب بنفسها","athar.mao.bowl":"وُضع إناءٌ عند بابنا","athar.sawm.open":"يومٌ كامل بلا طعام… لماذا؟","athar.sawm.dates":"ظهر طبقُ تمرٍ عند بيتنا","athar.hajj.open":"بيتٌ يقصده الناس من كل مكان","athar.hajj.kaaba":"ظهر البيت في أفق وادينا","athar.hubb.open":"ميزانٌ واحد… يكفيك مع كل الناس","athar.hubb.trees":"نبتت شجرتان متجاورتان","athar.kanz.open":"كلمةٌ قصيرة… سمّاها النبي كنزًا","athar.kanz.gem":"لمعت جوهرةٌ في وادينا","athar.was.open":"ذهب عنّا… لكنّه لم يتركنا","athar.was.torch":"أُضيء مشعلٌ في وادينا","athar.sab.open":"أوّل ما تفتح عينيك…","athar.sab.sun":"أشرقت شمسٌ على وادينا","athar.haya.open":"ما الذي يمنعك حين لا يراك أحد؟","athar.haya.veil":"ارتفع سترٌ على وادينا","athar.mal.open":"حولك خلقٌ لا تراه","athar.mal.glow":"سطع نورٌ فوق التلّة","athar.ihs2.open":"كيف تُصلّي حين لا يراك أحد؟","athar.ihs2.mirror":"صفت مرآة الماء","athar.tw.open":"هل التوكّل أن نترك العمل؟","athar.tw.rope":"شُدّ حبلٌ على وتدٍ في وادينا","athar.mar.open":"إذا رأيتَ صاحبك يخطئ…","athar.mar.bell":"دقّ جرسٌ في وادينا","athar.im.open":"هل يبقى الإيمان كما هو؟","athar.im.sapling":"نبتت شتلةٌ صغيرة","athar.asma.open":"لربّك أسماءٌ حسنى… تعرف على بعضها","athar.asma.lanterns":"أُضيئت قناديلٌ في وادينا","athar.kh.open":"قلبُك يسير بجناحين","athar.kh.scale":"اتّزن ميزانٌ في وادينا","athar.fat.open":"تقرؤها كل يوم… أتعرف معناها؟","athar.fat.key":"ظهر مفتاحٌ ذهبيّ","athar.zal.open":"يومٌ تتكلّم فيه الأرض","athar.zal.grain":"لمعت حبّةٌ صغيرة","athar.zak.open":"في مالك حقٌّ ليس لك","athar.zak.purse":"امتلأ كيسٌ عند بابنا","athar.khu.open":"جسدُك يُصلّي… فأين قلبك؟","athar.khu.still":"سكنَ الوادي سكونًا جميلًا","athar.qal.open":"قطعةٌ صغيرة… تُصلح جسدك كلّه","athar.qal.heart":"نبض قلبٌ كبير في وادينا","athar.lis.open":"أربع كلماتٍ لا تليق بمؤمن","athar.lis.feather":"حطّت ريشةٌ بيضاء","athar.may.open":"علامةٌ واحدة… تدلّ على حُسن إسلامك","athar.may.quiet":"هدأ ركنٌ في وادينا","athar.sif.open":"كيف كان شكله ﷺ؟","athar.sif.perfume":"فاح عطرٌ في وادينا","athar.man.open":"تقولها كثيرًا… فما معناها؟","athar.man.words":"تناثرت كلماتٌ مضيئة","athar.tawb.open":"أخطأتَ؟ هناك بابٌ لا يُغلق","athar.tawb.door":"انفتح بابٌ في وادينا","athar.nim.open":"كم نعمةً أنت فيها الآن؟","athar.nim.harvest":"امتلأ الوادي ثمرًا","athar.dua.open":"تريد شيئًا؟ لك بابٌ مفتوح","athar.dua.hands":"ارتفعت يدان في وادينا","athar.ghi.open":"قصّةٌ حدثت في السوق","athar.ghi.scale":"اعتدل ميزانٌ في وادينا","athar.mub.open":"حين ترى من ابتُلي بشيء…","athar.mub.shelter":"ارتفع ظلٌّ يستر وادينا","athar.sal.open":"كيف نُهدي سلامنا لنبيّنا؟","athar.sal.crown":"تُوّج وادينا بنور","athar.qar.open":"يومٌ تُوزن فيه الأعمال","athar.qar.balance":"استقرّ ميزانٌ في وادينا","athar.has.open":"أعجبك شيءٌ عند غيرك؟","athar.has.blossom":"تفتّح زهرٌ في وادينا","athar.ras.open":"تحبّه… فكيف تتأدّب معه؟","athar.ras.dome":"ظهرت قبّةٌ خضراء في الأفق","athar.ahk.open":"كلّ فعلٍ تفعله… له لونٌ من خمسة","athar.hajj.wait":"الأفق ينتظر حتى تدعو","ent.ibadah.hajj":"التفتنا إلى جهة القبلة","athar.jum.wait":"سنرفع المنبر حين تستعدّ","ent.ibadah.jumuah":"باكرًا… والمسجد ينتظرنا","athar.khu.wait":"السكون ينتظر قلبك الحاضر","ent.ibadah.khushu":"وقفنا ساكنين قرب المحراب","athar.raw.wait":"مكان البيت ينتظر ركعتيك","ent.ibadah.rawatib":"فرغنا من الفريضة ولم نخرج بعد","athar.salat.hook":"يومُك مقسومٌ على خمس… فما هي؟","athar.salat.wait":"نترقّب الهلال فوق مسجدنا","ent.ibadah.salat":"نظرنا إلى الشمس فوق المسجد","athar.sawm.wait":"المائدة تنتظر يومك الصائم","ent.ibadah.sawm":"اقترب المغرب في بيتنا","athar.suj.wait":"سبعٌ من العلامات تنتظر سجودك","ent.ibadah.sujud":"وقفنا على أرض المسجد الهادئة","athar.tark.wait":"ننتظر جمعتك لنختم هنا","ent.ibadah.tark":"مررنا بصاحبنا عند الباب","athar.tash.wait":"نُهيّئ لك مجلسًا في مسجدنا","ent.ibadah.tashahhud":"جلسنا على السجّادة بهدوء","athar.tym.wait":"التراب ينتظر تجربتك","ent.ibadah.tayammum":"جلسنا قرب النبع والتراب حولنا","athar.wudu.wait":"النبع ينتظر وضوءك","ent.ibadah.wudu":"وصلنا والنبع ساكنٌ جافّ","athar.zak.hook":"أفي مالك شيءٌ ليس لك؟","athar.zak.wait":"الكيس ينتظر عطاءك","ent.ibadah.zakat":"جلسنا على عتبة بيتنا","athar.aad.hook":"ثلاثةٌ يجذبونك كل يوم… من هم؟","athar.aada.wait":"تلّتنا تنتظر خطوتك","ent.misc.aada":"المساء هادئ على التلّة","athar.ahkam.wait":"ألوانٌ تنتظر عند النبع","ent.misc.ahkam":"وقفنا عند ماء النبع","athar.ayy.hook":"أيّ أوقاتٍ في سنتك أفضل من غيرها؟","athar.ayyam.wait":"التقويم ينتظر على الطريق","ent.misc.ayyam":"نمشي والأيّام تمرّ بنا","athar.bay.wait":"الدينار ينتظر عند السوق","ent.misc.bay":"وصلنا إلى سوق الطريق","athar.fiqh.wait":"الكتاب ينتظر قرب النبع","ent.misc.fiqh":"جلسنا قرب ماء النبع","athar.izzah.wait":"الراية تنتظر على التلّة","ent.misc.izzah":"الصباح مشرقٌ فوق التلّة","athar.taq.hook":"دينُك كلّه في كلمتين… فما هما؟","athar.taqwa.wait":"الدرع ينتظر على التلّة","ent.misc.taqwa":"الشمس تميل فوق التلّة","athar.asr.wait":"المئذنة تنتظر خطوتك","ent.quran.asr":"وقفنا تحت المئذنة","athar.fatiha.wait":"المفتاح ينتظر خطوتك","ent.quran.fatiha":"وقفنا أمام المحراب","athar.feel.wait":"السماء هادئة… وننتظرك","ent.quran.feel":"دخلنا ساحة المسجد","athar.maoon.wait":"الإناء ينتظر عند الباب","ent.quran.maoon":"وصلنا باب المسجد","athar.qar.hook":"يومٌ تُوزن فيه الأعمال… فكيف ميزانك؟","athar.qariah.wait":"الميزان ينتظر خطوتك","ent.quran.qariah":"حلّ المساء… جلسنا وسط المسجد","athar.qur.hook":"أيّ نعمتين تعيش فيهما ولا تشعر بهما؟","athar.quraysh.wait":"الطريق ينتظر القافلة","ent.quran.quraysh":"جلسنا قرب المنبر","athar.zal.hook":"يومٌ تتكلّم فيه الأرض… فماذا تقول؟","athar.zalzalah.wait":"الأرض تنتظر خطوتك","ent.quran.zalzalah":"وقفنا على أرض المسجد","tr.new.0":"صباحٌ جديد في الوادي","tr.new.1":"يومٌ جديد… والشمس تميل","tr.new.2":"يومٌ جديد… وقد حلّ المساء","tr.arrive.home":"عدنا إلى بيتنا","tr.arrive.road":"ها نحن في الطريق","tr.arrive.spring":"وصلنا إلى النبع","tr.arrive.hill":"اصعد معي إلى التلّة","tr.arrive.masjid":"ادخل بيت الله معي","tr.next":"ما زلنا هنا… وعندنا درسٌ آخر","tr.here":"غدًا نكمل هنا","tr.depart.home":"غدًا نكون في بيتنا","tr.depart.road":"غدًا نمشي معًا في الطريق","tr.depart.spring":"غدًا نلقاك عند النبع","tr.depart.hill":"غدًا نصعد إلى التلّة","tr.depart.masjid":"غدًا نمضي إلى المسجد","tr.end":"انتهى يومنا… إلى الغد","athar.ahk.prism":"انكسر الضوء ألوانًا","athar.fiq.open":"لماذا نتعلّم ديننا؟","athar.fiq.lamp":"أُضيء مصباحٌ فوق كتاب","athar.ayy.open":"في سنتك أوقاتٌ أفضل من غيرها","athar.ayy.cal":"ظهر تقويمٌ في وادينا","athar.bay.open":"حين تبيع أو تشتري… ما الذي يجوز؟","athar.bay.coin":"لمع دينارٌ في وادينا","daily.offer":"عندي لك مهمّةٌ اليوم","daily.done":"تركتَ أثرًا جديدًا","daily.again":"أثرُك يزداد عمقًا","athar.suj.open":"حين تسجد… ماذا يلمس الأرض منك؟","athar.suj.seven":"ظهرت سبع علاماتٍ في وادينا","athar.tash.open":"وفي آخر صلاتك… جلسةٌ لها كلام","athar.tash.seat":"اتّسع مجلسٌ في مسجدنا","athar.hal.open":"يومُك فيه ما يسرّ وما يسوء","athar.hal.paths":"التقى طريقان في وادينا","athar.souq.open":"أماكنُ يغفل فيها الناس","athar.souq.mill":"دارت طاحونةٌ مع الريح","athar.harf.open":"حرفٌ واحد… كم فيه؟","athar.harf.letters":"تناثرت حروفٌ من نور","valley.mine":"هذا كلّه… أنت صنعتَه","valley.empty":"وادينا ينتظر أوّل أثرٍ لك","athar.wahy.open":"ليلةٌ تغيّرت فيها الدنيا","athar.wahy.cave":"أضاء غارٌ في جبلنا","athar.aww.open":"من سبق الناس إلى الإيمان؟","athar.aww.lights":"أُضيئت خمسة أنوار","athar.aad.open":"ثلاثةٌ يجذبونك كل يوم","athar.aad.guard":"قام حارسٌ على وادينا","athar.taq.open":"دينُك كلّه في كلمتين","athar.taq.shield":"ظهر درعٌ في وادينا","athar.jum.open":"غدًا جمعة… كيف تستعدّ؟","athar.jum.minbar":"ارتفع منبرٌ في مسجدنا","athar.tark.open":"ثلاث مرّاتٍ فقط… ثم ماذا؟","athar.tark.seal":"خُتم ختمٌ في وادينا","athar.ghb.open":"كلامٌ خلف الظهر","athar.ghb.lips":"صمتٌ جميل في وادينا","athar.kib.open":"ما الفرق بين الجميل والمتكبّر؟","athar.kib.branch":"انحنى غصنٌ متواضع","athar.ghd.open":"حين تغلي… ماذا تصنع؟","athar.ghd.ember":"خمدت جمرةٌ في وادينا","athar.kas.open":"ثقلٌ يشدّك عن الخير","athar.kas.sun":"ارتفعت شمسٌ على وادينا","athar.taj.open":"لكلّ بيتٍ بابٌ لا يُفتح","athar.taj.curtain":"أُسدل سترٌ في وادينا","athar.fad.open":"حيٌّ وميّت… والفرق كلمة","athar.fad.pulse":"نبض الوادي","athar.thw.open":"ثوبُك… فيه ذكر","athar.thw.cloak":"نُشر رداءٌ في وادينا","athar.ist.open":"نومُك موتةٌ صغرى","athar.ist.dawn":"انبلج فجرٌ في وادينا","athar.tw3.open":"أكبرُ سؤالٍ في حياتك","athar.tw3.core":"نبض قلبُ الوادي","athar.shk.open":"ذنبٌ واحد… لا يُغفر","athar.shk.crack":"التأم صدعٌ في وادينا","athar.tym.open":"وإن لم تجد ماءً… ماذا تصنع؟","athar.tym.dust":"طهُرَ ترابُ وادينا","athar.raw.open":"ركعتان… وبيتٌ في الجنّة","athar.raw.house":"ارتفع بيتٌ في وادينا","athar.sah.open":"من حملوا إليك هذا الدين","athar.sah.stars":"أضاءت أربعة نجوم","athar.kht.open":"آخرُ رسولٍ أُرسل","athar.kht.seal":"خُتم ختمٌ أخير","athar.izz.open":"من يُصلح حال المسلمين؟","athar.izz.banner":"ارتفعت رايةٌ في وادينا","next.here":"التالي هنا، تعال","intro.1":"هذا واديك. أنا أثر، ورفيقك هنا. والوادي ينتظرك.","intro.2":"في كل مكانٍ درس. بيتك، وطريقك، ونبعك، ومسجدك. تدخل المكان فتتعلّم فيه.","intro.3":"وما تتعلّمه يترك أثرًا. بعد كل درسٍ مهمّةٌ تفعلها خارج الشاشة. وحين تفعلها، يتغيّر شيءٌ في واديك.","athar.bayt.wait":"خطواتٌ تنتظر عند الباب","ent.adab.bayt":"وقفنا عند باب بيتنا","athar.bayt.hook":"الباب أمامك… ماذا نقول قبل أن نخرج؟","athar.food.fruit":"أثمرت شجرتنا","athar.food.wait":"الشجرة تنتظر أكلتك القادمة","ent.adab.food":"جلسنا إلى سفرة بيتنا","athar.jar.wait":"بيت الجيران ينتظر","athar.food.ask":"الغداء جاهز! ماذا نقول قبل أن نأكل؟","athar.food.forgot":"أوه… نسينا!","athar.food.eat":"كُل يا صديقي","athar.food.full":"شبعتُ! والآن؟","athar.food.tree":"انظر إلى الشجرة!","athar.salam.come":"جاء صديقنا! ابدأ أنت بالسلام.","athar.salam.order":"بالترتيب… ابدأ من الأعلى","athar.salam.done":"صار لنا صديق في الوادي","athar.rain.ask":"أمطرت! ماذا نقول؟","athar.rain.stop":"توقّف المطر…","athar.rain.drank":"الأرض شربت","athar.sleep.ask":"تعِبنا اليوم… ماذا نقول قبل النوم؟","athar.end.look":"انظر إلى واديك","athar.end.you":"كل هذا… بسببك أنت","athar.wudu.dry":"النبع جافّ… تعال نعرف لماذا نتوضّأ","athar.wudu.water":"الماء يجري! أنت من فعل هذا","app.welcome":"أهلًا! هذا وادينا. المس أي مكان تحبّ","athar.rabbi.up":"الليل جميل هنا… ارفع رأسك","athar.rabbi.wow":"كل هذا من ربّي","athar.rabbi.light":"صار في تلّتنا نور","hint.where":"المس المكان المضيء","hint.touch":"المس واحدًا منها","hint.order":"اضغط الخطوة الأولى","hint.pick":"اختر ما تراه صوابًا","hint.collect":"بقي شيء… المسه","hint.next":"اضغط: تابع","hint.act":"إن فعلتَها، اضغط: فعلتُها","hint.story":"المس الصورة لنكمل","athar.hajar.open":"عندي قصّة… تعال","athar.hajar.door":"انظر — باب المسجد أضاء","athar.again":"نعيدها مرة أخرى؟","athar.dayDone":"انظر إلى واديك… كلّه بسببك","hint.recite":"المس الآية لتسمعها","athar.asr.open":"سورة قصيرة… لكنها كبيرة","athar.asr.four":"أربعةٌ فقط ينجون","athar.asr.light":"أضاءت المئذنة","athar.niyyah.open":"عندي سؤال… يحتاج تفكيرًا","athar.niyyah.done":"ظهر قلبٌ في واديك","athar.sidq.open":"أحيانًا تكون كلمةٌ واحدة صعبة…","athar.sidq.birds":"رجعت الطيور إلى وادينا","athar.sabr.open":"وأحيانًا يحدث ما لا نحبّ","athar.sabr.bow":"انظر إلى السماء… قوسُ ألوان","athar.wal.open":"أقربُ الناس إليك… كيف نعاملهما؟","athar.wal.warm":"دفئ بيتك كلّه","athar.jar.open":"وراء سورنا بيتٌ… هل نعرف أهله؟","athar.jar.house":"أضاء بيت الجيران","athar.tar.open":"حتى الطريق… له حقّ علينا","athar.tar.clean":"صار طريقنا أجمل","athar.taam.open":"الطعام أمامك… وله أدب","athar.taam.done":"امتلأ إبريقنا","athar.bayt.open":"كلّما خرجتَ ورجعت… كلمة","athar.bayt.steps":"ظهرت خطواتٌ إلى بابنا","athar.salat.open":"يومُك مقسومٌ على خمس","athar.salat.moon":"ظهر هلالٌ فوق مسجدنا","athar.aman.open":"إذا أعطاك أحدٌ شيئًا ليحفظه…","athar.aman.chest":"ظهر صندوقٌ في وادينا","athar.mur.open":"أرأيتَ تلك الورقة التي سقطت الآن؟","athar.mur.leaf":"ورقةٌ واحدة… تكفي لتتذكّر","stage.2":"كبرتَ قليلًا… انظر، اتّسع وادينا","stage.3":"وادينا يكبر معك","stage.4":"صرتَ كبيرًا… وهنا أعمقُ ما في الوادي","athar.ark.open":"ما الذي يؤمن به المسلم؟","athar.ark.stars":"ستّ نجومٍ فوق تلّتنا","athar.qad.open":"هل حدث لك شيءٌ لم تُرده يومًا؟","athar.qad.book":"ظهر كتابٌ في وادينا","athar.yat.open":"قصّةُ طفلٍ… فقد أباه قبل أن يراه","athar.yat.nest":"عادت العصافير إلى عشّها","athar.feel.open":"جيشٌ أراد هدم الكعبة… فماذا حدث؟","athar.feel.flock":"حلّق سربٌ فوق وادينا","athar.bid.open":"سؤالٌ يحتاج تفكيرًا…","athar.bid.compass":"ظهرت بوصلةٌ في وادينا","athar.ark2.open":"ماذا نفعل داخل الصلاة بالترتيب؟","athar.ark2.mat":"فُرش سجّادٌ في مسجدنا","athar.ruk.open":"كلّما ركبتَ شيئًا… هناك ما يُقال","athar.ruk.cart":"وقفت عربةٌ عند طريقنا","ent.adab.jar":"وقفنا أمام بيت الجيران","athar.ras.wait":"الأفق ينتظر خطوتك","ent.adab.rasul":"ندخل المسجد بهدوء","athar.ruk.wait":"الطريق ينتظر دعاءك","ent.adab.rukub":"الطريق أمامنا… ونهمّ بالركوب","ent.adab.salam":"نمشي… وصديقنا قريب","athar.salam.wait":"صديقنا ينتظر سلامك","athar.taam.wait":"إبريقنا ينتظر شربتك","ent.adab.taam":"المائدة جاهزة في بيتنا","athar.tar.wait":"الطريق ينتظر يدك","ent.adab.tareeq":"نسير ببطء… وننظر حولنا","athar.wal.wait":"بيتنا ينتظر لمستك","ent.adab.walidayn":"نجلس قرب أبي وأمّي في البيت","athar.fad.wait":"الوادي ينتظر ذكرك","ent.adhkar.fadl":"نجلس عند ماء النبع","athar.hal.hook":"يومُك فيه ما يسرّ وما يسوء… فماذا نقول؟","athar.hal.wait":"الوادي ينتظر حمدك","ent.adhkar.hal":"جلسنا في بيتنا نتحدّث عن يومنا","athar.ist.hook":"نومُك موتةٌ صغرى… فماذا نقول حين نصحو؟","ent.adhkar.istiqadh":"فتحنا عيوننا في بيتنا","athar.man.wait":"التلّة تنتظر كلماتك","ent.adhkar.maani":"صعدنا التلّة… والسماء واسعة","athar.msj.wait":"القوس ينتظر دعاءك","ent.adhkar.masjid":"وصلنا إلى باب المسجد","athar.mub.wait":"وادينا ينتظر رحمتك","ent.adhkar.mubtala":"نمشي… ونرى الناس من حولنا","athar.rain.wait":"الأرض تنتظر دعاءك","ent.adhkar.rain":"غيّمت السماء فوق طريقنا","ent.adhkar.sabah":"الضوء يدخل نافذة بيتنا","athar.sal.wait":"الوادي ينتظر سلامك","ent.adhkar.salatnabi":"نقف في المسجد… ونهدأ","athar.sleep.window":"دفئت نافذة البيت","athar.sleep.wait":"النافذة تنتظر ذكرك","ent.adhkar.sleep":"المساء هادئ في غرفتنا","athar.souq.hook":"أماكنُ يغفل فيها الناس… فماذا نقول فيها؟","athar.souq.wait":"الطاحونة تنتظر ذكرك","ent.adhkar.souq":"السوق أمامنا… والناس كثيرون","athar.thw.wait":"الرداء ينتظر شكرك","ent.adhkar.thawb":"فتحنا خزانة ثيابنا","athar.aman.wait":"مكانُ الصندوق ينتظرك","ent.akhlaq.amanah":"وقفنا فوق التلّة، والوادي تحتنا","athar.ghd.wait":"الجمرة تنتظر هدوءك","ent.akhlaq.ghadab":"نمشي… وفجأةً يغلي شيءٌ في الصدر","athar.ghb.hook":"كلامٌ خلف الظهر… هل تعرف اسمه؟","athar.ghb.wait":"صمتٌ جميل ينتظرك","ent.akhlaq.gheebah":"نتمهّل في الطريق، والحديث يجري","athar.ghi.hook":"قصّةٌ حدثت في السوق… هل تسمعها؟","athar.ghi.wait":"الميزان ينتظر خطوتك","ent.akhlaq.ghish":"وصلنا إلى طرف السوق","athar.has.wait":"الزهر ينتظر دعاءك","ent.akhlaq.hasad":"نمشي في الطريق، وصاحبنا أمامنا","athar.haya.wait":"الستر ينتظر يومك","ent.akhlaq.haya":"نسير في الطريق… وحدنا","athar.ihs.wait":"النبع الجديد ينتظرك","ent.akhlaq.ihsan":"وقفنا عند النبع، والماء يجري","athar.kas.hook":"ثقلٌ يشدّك عن الخير… ما هو؟","ent.akhlaq.kasal":"الطريق أمامنا… ونحن نتثاقل","athar.kib.wait":"الغصن ينتظر تواضعك","ent.akhlaq.kibr":"نمضي في الطريق ونتأمّل","athar.mar.wait":"الجرس ينتظر نصيحتك","ent.akhlaq.maroof":"نسير في الطريق، وصاحبنا معنا","athar.sabr.hook":"وأحيانًا يحدث ما لا نحبّ… فماذا نفعل؟","ent.akhlaq.sabr":"نقف على التلّة، والسماء مفتوحة","athar.sidq.wait":"الوادي ينتظر وفاءك","ent.akhlaq.sidq":"نمشي في الطريق، والكلمات خفيفة","athar.taj.hook":"لكلّ بيتٍ بابٌ لا يُفتح… لماذا؟","athar.taj.wait":"الستار ينتظر خطوتك","ent.akhlaq.tajassus":"نمرّ في الطريق قرب البيوت","athar.tawb.wait":"الباب ينتظرك","ent.akhlaq.tawbah":"وصلنا إلى النبع في المساء","athar.bid.wait":"البوصلة تنتظر سؤالك","ent.hadith.bidah":"ندخل المسجد، ونتمهّل قليلًا","athar.harf.wait":"الحروف تنتظر قراءتك","ent.hadith.harf":"دخلنا المسجد، والمصحف قريب","athar.hubb.wait":"الشجرتان تنتظران فرحك","ent.hadith.hubb":"نمشي معًا على الطريق","athar.kanz.wait":"الجوهرة تنتظر كلمتك","ent.hadith.kanz":"وقفنا عند النبع، والماء يجري","athar.lis.hook":"أربع كلماتٍ… هل تعرف ما هي؟","athar.lis.wait":"الريشة تنتظر يومك","ent.hadith.lisan":"نسير في الطريق، ونُحسن الإصغاء","athar.may.wait":"الركن الهادئ ينتظرك","ent.hadith.mayaneeh":"نمشي في الطريق، وننظر أمامنا","athar.niyyah.wait":"القلب ينتظر نيّتك","ent.hadith.niyyah":"وصلنا إلى فناء بيتنا","athar.qal.wait":"القلب الكبير ينتظرك","ent.hadith.qalb":"وقفنا عند النبع، والماء صافٍ","athar.aqeedah.arkan.wait":"ستّ نجومٍ تنتظر دورها","ent.aqeedah.arkan":"صعدنا إلى التلّة… والليل هادئ","athar.aqeedah.asma.wait":"الفوانيس تنتظر دعاءك","ent.aqeedah.asma":"ها نحن على التلّة تحت السماء","athar.aqeedah.ihsan.hook":"أتحبّ أن تُصلّي صلاةً أجمل؟","athar.aqeedah.ihsan.wait":"مرآة الماء تنتظر صلاتك","ent.aqeedah.ihsan":"جلسنا على التلّة بهدوء","athar.aqeedah.iman.wait":"الشتلة تنتظر من يسقيها","ent.aqeedah.iman":"الشمس تميل… والتلّة هادئة","athar.aqeedah.khawf.hook":"هل للقلب جناحان؟","athar.aqeedah.khawf.wait":"الميزان ينتظر… ونعود إليه","ent.aqeedah.khawf":"على التلّة… نسيمٌ هادئ يمرّ","athar.aqeedah.malaikah.hook":"هل حولك خلقٌ لا تراه؟","athar.aqeedah.malaikah.wait":"النور ينتظر فوق التلّة","ent.aqeedah.malaikah":"الليل صافٍ فوق التلّة","athar.aqeedah.muraqabah.trace":"حطّت ورقةٌ على التلّة","athar.aqeedah.muraqabah.wait":"ورقةٌ تنتظر على التلّة","ent.aqeedah.muraqabah":"الليل هادئ، والتلّة ساكنة","athar.aqeedah.niam.wait":"الثمر ينتظر شكرك","ent.aqeedah.niam":"بيتنا دافئ… ونجلس معًا","athar.aqeedah.qadar.wait":"الكتاب مغلقٌ الآن… ونعود","ent.aqeedah.qadar":"نجلس على التلّة… والليل هادئ","athar.aqeedah.rabbi.wait":"التلّة تنتظر نورها","ent.aqeedah.rabbi":"نحن على التلّة… والسماء مفتوحة","athar.aqeedah.shirk.hook":"هل في الدنيا ذنبٌ أعظم من غيره؟","athar.aqeedah.shirk.wait":"الصدع ينتظر يومًا آخر","ent.aqeedah.shirk":"على التلّة… والليل هادئ","athar.aqeedah.tawakkul.wait":"الحبل ينتظر وتده","ent.aqeedah.tawakkul":"ماء النبع يجري أمامنا","athar.aqeedah.tawheed.hook":"ما أكبر سؤالٍ في حياتك؟","athar.aqeedah.tawheed.wait":"قلب الوادي ينتظر نبضه","ent.aqeedah.tawheed":"نقف على التلّة… الليل ساكن","athar.seerah.awwalun.wait":"الأنوار الخمسة تنتظر","ent.seerah.awwalun":"الصباح على التلّة مشرق","athar.seerah.hajar.wait":"الباب ينتظر… ونعود","ent.seerah.hajar":"ندخل المسجد… والباب أمامنا","athar.seerah.hijrah.wait":"الطريق ينتظر خطوتنا","ent.seerah.hijrah":"وقفنا عند مدخل المسجد","athar.seerah.khatam.hook":"مَن آخرُ رسولٍ أُرسل؟","athar.seerah.khatam.wait":"الختم ينتظر… ونعود","ent.seerah.khatam":"الليل على التلّة… والصمت جميل","athar.seerah.sahabah.hook":"مَن حمل إليك هذا الدين؟","athar.seerah.sahabah.wait":"النجوم الأربعة تنتظر","ent.seerah.sahabah":"صباحٌ هادئ على التلّة","athar.seerah.sifat.wait":"العطر ينتظر… ونعود","ent.seerah.sifat":"نسيمٌ هادئ في ساحة المسجد","athar.seerah.wahy.hook":"أيّ ليلةٍ تغيّرت فيها الدنيا؟","athar.seerah.wahy.wait":"الغار ينتظر… ونعود","ent.seerah.wahy":"الليل ساكنٌ فوق جبلنا","athar.seerah.wasiyyah.hook":"ماذا ترك لنا نبيّنا ﷺ؟","athar.seerah.wasiyyah.wait":"المشعل ينتظر… ونعود","ent.seerah.wasiyyah":"المسجد هادئ في المساء","athar.seerah.yateem.hook":"أتحبّ أن تسمع قصّة طفلٍ رعاه الله؟","athar.seerah.yateem.wait":"العشّ ينتظر عصافيره","ent.seerah.yateem":"الصباح هادئ في المسجد","athar.ark2.wait":"ننتظر ركعتك المتمهّلة","ent.ibadah.arkanSalat":"وقفنا في صفّ الصلاة","athar.dua.wait":"ننتظر دعوتك متى شئت","ent.ibadah.dua":"جلسنا في ركنٍ هادئ","athar.hajj.hook":"بيتٌ يقصده الناس من كل مكان… أتعرفه؟","athar.ist.wait":"يومٌ جديد… هيّا نذكر الله","athar.sab.wait":"الصباح جميل… هيّا نذكر الله","athar.kas.wait":"حان وقت النهوض… هيّا بنا","athar.sabr.wait":"الصبر جميل… نصبر ونحتسب"};
+  var kidOn = !/[?&]kid=0/.test(location.search);
+  if (kidOn && window.AtharAudio && !window.AtharAudio.__r3kid) {
+    var AUk = window.AtharAudio; AUk.__r3kid = 1;
+    var entry0 = AUk.entry.bind(AUk);
+    AUk.entry = function(id){
+      var e = entry0(id);
+      if (e && !e.file && e.voice === "athar" && KID[id] !== undefined && String(e.text).trim() === String(KID[id]).trim()) { e.file = "athar_kid/" + id + ".mp3"; e.pri = "file"; }
+      return e;
+    };
+    /* تحميل مسبق هادئ لأسطر الدرس الحالي فقط */
+    var kidWarm = {}, kidQ = [], kidBusy = 0;
+    var kidPump = function(){ while (kidBusy < 2 && kidQ.length) { var id = kidQ.shift(); kidBusy++; (function(id){ var done = function(){ kidBusy--; kidPump(); };
+        try { fetch("audio/athar_kid/" + id + ".mp3", { priority: "low" }).then(function(r){ return r.ok ? r.arrayBuffer() : null; }).then(done, done); } catch (e) { done(); } })(id); } };
+    window.R3kidWarm = function(exp){
+      try { var j = JSON.stringify(exp), n = 0;
+        Object.keys(KID).forEach(function(id){ if (!kidWarm[id] && j.indexOf('"' + id + '"') >= 0) { kidWarm[id] = 1; kidQ.push(id); n++; } });
+        kidPump(); return n; } catch (e) { return 0; }
+    };
+    var DirK = window.Director, run0 = DirK.run.bind(DirK);
+    DirK.run = function(exp){ window.R3kidWarm(exp); return run0.apply(null, arguments); };
+    window.R3kid = { ids: Object.keys(KID).length };
+  }
+
+  /* ═══ r3.3 · أثر المتحدّث الحيّ: فم مع قوة الصوت، رمش، ميل رأس، إنصات، وضعيات حسب الدرس ═══
+     كل رسم هنا طبقة SVG فوق صورة الوضعية (لا صور جديدة) — ?live=0 يطفئها. */
+  var liveOn = cfg.boy && !/[?&]live=0/.test(location.search);
+  var reduce = false; try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  var FACE = {
+    idle:  { w:238, h:440, le:[.439,.226], re:[.607,.209], m:[.546,.272], span:32.6, ex:9.5, ey:7,  lid:["#d18a5b","#dc9467"] },
+    hello: { w:239, h:560, le:[.312,.209], re:[.523,.187], m:[.455,.254], span:42.5, ex:14,  ey:11, lid:["#d7895b","#ea9766"] },
+    think: { w:186, h:560, le:[.427,.206], re:[.679,.176], m:[.595,.250], span:39,   ex:14,  ey:11, lid:["#d99264","#f6ae7e"] },
+    read:  { w:184, h:560, le:[.378,.214], re:[.628,.196], m:[.537,.259], span:40,   ex:14,  ey:11, lid:["#d88556","#e79561"] },
+    listen:{ w:209, h:560, le:[.395,.208], re:[.630,.181], m:[.556,.257], span:39.7, ex:14,  ey:11, lid:["#da8c59","#e59864"] },
+    cheer: { w:230, h:560, le:[.380,.210], re:[.592,.185], m:[.513,.257], span:41,   ex:14,  ey:11, lid:["#d3855a","#eb9d6c"] },
+    joy:   { w:305, h:560, le:[.430,.207], re:[.580,.185], m:null,                  ex:14,  ey:11, lid:["#e38b5a","#da8755"] }
+  };
+  var amp = 0, talking = false, talkRaf = 0, curAn = null, abuf = null, blinkT = 0, swayT = 0, geo = null;
+  function layoutFace(p){
+    if (!liveOn) return; var f = FACE[p]; if (!f) return;
+    var sc = Math.min(94 / f.w, 174 / f.h), dw = f.w * sc, dh = f.h * sc, ox = -17 + (94 - dw) / 2, oy = -22 + (174 - dh);
+    geo = { f: f, sc: sc, X: function(fx){ return ox + fx * f.w * sc; }, Y: function(fy){ return oy + fy * f.h * sc; } };
+    [["L", f.le, f.lid[0]], ["R", f.re, f.lid[1]]].forEach(function(e){
+      var cx = geo.X(e[1][0]), cy = geo.Y(e[1][1]), rx = f.ex * sc * 1.12, ry = f.ey * sc * 1.0;
+      var lid = el("lid" + e[0]), lash = el("lash" + e[0]);
+      lid.setAttribute("cx", cx.toFixed(2)); lid.setAttribute("cy", cy.toFixed(2)); lid.setAttribute("rx", rx.toFixed(2)); lid.setAttribute("ry", ry.toFixed(2)); lid.setAttribute("fill", e[2]);
+      lash.setAttribute("d", "M" + (cx - rx * .85).toFixed(2) + " " + (cy + ry * .15).toFixed(2) + " Q" + cx.toFixed(2) + " " + (cy + ry * .7).toFixed(2) + " " + (cx + rx * .85).toFixed(2) + " " + (cy + ry * .15).toFixed(2));
+    });
+    if (!talking) mouth(0);
+  }
+  function mouth(a){
+    var g = el("bMouth"); if (!g) return;
+    if (!geo || !geo.f.m || a < .06) { g.setAttribute("opacity", "0"); return; }
+    var f = geo.f, sc = geo.sc, cx = geo.X(f.m[0]), cy = geo.Y(f.m[1]);
+    var rx = f.span * .30 * sc, ry = Math.max(.35, f.span * .17 * sc * a);
+    var mo = el("bMo"), to = el("bTo");
+    mo.setAttribute("cx", cx.toFixed(2)); mo.setAttribute("cy", (cy + ry * .45).toFixed(2)); mo.setAttribute("rx", rx.toFixed(2)); mo.setAttribute("ry", ry.toFixed(2));
+    to.setAttribute("cx", cx.toFixed(2)); to.setAttribute("cy", (cy + ry * .75).toFixed(2)); to.setAttribute("rx", (rx * .6).toFixed(2)); to.setAttribute("ry", (ry * .42).toFixed(2));
+    g.setAttribute("opacity", "1");
+  }
+  function ampNow(t){
+    if (curAn) { try { if (!abuf) abuf = new Uint8Array(curAn.fftSize); curAn.getByteTimeDomainData(abuf); var sum = 0, i; for (i = 0; i < abuf.length; i++) { var v = (abuf[i] - 128) / 128; sum += v * v; } return Math.min(1, Math.max(0, (Math.sqrt(sum / abuf.length) - .012) * 7)); } catch (e) {} }
+    var ph = t / 1000, v2 = (.5 + .5 * Math.sin(ph * 11.3)) * (.65 + .35 * Math.sin(ph * 2.7 + 1)), gate = Math.sin(ph * 1.3) > -.8 ? 1 : .12;
+    return Math.min(1, v2 * gate * 1.1);
+  }
+  function talkLoop(t){
+    if (!talking) return;
+    amp = amp * .55 + ampNow(t) * .45; mouth(amp);
+    var b = el("boy"); if (b && !reduce) { b.classList.remove("sway"); b.style.transform = "rotate(" + (Math.sin(t / 650) * 1.3 + Math.sin(t / 1900) * .8).toFixed(2) + "deg) scale(" + (1 + amp * .012).toFixed(4) + ")"; }
+    talkRaf = requestAnimationFrame(talkLoop);
+  }
+  var live = {
+    begin: function(id){
+      if (!liveOn) return; var en = window.AtharAudio && AtharAudio.entry && AtharAudio.entry(id), vo = en && en.voice || "narrator";
+      if (window.AtharAudio && AtharAudio._muted) return;
+      if (vo === "athar") { talking = true; cancelAnimationFrame(talkRaf); talkRaf = requestAnimationFrame(talkLoop); try { el("bubbleHold") } catch (e) {} }
+      else { clearTimeout(poseT); setPose("listen"); }
+    },
+    end: function(){
+      if (!liveOn) return; var was = talking; talking = false; cancelAnimationFrame(talkRaf); amp = 0; mouth(0);
+      var b = el("boy"); if (b) { b.classList.add("sway"); b.style.transform = ""; }
+      if (cur === "listen" || was) { clearTimeout(poseT); var r = rest(); if (cur === "listen") setPose(r); }
+    }
+  };
+  if (liveOn) {
+    layoutFace("idle");
+    /* رمش */
+    var blink = function(){
+      if (!document.hidden) { ["L","R"].forEach(function(k){ el("lid" + k).setAttribute("opacity", "1"); el("lash" + k).setAttribute("opacity", "1"); });
+        setTimeout(function(){ ["L","R"].forEach(function(k){ el("lid" + k).setAttribute("opacity", "0"); el("lash" + k).setAttribute("opacity", "0"); }); }, 120); }
+      blinkT = setTimeout(blink, 2600 + Math.random() * 2800);
+    };
+    blinkT = setTimeout(blink, 1800);
+    /* ميل رأس هادئ وهو ساكن */
+    if (!reduce) { var sway = function(){ var b = el("boy"); if (b && !talking) { b.classList.add("sway"); b.style.transform = "rotate(" + ((Math.random() * 2 - 1) * 1.6).toFixed(2) + "deg)"; } swayT = setTimeout(sway, 3200 + Math.random() * 2600); }; swayT = setTimeout(sway, 2500); }
+    /* قياس قوة الصوت الحقيقي إن أمكن (لا نمرّر الصوت عبر الرسم إلا إن كان السياق شغّالًا فعلًا) */
+    try { var NA = window.Audio; var WA = function(src){ var a = new NA(src);
+        try { a.addEventListener("playing", function(){ try { var c = window.AtharAudio && AtharAudio._ctx; if (!c || c.state !== "running") { curAn = null; return; }
+              if (!a.__an) { var sn = c.createMediaElementSource(a), an = c.createAnalyser(); an.fftSize = 256; sn.connect(an); an.connect(c.destination); a.__an = an; }
+              curAn = a.__an; abuf = null; } catch (e) { curAn = null; } });
+          a.addEventListener("ended", function(){ if (curAn === a.__an) curAn = null; }); a.addEventListener("pause", function(){ if (curAn === a.__an) curAn = null; }); } catch (e) {}
+        return a; };
+      WA.prototype = NA.prototype; window.Audio = WA; } catch (e) {}
+    /* وضعيات حسب نوع الخطوة */
+    var CTX = { open:"hello", source:"read", recite:"read", touch:"think", collect:"think", order:"think", pick:"think", close:"joy" };
+    var Dr = window.Director, stepW = Dr.step.bind(Dr);
+    Dr.step = function(){
+      var r = stepW(); try {
+        var b = Dr.exp && Dr.exp.beats[Dr.i - 1], q = readMode;
+        if (b) { var c = CTX[b.type] || ((b.type === "narrate" || b.type === "tadabbur") && q ? "read" : ""); if (q && (b.type === "touch" || b.type === "collect" || b.type === "pick" || b.type === "order")) c = "think";
+          ctxP = c; clearTimeout(poseT);
+          if (!talking) setPose(rest());
+          if (b.type === "open") poseT = setTimeout(function(){ ctxP = ""; if (!talking && cur === "hello") setPose(rest()); }, 2200); }
+      } catch (e) {} return r; };
+    /* أخفِ فقاعة الكلام وقت الإنصات لصوتٍ غير صوت أثر */
+    window.R3live = live;
+  }
+  var _sp0 = setPose; setPose = function(p){ _sp0(p); if (liveOn) layoutFace(p); };
+
+  /* ═══ r3.2 · تسلسل الجمل: لا جملتان معًا، وفاصل ثابت، ولا تقدّم قبل نهاية الصوت ═══
+     السبب الجذري: (١) say تتقدّم بمؤقّت ثابت ٢٦٠٠ms أقصر من الصوت الفعلي فتبدأ الجملة التالية فوق السابقة؛
+     (٢) إيقاف تسجيلٍ لم يبدأ بعد يرفض play() فيستدعي onEnd({failed}) فيسقط النصّ القديم إلى صوت الجهاز فوق الجملة الجديدة.
+     ?seq=0 يطفئ هذا الجزء. */
+  var GAP = 250, seqOn = !/[?&]seq=0/.test(location.search), SPEED = function(){ return window.__R3_SPEED || 1; };
+  var AU = window.AtharAudio;
+  if (seqOn && AU && !AU.__r3seq) {
+    AU.__r3seq = 1;
+    var gen = 0, queue = [], busy = null, pumping = false, capT = 0;
+    var stop0 = AU.stop.bind(AU);
+    AU.stop = function(){ gen++; var r = stop0(); if (busy && !pumping) finish(busy, true); return r; };
+    (AU.providers || []).forEach(function(p){
+      var pl = p.play; if (!pl) return;
+      p.play = function(e, onEnd){ var my = gen; return pl.call(this, e, function(r){ if (my !== gen) return; if (onEnd) onEnd(r); }); };
+    });
+    var say0 = AU.say.bind(AU);
+    AU.say = function(id, o){
+      o = o || {}; var oe = o.onEnd, hook = AU.__hook; AU.__hook = null;
+      if (oe || hook) o = Object.assign({}, o, { onEnd: function(r){ var g = gen; setTimeout(function(){ if (g !== gen) return; oe && oe(r); hook && hook(); }, GAP); } });
+      return say0(id, o);
+    };
+    var athar0 = W.athar.bind(W);
+    function finish(it, forced){
+      if (busy !== it) return; busy = null; clearTimeout(capT);
+      var left = Math.max(0, it.ms - (Date.now() - it.t0));
+      setTimeout(function(){
+        if (!queue.length) { try { W.say.classList.remove("on"); W.face("idle"); } catch (e) {} }
+        it.done && it.done(); pump();
+      }, left);
+    }
+    function pump(){
+      if (busy || !queue.length) return;
+      var it = queue.shift(); it.t0 = Date.now(); busy = it; pumping = true;
+      AU.__hook = function(){ finish(it); };
+      try { athar0(it.id, it.mood, it.ms); } catch (e) {}
+      AU.__hook = null; pumping = false;
+      clearTimeout(W._t);                       /* الفقاعة تبقى حتى تنتهي الجملة */
+      var en = AU.entry && AU.entry(it.id), tl = en && en.text ? String(en.text).length : 60;
+      clearTimeout(capT); capT = setTimeout(function(){ if (busy === it) { AU.stop(); } }, Math.min(25000, Math.max(8000, 1500 + tl * 130)) * SPEED());
+    }
+    W.athar = function(id, mood, ms, done){
+      ms = (ms || 2800) * SPEED();
+      for (var i = 0; i < queue.length; i++) if (queue[i].id === id && !done && !queue[i].done) return;   /* لا تكرار لتلميحٍ معلَّق */
+      queue.push({ id: id, mood: mood || "idle", ms: ms, done: done || null }); pump();
+    };
+    window.Blocks.say = function(b, stage, api){
+      var d = false; W.athar(b.audio, b.mood || "idle", b.ms || 2600, function(){ if (!d) { d = true; api.done(); } });
+    };
+    window.R3seq = { state: function(){ return { busy: !!busy, queued: queue.length, gen: gen }; } };
+    /* شبكة أمان: لو بقيت خطوةٌ غير «قول» بمنصّةٍ فارغة تُعاد */
+    var D = window.Director;
+    if (D && !D.__r3wd) { D.__r3wd = 1; var step0 = D.step.bind(D);
+      D.step = function(){ var r = step0(); var my = D.i, ex = D.exp;
+        setTimeout(function(){
+          try { var b = ex && ex.beats[my - 1];
+            if (D.exp === ex && D.i === my && b && b.type !== "say" && D.panel.classList.contains("up") && D.stage && !D.stage.childElementCount && window.Blocks[b.type]) { window.Blocks[b.type](b, D.stage, D.api()); }
+          } catch (e) {}
+        }, 500);
+        return r; }; }
+  }
+
+  /* غلاف خارجي: بدء/نهاية الكلام الحيّ */
+  if (liveOn && AU && !AU.__r3live) {
+    AU.__r3live = 1; var say1 = AU.say.bind(AU), stop1 = AU.stop.bind(AU), ltok = 0;
+    AU.say = function(id, o){ o = o || {}; var oe = o.onEnd, tok = ++ltok, ended = false;
+      o = Object.assign({}, o, { onEnd: function(r){ ended = true; if (tok === ltok) live.end(); oe && oe(r); } });
+      var r = say1(id, o); if (!ended && tok === ltok) live.begin(id); return r; };
+    AU.stop = function(){ live.end(); return stop1(); };
+  }
+  window.R3 = { mouthTest: function(a){ mouth(a); }, talk: function(on){ if (on) { talking = true; cancelAnimationFrame(talkRaf); talkRaf = requestAnimationFrame(talkLoop); } else live.end(); }, fitNow: function(){ tighten(); fit(); }, refit: refit, cfg: cfg, pose: pose, setPose: setPose, stage: function(p){ W.stage(p); }, unstage: function(){ W.unstage(); } };
 })();
 </script>
 </body>
