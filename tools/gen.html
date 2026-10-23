@@ -20,6 +20,7 @@ li .t{font-size:24px;line-height:2}li .m{font-size:12px;color:var(--m);direction
 <label for="k">مفتاح ElevenLabs</label><input id="k" type="password" autocomplete="off" dir="ltr" placeholder="sk_...">
 <div class="row"><button id="bv">جلب الأصوات</button></div>
 <label for="v">الصوت</label><select id="v"><option value="">— اجلب الأصوات أولًا —</option></select>
+<label for="vid">أو ألصق معرّف الصوت (Voice ID) مباشرة</label><input id="vid" autocomplete="off" dir="ltr" placeholder="مثال: 21m00Tcm4TlvDq8ikWAM">
 <label for="mo">النموذج</label><select id="mo"><option value="eleven_multilingual_v2">eleven_multilingual_v2 (مستقر)</option><option value="eleven_v3">eleven_v3</option></select>
 <label for="st">الثبات (stability): <span id="sv">0.5</span></label><input id="st" type="range" min="0" max="1" step="0.05" value="0.5">
 <label for="fo">اسم مجلد الصوت في الحزمة (حروف لاتينية صغيرة)</label><input id="fo" value="eleven_ai" dir="ltr">
@@ -49,7 +50,7 @@ $("ls").onclick=e=>{const g=e.target.dataset.g,p=e.target.dataset.p;if(g)one(DAT
 $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق المفتاح أولًا.");msg("جارٍ جلب الأصوات…");
  try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":k}});if(!r.ok)throw new Error(r.status);const j=await r.json();
   $("v").innerHTML=j.voices.map(v=>`<option value="${v.voice_id}">${v.name}${v.labels&&v.labels.accent?" — "+v.labels.accent:""}</option>`).join("");msg("وُجد "+j.voices.length+" صوتًا.")}catch(e){msg("تعذّر الجلب ("+e.message+"). تحقّق من المفتاح ومن صلاحية قراءة الأصوات.")}};
-async function one(u){const k=$("k").value.trim(),v=$("v").value;if(!k||!v){msg("المفتاح والصوت مطلوبان.");return false}
+async function one(u){const k=$("k").value.trim(),v=$("vid").value.trim()||$("v").value;if(!k||!v){msg("المفتاح والصوت مطلوبان.");return false}
  const li=$("u_"+u.u);try{
   const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text:u.text,model_id:$("mo").value,voice_settings:{stability:+$("st").value,similarity_boost:.8,style:0,use_speaker_boost:true}})});
   if(!r.ok)throw new Error(r.status+" "+(await r.text()).slice(0,120));
