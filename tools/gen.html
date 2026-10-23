@@ -34,8 +34,11 @@ textarea{font-size:28px;line-height:2;min-height:78px;resize:vertical;background
 .att .l{flex:1 1 120px;font-size:16px}
 .bar{height:12px;background:#e8e0c8;border-radius:6px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:0;background:var(--g)}
 .tr{border-top:1px dashed #cfc6a8;margin-top:8px;padding-top:6px}.tr .tx{font-size:22px}.tr.sel{outline:3px solid #2c8a6b;border-radius:12px;background:#e9f4ef}.tr.dim{opacity:.35}
+#sbar{position:sticky;top:0;z-index:9;background:#e9f4ef;color:var(--g);border:2px solid var(--g);border-radius:12px;padding:8px 12px;font-weight:700;font-size:16px;margin-bottom:8px}#sbar.bad{background:#fbe4e1;color:var(--r);border-color:var(--r)}
+.sent{font-size:14px;color:var(--m);margin:4px 0}.sent mark{background:#ffe9a8;color:#000;border-radius:4px;padding:0 2px}
 #msg{position:sticky;bottom:6px;z-index:5;box-shadow:0 2px 10px #0002}
 </style></head><body>
+<div id="sbar">…</div>
 <h1>توليد الأسطر المشكولة</h1>
 <div class="note">تعمل الأداة في متصفحك فقط. المفتاح يبقى في ذاكرة الصفحة <b>ولا يُحفظ أبدًا</b>؛ أما النتائج والتعديلات والإعدادات فتُحفظ تلقائيًا على جهازك. الأسطر المولَّدة <b>اصطناعية</b> وتُوسَم <code>synthetic</code> في manifest.</div>
 <div class="note warn">لا تُولَّد هنا آيات القرآن ولا الأسطر التي بداخلها آيات.</div>
@@ -49,6 +52,7 @@ textarea{font-size:28px;line-height:2;min-height:78px;resize:vertical;background
 <div class="chk"><input type="checkbox" id="auto3"><label for="auto3" style="margin:0">ثلاث محاولات تلقائية لكل سطر (مطفأ افتراضيًا: محاولة واحدة، ثم «ولّد مرة أخرى» عند الحاجة)</label></div>
 <label for="al">صيغة لفظ الجلالة (تُطبَّق عند التوليد فقط ولا تغيّر نص التطبيق)</label><select id="al"><option value="0">الأصل</option><option value="1">ألف خنجرية: اللَّٰهِ</option><option value="2">فتحة صريحة على الألف: اَللَّٰهِ</option><option value="3">كلمة قبلها: قَالَ اللَّٰهِ (في أول السطر)</option><option value="4">ألف وصل: ٱللَّٰهِ</option></select>
 <div class="row"><button id="ab" class="s">جرّب صيغ لفظ الجلالة على سطر واحد</button></div><div id="allahbox"></div>
+<div class="row"><button id="rg" class="s">أعد توليد غير المعتمد بالصيغة الجديدة</button><button id="gr" class="s bad">ولّد المرفوضات الآن</button></div>
 <label for="rules">قواعد الاستبدال (سطر لكل قاعدة: <span dir="ltr">كلمة=&gt;كتابة بديلة</span>؛ تُطبَّق عند التوليد فقط)</label><textarea id="rules" rows="3" dir="rtl" style="font-size:22px" placeholder="الوضوء=>الوُضُّـوء"></textarea>
 <label for="tw">جرّب كلمة أو جزءًا من سطر</label><div class="row"><input id="tw" placeholder="مثال: الخبائث"><button id="twb" class="s">جرّب كلمة</button></div><div id="twbox"></div>
 <label for="fo">اسم مجلد الصوت في الحزمة (حروف لاتينية صغيرة)</label><input id="fo" value="eleven_ai" dir="ltr">
@@ -69,7 +73,7 @@ async function put(s,k,v){if(!DB)return;try{await pq(DB.transaction(s,"readwrite
 async function getAll(s){const o=DB.transaction(s).objectStore(s),ks=await pq(o.getAllKeys()),vs=await pq(o.getAll());const m={};ks.forEach((k,i)=>m[k]=vs[i]);return m}
 const SET=["vid","mo","st","seed","al","fo","rules"];
 function saveSet(){const o={};SET.forEach(k=>o[k]=$(k).value);o.vid=$("vid").value.trim()||$("v").value||"";o.auto3=$("auto3").checked;o.allahDone=!!window.allahDone;put("kv","settings",o)}
-function saveLine(u){const l=LN[u];put("lines",u,{text:l.text,attempts:l.attempts,approved:l.approved,needFix:l.needFix,human:l.human})}
+function saveLine(u){const l=LN[u];put("lines",u,{text:l.text,attempts:l.attempts,approved:l.approved,needFix:l.needFix,human:l.human,rej:l.rej,def:l.def,dts:l.dts})}
 /* ── صيغ لفظ الجلالة ── */
 const D="[\\u064B-\\u065F\\u0670]*",LET="\\u0621-\\u064A\\u0671";
 const ALLAH=new RegExp("(^|[^"+LET+"\\u064B-\\u065F\\u0670])([وفبت]"+D+")?((?:ا|ٱ)"+D+")?(ل"+D+")(ل"+D+")(ه)("+D+")(م"+D+")?(?![" + LET + "])","g");
@@ -100,37 +104,52 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
  return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
 const sha=async u=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",u))].map(b=>b.toString(16).padStart(2,"0")).join("");
 /* ── الدفعات ── */
-const BATCHES=[];for(let i=0;i<DATA.units.length;i+=BATCH)BATCHES.push(DATA.units.slice(i,i+BATCH));
-const NB=BATCHES.length, esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const NB=Math.ceil(DATA.units.length/BATCH);let BATCHES=[];const BIDX={};
+function layout(){BATCHES=Array.from({length:NB},()=>[]);const dfr=[],home=[];
+ DATA.units.forEach((u,i)=>{const l=LN[u.u];if(l.def!=null&&l.def>=0)dfr.push(u);else home.push([u,Math.floor(i/BATCH)])});
+ dfr.sort((a,b)=>LN[a.u].def-LN[b.u].def||(LN[a.u].dts||0)-(LN[b.u].dts||0));
+ dfr.forEach(u=>BATCHES[Math.min(LN[u.u].def,NB-1)].push(u));home.forEach(([u,b])=>BATCHES[b].push(u));
+ BATCHES.forEach((b,bi)=>b.forEach(u=>BIDX[u.u]=bi))}
+const rejCount=()=>DATA.units.filter(u=>LN[u.u].rej).length;
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const apprAtt=u=>{const l=LN[u];return l.attempts.find(a=>a.id===l.approved)};
 const isAppr=u=>!!apprAtt(u);
 function build(){
+ const op={};document.querySelectorAll("details.batch").forEach(d=>op[d.id]=d.open);layout();
  const root=$("batches");root.innerHTML="";
  BATCHES.forEach((bu,bi)=>{
   const d=document.createElement("details");d.className="batch";d.id="b"+bi;
   d.innerHTML=`<summary><span>الدفعة ${bi+1} من ${NB}</span><span class="cnt"></span></summary><div class="bd"><ul></ul><div class="bar"><i></i></div><div class="row"><button data-bg="${bi}">ولّد هذه الدفعة</button><button data-bz="${bi}" disabled>تنزيل ZIP هذه الدفعة</button></div></div>`;
   const ul=d.querySelector("ul");
-  bu.forEach((u,ui)=>{const n=bi*BATCH+ui+1;const li=document.createElement("li");li.className="ln";li.dataset.u=u.u;
-   li.innerHTML=`<div class="hd"><b>سطر ${n}</b><span class="badge"></span></div><textarea rows="2"></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="row"><button class="s" data-g="${u.u}">ولّد</button><button class="s bad" data-x="${u.u}">يحتاج إعادة ✖</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button></div><div class="atts"></div><div class="trs"></div>`;
+  bu.forEach((u,ui)=>{const n=DATA.units.indexOf(u)+1;const li=document.createElement("li");li.className="ln";li.dataset.u=u.u;
+   li.innerHTML=`<div class="hd"><b>سطر ${n}</b><span class="badge"></span></div><textarea rows="2"></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="sent"></div><div class="row"><button class="s" data-g="${u.u}">ولّد</button><button class="s bad" data-rj="${u.u}" hidden>✖ ارفض</button><button class="s bad" data-x="${u.u}">يحتاج إعادة ✖</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button></div><div class="atts"></div><div class="trs"></div>`;
    li.querySelector("textarea").value=LN[u.u].text??u.text;
    li.querySelector("textarea").oninput=e=>{LN[u.u].text=e.target.value===u.text?null:e.target.value;li.classList.toggle("ed",LN[u.u].text!==null);saveLine(u.u)};
    ul.appendChild(li);EL[u.u]=li;updLine(u.u)});
   root.appendChild(d);updBatch(bi)});
- const first=BATCHES.findIndex(b=>!b.every(u=>isAppr(u.u)));(first<0?$("b0"):$("b"+first)).open=true;
- totals()}
+ const first=BATCHES.findIndex(b=>!b.every(u=>isAppr(u.u)));
+ if(Object.keys(op).length)Object.keys(op).forEach(k=>{if($(k))$(k).open=op[k]});else(first<0?$("b0"):$("b"+first)).open=true;
+ totals();sbar()}
+function sbar(){const al=+$("al").value,n=$("rules").value.split(/\r?\n/).filter(x=>x.indexOf("=>")>0&&x.split("=>")[1].trim()).length,bad=al===0;
+ const e=$("sbar");e.className=bad?"bad":"";e.textContent="صيغة لفظ الجلالة: "+ANAME[al]+(bad?" ⚠ لم تُعتمد صيغة (الأصل)":"")+" · قواعد الاستبدال الفعّالة: "+n+" · مرفوضات مرحَّلة: "+rejCount();
+ const rb=$("gr");rb.textContent="ولّد المرفوضات الآن ("+rejCount()+")";rb.disabled=rejCount()===0}
+function hl(sent,orig){const o=new Set(orig.split(/\s+/));return sent.split(/(\s+)/).map(w=>/^\s*$/.test(w)||o.has(w)?esc(w):"<mark>"+esc(w)+"</mark>").join("")}
 function lineOf(u){return DATA.units.find(x=>x.u===u)}
 function updLine(u){
  const l=LN[u],li=EL[u];if(!li)return;const a=apprAtt(u);
- const st=a?["appr","معتمد ✔"]:l.human?["fix","يحتاج صوتًا بشريًا 🎙"]:l.needFix?["fix","يحتاج إعادة ✖"]:l.attempts.length?["gen","مولَّد"]:["","لم يُولَّد"];
+ const st=a?["appr","معتمد ✔"]:l.rej?["fix","مرفوض — مرحَّل ↪"]:l.human?["fix","يحتاج صوتًا بشريًا 🎙"]:l.needFix?["fix","يحتاج إعادة ✖"]:l.attempts.length?["gen","مولَّد"]:["","لم يُولَّد"];
  const bd=li.querySelector(".badge");bd.className="badge "+st[0];bd.textContent=st[1];
- li.classList.toggle("approved",!!a);li.classList.toggle("fix",!a&&(l.needFix||l.human));li.classList.toggle("ed",l.text!==null);
+ li.classList.toggle("approved",!!a);li.classList.toggle("fix",!a&&(l.needFix||l.human||l.rej));li.classList.toggle("ed",l.text!==null);
  li.querySelector("[data-g]").textContent=l.attempts.length?"ولّد مرة أخرى":"ولّد";
  li.querySelector("[data-h]").textContent=l.human?"✔ إزالة علامة الصوت البشري":"يحتاج صوتًا بشريًا 🎙";
  li.querySelector("[data-x]").textContent=l.needFix?"✔ إزالة علامة الإعادة":"يحتاج إعادة ✖";
  const box=li.querySelector(".atts");box.innerHTML="";
  [...l.attempts].reverse().forEach((t,i)=>{const n=l.attempts.length-i,row=document.createElement("div");row.className="att"+(t.id===l.approved?" sel":"");
   row.innerHTML=`<span class="l">محاولة ${n} · ${t.model.replace("eleven_","")} · ث${t.stab}</span><button class="s" data-p="${t.id}">▶ استمع</button><button class="s ${t.id===l.approved?"ok":""}" data-a="${t.id}" data-u="${u}">${t.id===l.approved?"✔ معتمدة":"اعتمد هذه"}</button>`;box.appendChild(row)});
- const bi=Math.floor(DATA.units.findIndex(x=>x.u===u)/BATCH);updBatch(bi);totals()}
+  const sa=a||l.attempts[l.attempts.length-1],se=li.querySelector(".sent");
+ if(sa){se.innerHTML="المُرسَل فعلًا: "+hl(sa.sent,l.text??lineOf(u).text);se.hidden=false}else se.hidden=true;
+ li.querySelector("[data-rj]").hidden=!l.attempts.length;
+ updBatch(BIDX[u]);totals();sbar()}
 function updBatch(bi){const d=$("b"+bi);if(!d)return;const bu=BATCHES[bi],n=bu.filter(u=>isAppr(u.u)).length;
  d.querySelector(".cnt").textContent=`معتمد ${n}/${bu.length}`;d.classList.toggle("done",n===bu.length);d.querySelector("[data-bz]").disabled=n===0}
 function totals(){const n=DATA.units.filter(u=>isAppr(u.u)).length;$("dlall").disabled=n===0;$("dlall").textContent=`تنزيل ZIP لكل المعتمد (${n}/${DATA.units.length})`}
@@ -146,10 +165,10 @@ async function gen(u,count){const l=LN[u],d=lineOf(u),text=l.text??d.text,v=$("v
  for(let i=0;i<count;i++){const sent=prep(text),blob=await tts(sent);
   l.attempts.push({id:"a"+(++seq),blob,ts:Date.now(),sent,model:$("mo").value,voice:v,stab:sttg(),allah:+$("al").value,seed:$("seed").value.trim()||null,edited:l.text!==null});
   while(l.attempts.length>3){const k=l.attempts.findIndex(a=>a.id!==l.approved);l.attempts.splice(k,1)}
-  l.needFix=false;saveLine(u);updLine(u)}}
+  l.needFix=false;l.rej=false;saveLine(u);updLine(u)}}
 async function genLine(u,btn){const c=$("auto3").checked?3:1;btn&&(btn.disabled=true);try{await gen(u,c)}catch(e){EL[u].classList.add("fix");msg(u+": "+e.message)}btn&&(btn.disabled=false)}
 async function genBatch(bi,btn){btn.disabled=true;const bu=BATCHES[bi],bar=$("b"+bi).querySelector(".bar i");let n=0;bar.style.width="0";
- for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){msg(u.u+": "+e.message);break}}bar.style.width=(100*++n/bu.length)+"%"}
+ for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix||l.rej){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){msg(u.u+": "+e.message);break}}bar.style.width=(100*++n/bu.length)+"%"}
  msg(`انتهت الدفعة ${bi+1}: استمع واعتمد لكل سطر.`);btn.disabled=false}
 /* ── ZIP ── */
 async function zipUnits(units,tag){const fo=$("fo").value.trim();if(!validVoice(fo))return msg("اسم المجلد غير صالح.");
@@ -186,6 +205,10 @@ async function tryWord(){const w=$("tw").value.trim();if(!w)return msg("اكتب
  for(let i=0;i<3;i++){const d=document.createElement("div");d.className="tr";d.innerHTML=`<div class="m">${names[i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-tc="${i}">✔ اعتمد وأضف القاعدة</button></div>`;d.querySelector(".tx").textContent=TW[i][1];box.appendChild(d)}
  let i=0;for(const d of box.querySelectorAll(".tr")){try{const b=await tts(TW[i++][1]);const p=d.querySelector("[data-tpb]");p.disabled=false;p.onclick=()=>play(b)}catch(e){msg("تجربة: "+e.message);return}}
  msg("اسمع الصيغ ثم اعتمد؛ تُضاف القاعدة إلى «قواعد الاستبدال».")}
+$("gr").onclick=async()=>{const us=DATA.units.filter(u=>LN[u.u].rej);$("gr").disabled=true;for(const u of us){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){msg(u.u+": "+e.message);break}}build();msg("انتهى توليد المرفوضات.")};
+$("rg").onclick=async()=>{const us=DATA.units.filter(u=>{const l=LN[u.u];return l.attempts.length&&!isAppr(u.u)&&!l.human});if(!us.length)return msg("لا أسطر مولَّدة غير معتمدة.");$("rg").disabled=true;let n=0;
+ for(const u of us){try{await gen(u.u,1);msg("أُعيد توليد "+(++n)+"/"+us.length)}catch(e){msg(u.u+": "+e.message);break}}$("rg").disabled=false;msg("أُعيد توليد "+n+" سطرًا بالصيغة الحالية.")};
+$("al").addEventListener("change",sbar);$("rules").addEventListener("input",sbar);
 $("ab").onclick=trial;$("twb").onclick=tryWord;
 $("exh").onclick=()=>{const o=DATA.units.filter(u=>LN[u.u].human).map(u=>({id:u.u,ids:u.ids,text:LN[u.u].text??u.text}));if(!o.length)return msg("لا أسطر معلَّمة «تحتاج صوتًا بشريًا».");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({schema:"athar-human-lines/1",lines:o},null,1)],{type:"application/json"}));a.download="athar-human-lines.json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);msg("صُدِّر "+o.length+" سطرًا للتسجيل بأداة record.html.")};
@@ -197,6 +220,7 @@ document.body.addEventListener("click",async e=>{const t=e.target.closest("butto
  if(D.a){const l=LN[D.u];l.approved=l.approved===D.a?null:D.a;if(l.approved)l.needFix=false;saveLine(D.u);return updLine(D.u)}
  if(D.x){const l=LN[D.x];l.needFix=!l.needFix;if(l.needFix)l.approved=null;saveLine(D.x);return updLine(D.x)}
  if(D.r){const u=lineOf(D.r);EL[D.r].querySelector("textarea").value=u.text;LN[D.r].text=null;saveLine(D.r);return updLine(D.r)}
+ if(D.rj){const l=LN[D.rj];l.approved=null;l.rej=true;l.def=Math.min(BIDX[D.rj]+1,NB-1);l.dts=Date.now();saveLine(D.rj);build();return msg("رُفض السطر ورُحّل إلى الدفعة "+(l.def+1)+" (في أولها).")}
  if(D.h){const l=LN[D.h];l.human=!l.human;saveLine(D.h);return updLine(D.h)}
  if(D.tc!==undefined){const [w,alt]=TW[+D.tc];const r=$("rules");r.value=(r.value.trim()?r.value.trim()+"\n":"")+w+"=>"+alt;saveSet();document.querySelectorAll("#twbox .tr").forEach((el,i)=>{el.classList.toggle("sel",i===+D.tc);el.classList.toggle("dim",i!==+D.tc)});return msg("أُضيفت القاعدة: "+w+"=>"+alt)}
  if(D.more){document.querySelectorAll("#allahbox .more").forEach(x=>x.hidden=false);t.hidden=true;return}
@@ -206,14 +230,14 @@ $("dlall").onclick=()=>zipUnits(DATA.units,"all");
 $("go").onclick=async()=>{for(let i=0;i<NB;i++){await genBatch(i,$("b"+i).querySelector("[data-bg]"))}msg("انتهى توليد كل الدفعات.")};
 $("clr").onclick=async()=>{if(!confirm("مسح كل المحفوظ (النتائج والتعديلات والإعدادات)؟"))return;
  if(DB){try{const tx=DB.transaction(["kv","lines"],"readwrite");tx.objectStore("kv").clear();tx.objectStore("lines").clear();await new Promise(r=>{tx.oncomplete=tx.onerror=tx.onabort=()=>r()})}catch(e){}}
- SET.forEach(k=>{const e=$(k);if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=e.getAttribute("value")||""});$("vid").value="";$("auto3").checked=false;window.allahDone=false;$("ab").hidden=false;$("allahbox").innerHTML="";$("twbox").innerHTML="";
- DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false});build();msg("مُسح المحفوظ.")};
+ SET.forEach(k=>{const e=$(k);if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=e.getAttribute("value")||""});$("vid").value="";$("auto3").checked=false;window.allahDone=false;$("ab").hidden=false;sbar();$("allahbox").innerHTML="";$("twbox").innerHTML="";
+ DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false,rej:false,def:null,dts:0});build();msg("مُسح المحفوظ.")};
 $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق المفتاح أولًا.");msg("جارٍ جلب الأصوات…");
  try{const r=await fetch("https://api.elevenlabs.io/v1/voices",{headers:{"xi-api-key":k}});if(!r.ok)throw new Error(r.status);const j=await r.json();
   $("v").innerHTML=j.voices.map(v=>`<option value="${v.voice_id}">${v.name}${v.labels&&v.labels.accent?" — "+v.labels.accent:""}</option>`).join("");msg("وُجد "+j.voices.length+" صوتًا.")}catch(e){msg("تعذّر الجلب ("+e.message+"). ألصق معرّف الصوت مباشرة.")}};
 [...SET,"v","auto3"].forEach(k=>$(k).addEventListener("change",saveSet));$("vid").addEventListener("input",saveSet);$("seed").addEventListener("input",saveSet);
 /* ── الإقلاع: استرجاع المحفوظ ── */
-(async()=>{DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false});
+(async()=>{DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false,rej:false,def:null,dts:0});
  try{DB=await idb();const s=(await getAll("kv")).settings;if(s){SET.forEach(k=>{if(s[k]!=null&&k!=="vid")$(k).value=s[k]});$("vid").value=s.vid||"";$("auto3").checked=!!s.auto3;window.allahDone=!!s.allahDone;$("ab").hidden=window.allahDone}
   const ls=await getAll("lines");for(const u in ls)if(LN[u])Object.assign(LN[u],ls[u])}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح — لن يُحفظ شيء.")}
  build();window.__ready=true})();
