@@ -163,7 +163,7 @@ function totals(){const n=DATA.units.filter(u=>isAppr(u.u)).length;const sc=$("s
 function sttg(){return +$("st").value}
 window.__trim=0;
 async function tts(text,lead){window.__trim=0;const k=$("k").value.trim(),v=$("vid").value.trim()||$("v").value;if(!k||!v)throw new Error("المفتاح والصوت مطلوبان");
- const body={text,model_id:$("mo").value,voice_settings:{stability:sttg(),similarity_boost:.8,style:0,use_speaker_boost:true}};
+ const body={text,model_id:window.__model||$("mo").value,voice_settings:{stability:window.__stab??sttg(),similarity_boost:.8,style:0,use_speaker_boost:true}};
  const sd=$("seed").value.trim();if(/^\d+$/.test(sd))body.seed=Math.min(+sd,4294967295);
  let last="";
  for(let t=0;t<3;t++){
@@ -203,14 +203,15 @@ async function zipUnits(units,tag){const fo=$("fo").value.trim();if(!validVoice(
 function play(blob,trim){if(curAudio)curAudio.pause();const a=new Audio(URL.createObjectURL(blob));curAudio=a;if(trim>0){a.addEventListener("loadedmetadata",()=>{try{a.currentTime=trim}catch(e){}},{once:true})}a.play().catch(e=>msg("تعذّر التشغيل: "+e.message))}
 window.allahDone=false;
 const ANAME=["الأصل","ألف خنجرية","فتحة صريحة","كلمة قبلها","ألف وصل ٱ","قَالَ ثم قصّ تلقائي"];
-async function trial(){if(window.allahDone)return msg("اعتُمدت صيغة لفظ الجلالة من قبل. غيّرها من القائمة إن أردت.");
+async function trial(){
  const u=DATA.units.find(x=>{ALLAH.lastIndex=0;return ALLAH.test(x.text)});if(!u)return msg("لا سطر فيه لفظ الجلالة.");
  const box=$("allahbox"),base=LN[u.u].text??u.text;box.innerHTML="<div class='m'>التجربة على سطر واحد: "+u.u+"</div>";
- for(const i of [5,0,1,4,2,3]){const tx=allahVar(base,i),d=document.createElement("div");d.className="tr"+(i===2||i===3?" more":"");d.hidden=i===2||i===3;d.dataset.v=i;
-  d.innerHTML=`<div class="m">صيغة: ${ANAME[i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-c="${i}">✔ اعتمد هذه الصيغة</button></div>`;
+ const M3="eleven_v3",M2="eleven_multilingual_v2",MN={eleven_v3:"v3",eleven_multilingual_v2:"v2"};
+ for(const [i,mm] of [[5,M3],[5,M2],[0,M2],[1,M2],[1,M3],[4,M3],[4,M2]]){const tx=allahVar(base,i),d=document.createElement("div");d.className="tr";d.dataset.v=i;d.dataset.m=mm;
+  d.innerHTML=`<div class="m">صيغة: ${ANAME[i]} · نموذج ${MN[mm]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-c="${i}" data-m="${mm}">✔ اعتمد هذه الصيغة</button></div>`;
   d.querySelector(".tx").textContent=tx;box.appendChild(d)}
  const mb=document.createElement("button");mb.className="s";mb.dataset.more="1";mb.textContent="المزيد من الصيغ";box.appendChild(mb);
- for(const d of box.querySelectorAll(".tr")){try{const sx=allahVar(base,+d.dataset.v),b=await tts(sx,+d.dataset.v===5&&sx.startsWith(LEAD)?LEAD.length:0),tr=window.__trim;const p=d.querySelector("[data-tpb]");p.disabled=false;p.onclick=()=>play(b,tr)}catch(e){msg("تجربة: "+e.message);return}}
+ for(const d of box.querySelectorAll(".tr")){try{const sx=allahVar(base,+d.dataset.v);window.__model=d.dataset.m;window.__stab=d.dataset.m==="eleven_v3"?undefined:0.5;let b,tr;try{b=await tts(sx,+d.dataset.v===5&&sx.startsWith(LEAD)?LEAD.length:0);tr=window.__trim}finally{window.__model=undefined;window.__stab=undefined}const p=d.querySelector("[data-tpb]");p.disabled=false;p.onclick=()=>play(b,tr)}catch(e){msg("تجربة: "+e.message);return}}
  msg("اسمع الصيغ ثم اعتمد أفضلها (تُعرض مرة واحدة).")}
 function variants(w){const E="صضطظخغقث",DI="[\u064B-\u065F\u0670]*";
  const sh=w.replace(new RegExp("(["+E+"])(?!\u0651)","g"),"$1\u0651");
@@ -247,7 +248,7 @@ document.body.addEventListener("click",async e=>{const t=e.target.closest("butto
  if(D.h){const l=LN[D.h];l.human=!l.human;saveLine(D.h);return updLine(D.h)}
  if(D.tc!==undefined){const [w,alt]=TW[+D.tc];const r=$("rules");r.value=(r.value.trim()?r.value.trim()+"\n":"")+w+"=>"+alt;saveSet();document.querySelectorAll("#twbox .tr").forEach((el,i)=>{el.classList.toggle("sel",i===+D.tc);el.classList.toggle("dim",i!==+D.tc)});return msg("أُضيفت القاعدة: "+w+"=>"+alt)}
  if(D.more){document.querySelectorAll("#allahbox .more").forEach(x=>x.hidden=false);t.hidden=true;return}
- if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;window.allahDone=true;$("ab").hidden=true;saveSet();let inv=0;for(const x in LN){const l=LN[x];if(hasAllah(l.text??lineOf(x).text)){const a=l.attempts.find(q=>q.id===l.approved);if(a&&a.allah!==+D.c){l.approved=null;l.needFix=true;inv++;saveLine(x);updLine(x)}}}if(inv)msg("أُلغي اعتماد "+inv+" سطر مولَّد بصيغة أخرى؛ أعد توليدها.");document.querySelectorAll("#allahbox .tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
+ if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;if(t.dataset.m){$("mo").value=t.dataset.m;if(t.dataset.m!=="eleven_v3")$("st").value="0.5"}window.allahDone=true;$("ab").hidden=true;saveSet();let inv=0;for(const x in LN){const l=LN[x];if(hasAllah(l.text??lineOf(x).text)){const a=l.attempts.find(q=>q.id===l.approved);if(a&&a.allah!==+D.c){l.approved=null;l.needFix=true;inv++;saveLine(x);updLine(x)}}}if(inv)msg("أُلغي اعتماد "+inv+" سطر مولَّد بصيغة أخرى؛ أعد توليدها.");document.querySelectorAll("#allahbox .tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
 });
 $("dlall").onclick=()=>zipUnits(DATA.units,"all");
 $("go").onclick=async()=>{const c=$("auto3").checked?3:1;for(const u of DATA.units){if(LN[u.u].attempts.length)continue;try{await gen(u.u,c)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}msg("انتهى توليد كل الأسطر.")};
@@ -265,7 +266,7 @@ $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق
   const pg=(await getAll("kv")).progress;if(pg)PROG.cur=Math.min(pg.cur|0,NB);const ls=await getAll("lines");for(const u in ls)if(LN[u])Object.assign(LN[u],ls[u])}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح — لن يُحفظ شيء.")}
  build();window.__ready=true})();
 
-$("sbar").onclick=()=>{const p=$("apanel");p.hidden=!p.hidden};
+$("sbar").onclick=()=>{const p=$("apanel");p.hidden=!p.hidden;$("ab").hidden=false};
 setTimeout(()=>{if(!window.avv2&&[0,1].includes(+$("al").value)){$("al").value="5"}if(+$("al").value===5){window.allahDone=true;$("ab").hidden=true}window.avv2=true;saveSet()},700);
 $("saveall").onclick=()=>zipUnits(DATA.units,"all-approved");
 </script></body></html>
