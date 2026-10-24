@@ -1,0 +1,49 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>قصّ مقطع صوتي</title>
+<style>
+:root{--g:#2c8a6b;--bg:#fdf8ea;--ink:#16302a}*{box-sizing:border-box}body{margin:0;padding:14px 14px 40px;background:var(--bg);color:var(--ink);font:18px/1.7 system-ui,"Noto Naskh Arabic",sans-serif;max-width:640px;margin-inline:auto}
+h1{font-size:24px;margin:6px 0}.note{background:#fff;border:1px solid #e3dcc0;border-radius:12px;padding:10px 12px;margin:8px 0;font-size:16px}
+button{font:inherit;font-weight:700;border:0;border-radius:14px;padding:12px 14px;background:var(--g);color:#fff;min-height:52px}button.w{background:#fff;color:var(--g);border:2px solid var(--g)}
+input[type=file]{width:100%;padding:14px;background:#fff;border:2px dashed var(--g);border-radius:14px;font:inherit}
+canvas{width:100%;height:110px;background:#fff;border:1px solid #e3dcc0;border-radius:12px;touch-action:none;display:block}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.seg button{flex:1 1 28%}
+.row{display:flex;gap:8px;margin:8px 0}.row>*{flex:1}input[type=range]{width:100%}input[type=text]{width:100%;padding:12px;font:inherit;border:2px solid #cfc6a8;border-radius:12px}
+#t{font-weight:700;text-align:center;direction:ltr}
+</style></head><body>
+<h1>قصّ مقطع من تسجيلك</h1>
+<div class="note">كل شيء يعمل داخل هاتفك فقط، ولا يُرفع الملف إلى أي مكان.</div>
+<input type="file" id="f" accept="audio/*">
+<div id="w" hidden>
+<div class="note">اضغط مقطعًا لتسمعه (قُسّم التسجيل تلقائيًا عند الصمت)، ثم اضبط البداية والنهاية حتى لا يبقى إلا الكلمة المطلوبة.</div>
+<div class="seg" id="seg"></div>
+<canvas id="cv" width="1200" height="220"></canvas>
+<div id="t">0.00 – 0.00</div>
+<label>البداية</label><input type="range" id="a" min="0" max="1000" value="0">
+<label>النهاية</label><input type="range" id="b" min="0" max="1000" value="1000">
+<div class="row"><button id="pl">▶ استمع للمقطع المحدد</button></div>
+<label>اسم المقطع</label><input type="text" id="nm" value="allahumma" dir="ltr">
+<div class="row"><button id="sv">💾 احفظ المقطع (WAV)</button></div>
+</div>
+<script>
+const $=i=>document.getElementById(i);let buf=null,segs=[],ac=null,src=null;
+function ctx(){return ac||(ac=new (window.AudioContext||window.webkitAudioContext)())}
+function mono(b){const n=b.length,o=new Float32Array(n);for(let c=0;c<b.numberOfChannels;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)o[i]+=d[i]/b.numberOfChannels}return o}
+function detect(b){const d=mono(b),sr=b.sampleRate,w=Math.round(sr*.02),n=Math.floor(d.length/w),e=[];for(let i=0;i<n;i++){let s=0;for(let j=0;j<w;j++)s+=d[i*w+j]**2;e.push(Math.sqrt(s/w))}
+ const mx=Math.max(...e),th=mx*.02,out=[];let st=-1,sil=0;const gap=Math.round(.25/.02);
+ for(let i=0;i<n;i++){if(e[i]>th){if(st<0)st=i;sil=0}else if(st>=0){if(++sil>=gap){out.push([st*w/sr,(i-sil+1)*w/sr]);st=-1;sil=0}}}
+ if(st>=0)out.push([st*w/sr,n*w/sr]);return out.filter(s=>s[1]-s[0]>.12)}
+function draw(){const c=$("cv"),g=c.getContext("2d"),d=mono(buf),W=c.width,H=c.height;g.clearRect(0,0,W,H);g.fillStyle="#2c8a6b";const step=Math.floor(d.length/W);
+ for(let x=0;x<W;x++){let m=0;for(let j=0;j<step;j+=8)m=Math.max(m,Math.abs(d[x*step+j]||0));const h=m*H*.95;g.fillRect(x,(H-h)/2,1,h)}
+ const D=buf.duration,a=$("a").value/1000*D,b=$("b").value/1000*D;g.fillStyle="rgba(230,170,40,.35)";g.fillRect(a/D*W,0,(b-a)/D*W,H)}
+function upd(){let a=+$("a").value,b=+$("b").value;if(b<=a+1){b=a+1;$("b").value=b}const D=buf.duration;$("t").textContent=(a/1000*D).toFixed(2)+" – "+(b/1000*D).toFixed(2)+" ث";draw()}
+function playRange(s,e){if(src)try{src.stop()}catch(x){}const c=ctx();c.resume();src=c.createBufferSource();src.buffer=buf;src.connect(c.destination);src.start(0,s,e-s)}
+function sel(){const D=buf.duration;return[$("a").value/1000*D,$("b").value/1000*D]}
+$("f").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{buf=await ctx().decodeAudioData(await f.arrayBuffer())}catch(x){return alert("تعذّر قراءة الملف")}
+ segs=detect(buf);const box=$("seg");box.innerHTML="";segs.forEach((s,i)=>{const bt=document.createElement("button");bt.className="w";bt.textContent="▶ مقطع "+(i+1);bt.onclick=()=>{const D=buf.duration;$("a").value=Math.max(0,s[0]-.05)/D*1000;$("b").value=Math.min(D,s[1]+.05)/D*1000;upd();playRange(...sel())};box.appendChild(bt)});
+ $("w").hidden=false;$("a").value=0;$("b").value=1000;upd()};
+$("a").oninput=$("b").oninput=upd;$("pl").onclick=()=>playRange(...sel());
+$("sv").onclick=()=>{const[s,e]=sel(),sr=buf.sampleRate,d=mono(buf).slice(Math.floor(s*sr),Math.floor(e*sr));const fade=Math.floor(sr*.01);for(let i=0;i<fade&&i<d.length;i++){d[i]*=i/fade;d[d.length-1-i]*=i/fade}
+ const pcm=new DataView(new ArrayBuffer(44+d.length*2)),W=(o,t)=>{for(let i=0;i<t.length;i++)pcm.setUint8(o+i,t.charCodeAt(i))};
+ W(0,"RIFF");pcm.setUint32(4,36+d.length*2,true);W(8,"WAVEfmt ");pcm.setUint32(16,16,true);pcm.setUint16(20,1,true);pcm.setUint16(22,1,true);pcm.setUint32(24,sr,true);pcm.setUint32(28,sr*2,true);pcm.setUint16(32,2,true);pcm.setUint16(34,16,true);W(36,"data");pcm.setUint32(40,d.length*2,true);
+ for(let i=0;i<d.length;i++)pcm.setInt16(44+i*2,Math.max(-1,Math.min(1,d[i]))*32767,true);
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([pcm],{type:"audio/wav"}));a.download=($("nm").value.trim()||"clip")+".wav";document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),3000)};
+</script></body></html>
