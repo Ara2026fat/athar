@@ -53,6 +53,7 @@ li.ln .tx{font-size:28px;line-height:2}li.ln.approved{background:#e2f4ea;border:
 <div class="row"><button id="ab" class="s">جرّب صيغ لفظ الجلالة على سطر واحد</button></div><div id="allahbox"></div>
 <div class="row"><button id="rg" class="s">أعد توليد غير المعتمد بالصيغة الجديدة</button></div></div>
 <details id="adv" style="margin:12px 0"><summary style="font-size:18px;font-weight:700;cursor:pointer;padding:8px 0">متقدّم</summary>
+<label style="display:block;margin:8px 0"><input type="checkbox" id="usep"> تركيب «اللهم» من صوت الابن (يولّد بقية الجملة فقط)</label>
 <div class="row"><button id="bv" class="s">جلب الأصوات</button></div>
 <label for="v">الصوت (من القائمة)</label><select id="v"><option value="">— اجلب الأصوات أولًا —</option></select>
 <label for="st">الثبات (stability)</label><select id="st"><option value="1">١٫٠ Robust — الأثبت (موصى به)</option><option value="0.5">٠٫٥ Natural</option><option value="0">٠٫٠ Creative — الأقل ثباتًا</option></select>
@@ -148,7 +149,7 @@ function updLine(u){
  li.querySelector("[data-g]").textContent=l.attempts.length?"✖ ارفض وأعد":"⟳ ولّد";
  li.querySelector("[data-pl]").disabled=!l.attempts.length;li.querySelector("[data-ok]").disabled=!l.attempts.length;
  li.querySelector("[data-ok]").textContent=a?"✔ راضٍ (معتمد)":"✔ راضٍ";li.querySelector("[data-sv]").disabled=!a;
- li.querySelector(".tx").textContent=l.text??lineOf(u).text;li.querySelector(".sp").hidden=!HUMMA_START.test(l.text??lineOf(u).text);
+ li.querySelector(".tx").textContent=l.text??lineOf(u).text;li.querySelector(".sp").hidden=!($("usep").checked&&HUMMA_START.test(l.text??lineOf(u).text));
  li.querySelector("[data-tg=atts]").hidden=l.attempts.length<2;
  li.querySelector("[data-h]").textContent=l.human?"✔ إزالة علامة الصوت البشري":"يحتاج صوتًا بشريًا 🎙";
  const box=li.querySelector(".atts");box.innerHTML="";
@@ -181,7 +182,7 @@ let seq=Date.now();
 function hasAllah(t){ALLAH.lastIndex=0;return ALLAH.test(t)}
 async function gen(u,count){const l=LN[u],d=lineOf(u),text=l.text??d.text,v=$("vid").value.trim()||$("v").value;
  if(hasAllah(text)&&!window.allahDone){$("apanel").hidden=false;const b=$("ab");if(b&&!$("allahbox").children.length)b.click();$("apanel").scrollIntoView({behavior:"smooth",block:"start"});throw new Error("اختر صيغة لفظ الجلالة أولًا: استمع للصيغ في الأعلى واضغط «اعتمد هذه الصيغة»، ثم عد وولّد.")}
- const SP=text.match(HUMMA_START);
+ const SP=$("usep").checked?text.match(HUMMA_START):null;
  for(let i=0;i<count;i++){const sent=SP?prep(text.slice(SP[0].length)):prep(text),ld=sent.startsWith(LEAD)&&+$("al").value===5?LEAD.length:0,blob=await tts(sent,ld),trim=window.__trim;
   l.attempts.push({id:"a"+(++seq),blob,trim,splice:SP?"allahumma":null,ts:Date.now(),sent,model:$("mo").value,voice:v,stab:sttg(),allah:+$("al").value,seed:$("seed").value.trim()||null,edited:l.text!==null});
   while(l.attempts.length>3){const k=l.attempts.findIndex(a=>a.id!==l.approved);l.attempts.splice(k,1)}
