@@ -19,6 +19,7 @@ canvas{width:100%;height:110px;background:#fff;border:1px solid #e3dcc0;border-r
 <div id="t">0.00 – 0.00</div>
 <label>البداية</label><input type="range" id="a" min="0" max="1000" value="0">
 <label>النهاية</label><input type="range" id="b" min="0" max="1000" value="1000">
+<div class="row"><button class="w" id="sm">⏪ ابدأ أبكر 0.1ث</button><button class="w" id="se">انتهِ أبعد 0.1ث ⏩</button></div>
 <div class="row"><button id="pl">▶ استمع للمقطع المحدد</button></div>
 <label>اسم المقطع</label><input type="text" id="nm" value="allahumma" dir="ltr">
 <div class="row"><button id="sv">💾 احفظ المقطع (WAV)</button></div>
@@ -40,8 +41,10 @@ function sel(){const D=buf.duration;return[$("a").value/1000*D,$("b").value/1000
 $("f").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{buf=await ctx().decodeAudioData(await f.arrayBuffer())}catch(x){return alert("تعذّر قراءة الملف")}
  segs=detect(buf);const box=$("seg");box.innerHTML="";segs.forEach((s,i)=>{const bt=document.createElement("button");bt.className="w";bt.textContent="▶ مقطع "+(i+1);bt.onclick=()=>{const D=buf.duration;$("a").value=Math.max(0,s[0]-.05)/D*1000;$("b").value=Math.min(D,s[1]+.05)/D*1000;upd();playRange(...sel())};box.appendChild(bt)});
  $("w").hidden=false;$("a").value=0;$("b").value=1000;upd()};
-$("a").oninput=$("b").oninput=upd;$("pl").onclick=()=>playRange(...sel());
-$("sv").onclick=()=>{const[s,e]=sel(),sr=buf.sampleRate,d=mono(buf).slice(Math.floor(s*sr),Math.floor(e*sr));const fade=Math.floor(sr*.01);for(let i=0;i<fade&&i<d.length;i++){d[i]*=i/fade;d[d.length-1-i]*=i/fade}
+$("a").oninput=$("b").oninput=upd;
+$("sm").onclick=()=>{$("a").value=Math.max(0,+$("a").value-0.1/buf.duration*1000);upd();playRange(...sel())};
+$("se").onclick=()=>{$("b").value=Math.min(1000,+$("b").value+0.1/buf.duration*1000);upd();playRange(...sel())};$("pl").onclick=()=>playRange(...sel());
+$("sv").onclick=()=>{const[s,e]=sel(),sr=buf.sampleRate,d=mono(buf).slice(Math.floor(s*sr),Math.floor(e*sr));let pk=0;for(let i=0;i<d.length;i++)pk=Math.max(pk,Math.abs(d[i]));if(pk>0){const g=0.85/pk;for(let i=0;i<d.length;i++)d[i]*=g}const fade=Math.floor(sr*.004);for(let i=0;i<fade&&i<d.length;i++){d[i]*=i/fade;d[d.length-1-i]*=i/fade}
  const pcm=new DataView(new ArrayBuffer(44+d.length*2)),W=(o,t)=>{for(let i=0;i<t.length;i++)pcm.setUint8(o+i,t.charCodeAt(i))};
  W(0,"RIFF");pcm.setUint32(4,36+d.length*2,true);W(8,"WAVEfmt ");pcm.setUint32(16,16,true);pcm.setUint16(20,1,true);pcm.setUint16(22,1,true);pcm.setUint32(24,sr,true);pcm.setUint32(28,sr*2,true);pcm.setUint16(32,2,true);pcm.setUint16(34,16,true);W(36,"data");pcm.setUint32(40,d.length*2,true);
  for(let i=0;i<d.length;i++)pcm.setInt16(44+i*2,Math.max(-1,Math.min(1,d[i]))*32767,true);
