@@ -112,6 +112,8 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
  return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
 const sha=async u=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",u))].map(b=>b.toString(16).padStart(2,"0")).join("");
 /* ── الدروس ── */
+/* المرحلة الحالية: أسطر بلا لفظ الجلالة فقط */
+(function(){const keep=[];LESSONS.forEach(le=>{le.units=le.units.filter(id=>{const u=DATA.units.find(x=>x.u===id);return u&&!hasAllah(u.text)});if(le.units.length)keep.push(le)});LESSONS.splice(0,LESSONS.length,...keep)})();
 const NB=LESSONS.length;let BATCHES=[];const BIDX={},PROG={cur:0};
 function layout(){BATCHES=LESSONS.map((le,bi)=>le.units.map(id=>{const u=lineOf(id);BIDX[id]=bi;return u}))}
 const resolved=u=>isAppr(u)||!!LN[u].human;
@@ -263,7 +265,7 @@ $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق
 /* ── الإقلاع: استرجاع المحفوظ ── */
 (async()=>{DATA.units.forEach(u=>LN[u.u]={text:null,attempts:[],approved:null,needFix:false,human:false,rej:false});
  try{DB=await idb();const s=(await getAll("kv")).settings;if(s){SET.forEach(k=>{if(s[k]!=null&&k!=="vid")$(k).value=s[k]});$("vid").value=s.vid||"";$("auto3").checked=!!s.auto3;window.allahDone=!!s.allahDone;window.avv2=!!s.avv2;$("ab").hidden=window.allahDone}
-  const pg=(await getAll("kv")).progress;if(pg)PROG.cur=Math.min(pg.cur|0,NB);const ls=await getAll("lines");for(const u in ls)if(LN[u])Object.assign(LN[u],ls[u])}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح — لن يُحفظ شيء.")}
+  const pg=(await getAll("kv")).progress;if(pg)PROG.cur=Math.min(pg.cur|0,NB);const ls=await getAll("lines");for(const u in ls)if(LN[u])Object.assign(LN[u],ls[u]);{let c=0;while(c<NB&&LESSONS[c].units.every(id=>resolved(id)))c++;PROG.cur=c}}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح — لن يُحفظ شيء.")}
  build();window.__ready=true})();
 
 $("sbar").onclick=()=>{const p=$("apanel");p.hidden=!p.hidden;$("ab").hidden=false};
