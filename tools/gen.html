@@ -173,7 +173,9 @@ async function tts(text){const k=$("k").value.trim(),v=$("vid").value.trim()||$(
   if(t<2)await new Promise(r=>setTimeout(r,2500*(t+1)))}
  throw new Error(last)}
 let seq=Date.now();
+function hasAllah(t){ALLAH.lastIndex=0;return ALLAH.test(t)}
 async function gen(u,count){const l=LN[u],d=lineOf(u),text=l.text??d.text,v=$("vid").value.trim()||$("v").value;
+ if(hasAllah(text)&&!window.allahDone){$("apanel").hidden=false;const b=$("ab");if(b&&!$("allahbox").children.length)b.click();$("apanel").scrollIntoView({behavior:"smooth",block:"start"});throw new Error("اختر صيغة لفظ الجلالة أولًا: استمع للصيغ في الأعلى واضغط «اعتمد هذه الصيغة»، ثم عد وولّد.")}
  for(let i=0;i<count;i++){const sent=prep(text),blob=await tts(sent);
   l.attempts.push({id:"a"+(++seq),blob,ts:Date.now(),sent,model:$("mo").value,voice:v,stab:sttg(),allah:+$("al").value,seed:$("seed").value.trim()||null,edited:l.text!==null});
   while(l.attempts.length>3){const k=l.attempts.findIndex(a=>a.id!==l.approved);l.attempts.splice(k,1)}
@@ -242,7 +244,7 @@ document.body.addEventListener("click",async e=>{const t=e.target.closest("butto
  if(D.h){const l=LN[D.h];l.human=!l.human;saveLine(D.h);return updLine(D.h)}
  if(D.tc!==undefined){const [w,alt]=TW[+D.tc];const r=$("rules");r.value=(r.value.trim()?r.value.trim()+"\n":"")+w+"=>"+alt;saveSet();document.querySelectorAll("#twbox .tr").forEach((el,i)=>{el.classList.toggle("sel",i===+D.tc);el.classList.toggle("dim",i!==+D.tc)});return msg("أُضيفت القاعدة: "+w+"=>"+alt)}
  if(D.more){document.querySelectorAll("#allahbox .more").forEach(x=>x.hidden=false);t.hidden=true;return}
- if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;window.allahDone=true;$("ab").hidden=true;saveSet();document.querySelectorAll("#allahbox .tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
+ if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;window.allahDone=true;$("ab").hidden=true;saveSet();let inv=0;for(const x in LN){const l=LN[x];if(hasAllah(l.text??lineOf(x).text)){const a=l.attempts.find(q=>q.id===l.approved);if(a&&a.allah!==+D.c){l.approved=null;l.needFix=true;inv++;saveLine(x);updLine(x)}}}if(inv)msg("أُلغي اعتماد "+inv+" سطر مولَّد بصيغة أخرى؛ أعد توليدها.");document.querySelectorAll("#allahbox .tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
 });
 $("dlall").onclick=()=>zipUnits(DATA.units,"all");
 $("go").onclick=async()=>{const c=$("auto3").checked?3:1;for(const u of DATA.units){if(LN[u.u].attempts.length)continue;try{await gen(u.u,c)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}msg("انتهى توليد كل الأسطر.")};
@@ -261,5 +263,6 @@ $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق
  build();window.__ready=true})();
 
 $("sbar").onclick=()=>{const p=$("apanel");p.hidden=!p.hidden};
+setTimeout(()=>{if(!window.allahDone)$("apanel").hidden=false},600);
 $("saveall").onclick=()=>zipUnits(DATA.units,"all-approved");
 </script></body></html>
