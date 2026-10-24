@@ -124,7 +124,7 @@ function build(){
   d.innerHTML=`<summary><span>${fin?"✔ منتهية — ":""}الدرس ${bi+1} من ${NB}: ${esc(le.title)}</span><span class="cnt"></span></summary><div class="bd"><ul></ul><div class="bar"><i></i></div><div class="row"><button data-bg="${bi}">ولّد هذا الدرس</button><button data-bz="${bi}" disabled>💾 حفظ هذا الدرس (ZIP)</button></div>${fin?"":`<button class="fn" data-fin="${bi}" disabled>${bi===NB-1?"انتهى هذا الدرس — إنهاء كل الدروس":"انتهى هذا الدرس — الدرس التالي"}</button><div class="sm fnm"></div>`}</div>`;
   const ul=d.querySelector("ul");
   bu.forEach((u,ui)=>{const li=document.createElement("li");li.className="ln";li.dataset.u=u.u;
-   li.innerHTML=`<div class="hd"><b>سطر ${ui+1}</b><span class="badge"></span></div><div class="tx"></div><div class="row big"><button class="b3" data-pl="${u.u}">▶ استمع</button><button class="b3 ok" data-ok="${u.u}">✔ راضٍ</button><button class="b3 bad" data-g="${u.u}">⟳ ولّد</button></div><div class="row sm2"><button class="s" data-tg="atts">المحاولات السابقة</button><button class="s" data-tg="more">⋯ المزيد</button><button class="s" data-sv="${u.u}">💾 احفظ هذا السطر</button></div><div class="atts" hidden></div><div class="more" hidden><div class="row"><button class="s" data-ed="${u.u}">✎ عدّل الجملة</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button></div><textarea rows="2" hidden></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="sent"></div></div>`;
+   li.innerHTML=`<div class="hd"><b>سطر ${ui+1}</b><span class="badge"></span></div><div class="tx"></div><div class="row big"><button class="b3" data-pl="${u.u}">▶ استمع</button><button class="b3 ok" data-ok="${u.u}">✔ راضٍ</button><button class="b3 bad" data-g="${u.u}">⟳ ولّد</button></div><div class="row sm2"><button class="s" data-tg="atts">المحاولات السابقة</button><button class="s" data-tg="more">⋯ المزيد</button><button class="s" data-sv="${u.u}">💾 احفظ هذا السطر</button></div><div class="err" hidden style="color:#b3261e;font-size:14px;margin:6px 0"></div><div class="atts" hidden></div><div class="more" hidden><div class="row"><button class="s" data-ed="${u.u}">✎ عدّل الجملة</button><button class="s" data-r="${u.u}">استعادة الأصل</button><button class="s" data-h="${u.u}">يحتاج صوتًا بشريًا 🎙</button></div><textarea rows="2" hidden></textarea><div class="m">${u.u} · ${u.ids.length} معرّف</div><div class="sent"></div></div>`;
    li.querySelector("textarea").value=LN[u.u].text??u.text;
    li.querySelector("textarea").oninput=e=>{LN[u.u].text=e.target.value===u.text?null:e.target.value;li.querySelector(".tx").textContent=e.target.value;li.classList.toggle("ed",LN[u.u].text!==null);saveLine(u.u)};
    li.querySelector(".tx").textContent=LN[u.u].text??u.text;ul.appendChild(li);EL[u.u]=li;updLine(u.u)});
@@ -162,17 +162,26 @@ function sttg(){return +$("st").value}
 async function tts(text){const k=$("k").value.trim(),v=$("vid").value.trim()||$("v").value;if(!k||!v)throw new Error("المفتاح والصوت مطلوبان");
  const body={text,model_id:$("mo").value,voice_settings:{stability:sttg(),similarity_boost:.8,style:0,use_speaker_boost:true}};
  const sd=$("seed").value.trim();if(/^\d+$/.test(sd))body.seed=Math.min(+sd,4294967295);
- const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify(body)});
- if(!r.ok)throw new Error(r.status+" "+(await r.text()).slice(0,120));return r.blob()}
+ let last="";
+ for(let t=0;t<3;t++){
+  const ac=new AbortController(),to=setTimeout(()=>ac.abort(),45000);
+  try{const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",signal:ac.signal,headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify(body)});
+   if(r.ok){const b=await r.blob();clearTimeout(to);return b}
+   last=r.status+" "+(await r.text()).slice(0,120);clearTimeout(to);
+   if(r.status!==429&&r.status<500)throw new Error(last)}
+  catch(e){clearTimeout(to);if(e.name==="AbortError")last="انتهت المهلة (45ث) — لا رد من ElevenLabs";else if(e instanceof TypeError)last="تعذّر الاتصال: "+e.message;else throw e}
+  if(t<2)await new Promise(r=>setTimeout(r,2500*(t+1)))}
+ throw new Error(last)}
 let seq=Date.now();
 async function gen(u,count){const l=LN[u],d=lineOf(u),text=l.text??d.text,v=$("vid").value.trim()||$("v").value;
  for(let i=0;i<count;i++){const sent=prep(text),blob=await tts(sent);
   l.attempts.push({id:"a"+(++seq),blob,ts:Date.now(),sent,model:$("mo").value,voice:v,stab:sttg(),allah:+$("al").value,seed:$("seed").value.trim()||null,edited:l.text!==null});
   while(l.attempts.length>3){const k=l.attempts.findIndex(a=>a.id!==l.approved);l.attempts.splice(k,1)}
   l.needFix=false;l.rej=false;saveLine(u);updLine(u)}}
-async function genLine(u,btn){const c=$("auto3").checked?3:1;btn&&(btn.disabled=true);try{await gen(u,c)}catch(e){EL[u].classList.add("fix");msg(u+": "+e.message)}btn&&(btn.disabled=false)}
+function lerr(u,t){const e=EL[u]&&EL[u].querySelector(".err");if(e){e.textContent=t?"⚠ "+t:"";e.hidden=!t}}
+async function genLine(u,btn){const c=$("auto3").checked?3:1;btn&&(btn.disabled=true);btn&&(btn.textContent="… جارٍ التوليد");lerr(u,"");try{await gen(u,c)}catch(e){EL[u].classList.add("fix");lerr(u,e.message);msg(u+": "+e.message)}if(btn){btn.disabled=false;updLine(u)}}
 async function genBatch(bi,btn){btn.disabled=true;const bu=BATCHES[bi],bar=$("b"+bi).querySelector(".bar i");let n=0;bar.style.width="0";
- for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix||l.rej){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){msg(u.u+": "+e.message);break}}bar.style.width=(100*++n/bu.length)+"%"}
+ for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix||l.rej){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}bar.style.width=(100*++n/bu.length)+"%"}
  btn.disabled=false}
 /* ── ZIP ── */
 async function zipUnits(units,tag){const fo=$("fo").value.trim();if(!validVoice(fo))return msg("اسم المجلد غير صالح.");
@@ -209,9 +218,9 @@ async function tryWord(){const w=$("tw").value.trim();if(!w)return msg("اكتب
  for(let i=0;i<3;i++){const d=document.createElement("div");d.className="tr";d.innerHTML=`<div class="m">${names[i]}</div><div class="tx"></div><div class="row"><button class="s" data-tpb disabled>▶ استمع</button><button class="s pick" data-tc="${i}">✔ اعتمد وأضف القاعدة</button></div>`;d.querySelector(".tx").textContent=TW[i][1];box.appendChild(d)}
  let i=0;for(const d of box.querySelectorAll(".tr")){try{const b=await tts(TW[i++][1]);const p=d.querySelector("[data-tpb]");p.disabled=false;p.onclick=()=>play(b)}catch(e){msg("تجربة: "+e.message);return}}
  msg("اسمع الصيغ ثم اعتمد؛ تُضاف القاعدة إلى «قواعد الاستبدال».")}
-$("gr").onclick=async()=>{const us=DATA.units.filter(u=>LN[u.u].rej);$("gr").disabled=true;for(const u of us){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){msg(u.u+": "+e.message);break}}build();msg("انتهى توليد المرفوضات.")};
+$("gr").onclick=async()=>{const us=DATA.units.filter(u=>LN[u.u].rej);$("gr").disabled=true;for(const u of us){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}build();msg("انتهى توليد المرفوضات.")};
 $("rg").onclick=async()=>{const us=DATA.units.filter(u=>{const l=LN[u.u];return l.attempts.length&&!isAppr(u.u)&&!l.human});if(!us.length)return msg("لا أسطر مولَّدة غير معتمدة.");$("rg").disabled=true;let n=0;
- for(const u of us){try{await gen(u.u,1);msg("أُعيد توليد "+(++n)+"/"+us.length)}catch(e){msg(u.u+": "+e.message);break}}$("rg").disabled=false;msg("أُعيد توليد "+n+" سطرًا بالصيغة الحالية.")};
+ for(const u of us){try{await gen(u.u,1);msg("أُعيد توليد "+(++n)+"/"+us.length)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}$("rg").disabled=false;msg("أُعيد توليد "+n+" سطرًا بالصيغة الحالية.")};
 $("al").addEventListener("change",sbar);$("rules").addEventListener("input",sbar);
 $("ab").onclick=trial;$("twb").onclick=tryWord;
 $("exh").onclick=()=>{const o=DATA.units.filter(u=>LN[u.u].human).map(u=>({id:u.u,ids:u.ids,text:LN[u.u].text??u.text}));if(!o.length)return msg("لا أسطر معلَّمة «تحتاج صوتًا بشريًا».");
@@ -236,7 +245,7 @@ document.body.addEventListener("click",async e=>{const t=e.target.closest("butto
  if(D.c!==undefined&&D.c!==""&&t.classList.contains("pick")){$("al").value=D.c;window.allahDone=true;$("ab").hidden=true;saveSet();document.querySelectorAll("#allahbox .tr").forEach(el=>{const on=el.dataset.v===D.c;el.classList.toggle("sel",on);el.classList.toggle("dim",!on);const b=el.querySelector(".pick");if(b)b.textContent=on?"✔ معتمدة":"✔ اعتمد هذه الصيغة"});return msg("اختيرت الصيغة "+(+D.c+1)+" وستُطبَّق على كل الأسطر عند التوليد.")}
 });
 $("dlall").onclick=()=>zipUnits(DATA.units,"all");
-$("go").onclick=async()=>{const c=$("auto3").checked?3:1;for(const u of DATA.units){if(LN[u.u].attempts.length)continue;try{await gen(u.u,c)}catch(e){msg(u.u+": "+e.message);return}}msg("انتهى توليد كل الأسطر.")};
+$("go").onclick=async()=>{const c=$("auto3").checked?3:1;for(const u of DATA.units){if(LN[u.u].attempts.length)continue;try{await gen(u.u,c)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}msg("انتهى توليد كل الأسطر.")};
 $("clr").onclick=async()=>{if(!confirm("مسح كل المحفوظ (النتائج والتعديلات والإعدادات)؟"))return;
  if(DB){try{const tx=DB.transaction(["kv","lines"],"readwrite");tx.objectStore("kv").clear();tx.objectStore("lines").clear();await new Promise(r=>{tx.oncomplete=tx.onerror=tx.onabort=()=>r()})}catch(e){}}
  SET.forEach(k=>{const e=$(k);if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=e.getAttribute("value")||""});$("vid").value="";$("auto3").checked=false;window.allahDone=false;$("ab").hidden=false;sbar();$("allahbox").innerHTML="";$("twbox").innerHTML="";
