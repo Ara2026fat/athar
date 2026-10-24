@@ -115,7 +115,7 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
 const sha=async u=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",u))].map(b=>b.toString(16).padStart(2,"0")).join("");
 /* ── الدروس ── */
 /* المرحلة الحالية: أسطر بلا لفظ الجلالة فقط */
-(function(){const keep=[];LESSONS.forEach(le=>{le.units=le.units.filter(id=>{const u=DATA.units.find(x=>x.u===id);return u&&!hasAllah(u.text.replace(HUMMA_START,""))});if(le.units.length)keep.push(le)});LESSONS.splice(0,LESSONS.length,...keep)})();
+
 const NB=LESSONS.length;let BATCHES=[];const BIDX={},PROG={cur:0};
 function layout(){BATCHES=LESSONS.map((le,bi)=>le.units.map(id=>{const u=lineOf(id);BIDX[id]=bi;return u}))}
 const resolved=u=>isAppr(u)||!!LN[u].human;
@@ -194,7 +194,8 @@ async function genBatch(bi,btn){btn.disabled=true;const bu=BATCHES[bi],bar=$("b"
  for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix||l.rej){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}bar.style.width=(100*++n/bu.length)+"%"}
  btn.disabled=false}
 /* ── ZIP ── */
-const needGen=id=>{const l=LN[id];if(!l.attempts.length||l.needFix||l.rej)return true;const t=l.text??lineOf(id).text;if(HUMMA_START.test(t)&&!l.attempts.some(x=>x.allah===5||x.splice)){l.approved=null;return true}return false};
+function thickCtx(t){let m,r=new RegExp(ALLAH.source,"g"),dk=x=>{const q=(x||"").match(/[\u064B-\u065F\u0670]*$/);return q?q[0]:""};while((m=r.exec(t))){const px=m[2],al=m[3],l1=m[4];let v;if(px)v=dk(px);else if(al){const pre=t.slice(0,m.index+m[1].length).replace(/\s+$/,"");if(!pre)return true;v=dk(pre)}else v=dk(l1);if(!v.includes("\u0650"))return true}return false}
+const needGen=id=>{const l=LN[id];if(!l.attempts.length||l.needFix||l.rej)return true;const t=l.text??lineOf(id).text;if(hasAllah(t)&&thickCtx(t)&&!l.attempts.some(x=>x.allah===5||x.splice)){l.approved=null;return true}return false};
 async function genAll(){const b=$("gall");b.disabled=true;let n=0,f=0,tot=0;for(const le of LESSONS)for(const id of le.units)if(needGen(id))tot++;
  for(const le of LESSONS)for(const id of le.units){const l=LN[id];if(!needGen(id))continue;b.textContent="… "+(n+f)+"/"+tot+" (أبقِ الصفحة مفتوحة)";try{await gen(id,1);n++}catch(e){f++;msg(id+": "+e.message);if(/^40[13]/.test(e.message))break}}
  b.disabled=false;b.textContent="⚡ ولّد كل الأسطر المتبقية دفعة واحدة";PROG.cur=NB;build();if(n)zipUnits(DATA.units,"generated",true);msg("انتهى: ولِّد "+n+" سطرًا"+(f?"، وفشل "+f:"")+". راجع كل سطر ثم اضغط «✔ راضٍ».")}
