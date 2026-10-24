@@ -48,6 +48,7 @@ li.ln .tx{font-size:28px;line-height:2}li.ln.approved{background:#e2f4ea;border:
 <label for="k">مفتاح ElevenLabs</label><input id="k" type="password" autocomplete="off" dir="ltr" placeholder="sk_...">
 <label for="vid">معرّف الصوت (Voice ID)</label><input id="vid" autocomplete="off" dir="ltr" placeholder="مثال: 21m00Tcm4TlvDq8ikWAM">
 <label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3 (الأفضل في التشكيل)</option><option value="eleven_multilingual_v2">eleven_multilingual_v2 (مستقر)</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5 (أسرع)</option><option value="eleven_flash_v2_5">eleven_flash_v2_5 (الأسرع)</option></select>
+<div class="row"><button id="gall" style="min-height:64px;font-size:20px;width:100%">⚡ ولّد كل الأسطر المتبقية دفعة واحدة</button></div>
 <div id="apanel" hidden>
 <label for="al">صيغة لفظ الجلالة (تُطبَّق عند التوليد فقط ولا تغيّر نص التطبيق)</label><select id="al"><option value="5">قَالَ قبلها ثم قصّ تلقائي (موصى به)</option><option value="0">الأصل</option><option value="1">ألف خنجرية: اللَّٰهِ</option><option value="2">فتحة صريحة على الألف: اَللَّٰهِ</option><option value="3">كلمة قبلها: قَالَ اللَّٰهِ (في أول السطر)</option><option value="4">ألف وصل: ٱللَّٰهِ</option></select>
 <div class="row"><button id="ab" class="s">جرّب صيغ لفظ الجلالة على سطر واحد</button></div><div id="allahbox"></div>
@@ -193,6 +194,11 @@ async function genBatch(bi,btn){btn.disabled=true;const bu=BATCHES[bi],bar=$("b"
  for(const u of bu){const l=LN[u.u];if(!l.attempts.length||l.needFix||l.rej){try{await gen(u.u,$("auto3").checked?3:1)}catch(e){if(EL[u.u]){EL[u.u].classList.add("fix");lerr(u.u,e.message)}msg(u.u+": "+e.message)}}bar.style.width=(100*++n/bu.length)+"%"}
  btn.disabled=false}
 /* ── ZIP ── */
+const needGen=id=>{const l=LN[id];if(!l.attempts.length||l.needFix||l.rej)return true;const t=l.text??lineOf(id).text;if(HUMMA_START.test(t)&&!l.attempts.some(x=>x.allah===5||x.splice)){l.approved=null;return true}return false};
+async function genAll(){const b=$("gall");b.disabled=true;let n=0,f=0,tot=0;for(const le of LESSONS)for(const id of le.units)if(needGen(id))tot++;
+ for(const le of LESSONS)for(const id of le.units){const l=LN[id];if(!needGen(id))continue;b.textContent="… "+(n+f)+"/"+tot+" (أبقِ الصفحة مفتوحة)";try{await gen(id,1);n++}catch(e){f++;msg(id+": "+e.message);if(/^40[13]/.test(e.message))break}}
+ b.disabled=false;b.textContent="⚡ ولّد كل الأسطر المتبقية دفعة واحدة";PROG.cur=NB;build();msg("انتهى: ولِّد "+n+" سطرًا"+(f?"، وفشل "+f:"")+". راجع كل سطر ثم اضغط «✔ راضٍ».")}
+$("gall").onclick=genAll;
 async function zipUnits(units,tag){const fo=$("fo").value.trim();if(!validVoice(fo))return msg("اسم المجلد غير صالح.");
  const files=[],man={schema:"athar-record/1",tool:"gen.html",created:new Date().toISOString(),speaker:"elevenlabs",synthetic:true,engine:"elevenlabs",voice:fo,audio_root:"audio/"+fo+"/",format:"mp3",approved_only:true,units:[],entries:{},incomplete:[],text_hash:{}};
  for(const u of units){const t=apprAtt(u.u);if(!t)continue;const data=new Uint8Array(await t.blob.arrayBuffer()),rel=fo+"/"+u.u+".mp3";
