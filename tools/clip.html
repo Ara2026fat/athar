@@ -39,7 +39,7 @@ function upd(){let a=+$("a").value,b=+$("b").value;if(b<=a+1){b=a+1;$("b").value
 function playRange(s,e){if(src)try{src.stop()}catch(x){}const c=ctx();c.resume();src=c.createBufferSource();src.buffer=buf;src.connect(c.destination);src.start(0,s,e-s)}
 function sel(){const D=buf.duration;return[$("a").value/1000*D,$("b").value/1000*D]}
 $("f").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{buf=await ctx().decodeAudioData(await f.arrayBuffer())}catch(x){return alert("تعذّر قراءة الملف")}
- segs=detect(buf);const box=$("seg");box.innerHTML="";segs.forEach((s,i)=>{const bt=document.createElement("button");bt.className="w";bt.textContent="▶ مقطع "+(i+1);bt.onclick=()=>{const D=buf.duration;$("a").value=Math.max(0,s[0]-.05)/D*1000;$("b").value=Math.min(D,s[1]+.05)/D*1000;upd();playRange(...sel())};box.appendChild(bt)});
+ segs=detect(buf);const box=$("seg");box.innerHTML="";segs.forEach((s,i)=>{const bt=document.createElement("button");bt.className="w";bt.textContent="▶ مقطع "+(i+1);bt.onclick=()=>{const D=buf.duration;$("a").value=Math.max(0,s[0]-.3)/D*1000;$("b").value=Math.min(D,s[1]+.2)/D*1000;upd();playRange(...sel())};box.appendChild(bt)});
  $("w").hidden=false;$("a").value=0;$("b").value=1000;upd()};
 $("a").oninput=$("b").oninput=upd;
 $("sm").onclick=()=>{$("a").value=Math.max(0,+$("a").value-0.1/buf.duration*1000);upd();playRange(...sel())};
