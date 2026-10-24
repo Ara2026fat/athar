@@ -263,6 +263,6 @@ $("bv").onclick=async()=>{const k=$("k").value.trim();if(!k)return msg("ألصق
  build();window.__ready=true})();
 
 $("sbar").onclick=()=>{const p=$("apanel");p.hidden=!p.hidden};
-setTimeout(()=>{if(!window.allahDone)$("apanel").hidden=false},600);
+setTimeout(()=>{if(!window.allahDone&&+$("al").value===0){$("al").value="1";window.allahDone=true;$("ab").hidden=true;saveSet()}},700);
 $("saveall").onclick=()=>zipUnits(DATA.units,"all-approved");
 </script></body></html>
