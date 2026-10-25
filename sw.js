@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v81';
+const CACHE_VERSION = 'v82';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -169,6 +169,7 @@ const CORE_ASSETS = [
   './nr/091.mp3',
   './nr/092.mp3',
   './nr/093.mp3',
+  './nr/094.mp3',
   './nr/095.mp3',
   './nr/096.mp3',
   './nr/097.mp3',
