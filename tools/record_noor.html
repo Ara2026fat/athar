@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2A8067">
+<title>تسجيل القاعدة النورانية — أثر</title>
+<style>
+:root{
+  --bg:#FDF7E8; --card:#FFFFFF; --ink:#1F2A24; --mute:#6B766F; --line:#E4DCC6;
+  --brand:#2A8067; --brand-ink:#FFFFFF; --brand-soft:#DCEFE8;
+  --rec:#C0392B; --rec-soft:#FBE4E0; --warn:#9A6A00; --warn-soft:#FFF1CC; --ok:#1E7A4E; --ok-soft:#DDF3E6;
+  --ayah:#F1EAD2; --shadow:0 2px 14px rgba(40,50,40,.10);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#101914; --card:#18241D; --ink:#EAF1EC; --mute:#9AAAA0; --line:#2A3B31;
+    --brand:#3FA583; --brand-ink:#08150F; --brand-soft:#173128;
+    --rec:#E5604F; --rec-soft:#3A1E1A; --warn:#E6BC52; --warn-soft:#3A3014; --ok:#58C98C; --ok-soft:#173526;
+    --ayah:#222B22; --shadow:0 2px 14px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101914; --card:#18241D; --ink:#EAF1EC; --mute:#9AAAA0; --line:#2A3B31;
+  --brand:#3FA583; --brand-ink:#08150F; --brand-soft:#173128;
+  --rec:#E5604F; --rec-soft:#3A1E1A; --warn:#E6BC52; --warn-soft:#3A3014; --ok:#58C98C; --ok-soft:#173526;
+  --ayah:#222B22; --shadow:0 2px 14px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Naskh Arabic","Amiri","Geeza Pro","Traditional Arabic","Segoe UI","Tahoma",system-ui,sans-serif;font-size:17px;line-height:1.6}
+body{height:100dvh;overflow:hidden;padding:env(safe-area-inset-top) 8px calc(env(safe-area-inset-bottom) + 6px)}
+.wrap{max-width:760px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+header.top{display:flex;align-items:center;gap:6px;padding:6px 0 4px;flex:none}
+.ibtn.fs{font-size:24px;font-weight:700;min-width:56px;min-height:56px;padding:0 10px}
+header.top h1{font-size:16px;margin:0;flex:1;font-weight:700;min-width:0}
+header.top h1 small{display:block;font-size:13px;color:var(--mute);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+button{font:inherit;color:inherit;cursor:pointer}
+.ibtn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-height:44px;box-shadow:var(--shadow)}
+.ibtn:focus-visible,.btn:focus-visible,.rec:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.progress{margin:2px 0 6px;flex:none}
+.progress .bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress .bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .25s}
+.progress .meta{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-top:4px;gap:8px;flex-wrap:wrap}
+.warnbar{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:8px 12px;margin:8px 0;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px 8px 0;box-shadow:var(--shadow);flex:1;min-height:0;display:flex;flex-direction:column}
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 4px}
+.cardmeta{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:13px;color:var(--mute);margin-bottom:8px}
+.chip{display:inline-block;border-radius:99px;padding:1px 10px;font-size:12.5px;background:var(--brand-soft);color:var(--brand)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)} .chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.rec{background:var(--rec-soft);color:var(--rec)}
+.uid{direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.line{font-size:var(--fs,40px);line-height:1.95;text-align:center;margin:8px 0;padding:4px 0;overflow-wrap:anywhere}
+.ctx{background:var(--ayah);border-radius:14px;padding:8px 12px;margin:8px 0;font-size:16px;color:var(--mute);text-align:center}
+.ctx b{display:block;font-size:12.5px;color:var(--mute);font-weight:600}
+.ctx .a{font-size:20px;line-height:2;color:var(--ink);opacity:.8}
+.takeinfo{min-height:28px;text-align:center;font-size:14px;color:var(--mute)}
+.dock{flex:none;background:var(--card);padding:6px 0 6px;border-top:1px solid var(--line)}
+.controls{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-top:4px}
+.controls .btn{min-height:80px}
+.btn{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 8px;min-height:68px;font-size:20px;font-weight:700}
+.btn.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.btn[disabled]{opacity:.4;cursor:default}
+.rec{width:92px;height:92px;border-radius:50%;border:6px solid var(--rec-soft);background:var(--rec);color:#fff;font-size:15px;font-weight:700;display:grid;place-items:center;box-shadow:0 6px 18px rgba(192,57,43,.35)}
+.rec svg{width:34px;height:34px;fill:currentColor}
+.rec.on{animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 14px rgba(192,57,43,.18)}}
+@media (prefers-reduced-motion:reduce){.rec.on{animation:none}}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.meter{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:12px auto 0;max-width:340px;visibility:hidden}
+.meter.on{visibility:visible}.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .06s}
+.timer{text-align:center;font-variant-numeric:tabular-nums;font-size:22px;min-height:0;color:var(--rec);font-weight:700}
+.toast{position:fixed;inset-inline:16px;bottom:calc(env(safe-area-inset-bottom) + 16px);max-width:560px;margin:auto;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:14px;z-index:50;display:none;text-align:center;font-size:15px}
+.toast.on{display:block}
+dialog{border:none;border-radius:20px;padding:0;max-width:min(94vw,640px);width:100%;background:var(--card);color:var(--ink);box-shadow:0 10px 50px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg{padding:18px 18px 20px;max-height:86dvh;overflow:auto}
+.dlg h2{margin:0 0 10px;font-size:20px}
+.dlg label{display:block;margin:12px 0 4px;font-weight:600;font-size:15px}
+.dlg input[type=text],.dlg select{width:100%;font:inherit;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-height:46px}
+.dlg .hint{font-size:13px;color:var(--mute);margin:3px 0}
+.dlg .chk{display:flex;gap:10px;align-items:center;margin:12px 0}
+.dlg .chk input{width:22px;height:22px}
+.dlg .acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.dlg .acts .btn{flex:1;min-width:130px}
+.list{list-style:none;margin:8px 0 0;padding:0}
+.list li{display:flex;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid var(--line);cursor:pointer;min-height:48px}
+.list li.cur{background:var(--brand-soft);border-radius:10px}
+.list .dot{width:12px;height:12px;border-radius:50%;background:var(--line);flex:none}
+.list .dot.ok{background:var(--ok)} .list .dot.pend{background:var(--warn)}
+.list .t{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .sh{font-weight:700;background:var(--bg);color:var(--mute);cursor:default;font-size:13px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.filters button{border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:5px 14px;min-height:36px}
+.filters button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.bigprog{height:12px;border-radius:99px;background:var(--line);overflow:hidden;margin:10px 0}.bigprog i{display:block;height:100%;width:0;background:var(--brand)}
+.sig{text-align:center;color:var(--mute);font-size:12.5px;margin-top:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>تسجيل أثر <small id="who">المتحدث: —</small></h1>
+    <button class="ibtn fs" id="bFm" aria-label="تصغير الخط">أ−</button>
+    <button class="ibtn fs" id="bFp" aria-label="تكبير الخط">أ+</button>
+    <button class="ibtn" id="bList" aria-label="الفهرس">الفهرس</button>
+    <button class="ibtn" id="bSet" aria-label="الإعدادات">الإعدادات</button>
+  </header>
+
+  <div class="progress" aria-live="polite">
+    <div class="bar"><i id="pbar"></i></div>
+    <div class="meta"><span id="pTxt">—</span><span id="pSes">—</span></div>
+  </div>
+  <div id="warn" class="warnbar" hidden></div>
+
+  <section class="card" id="card" aria-live="polite">
+    <div class="scroll" id="scroll">
+    <div class="cardmeta" id="cmeta"></div>
+    <div class="ctx" id="cbefore" hidden></div>
+    <div class="line" id="ltext" lang="ar"></div>
+    <div class="ctx" id="cafter" hidden></div>
+    <div class="takeinfo" id="tinfo"></div>
+    </div>
+    <div class="dock">
+    <div class="timer" id="timer" aria-live="off"></div>
+    <div class="meter" id="meter"><i></i></div>
+
+    <div class="controls">
+      <button class="btn" id="bPrev">‹ السابق</button>
+      <button class="rec" id="bRec" aria-label="تسجيل"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/></svg></button>
+      <button class="btn" id="bNext">التالي ›</button>
+    </div>
+    <div class="row2">
+      <button class="btn" id="bPlay" disabled>▶ استمع</button>
+      <button class="btn" id="bRedo" disabled>↺ أعد التسجيل</button>
+    </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="dSet"><div class="dlg">
+  <h2>الإعدادات</h2>
+  <label for="iSpeaker">اسم المتحدث (يظهر في الواجهة وفي ملف manifest)</label>
+  <input type="text" id="iSpeaker" placeholder="مثال: الأستاذ عرفات" autocomplete="off">
+  <label for="sVoice">الصوت (voice) — مجلد الملفات</label>
+  <select id="sVoice"></select>
+  <input type="text" id="iVoice" placeholder="human_reader" dir="ltr" style="margin-top:8px" hidden autocomplete="off" spellcheck="false">
+  <div class="hint">لكل صوت تسجيلاته المنفصلة داخل هذا الجهاز. اسم المجلد: حروف إنجليزية صغيرة وأرقام و _ و - فقط.</div>
+  <div class="chk"><input type="checkbox" id="cPend"><label for="cPend" style="margin:0;font-weight:500">إظهار الأسطر المعلَّقة (آيات مضمَّنة في كلام الراوي — لا تُسجَّل قبل اعتماد الإصلاح)</label></div>
+  <div class="chk"><input type="checkbox" id="cAuto"><label for="cAuto" style="margin:0;font-weight:500">الانتقال تلقائيًا إلى السطر التالي بعد إيقاف التسجيل</label></div>
+  <label for="sFmt">صيغة التصدير</label>
+  <select id="sFmt"><option value="native">الأصلية للمتصفح (m4a أو webm) — أصغر حجمًا</option><option value="wav">WAV أحادي ٢٤ ك.هـ — يتوافق مع كل شيء (أكبر حجمًا)</option></select>
+  <div class="hint">يمكن تحويل أي صيغة إلى mp3 لاحقًا بسكربت الرقعة (ffmpeg).</div>
+  <label for="fTash">استيراد تشكيل كامل (JSON: {"المعرّف": "النص المشكَّل"})</label>
+  <input type="file" id="fTash" accept="application/json,.json">
+  <div class="hint" id="tashInfo"></div>
+  <div class="acts">
+    <button class="btn primary" id="sSave">حفظ</button>
+    <button class="btn" id="sTheme">الوضع الليلي/النهاري</button>
+    <button class="btn" id="sWipe" style="color:var(--rec)">مسح كل التسجيلات</button>
+    <button class="btn" id="sClose">إغلاق</button>
+  </div>
+</div></dialog>
+
+<dialog id="dList"><div class="dlg">
+  <h2>الفهرس</h2>
+  <div class="filters" id="filters">
+    <button data-f="all" class="on">الكل</button><button data-f="todo">غير مسجَّل</button><button data-f="done">مسجَّل</button>
+  </div>
+  <ul class="list" id="ulist"></ul>
+  <div class="acts"><button class="btn" id="bNextOpen">التالي غير المسجَّل</button><button class="btn primary" id="bExport">تصدير ZIP</button><button class="btn" id="lClose">إغلاق</button></div>
+</div></dialog>
+
+<dialog id="dExp"><div class="dlg">
+  <h2>تصدير ZIP</h2>
+  <div id="expSum" class="hint" style="font-size:15px"></div>
+  <div class="bigprog" id="expBar" hidden><i></i></div>
+  <div id="expMsg" class="hint"></div>
+  <div class="acts">
+    <button class="btn primary" id="eGo">إنشاء الملف</button>
+    <button class="btn" id="eShare" hidden>مشاركة</button>
+    <button class="btn" id="eClose">إغلاق</button>
+  </div>
+</div></dialog>
+
+<script id="queue" type="application/json">{"voice_default": "human_reader", "sessions": 7, "units": [{"u": "noor.name.001", "ids": ["noor.name.001"], "text": "ألف", "disp": "ألف", "kind": "N1_letter_name", "lesson": "noor", "pos": 1, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.002", "ids": ["noor.name.002"], "text": "باء", "disp": "باء", "kind": "N1_letter_name", "lesson": "noor", "pos": 2, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.003", "ids": ["noor.name.003"], "text": "تاء", "disp": "تاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 3, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.004", "ids": ["noor.name.004"], "text": "ثاء", "disp": "ثاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 4, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.005", "ids": ["noor.name.005"], "text": "جيم", "disp": "جيم", "kind": "N1_letter_name", "lesson": "noor", "pos": 5, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.006", "ids": ["noor.name.006"], "text": "حاء", "disp": "حاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 6, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.007", "ids": ["noor.name.007"], "text": "خاء", "disp": "خاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 7, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.008", "ids": ["noor.name.008"], "text": "دال", "disp": "دال", "kind": "N1_letter_name", "lesson": "noor", "pos": 8, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.009", "ids": ["noor.name.009"], "text": "ذال", "disp": "ذال", "kind": "N1_letter_name", "lesson": "noor", "pos": 9, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.010", "ids": ["noor.name.010"], "text": "راء", "disp": "راء", "kind": "N1_letter_name", "lesson": "noor", "pos": 10, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.011", "ids": ["noor.name.011"], "text": "زاي", "disp": "زاي", "kind": "N1_letter_name", "lesson": "noor", "pos": 11, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.012", "ids": ["noor.name.012"], "text": "سين", "disp": "سين", "kind": "N1_letter_name", "lesson": "noor", "pos": 12, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.013", "ids": ["noor.name.013"], "text": "شين", "disp": "شين", "kind": "N1_letter_name", "lesson": "noor", "pos": 13, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.014", "ids": ["noor.name.014"], "text": "صاد", "disp": "صاد", "kind": "N1_letter_name", "lesson": "noor", "pos": 14, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.015", "ids": ["noor.name.015"], "text": "ضاد", "disp": "ضاد", "kind": "N1_letter_name", "lesson": "noor", "pos": 15, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.016", "ids": ["noor.name.016"], "text": "طاء", "disp": "طاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 16, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.017", "ids": ["noor.name.017"], "text": "ظاء", "disp": "ظاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 17, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.018", "ids": ["noor.name.018"], "text": "عين", "disp": "عين", "kind": "N1_letter_name", "lesson": "noor", "pos": 18, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.019", "ids": ["noor.name.019"], "text": "غين", "disp": "غين", "kind": "N1_letter_name", "lesson": "noor", "pos": 19, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.020", "ids": ["noor.name.020"], "text": "فاء", "disp": "فاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 20, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.021", "ids": ["noor.name.021"], "text": "قاف", "disp": "قاف", "kind": "N1_letter_name", "lesson": "noor", "pos": 21, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.022", "ids": ["noor.name.022"], "text": "كاف", "disp": "كاف", "kind": "N1_letter_name", "lesson": "noor", "pos": 22, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.023", "ids": ["noor.name.023"], "text": "لام", "disp": "لام", "kind": "N1_letter_name", "lesson": "noor", "pos": 23, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.024", "ids": ["noor.name.024"], "text": "ميم", "disp": "ميم", "kind": "N1_letter_name", "lesson": "noor", "pos": 24, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.025", "ids": ["noor.name.025"], "text": "نون", "disp": "نون", "kind": "N1_letter_name", "lesson": "noor", "pos": 25, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.026", "ids": ["noor.name.026"], "text": "هاء", "disp": "هاء", "kind": "N1_letter_name", "lesson": "noor", "pos": 26, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.027", "ids": ["noor.name.027"], "text": "واو", "disp": "واو", "kind": "N1_letter_name", "lesson": "noor", "pos": 27, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.name.028", "ids": ["noor.name.028"], "text": "ياء", "disp": "ياء", "kind": "N1_letter_name", "lesson": "noor", "pos": 28, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 1}, {"u": "noor.syl.029", "ids": ["noor.syl.029"], "text": "أَ", "disp": "أَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 29, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.030", "ids": ["noor.syl.030"], "text": "بَ", "disp": "بَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 30, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.031", "ids": ["noor.syl.031"], "text": "تَ", "disp": "تَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 31, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.032", "ids": ["noor.syl.032"], "text": "ثَ", "disp": "ثَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 32, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.033", "ids": ["noor.syl.033"], "text": "جَ", "disp": "جَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 33, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.034", "ids": ["noor.syl.034"], "text": "حَ", "disp": "حَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 34, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.035", "ids": ["noor.syl.035"], "text": "خَ", "disp": "خَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 35, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.036", "ids": ["noor.syl.036"], "text": "دَ", "disp": "دَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 36, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.037", "ids": ["noor.syl.037"], "text": "ذَ", "disp": "ذَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 37, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.038", "ids": ["noor.syl.038"], "text": "رَ", "disp": "رَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 38, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.039", "ids": ["noor.syl.039"], "text": "زَ", "disp": "زَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 39, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.040", "ids": ["noor.syl.040"], "text": "سَ", "disp": "سَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 40, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.041", "ids": ["noor.syl.041"], "text": "شَ", "disp": "شَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 41, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.042", "ids": ["noor.syl.042"], "text": "صَ", "disp": "صَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 42, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.043", "ids": ["noor.syl.043"], "text": "ضَ", "disp": "ضَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 43, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.044", "ids": ["noor.syl.044"], "text": "طَ", "disp": "طَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 44, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.045", "ids": ["noor.syl.045"], "text": "ظَ", "disp": "ظَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 45, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.046", "ids": ["noor.syl.046"], "text": "عَ", "disp": "عَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 46, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.047", "ids": ["noor.syl.047"], "text": "غَ", "disp": "غَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 47, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.048", "ids": ["noor.syl.048"], "text": "فَ", "disp": "فَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 48, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.049", "ids": ["noor.syl.049"], "text": "قَ", "disp": "قَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 49, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.050", "ids": ["noor.syl.050"], "text": "كَ", "disp": "كَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 50, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.051", "ids": ["noor.syl.051"], "text": "لَ", "disp": "لَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 51, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.052", "ids": ["noor.syl.052"], "text": "مَ", "disp": "مَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 52, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.053", "ids": ["noor.syl.053"], "text": "نَ", "disp": "نَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 53, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.054", "ids": ["noor.syl.054"], "text": "هَ", "disp": "هَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 54, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.055", "ids": ["noor.syl.055"], "text": "وَ", "disp": "وَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 55, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.056", "ids": ["noor.syl.056"], "text": "يَ", "disp": "يَ", "kind": "N2_syllable_fatha", "lesson": "noor", "pos": 56, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 2}, {"u": "noor.syl.057", "ids": ["noor.syl.057"], "text": "أُ", "disp": "أُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 57, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.058", "ids": ["noor.syl.058"], "text": "بُ", "disp": "بُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 58, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.059", "ids": ["noor.syl.059"], "text": "تُ", "disp": "تُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 59, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.060", "ids": ["noor.syl.060"], "text": "ثُ", "disp": "ثُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 60, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.061", "ids": ["noor.syl.061"], "text": "جُ", "disp": "جُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 61, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.062", "ids": ["noor.syl.062"], "text": "حُ", "disp": "حُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 62, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.063", "ids": ["noor.syl.063"], "text": "خُ", "disp": "خُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 63, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.064", "ids": ["noor.syl.064"], "text": "دُ", "disp": "دُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 64, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.065", "ids": ["noor.syl.065"], "text": "ذُ", "disp": "ذُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 65, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.066", "ids": ["noor.syl.066"], "text": "رُ", "disp": "رُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 66, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.067", "ids": ["noor.syl.067"], "text": "زُ", "disp": "زُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 67, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.068", "ids": ["noor.syl.068"], "text": "سُ", "disp": "سُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 68, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.069", "ids": ["noor.syl.069"], "text": "شُ", "disp": "شُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 69, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.070", "ids": ["noor.syl.070"], "text": "صُ", "disp": "صُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 70, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.071", "ids": ["noor.syl.071"], "text": "ضُ", "disp": "ضُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 71, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.072", "ids": ["noor.syl.072"], "text": "طُ", "disp": "طُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 72, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.073", "ids": ["noor.syl.073"], "text": "ظُ", "disp": "ظُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 73, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.074", "ids": ["noor.syl.074"], "text": "عُ", "disp": "عُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 74, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.075", "ids": ["noor.syl.075"], "text": "غُ", "disp": "غُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 75, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.076", "ids": ["noor.syl.076"], "text": "فُ", "disp": "فُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 76, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.077", "ids": ["noor.syl.077"], "text": "قُ", "disp": "قُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 77, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.078", "ids": ["noor.syl.078"], "text": "كُ", "disp": "كُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 78, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.079", "ids": ["noor.syl.079"], "text": "لُ", "disp": "لُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 79, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.080", "ids": ["noor.syl.080"], "text": "مُ", "disp": "مُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 80, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.081", "ids": ["noor.syl.081"], "text": "نُ", "disp": "نُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 81, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.082", "ids": ["noor.syl.082"], "text": "هُ", "disp": "هُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 82, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.083", "ids": ["noor.syl.083"], "text": "وُ", "disp": "وُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 83, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.084", "ids": ["noor.syl.084"], "text": "يُ", "disp": "يُ", "kind": "N3_syllable_damma", "lesson": "noor", "pos": 84, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 3}, {"u": "noor.syl.085", "ids": ["noor.syl.085"], "text": "أِ", "disp": "أِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 85, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.086", "ids": ["noor.syl.086"], "text": "بِ", "disp": "بِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 86, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.087", "ids": ["noor.syl.087"], "text": "تِ", "disp": "تِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 87, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.088", "ids": ["noor.syl.088"], "text": "ثِ", "disp": "ثِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 88, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.089", "ids": ["noor.syl.089"], "text": "جِ", "disp": "جِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 89, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.090", "ids": ["noor.syl.090"], "text": "حِ", "disp": "حِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 90, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.091", "ids": ["noor.syl.091"], "text": "خِ", "disp": "خِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 91, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.092", "ids": ["noor.syl.092"], "text": "دِ", "disp": "دِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 92, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.093", "ids": ["noor.syl.093"], "text": "ذِ", "disp": "ذِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 93, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.094", "ids": ["noor.syl.094"], "text": "رِ", "disp": "رِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 94, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.095", "ids": ["noor.syl.095"], "text": "زِ", "disp": "زِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 95, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.096", "ids": ["noor.syl.096"], "text": "سِ", "disp": "سِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 96, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.097", "ids": ["noor.syl.097"], "text": "شِ", "disp": "شِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 97, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.098", "ids": ["noor.syl.098"], "text": "صِ", "disp": "صِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 98, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.099", "ids": ["noor.syl.099"], "text": "ضِ", "disp": "ضِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 99, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.100", "ids": ["noor.syl.100"], "text": "طِ", "disp": "طِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 100, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.101", "ids": ["noor.syl.101"], "text": "ظِ", "disp": "ظِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 101, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.102", "ids": ["noor.syl.102"], "text": "عِ", "disp": "عِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 102, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.103", "ids": ["noor.syl.103"], "text": "غِ", "disp": "غِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 103, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.104", "ids": ["noor.syl.104"], "text": "فِ", "disp": "فِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 104, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.105", "ids": ["noor.syl.105"], "text": "قِ", "disp": "قِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 105, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.106", "ids": ["noor.syl.106"], "text": "كِ", "disp": "كِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 106, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.107", "ids": ["noor.syl.107"], "text": "لِ", "disp": "لِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 107, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.108", "ids": ["noor.syl.108"], "text": "مِ", "disp": "مِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 108, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.109", "ids": ["noor.syl.109"], "text": "نِ", "disp": "نِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 109, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.110", "ids": ["noor.syl.110"], "text": "هِ", "disp": "هِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 110, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.111", "ids": ["noor.syl.111"], "text": "وِ", "disp": "وِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 111, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.syl.112", "ids": ["noor.syl.112"], "text": "يِ", "disp": "يِ", "kind": "N4_syllable_kasra", "lesson": "noor", "pos": 112, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 4}, {"u": "noor.word.113", "ids": ["noor.word.113"], "text": "دَارَ", "disp": "دَارَ", "kind": "N5_word", "lesson": "noor", "pos": 113, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.114", "ids": ["noor.word.114"], "text": "وَرَدَ", "disp": "وَرَدَ", "kind": "N5_word", "lesson": "noor", "pos": 114, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.115", "ids": ["noor.word.115"], "text": "زَادَ", "disp": "زَادَ", "kind": "N5_word", "lesson": "noor", "pos": 115, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.116", "ids": ["noor.word.116"], "text": "كَسَبَ", "disp": "كَسَبَ", "kind": "N5_word", "lesson": "noor", "pos": 116, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.117", "ids": ["noor.word.117"], "text": "خَلَقَ", "disp": "خَلَقَ", "kind": "N5_word", "lesson": "noor", "pos": 117, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.118", "ids": ["noor.word.118"], "text": "فَعَلَ", "disp": "فَعَلَ", "kind": "N5_word", "lesson": "noor", "pos": 118, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.119", "ids": ["noor.word.119"], "text": "وَقَبَ", "disp": "وَقَبَ", "kind": "N5_word", "lesson": "noor", "pos": 119, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.120", "ids": ["noor.word.120"], "text": "حَسَدَ", "disp": "حَسَدَ", "kind": "N5_word", "lesson": "noor", "pos": 120, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.121", "ids": ["noor.word.121"], "text": "مَلِكِ", "disp": "مَلِكِ", "kind": "N5_word", "lesson": "noor", "pos": 121, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.122", "ids": ["noor.word.122"], "text": "عُقَدِ", "disp": "عُقَدِ", "kind": "N5_word", "lesson": "noor", "pos": 122, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.123", "ids": ["noor.word.123"], "text": "أَحَدُنْ", "disp": "أَحَدُنْ", "kind": "N5_word", "lesson": "noor", "pos": 123, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.124", "ids": ["noor.word.124"], "text": "لَهَبِنْ", "disp": "لَهَبِنْ", "kind": "N5_word", "lesson": "noor", "pos": 124, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.125", "ids": ["noor.word.125"], "text": "مَسَدِنْ", "disp": "مَسَدِنْ", "kind": "N5_word", "lesson": "noor", "pos": 125, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.126", "ids": ["noor.word.126"], "text": "جَمْعَنْ", "disp": "جَمْعَنْ", "kind": "N5_word", "lesson": "noor", "pos": 126, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.127", "ids": ["noor.word.127"], "text": "نَقْعَنْ", "disp": "نَقْعَنْ", "kind": "N5_word", "lesson": "noor", "pos": 127, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.128", "ids": ["noor.word.128"], "text": "حَبْلُنْ", "disp": "حَبْلُنْ", "kind": "N5_word", "lesson": "noor", "pos": 128, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.129", "ids": ["noor.word.129"], "text": "فَوَيْلُنْ", "disp": "فَوَيْلُنْ", "kind": "N5_word", "lesson": "noor", "pos": 129, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.130", "ids": ["noor.word.130"], "text": "ضَبْحَنْ", "disp": "ضَبْحَنْ", "kind": "N5_word", "lesson": "noor", "pos": 130, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.131", "ids": ["noor.word.131"], "text": "قَدْحَنْ", "disp": "قَدْحَنْ", "kind": "N5_word", "lesson": "noor", "pos": 131, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.132", "ids": ["noor.word.132"], "text": "صُبْحَنْ", "disp": "صُبْحَنْ", "kind": "N5_word", "lesson": "noor", "pos": 132, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.133", "ids": ["noor.word.133"], "text": "مَا", "disp": "مَا", "kind": "N5_word", "lesson": "noor", "pos": 133, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.134", "ids": ["noor.word.134"], "text": "لَا", "disp": "لَا", "kind": "N5_word", "lesson": "noor", "pos": 134, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.135", "ids": ["noor.word.135"], "text": "نَارٌ", "disp": "نَارٌ", "kind": "N5_word", "lesson": "noor", "pos": 135, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.136", "ids": ["noor.word.136"], "text": "ذَاتَ", "disp": "ذَاتَ", "kind": "N5_word", "lesson": "noor", "pos": 136, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.137", "ids": ["noor.word.137"], "text": "غَاسِقٍ", "disp": "غَاسِقٍ", "kind": "N5_word", "lesson": "noor", "pos": 137, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.138", "ids": ["noor.word.138"], "text": "حَاسِدٍ", "disp": "حَاسِدٍ", "kind": "N5_word", "lesson": "noor", "pos": 138, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.139", "ids": ["noor.word.139"], "text": "هَاوِيَةٌ", "disp": "هَاوِيَةٌ", "kind": "N5_word", "lesson": "noor", "pos": 139, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.140", "ids": ["noor.word.140"], "text": "حَامِيَةٌ", "disp": "حَامِيَةٌ", "kind": "N5_word", "lesson": "noor", "pos": 140, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.141", "ids": ["noor.word.141"], "text": "صَلَاتِهِمْ", "disp": "صَلَاتِهِمْ", "kind": "N5_word", "lesson": "noor", "pos": 141, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.142", "ids": ["noor.word.142"], "text": "دِينِ", "disp": "دِينِ", "kind": "N5_word", "lesson": "noor", "pos": 142, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.143", "ids": ["noor.word.143"], "text": "جِيدِهَا", "disp": "جِيدِهَا", "kind": "N5_word", "lesson": "noor", "pos": 143, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.144", "ids": ["noor.word.144"], "text": "تَضْلِيلٍ", "disp": "تَضْلِيلٍ", "kind": "N5_word", "lesson": "noor", "pos": 144, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.145", "ids": ["noor.word.145"], "text": "سِينِينَ", "disp": "سِينِينَ", "kind": "N5_word", "lesson": "noor", "pos": 145, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.146", "ids": ["noor.word.146"], "text": "أَبَابِيلَ", "disp": "أَبَابِيلَ", "kind": "N5_word", "lesson": "noor", "pos": 146, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.147", "ids": ["noor.word.147"], "text": "أَلْفِيلِ", "disp": "أَلْفِيلِ", "kind": "N5_word", "lesson": "noor", "pos": 147, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.148", "ids": ["noor.word.148"], "text": "أَلْأَمِينِ", "disp": "أَلْأَمِينِ", "kind": "N5_word", "lesson": "noor", "pos": 148, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.149", "ids": ["noor.word.149"], "text": "أَلْيَقِينِ", "disp": "أَلْيَقِينِ", "kind": "N5_word", "lesson": "noor", "pos": 149, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.150", "ids": ["noor.word.150"], "text": "طُورِ", "disp": "طُورِ", "kind": "N5_word", "lesson": "noor", "pos": 150, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.151", "ids": ["noor.word.151"], "text": "جُوعٍ", "disp": "جُوعٍ", "kind": "N5_word", "lesson": "noor", "pos": 151, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.152", "ids": ["noor.word.152"], "text": "صُدُورِ", "disp": "صُدُورِ", "kind": "N5_word", "lesson": "noor", "pos": 152, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 5}, {"u": "noor.word.153", "ids": ["noor.word.153"], "text": "فُجُورَهَا", "disp": "فُجُورَهَا", "kind": "N5_word", "lesson": "noor", "pos": 153, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.154", "ids": ["noor.word.154"], "text": "تَعْلَمُونَ", "disp": "تَعْلَمُونَ", "kind": "N5_word", "lesson": "noor", "pos": 154, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.155", "ids": ["noor.word.155"], "text": "تَعْبُدُونَ", "disp": "تَعْبُدُونَ", "kind": "N5_word", "lesson": "noor", "pos": 155, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.156", "ids": ["noor.word.156"], "text": "يَدْخُلُونَ", "disp": "يَدْخُلُونَ", "kind": "N5_word", "lesson": "noor", "pos": 156, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.157", "ids": ["noor.word.157"], "text": "أَلْمَبْثُوثِ", "disp": "أَلْمَبْثُوثِ", "kind": "N5_word", "lesson": "noor", "pos": 157, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.158", "ids": ["noor.word.158"], "text": "سَاهُونَ", "disp": "سَاهُونَ", "kind": "N5_word", "lesson": "noor", "pos": 158, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.159", "ids": ["noor.word.159"], "text": "قُلْ", "disp": "قُلْ", "kind": "N5_word", "lesson": "noor", "pos": 159, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.160", "ids": ["noor.word.160"], "text": "لَمْ", "disp": "لَمْ", "kind": "N5_word", "lesson": "noor", "pos": 160, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.161", "ids": ["noor.word.161"], "text": "هُمْ", "disp": "هُمْ", "kind": "N5_word", "lesson": "noor", "pos": 161, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.162", "ids": ["noor.word.162"], "text": "يَلِدْ", "disp": "يَلِدْ", "kind": "N5_word", "lesson": "noor", "pos": 162, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.163", "ids": ["noor.word.163"], "text": "يَجْعَلْ", "disp": "يَجْعَلْ", "kind": "N5_word", "lesson": "noor", "pos": 163, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.164", "ids": ["noor.word.164"], "text": "نَشْرَحْ", "disp": "نَشْرَحْ", "kind": "N5_word", "lesson": "noor", "pos": 164, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.165", "ids": ["noor.word.165"], "text": "صَدْرَكَ", "disp": "صَدْرَكَ", "kind": "N5_word", "lesson": "noor", "pos": 165, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.166", "ids": ["noor.word.166"], "text": "وِزْرَكَ", "disp": "وِزْرَكَ", "kind": "N5_word", "lesson": "noor", "pos": 166, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.167", "ids": ["noor.word.167"], "text": "أَلْفَتْحُ", "disp": "أَلْفَتْحُ", "kind": "N5_word", "lesson": "noor", "pos": 167, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.168", "ids": ["noor.word.168"], "text": "وَٱنْحَرْ", "disp": "وَٱنْحَرْ", "kind": "N5_word", "lesson": "noor", "pos": 168, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.169", "ids": ["noor.word.169"], "text": "يَوْمَ", "disp": "يَوْمَ", "kind": "N5_word", "lesson": "noor", "pos": 169, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.170", "ids": ["noor.word.170"], "text": "سَوْفَ", "disp": "سَوْفَ", "kind": "N5_word", "lesson": "noor", "pos": 170, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.171", "ids": ["noor.word.171"], "text": "كَيْفَ", "disp": "كَيْفَ", "kind": "N5_word", "lesson": "noor", "pos": 171, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.172", "ids": ["noor.word.172"], "text": "خَوْفٍ", "disp": "خَوْفٍ", "kind": "N5_word", "lesson": "noor", "pos": 172, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.173", "ids": ["noor.word.173"], "text": "كَيْدَهُمْ", "disp": "كَيْدَهُمْ", "kind": "N5_word", "lesson": "noor", "pos": 173, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.174", "ids": ["noor.word.174"], "text": "عَيْنَ", "disp": "عَيْنَ", "kind": "N5_word", "lesson": "noor", "pos": 174, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.175", "ids": ["noor.word.175"], "text": "طَيْرًا", "disp": "طَيْرًا", "kind": "N5_word", "lesson": "noor", "pos": 175, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.176", "ids": ["noor.word.176"], "text": "عَلَيْهِمْ", "disp": "عَلَيْهِمْ", "kind": "N5_word", "lesson": "noor", "pos": 176, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.177", "ids": ["noor.word.177"], "text": "لَيْلَةِ", "disp": "لَيْلَةِ", "kind": "N5_word", "lesson": "noor", "pos": 177, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.178", "ids": ["noor.word.178"], "text": "قُرَيْشٍ", "disp": "قُرَيْشٍ", "kind": "N5_word", "lesson": "noor", "pos": 178, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.179", "ids": ["noor.word.179"], "text": "قَدْ", "disp": "قَدْ", "kind": "N5_word", "lesson": "noor", "pos": 179, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.180", "ids": ["noor.word.180"], "text": "ضَبْحًا", "disp": "ضَبْحًا", "kind": "N5_word", "lesson": "noor", "pos": 180, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.181", "ids": ["noor.word.181"], "text": "قَدْحًا", "disp": "قَدْحًا", "kind": "N5_word", "lesson": "noor", "pos": 181, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.182", "ids": ["noor.word.182"], "text": "نَقْعًا", "disp": "نَقْعًا", "kind": "N5_word", "lesson": "noor", "pos": 182, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.183", "ids": ["noor.word.183"], "text": "أَلْفَجْرِ", "disp": "أَلْفَجْرِ", "kind": "N5_word", "lesson": "noor", "pos": 183, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.184", "ids": ["noor.word.184"], "text": "أَلْأَبْتَرُ", "disp": "أَلْأَبْتَرُ", "kind": "N5_word", "lesson": "noor", "pos": 184, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.185", "ids": ["noor.word.185"], "text": "أَلْفَلَقِ", "disp": "أَلْفَلَقِ", "kind": "N5_word", "lesson": "noor", "pos": 185, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.186", "ids": ["noor.word.186"], "text": "أَلْكَوْثَرَ", "disp": "أَلْكَوْثَرَ", "kind": "N5_word", "lesson": "noor", "pos": 186, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.187", "ids": ["noor.word.187"], "text": "أَلْقَدْرِ", "disp": "أَلْقَدْرِ", "kind": "N5_word", "lesson": "noor", "pos": 187, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.188", "ids": ["noor.word.188"], "text": "أَنَّاسِ", "disp": "أَنَّاسِ", "kind": "N5_word", "lesson": "noor", "pos": 188, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.189", "ids": ["noor.word.189"], "text": "أَصَّمَدُ", "disp": "أَصَّمَدُ", "kind": "N5_word", "lesson": "noor", "pos": 189, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.190", "ids": ["noor.word.190"], "text": "أَشَّمْسِ", "disp": "أَشَّمْسِ", "kind": "N5_word", "lesson": "noor", "pos": 190, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.191", "ids": ["noor.word.191"], "text": "أَتِّينِ", "disp": "أَتِّينِ", "kind": "N5_word", "lesson": "noor", "pos": 191, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.192", "ids": ["noor.word.192"], "text": "أَدِّينِ", "disp": "أَدِّينِ", "kind": "N5_word", "lesson": "noor", "pos": 192, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.word.193", "ids": ["noor.word.193"], "text": "أَرُّوحُ", "disp": "أَرُّوحُ", "kind": "N5_word", "lesson": "noor", "pos": 193, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 6}, {"u": "noor.combo.194", "ids": ["noor.combo.194"], "text": "بَ، بُ، بِ", "disp": "بَ، بُ، بِ", "kind": "N6_combo", "lesson": "noor", "pos": 194, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.195", "ids": ["noor.combo.195"], "text": "تَ، تُ، تِ", "disp": "تَ، تُ، تِ", "kind": "N6_combo", "lesson": "noor", "pos": 195, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.196", "ids": ["noor.combo.196"], "text": "مَ، مُ، مِ", "disp": "مَ، مُ، مِ", "kind": "N6_combo", "lesson": "noor", "pos": 196, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.197", "ids": ["noor.combo.197"], "text": "تَبْ بَ", "disp": "تَبْ بَ", "kind": "N6_combo", "lesson": "noor", "pos": 197, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.198", "ids": ["noor.combo.198"], "text": "ثُمْ مَ", "disp": "ثُمْ مَ", "kind": "N6_combo", "lesson": "noor", "pos": 198, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.199", "ids": ["noor.combo.199"], "text": "رَبْ بِ", "disp": "رَبْ بِ", "kind": "N6_combo", "lesson": "noor", "pos": 199, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.200", "ids": ["noor.combo.200"], "text": "شَرْ رِ", "disp": "شَرْ رِ", "kind": "N6_combo", "lesson": "noor", "pos": 200, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.201", "ids": ["noor.combo.201"], "text": "أُمْ مُهُ", "disp": "أُمْ مُهُ", "kind": "N6_combo", "lesson": "noor", "pos": 201, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.202", "ids": ["noor.combo.202"], "text": "يَدُعْ عُ", "disp": "يَدُعْ عُ", "kind": "N6_combo", "lesson": "noor", "pos": 202, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.203", "ids": ["noor.combo.203"], "text": "يَحُضْ ضُ", "disp": "يَحُضْ ضُ", "kind": "N6_combo", "lesson": "noor", "pos": 203, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.204", "ids": ["noor.combo.204"], "text": "خَفْ فَتْ", "disp": "خَفْ فَتْ", "kind": "N6_combo", "lesson": "noor", "pos": 204, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.205", "ids": ["noor.combo.205"], "text": "كَلْ لَا", "disp": "كَلْ لَا", "kind": "N6_combo", "lesson": "noor", "pos": 205, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}, {"u": "noor.combo.206", "ids": ["noor.combo.206"], "text": "سَبْ بِحِ", "disp": "سَبْ بِحِ", "kind": "N6_combo", "lesson": "noor", "pos": 206, "secs": 1.5, "dens": 1.0, "before": null, "after": null, "pending": false, "session": 7}], "entries": {}, "hashes": {}, "tashkeel": {}}</script>
+<script>
+"use strict";
+/* ══════════ البيانات المضمَّنة ══════════ */
+const Q = JSON.parse(document.getElementById("queue").textContent);
+const ALL = Q.units;                         /* وحدات التسجيل بترتيب المسار */
+const ENTRIES = Q.entries;                   /* id → {parts:[{u}|{url:[…]}], ok} */
+const HASHES = Q.hashes;                     /* id → pack_key للنص عند البناء (لكشف تغيّر النص) */
+const TASH0 = Q.tashkeel || {};              /* تشكيل كامل مقترح (وحدة → نص) */
+const $ = id => document.getElementById(id);
+const nf = new Intl.NumberFormat("ar-EG");
+const num = n => nf.format(n);
+
+/* ══════════ تخزين آمن: IndexedDB مع احتياطي في الذاكرة ══════════ */
+const DB = (() => {
+  let db = null, mem = { takes: new Map(), partial: new Map(), meta: new Map() }, usingMem = false;
+  const open = () => new Promise(res => {
+    try {
+      const rq = indexedDB.open("athar-record-noor-v1", 1);
+      rq.onupgradeneeded = () => { const d = rq.result; ["takes", "partial", "meta"].forEach(s => d.createObjectStore(s)); };
+      rq.onsuccess = () => { db = rq.result; res(true); };
+      rq.onerror = rq.onblocked = () => { usingMem = true; res(false); };
+    } catch (e) { usingMem = true; res(false); }
+  });
+  const tx = (s, mode, fn) => new Promise((res, rej) => {
+    if (usingMem || !db) { try { res(fn(null)); } catch (e) { rej(e); } return; }
+    try {
+      const t = db.transaction(s, mode), st = t.objectStore(s); let out;
+      const r = fn(st); if (r && "onsuccess" in r) r.onsuccess = () => { out = r.result; };
+      t.oncomplete = () => res(out); t.onerror = t.onabort = () => rej(t.error || new Error("idb"));
+    } catch (e) { rej(e); }
+  });
+  return {
+    open, get mem() { return usingMem; },
+    put: (s, k, v) => usingMem ? (mem[s].set(k, v), Promise.resolve()) : tx(s, "readwrite", st => st.put(v, k)),
+    get: (s, k) => usingMem ? Promise.resolve(mem[s].get(k)) : tx(s, "readonly", st => st.get(k)),
+    del: (s, k) => usingMem ? (mem[s].delete(k), Promise.resolve()) : tx(s, "readwrite", st => st.delete(k)),
+    keys: s => usingMem ? Promise.resolve([...mem[s].keys()]) : tx(s, "readonly", st => st.getAllKeys()),
+    clear: s => usingMem ? (mem[s].clear(), Promise.resolve()) : tx(s, "readwrite", st => st.clear())
+  };
+})();
+
+/* ══════════ الحالة ══════════ */
+const PRESETS = [["human_reader", "human_reader — القارئ (افتراضي)"], ["human_reader2", "human_reader2 — قارئ ثانٍ"], ["human_parent", "human_parent — الوالد/الوالدة"], ["human_teacher", "human_teacher — المعلّم"], ["__custom", "مخصَّص…"]];
+const S = {
+  speaker: "", voice: Q.voice_default || "human_reader", showPending: false, auto: false, fmt: "native", idx: 0, theme: "",
+  fs: 1, takes: new Map(),      /* u → {mime, dur, bytes, ts, rec?} للصوت الحالي */
+  tash: {},              /* وحدة → نص مشكَّل مستورد */
+  recording: false, busy: false
+};
+const view = () => ALL.filter(u => S.showPending || !u.pending);
+const cur = () => view()[Math.min(S.idx, view().length - 1)];
+const key = u => S.voice + "|" + u;
+const validVoice = v => /^[a-z0-9][a-z0-9_-]{0,40}$/.test(v);
+
+let toastT = 0;
+function toast(msg, ms = 2600) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), ms); }
+function fmtDur(s) { s = Math.max(0, s || 0); return (s < 10 ? s.toFixed(1) : Math.round(s)) + "ث"; }
+function tfmt(ms) { const s = Math.floor(ms / 1000), m = Math.floor(s / 60); return String(m).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }
+
+/* ══════════ حفظ/تحميل الإعدادات ══════════ */
+async function saveMeta() {
+  try { await DB.put("meta", "state", { speaker: S.speaker, voice: S.voice, showPending: S.showPending, auto: S.auto, fmt: S.fmt, idx: S.idx, theme: S.theme, tash: S.tash }); } catch (e) {}
+}
+async function loadMeta() {
+  try {
+    const m = await DB.get("meta", "state");
+    if (m) { for (const k of ["speaker", "voice", "showPending", "auto", "fmt", "idx", "theme", "tash"]) if (m[k] !== undefined) S[k] = m[k]; }
+  } catch (e) {}
+  if (!validVoice(S.voice)) S.voice = "human_reader";
+  applyTheme();
+}
+function applyTheme() { if (S.theme) document.documentElement.setAttribute("data-theme", S.theme); else document.documentElement.removeAttribute("data-theme"); }
+
+async function loadTakes() {
+  S.takes = new Map();
+  try {
+    const ks = await DB.keys("takes");
+    for (const k of ks) {
+      if (!String(k).startsWith(S.voice + "|")) continue;
+      const t = await DB.get("takes", k);
+      if (t && t.blob) S.takes.set(String(k).slice(S.voice.length + 1), { mime: t.mime, dur: t.dur, bytes: t.blob.size, ts: t.ts, rec: !!t.recovered });
+    }
+  } catch (e) {}
+}
+/* استرجاع تسجيل لم يكتمل إيقافه (إغلاق مفاجئ) */
+async function recoverPartials() {
+  let n = 0;
+  try {
+    const ks = await DB.keys("partial");
+    for (const k of ks) {
+      const p = await DB.get("partial", k);
+      const [voice, u] = [String(k).split("|")[0], String(k).split("|").slice(1).join("|")];
+      if (!p || !p.chunks || !p.chunks.length) { await DB.del("partial", k); continue; }
+      const had = await DB.get("takes", k);
+      if (!had) {
+        const blob = new Blob(p.chunks, { type: p.mime });
+        if (blob.size > 2000) { await DB.put("takes", k, { blob, mime: p.mime, dur: p.dur || 0, ts: Date.now(), recovered: true }); n++; }
+      }
+      await DB.del("partial", k);
+    }
+  } catch (e) {}
+  return n;
+}
+
+/* ══════════ العرض ══════════ */
+function textOf(u) { return S.tash[u.u] || TASH0[u.u] || u.disp; }
+function tashBadge(u) {
+  if (S.tash[u.u]) return ["تشكيل مستورَد", "ok"];
+  if (TASH0[u.u]) return ["تشكيل كامل مقترح — راجعه", "ok"];
+  if (u.dens >= 0.7) return ["مشكَّل", "ok"];
+  return ["تشكيل جزئي — تثبّت قبل القراءة", "warn"];
+}
+function ctxHtml(c, dir) {
+  if (!c) return "";
+  if (c.multi) return "<b>" + (dir === "b" ? "قبل هذا المقطع" : "بعد هذا المقطع") + "</b>تُتلى آية من الحصري (تختلف باختلاف السطر) — اسكت قليلًا ثم تابع";
+  return "<b>" + (dir === "b" ? "قبل هذا المقطع تُتلى (بصوت الحصري)" : "بعد هذا المقطع تُتلى (بصوت الحصري)") + (c.ref ? " — " + c.ref : "") + "</b><span class=\"a\">" + c.ayah.replace(/</g, "&lt;") + "</span>";
+}
+function render() {
+  const V = view(); if (!V.length) return;
+  S.idx = Math.max(0, Math.min(S.idx, V.length - 1));
+  const u = V[S.idx], tk = S.takes.get(u.u);
+  $("who").textContent = "المتحدث: " + (S.speaker || "— (حدّده من الإعدادات)") + " · voice: " + S.voice;
+  $("ltext").textContent = textOf(u);
+  $("scroll").scrollTop = 0;
+  const tb = tashBadge(u);
+  $("cmeta").innerHTML =
+    "<span class=\"chip\">" + (u.pending ? "معلّق" : "الجلسة " + num(u.session) + " من " + num(Q.sessions)) + "</span>" +
+    "<span class=\"chip " + (tk ? "ok" : "") + "\">" + (tk ? "مسجَّل ✓" : "بلا تسجيل") + "</span>" +
+    "<span class=\"chip " + tb[1] + "\">" + tb[0] + "</span>" +
+    (u.ids.length > 1 ? "<span class=\"chip\">مشترك بين " + num(u.ids.length) + " أسطر</span>" : "") +
+    "<span>" + num(S.idx + 1) + " / " + num(V.length) + "</span>" +
+    "<span class=\"uid\" id=\"uid\">" + u.u + "</span>" + (u.lesson ? "<span class=\"uid\">" + u.lesson + "</span>" : "");
+  const b = $("cbefore"), a = $("cafter");
+  b.hidden = !u.before; a.hidden = !u.after; b.innerHTML = ctxHtml(u.before, "b"); a.innerHTML = ctxHtml(u.after, "a");
+  $("tinfo").textContent = S.recording ? "جارٍ التسجيل… اضغط المربع عند الانتهاء" : u.pending ? "هذا السطر معلّق: يحتوي لفظ آية بلا علامة ﴿﴾ — انتظر قرار المالك قبل تسجيله." : (tk ? "تسجيل محفوظ · " + fmtDur(tk.dur) + " · " + Math.round(tk.bytes / 1024) + " ك.ب" + (tk.rec ? " · (مُستعاد بعد انقطاع)" : "") + (tk.hint ? " · " + tk.hint : "") : "اضغط الزر الأحمر وابدأ القراءة بعد ثانية من الصمت");
+  $("bPlay").disabled = !tk || S.recording; $("bRedo").disabled = S.recording ? false : !tk;
+  $("bRedo").textContent = S.recording ? "✕ ألغِ التسجيل" : "↺ أعد التسجيل";
+  $("bPrev").disabled = S.idx === 0 || S.recording; $("bNext").disabled = S.idx >= V.length - 1 || S.recording;
+  $("bRec").disabled = S.busy;
+  const done = V.filter(x => S.takes.has(x.u)).length;
+  $("pTxt").textContent = "مسجَّل " + num(done) + " من " + num(V.length) + (S.showPending ? "" : " (دون المعلَّق)");
+  $("pSes").textContent = u.pending ? "—" : "الجلسة " + num(u.session) + " · " + num(sessionDone(u.session)) + "/" + num(sessionTotal(u.session));
+  $("pbar").style.width = (V.length ? 100 * done / V.length : 0) + "%";
+  const w = $("warn");
+  if (DB.mem) { w.hidden = false; w.textContent = "تنبيه: التخزين الدائم غير متاح في هذا المتصفح (وضع خاص؟). لا تُغلق الصفحة قبل التصدير."; } else w.hidden = true;
+  document.title = "تسجيل أثر — " + u.u;
+  buildList();
+}
+function sessionTotal(s) { return ALL.filter(x => x.session === s && !x.pending).length; }
+function sessionDone(s) { return ALL.filter(x => x.session === s && !x.pending && S.takes.has(x.u)).length; }
+
+/* ══════════ التسجيل ══════════ */
+const MIMES = ["audio/mp4;codecs=mp4a.40.2", "audio/mp4", "audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"];
+function pickMime() { if (typeof MediaRecorder === "undefined") return ""; return MIMES.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch (e) { return false; } }) || ""; }
+const extOf = m => /mp4|m4a|aac/.test(m) ? "m4a" : /webm/.test(m) ? "webm" : /ogg/.test(m) ? "ogg" : /wav/.test(m) ? "wav" : /mpeg|mp3/.test(m) ? "mp3" : "bin";
+
+const R = { stream: null, mr: null, chunks: [], t0: 0, tick: 0, actx: null, an: null, peak: 0, raf: 0, unit: null, mime: "", wake: null, cancelled: false };
+async function getStream() {
+  if (R.stream && R.stream.getTracks().every(t => t.readyState === "live")) return R.stream;
+  R.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+  return R.stream;
+}
+function stopStream() { if (R.stream) { R.stream.getTracks().forEach(t => t.stop()); R.stream = null; } }
+async function startRec() {
+  const u = cur(); if (!u || S.recording || S.busy) return;
+  if (u.pending) { toast("هذا السطر معلّق — لا يُسجَّل الآن"); return; }
+  if (!validVoice(S.voice)) { toast("اسم الصوت (voice) غير صالح — راجع الإعدادات"); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === "undefined") { toast("هذا المتصفح لا يدعم التسجيل. جرّب Chrome أو Safari حديثًا.", 5000); return; }
+  S.busy = true; render();
+  let st;
+  try { st = await getStream(); } catch (e) {
+    S.busy = false; render();
+    toast(e && e.name === "NotAllowedError" ? "لم يُسمح باستخدام الميكروفون. فعّل الإذن من إعدادات المتصفح ثم أعد المحاولة." : "تعذّر فتح الميكروفون: " + (e && e.name || "خطأ"), 5500); return;
+  }
+  const mime = pickMime();
+  try { R.mr = new MediaRecorder(st, mime ? { mimeType: mime, audioBitsPerSecond: 96000 } : undefined); } catch (e) { R.mr = new MediaRecorder(st); }
+  R.mime = R.mr.mimeType || mime || "audio/webm"; R.chunks = []; R.unit = u.u; R.cancelled = false; R.peak = 0;
+  const k = key(u.u);
+  R.mr.ondataavailable = ev => {
+    if (!ev.data || !ev.data.size) return;
+    R.chunks.push(ev.data);
+    DB.put("partial", k, { chunks: R.chunks.slice(), mime: R.mime, dur: (performance.now() - R.t0) / 1000 }).catch(() => {});   /* حفظ تدريجي */
+  };
+  R.mr.onstop = () => finishRec(k);
+  /* مقياس المستوى */
+  try {
+    R.actx = new (window.AudioContext || window.webkitAudioContext)(); const src = R.actx.createMediaStreamSource(st);
+    R.an = R.actx.createAnalyser(); R.an.fftSize = 1024; src.connect(R.an);
+    const buf = new Float32Array(R.an.fftSize); const m = $("meter"); m.classList.add("on");
+    const loop = () => { R.an.getFloatTimeDomainData(buf); let p = 0; for (let i = 0; i < buf.length; i++) { const a = Math.abs(buf[i]); if (a > p) p = a; } R.peak = Math.max(R.peak, p); m.firstElementChild.style.width = Math.min(100, p * 140) + "%"; R.raf = requestAnimationFrame(loop); };
+    loop();
+  } catch (e) {}
+  try { if (navigator.wakeLock) R.wake = await navigator.wakeLock.request("screen"); } catch (e) {}
+  R.t0 = performance.now(); R.mr.start(1000); S.recording = true; S.busy = false;
+  $("bRec").classList.add("on"); $("bRec").setAttribute("aria-label", "إيقاف التسجيل");
+  $("bRec").innerHTML = "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"6\" y=\"6\" width=\"12\" height=\"12\" rx=\"2\"/></svg>";
+  R.tick = setInterval(() => { $("timer").textContent = "● " + tfmt(performance.now() - R.t0); }, 200);
+  render();
+}
+function stopRec(cancel) {
+  if (!S.recording || !R.mr) return;
+  R.cancelled = !!cancel; clearInterval(R.tick); cancelAnimationFrame(R.raf);
+  S.recording = false;
+  try { R.mr.stop(); } catch (e) { finishRec(key(R.unit)); }
+}
+async function finishRec(k) {
+  const dur = (performance.now() - R.t0) / 1000;
+  $("timer").textContent = ""; $("meter").classList.remove("on"); $("meter").firstElementChild.style.width = "0";
+  $("bRec").classList.remove("on"); $("bRec").setAttribute("aria-label", "تسجيل");
+  $("bRec").innerHTML = "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8\"/></svg>";
+  try { if (R.actx) R.actx.close(); } catch (e) {} R.actx = null;
+  try { if (R.wake) R.wake.release(); } catch (e) {} R.wake = null;
+  const u = R.unit;
+  try {
+    if (R.cancelled) { await DB.del("partial", k); toast("أُلغي التسجيل؛ بقي التسجيل السابق كما هو"); }
+    else {
+      const blob = new Blob(R.chunks, { type: R.mime });
+      if (dur < 0.5 || blob.size < 1500) { await DB.del("partial", k); toast("التسجيل قصير جدًا — لم يُحفظ. أعد المحاولة."); }
+      else {
+        await DB.put("takes", k, { blob, mime: R.mime, dur, ts: Date.now() });
+        await DB.del("partial", k);
+        const hint = R.peak < 0.04 ? "الصوت ضعيف — قرّب الميكروفون" : R.peak > 0.98 ? "الصوت عالٍ ومقطوع — ابتعد قليلًا" : "";
+        S.takes.set(u, { mime: R.mime, dur, bytes: blob.size, ts: Date.now(), hint });
+        toast(hint || "حُفظ التسجيل ✓");
+        if (S.auto) { const V = view(); if (cur() && cur().u === u && S.idx < V.length - 1) S.idx++; await saveMeta(); }
+      }
+    }
+  } catch (e) { toast("تعذّر حفظ التسجيل: " + (e && e.name || "خطأ"), 5000); }
+  R.chunks = []; render();
+}
+let audioEl = null;
+async function playTake() {
+  const u = cur(); if (!u) return;
+  if (audioEl) { audioEl.pause(); audioEl = null; $("bPlay").textContent = "▶ استمع"; return; }
+  const t = await DB.get("takes", key(u.u)); if (!t) return;
+  const url = URL.createObjectURL(t.blob); audioEl = new Audio(url);
+  $("bPlay").textContent = "■ أوقف الاستماع";
+  const done = () => { URL.revokeObjectURL(url); audioEl = null; $("bPlay").textContent = "▶ استمع"; };
+  audioEl.onended = done; audioEl.onerror = () => { done(); toast("تعذّر تشغيل هذا التسجيل في المتصفح"); };
+  audioEl.play().catch(() => done());
+}
+const FS = [32, 40, 48, 56, 64];
+function setFs(l) { S.fs = Math.max(0, Math.min(4, l)); document.documentElement.style.setProperty("--fs", FS[S.fs] + "px"); try { localStorage.setItem("athar.recn.fs", String(S.fs)); } catch (e) {}
+  $("bFm").disabled = S.fs === 0; $("bFp").disabled = S.fs === 4; const sc = $("scroll"); if (sc) sc.scrollTop = 0; }
+function go(d) { if (S.recording) return; if (audioEl) { audioEl.pause(); audioEl = null; $("bPlay").textContent = "▶ استمع"; } S.idx = Math.max(0, Math.min(view().length - 1, S.idx + d)); saveMeta(); render(); }
+function jump(i) { S.idx = i; saveMeta(); render(); }
+function nextOpen() { const V = view(); for (let k = 1; k <= V.length; k++) { const i = (S.idx + k) % V.length; if (!S.takes.has(V[i].u)) { jump(i); return; } } toast("سُجِّلت كل الأسطر الظاهرة ✓"); }
+
+/* ══════════ الفهرس ══════════ */
+let filt = "all";
+function buildList() {
+  const ul = $("ulist"); if (!$("dList").open) return;
+  const V = view(); let h = "", lastS = null;
+  V.forEach((u, i) => {
+    const has = S.takes.has(u.u);
+    if (filt === "todo" && has) return; if (filt === "done" && !has) return;
+    const sk = u.pending ? 0 : u.session;
+    if (sk !== lastS) { lastS = sk; h += "<li class=\"sh\" data-s>" + (sk ? "الجلسة " + num(sk) : "معلّق") + "</li>"; }
+    h += "<li data-i=\"" + i + "\" class=\"" + (i === S.idx ? "cur" : "") + "\"><span class=\"dot " + (has ? "ok" : u.pending ? "pend" : "") + "\"></span><span class=\"t\">" + textOf(u).replace(/</g, "&lt;") + "</span><span class=\"uid\">" + u.u + "</span></li>";
+  });
+  ul.innerHTML = h || "<li class=\"sh\">لا شيء</li>";
+}
+
+/* ══════════ ZIP (بلا ضغط، بلا مكتبات) ══════════ */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipBuild(files) {   /* files: [{name, data:Uint8Array}] */
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  const d = new Date(), dt = ((d.getFullYear() - 1980) << 9 | (d.getMonth() + 1) << 5 | d.getDate()) & 0xFFFF, tm = (d.getHours() << 11 | d.getMinutes() << 5 | (d.getSeconds() >> 1)) & 0xFFFF;
+  for (const f of files) {
+    const nm = enc.encode(f.name), crc = crc32(f.data), sz = f.data.length;
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, tm, true); lh.setUint16(12, dt, true); lh.setUint32(14, crc, true); lh.setUint32(18, sz, true); lh.setUint32(22, sz, true);
+    lh.setUint16(26, nm.length, true); lh.setUint16(28, 0, true);
+    parts.push(lh.buffer, nm, f.data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, tm, true); ch.setUint16(14, dt, true); ch.setUint32(16, crc, true); ch.setUint32(20, sz, true); ch.setUint32(24, sz, true);
+    ch.setUint16(28, nm.length, true); ch.setUint16(30, 0, true); ch.setUint16(32, 0, true); ch.setUint16(34, 0, true); ch.setUint16(36, 0, true); ch.setUint32(38, 0, true); ch.setUint32(42, off, true);
+    central.push(ch.buffer, nm);
+    off += 30 + nm.length + sz;
+  }
+  let csz = 0; central.forEach(c => csz += c.byteLength !== undefined ? c.byteLength : c.length);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, csz, true); end.setUint32(16, off, true);
+  return new Blob([...parts, ...central, end.buffer], { type: "application/zip" });
+}
+
+/* تحويل إلى WAV أحادي */
+async function toWav(blob, rate = 24000) {
+  const ab = await blob.arrayBuffer(); const AC = window.AudioContext || window.webkitAudioContext; const ac = new AC();
+  let buf; try { buf = await new Promise((res, rej) => { const p = ac.decodeAudioData(ab, res, rej); if (p && p.catch) p.catch(rej); }); } finally { try { ac.close(); } catch (e) {} }
+  const len = Math.max(1, Math.round(buf.duration * rate)); const oc = new OfflineAudioContext(1, len, rate);
+  const src = oc.createBufferSource(); src.buffer = buf; src.connect(oc.destination); src.start();
+  const out = await oc.startRendering(); const x = out.getChannelData(0);
+  const pcm = new DataView(new ArrayBuffer(44 + x.length * 2)); const w = (o, s) => { for (let i = 0; i < s.length; i++) pcm.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); pcm.setUint32(4, 36 + x.length * 2, true); w(8, "WAVEfmt "); pcm.setUint32(16, 16, true); pcm.setUint16(20, 1, true); pcm.setUint16(22, 1, true);
+  pcm.setUint32(24, rate, true); pcm.setUint32(28, rate * 2, true); pcm.setUint16(32, 2, true); pcm.setUint16(34, 16, true); w(36, "data"); pcm.setUint32(40, x.length * 2, true);
+  for (let i = 0; i < x.length; i++) { const s = Math.max(-1, Math.min(1, x[i])); pcm.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true); }
+  return { u8: new Uint8Array(pcm.buffer), dur: buf.duration };
+}
+
+async function sha256hex(u8) { try { const h = await crypto.subtle.digest("SHA-256", u8); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, "0")).join(""); } catch (e) { return ""; } }
+
+let lastZip = null;
+function exportSummary() {
+  const done = ALL.filter(u => !u.pending && S.takes.has(u.u));
+  const ids = new Set(), inc = [];
+  for (const [id, e] of Object.entries(ENTRIES)) {
+    const us = e.parts.filter(p => p.u).map(p => p.u);
+    if (!us.some(x => S.takes.has(x))) continue;
+    if (us.every(x => S.takes.has(x)) && e.ok) ids.add(id); else inc.push(id);
+  }
+  return { done, ids, inc };
+}
+function openExport() {
+  const { done, ids, inc } = exportSummary();
+  const bytes = done.reduce((a, u) => a + (S.takes.get(u.u).bytes || 0), 0);
+  $("expSum").innerHTML = "الصوت: <b class=\"uid\">" + S.voice + "</b> · المتحدث: <b>" + (S.speaker || "—") + "</b><br>ملفات مسجَّلة: <b>" + num(done.length) + "</b> من " + num(ALL.filter(u => !u.pending).length) +
+    "<br>أسطر مكتملة تُربط بالمحرّك: <b>" + num(ids.size) + "</b>" + (inc.length ? "<br>أسطر ناقصة (بعض مقاطعها لم تُسجَّل): " + num(inc.length) : "") +
+    "<br>الحجم التقريبي: " + (bytes / 1048576).toFixed(1) + " م.ب" + (S.fmt === "wav" ? " (قبل التحويل إلى WAV)" : "") + (S.speaker ? "" : "<br><span class=\"chip warn\">لم تُدخل اسم المتحدث بعد</span>");
+  $("expMsg").textContent = ""; $("expBar").hidden = true; $("eShare").hidden = true; $("eGo").disabled = done.length === 0;
+  $("dExp").showModal();
+}
+async function doExport() {
+  if (!validVoice(S.voice)) { $("expMsg").textContent = "اسم الصوت غير صالح."; return; }
+  const { done, ids, inc } = exportSummary(); if (!done.length) return;
+  $("eGo").disabled = true; $("expBar").hidden = false; const bar = $("expBar").firstElementChild;
+  const files = [], man = { schema: "athar-record/1", tool: "record.html", created: new Date().toISOString(), speaker: S.speaker || "", voice: S.voice, audio_root: "audio/" + S.voice + "/", format: S.fmt, units: [], entries: {}, incomplete: inc, pending_excluded: ALL.filter(u => u.pending).length, text_hash: {} };
+  const fileOf = {}; let n = 0;
+  try {
+    for (const u of done) {
+      const t = await DB.get("takes", key(u.u)); if (!t) continue;
+      let data, mime = t.mime, dur = t.dur, ext = extOf(mime);
+      if (S.fmt === "wav") { const w = await toWav(t.blob); data = w.u8; mime = "audio/wav"; ext = "wav"; dur = w.dur; }
+      else data = new Uint8Array(await t.blob.arrayBuffer());
+      const rel = S.voice + "/" + u.u + "." + ext;
+      files.push({ name: "audio/" + rel, data });
+      fileOf[u.u] = rel;
+      man.units.push({ u: u.u, file: "audio/" + rel, mime, bytes: data.length, dur: Math.round(dur * 100) / 100, sha256: await sha256hex(data), ids: u.ids, text: u.disp, recorded_at: new Date(t.ts).toISOString(), recovered: !!t.recovered });
+      bar.style.width = (100 * (++n) / done.length) + "%";
+    }
+    for (const id of ids) {
+      const parts = ENTRIES[id].parts.map(p => p.u ? fileOf[p.u] : p.url).flat();
+      man.entries[id] = { file: parts.length === 1 ? parts[0] : parts };
+      man.text_hash[id] = HASHES[id];
+    }
+    const readme = "حزمة تسجيل بشري — أثر\r\nالمتحدث: " + (S.speaker || "") + "\r\nالصوت: " + S.voice + "\r\n\r\n" +
+      "audio/" + S.voice + "/   ← الملفات الصوتية (اسم الملف = معرّف الوحدة)\r\nmanifest.json  ← يربط كل معرّف سطر بملفه (entries) وبمقاطع الحصري للأسطر المختلطة\r\n\r\n" +
+      "التطبيق في المستودع: python3 apply_human_audio.py --repo <مسار athar> --zip هذا_الملف.zip [--to-mp3] [--apply]\r\n";
+    const enc = new TextEncoder();
+    files.push({ name: "manifest.json", data: enc.encode(JSON.stringify(man, null, 1)) });
+    files.push({ name: "README.txt", data: enc.encode(readme) });
+    const zip = zipBuild(files); lastZip = zip;
+    const d = new Date(), p2 = x => String(x).padStart(2, "0");
+    const fname = "athar-human-" + S.voice + "-" + d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + "-" + p2(d.getHours()) + p2(d.getMinutes()) + ".zip";
+    const a = document.createElement("a"); a.href = URL.createObjectURL(zip); a.download = fname; a.id = "dl"; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    $("expMsg").textContent = "تم إنشاء " + fname + " (" + (zip.size / 1048576).toFixed(1) + " م.ب) — " + num(done.length) + " ملفًا و" + num(ids.size) + " سطرًا مربوطًا.";
+    window.__lastExport = { name: fname, size: zip.size, files: files.length };
+    if (navigator.canShare && navigator.canShare({ files: [new File([zip], fname, { type: "application/zip" })] })) { $("eShare").hidden = false; $("eShare").onclick = () => navigator.share({ files: [new File([zip], fname, { type: "application/zip" })] }).catch(() => {}); }
+  } catch (e) { $("expMsg").textContent = "تعذّر التصدير: " + (e && (e.message || e.name) || "خطأ"); }
+  $("eGo").disabled = false;
+}
+
+/* ══════════ الإعدادات ══════════ */
+function openSettings() {
+  $("iSpeaker").value = S.speaker; $("cPend").checked = S.showPending; $("cAuto").checked = S.auto; $("sFmt").value = S.fmt;
+  const sv = $("sVoice"); sv.innerHTML = PRESETS.map(p => "<option value=\"" + p[0] + "\">" + p[1] + "</option>").join("");
+  const known = PRESETS.some(p => p[0] === S.voice && p[0] !== "__custom"); sv.value = known ? S.voice : "__custom";
+  $("iVoice").hidden = known; $("iVoice").value = known ? "" : S.voice;
+  $("tashInfo").textContent = Object.keys(S.tash).length ? "مستورَد: " + num(Object.keys(S.tash).length) + " سطرًا مشكَّلًا" : "";
+  $("dSet").showModal();
+}
+async function saveSettings() {
+  let v = $("sVoice").value === "__custom" ? $("iVoice").value.trim() : $("sVoice").value;
+  if (!validVoice(v)) { toast("اسم الصوت غير صالح: حروف إنجليزية صغيرة وأرقام و _ و - فقط"); return; }
+  const changed = v !== S.voice;
+  S.speaker = $("iSpeaker").value.trim(); S.showPending = $("cPend").checked; S.auto = $("cAuto").checked; S.fmt = $("sFmt").value; S.voice = v;
+  if (changed) { await loadTakes(); S.idx = 0; }
+  await saveMeta(); $("dSet").close(); render(); toast("حُفظت الإعدادات");
+}
+
+/* ══════════ ربط الأحداث ══════════ */
+function bind() {
+  $("bRec").onclick = () => S.recording ? stopRec(false) : startRec();
+  $("bPrev").onclick = () => go(-1); $("bNext").onclick = () => go(1);
+  $("bPlay").onclick = playTake;
+  $("bRedo").onclick = () => { if (S.recording) stopRec(true); else startRec(); };
+  $("bNextOpen").onclick = () => { $("dList").close(); nextOpen(); };
+  $("bFp").onclick = () => setFs(S.fs + 1); $("bFm").onclick = () => setFs(S.fs - 1);
+  $("bExport").onclick = openExport; $("eGo").onclick = doExport; $("eClose").onclick = () => $("dExp").close();
+  $("bSet").onclick = openSettings; $("sClose").onclick = () => $("dSet").close(); $("sSave").onclick = saveSettings;
+  $("sVoice").onchange = () => { $("iVoice").hidden = $("sVoice").value !== "__custom"; };
+  $("sTheme").onclick = () => { S.theme = S.theme === "dark" ? "light" : "dark"; applyTheme(); saveMeta(); };
+  $("sWipe").onclick = async () => {
+    if (!confirm("سيُمسح كل ما سجَّلته في هذا الجهاز لهذا الصوت. هل أنت متأكد؟")) return;
+    const ks = await DB.keys("takes"); for (const k of ks) if (String(k).startsWith(S.voice + "|")) await DB.del("takes", k);
+    S.takes = new Map(); S.idx = 0; await saveMeta(); $("dSet").close(); render(); toast("مُسحت التسجيلات");
+  };
+  $("fTash").onchange = async ev => {
+    const f = ev.target.files[0]; if (!f) return;
+    try { const j = JSON.parse(await f.text()); const o = {}; let c = 0;
+      for (const [k, v] of Object.entries(j)) { if (k[0] === "_" || typeof v !== "string") continue; o[k] = v; c++; }
+      S.tash = Object.assign(S.tash, o); await saveMeta(); $("tashInfo").textContent = "استُورد " + num(c) + " سطرًا"; render();
+    } catch (e) { $("tashInfo").textContent = "ملف غير صالح"; }
+  };
+  $("bList").onclick = () => { $("dList").showModal(); buildList(); const c = $("ulist").querySelector(".cur"); if (c) c.scrollIntoView({ block: "center" }); };
+  $("lClose").onclick = () => $("dList").close();
+  $("ulist").onclick = ev => { const li = ev.target.closest("li[data-i]"); if (li) { $("dList").close(); jump(+li.dataset.i); } };
+  $("filters").onclick = ev => { const b = ev.target.closest("button"); if (!b) return; filt = b.dataset.f; [...$("filters").children].forEach(x => x.classList.toggle("on", x === b)); buildList(); };
+  document.addEventListener("keydown", ev => {
+    if (document.querySelector("dialog[open]") || /INPUT|SELECT|TEXTAREA/.test((ev.target || {}).tagName || "")) return;
+    if (ev.code === "Space") { ev.preventDefault(); $("bRec").click(); }
+    else if (ev.code === "ArrowLeft") go(1); else if (ev.code === "ArrowRight") go(-1);
+    else if (ev.key === "p" || ev.key === "P") playTake();
+  });
+  window.addEventListener("beforeunload", () => { if (S.recording) { try { R.mr.requestData(); } catch (e) {} } });
+  document.addEventListener("visibilitychange", () => { if (document.hidden && S.recording) toast("تنبيه: التسجيل مستمر؛ لا تغلق الصفحة", 3000); });
+}
+
+(async function init() {
+  await DB.open();
+  await loadMeta();
+  const rec = await recoverPartials();
+  await loadTakes();
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  bind();
+  let fl = 1; try { const v = parseInt(localStorage.getItem("athar.recn.fs"), 10); if (v >= 0 && v <= 4) fl = v; } catch (e) {}
+  setFs(fl);
+  if (S.idx >= view().length) S.idx = 0;
+  render();
+  if (rec) toast("استُعيد " + num(rec) + " تسجيلًا انقطع قبل اكتماله", 4500);
+  window.__rec = { S, ALL, ENTRIES, view, cur, exportSummary, DB, key, jump, get lastZip() { return lastZip; } };
+})();
+</script>
+</body>
+</html>
