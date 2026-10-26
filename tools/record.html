@@ -93,6 +93,16 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .filters button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
 .bigprog{height:12px;border-radius:99px;background:var(--line);overflow:hidden;margin:10px 0}.bigprog i{display:block;height:100%;width:0;background:var(--brand)}
 .sig{text-align:center;color:var(--mute);font-size:12.5px;margin-top:22px}
+.home{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;padding:20px 16px 28px;display:none}
+.home.on{display:block}
+.home h2{margin:4px 0 4px;font-size:24px}.home p{margin:0 0 16px;color:var(--mute)}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:640px;margin:0 auto}
+.cat{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:18px 8px;min-height:170px;font:inherit}
+.cat:active{transform:scale(.97)}.cat .ic{font-size:52px;line-height:1}.cat b{font-size:19px}.cat small{color:var(--mute)}
+.cat .pb{width:80%;height:8px;border-radius:9px;background:var(--line);overflow:hidden}.cat .pb i{display:block;height:100%;background:var(--brand)}
+.cat.full{grid-column:1/-1;min-height:0;flex-direction:row;justify-content:center;padding:12px}.cat.full .ic{font-size:30px}
+.cat.fin{border-color:var(--brand);background:var(--brand-soft)}
+.homeacts{max-width:640px;margin:14px auto 0;display:flex;gap:8px;justify-content:center}
 </style>
 </head>
 <body>
@@ -101,6 +111,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
     <h1>تسجيل أثر <small id="who">المتحدث: —</small></h1>
     <button class="ibtn fs" id="bFm" aria-label="تصغير الخط">أ−</button>
     <button class="ibtn fs" id="bFp" aria-label="تكبير الخط">أ+</button>
+    <button class="ibtn" id="bHome" aria-label="الأقسام">الأقسام</button>
     <button class="ibtn" id="bList" aria-label="الفهرس">الفهرس</button>
     <button class="ibtn" id="bSet" aria-label="الإعدادات">الإعدادات</button>
   </header>
@@ -136,6 +147,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   </section>
 </div>
 
+<div class="home" id="home" role="dialog" aria-label="اختيار القسم"><div style="max-width:640px;margin:0 auto"><h2>اختر القسم الذي ستسجّله</h2><p id="homeWho">اضغط الأيقونة لتبدأ. يمكنك الرجوع من زر «الأقسام» في الأعلى.</p></div><div class="cats" id="cats"></div><div class="homeacts"><button class="btn" id="hSet">الإعدادات</button></div></div>
 <div class="toast" id="toast" role="status"></div>
 
 <dialog id="dSet"><div class="dlg">
@@ -610,6 +622,28 @@ function bind() {
   document.addEventListener("visibilitychange", () => { if (document.hidden && S.recording) toast("تنبيه: التسجيل مستمر؛ لا تغلق الصفحة", 3000); });
 }
 
+const CATS = [
+  { k: "B1_dhikr_dua", ic: "🤲", n: "أذكار وأدعية" },
+  { k: "B2_hadith_quote", ic: "📜", n: "أحاديث ومقتبسات" },
+  { k: "B3_sacred_text", ic: "📖", n: "نصوص شرعية" },
+  { k: "B4_mixed_ayah", ic: "🕌", n: "نصوص بين الآيات" },
+  { k: "all", ic: "🗂️", n: "كل الأقسام معًا", full: true }
+];
+function buildHome() {
+  const box = $("cats"); let h = "";
+  CATS.forEach(c => {
+    const us = ALL.filter(u => !u.pending && (c.k === "all" || u.kind === c.k)), d = us.filter(u => S.takes.has(u.u)).length;
+    const pct = us.length ? Math.round(d * 100 / us.length) : 0;
+    h += "<button class=\"cat" + (c.full ? " full" : "") + (d && d === us.length ? " fin" : "") + "\" data-k=\"" + c.k + "\"><span class=\"ic\">" + c.ic + "</span><b>" + c.n + "</b><small>" + num(d) + " من " + num(us.length) + (d === us.length && d ? " ✓" : "") + "</small>" + (c.full ? "" : "<span class=\"pb\"><i style=\"width:" + pct + "%\"></i></span>") + "</button>";
+  });
+  box.innerHTML = h;
+  $("homeWho").textContent = (S.speaker ? "المتحدث: " + S.speaker + " — " : "") + "اضغط الأيقونة لتبدأ. يمكنك الرجوع من زر «الأقسام» في الأعلى.";
+}
+function showHome() { if (S.recording) return; buildHome(); $("home").classList.add("on"); $("home").scrollTop = 0; }
+function pickCat(k) {
+  S.kf = k; const V = view(); let i = V.findIndex(u => !S.takes.has(u.u)); S.idx = i < 0 ? 0 : i;
+  if (window.__syncK) window.__syncK(); saveMeta(); $("home").classList.remove("on"); render();
+}
 (async function init() {
   await DB.open();
   await loadMeta();
@@ -621,7 +655,9 @@ function bind() {
   setFs(fl);
   if (S.idx >= view().length) S.idx = 0;
   if (window.__syncK) window.__syncK();
-  render();
+  $("cats").onclick = ev => { const b = ev.target.closest(".cat"); if (b) pickCat(b.dataset.k); };
+  $("bHome").onclick = showHome; $("hSet").onclick = () => { $("home").classList.remove("on"); openSettings(); };
+  render(); showHome();
   if (rec) toast("استُعيد " + num(rec) + " تسجيلًا انقطع قبل اكتماله", 4500);
   window.__rec = { S, ALL, ENTRIES, view, cur, exportSummary, DB, key, jump, get lastZip() { return lastZip; } };
 })();
