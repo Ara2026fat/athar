@@ -3686,7 +3686,7 @@ App.boot(ATHAR_DATA);
 </script>
 <script>
 /* ═══════════════ شريط أسفل الشاشة (تثبيت / تحديث) ═══════════════ */
-function ubarShow(msg, btnText, onBtn, laterText, title) {
+function ubarShow(msg, btnText, onBtn, laterText, title, noSnooze) {
   const el = document.getElementById("ubar"); if (!el) return;
   el.innerHTML = "<span>" + (title ? "<b>" + title + "</b>" : "") + msg + "</span>" +
     (laterText ? '<button type="button" class="ghost" id="ubtn2">' + laterText + "</button>" : "") +
@@ -3694,7 +3694,7 @@ function ubarShow(msg, btnText, onBtn, laterText, title) {
   el.hidden = false;
   const b1 = document.getElementById("ubtn1"), b2 = document.getElementById("ubtn2");
   if (b1) b1.onclick = () => { el.hidden = true; onBtn && onBtn(); };
-  if (b2) b2.onclick = () => { el.hidden = true; try { localStorage.setItem("athar.installOff", "1"); } catch {} };
+  if (b2) b2.onclick = () => { el.hidden = true; if (!noSnooze) snoozeInstall(); };
 }
 
 /* ═══════════════ تثبيت التطبيق ═══════════════
@@ -3714,8 +3714,10 @@ function isMacSafari() {
   const u = navigator.userAgent;
   return /Macintosh/.test(u) && /Safari/.test(u) && !/Chrome|Chromium|Edg|OPR/.test(u);
 }
+/* «لاحقًا» تأجيل سبعة أيام فقط (لا إيقاف دائم). القيمة القديمة "1" تُعدّ منتهية. */
+function snoozeInstall() { try { localStorage.setItem("athar.installOff", String(Date.now())); } catch {} }
 function installDismissed() {
-  try { return localStorage.getItem("athar.installOff") === "1"; } catch { return false; }
+  try { const t = parseInt(localStorage.getItem("athar.installOff"), 10); return t > 1e12 && Date.now() - t < 7 * 864e5; } catch { return false; }
 }
 
 window.addEventListener("beforeinstallprompt", e => {
@@ -3749,7 +3751,7 @@ async function runInstall() {
   try {
     p.prompt();
     const res = await p.userChoice;
-    if (res && res.outcome === "dismissed") { try { localStorage.setItem("athar.installOff", "1"); } catch {} }
+    if (res && res.outcome === "dismissed") snoozeInstall();
   } catch {}
 }
 
@@ -3773,7 +3775,7 @@ function registerSW() {
     if (!ownCtl || reloading) return; reloading = true; location.reload();
   });
   function offerUpdate(worker) {
-    ubarShow("تتوفّر نسخة جديدة من أثر", "حدّث", () => worker.postMessage({ type: "SKIP_WAITING" }), "لاحقًا");
+    ubarShow("تتوفّر نسخة جديدة من أثر", "حدّث", () => worker.postMessage({ type: "SKIP_WAITING" }), "لاحقًا", null, true);
   }
 }
 

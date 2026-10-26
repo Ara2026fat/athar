@@ -193,7 +193,7 @@
 #ubar{inset-inline:12px;left:12px;right:12px;max-width:420px;margin-inline:auto;bottom:calc(10px + env(safe-area-inset-bottom));flex-wrap:nowrap;padding:8px 12px;font-size:15px;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.28)}
 #ubar span{min-width:0}
 #ubar button{min-height:56px;padding:8px 14px;font-size:16px}
-body:has(#app.instage) #ubar{display:none}
+body:has(#app.instage) #ubar,body:has(#gate:not(.off)) #ubar{display:none}
 .toucher,.ayah{background:linear-gradient(#FFFAEE,#F6E9CF);--c:#E8992B;box-shadow:inset 10px 0 0 var(--c),0 5px 0 rgba(58,46,36,.28)}
 .touchers .toucher:nth-child(4n+2){--c:#C8643C}.touchers .toucher:nth-child(4n+3){--c:#7FA84A}.touchers .toucher:nth-child(4n+4){--c:#9A6AAE}
 .toucher:active,.ayah:active{box-shadow:inset 10px 0 0 var(--c)}
