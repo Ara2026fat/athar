@@ -113,6 +113,8 @@ def build_root_sw(repo):
             raise Fail("أصل CORE_ASSETS غير موجود: " + i)
     block = ",\n  // [الرئيسية الجديدة r8] وحدات وصور أثر وخطوط محلية\n  " + ",\n  ".join("'%s'" % i for i in items)
     s = once(s, "  './t096.mp3'\n];", "  './t096.mp3'" + block + "\n];", "قائمة CORE_ASSETS")
+    # [QA م4] cache.add عبر كاش HTTP قد يخزّن index.html القديم (GitHub Pages: max-age=600)
+    s = once(s, "return cache.add(u).catch(function(){});", "return cache.add(new Request(u, {cache: 'reload'})).catch(function(){});", "تثبيت الجذر بتجاوز كاش HTTP")
     return s, items
 
 

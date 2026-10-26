@@ -34,9 +34,11 @@ const WARM = ["masjid_day","hill","road","spring","home_sun","masjid_sun","hill_
 self.addEventListener("install", e => {
   e.waitUntil((async () => {
     const c = await caches.open(CACHE);
-    await Promise.all(SHELL.map(u => c.add(u).catch(() => {})));
+    await Promise.all(SHELL.map(u => c.add(new Request(u, { cache: "reload" })).catch(() => {})));   /* تجاوز كاش HTTP (GitHub Pages: max-age=600) */
     const a = await caches.open(ASSETS);
     await Promise.all(PRECACHE.map(u => a.add(u).catch(() => {})));
+    /* خلفيات كل الأماكن (نهار/غروب/ليل): تُخزَّن عند التثبيت حتى تعمل الدروس دون اتصال من أول مرة */
+    for (let i = 0; i < WARM.length; i += 4) await Promise.all(WARM.slice(i, i + 4).map(async u => { try { if (!(await a.match(u))) await a.add(u); } catch {} }));
     await Promise.all(OPTIONAL.map(async u => {
       try { const r = await fetch(u, { cache: "no-cache" }); if (r && r.ok) await c.put(u, r); } catch {}
     }));

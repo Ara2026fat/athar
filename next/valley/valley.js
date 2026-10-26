@@ -707,3 +707,22 @@ try {
 })();
 
 })();
+
+/* ═══ تحميل مسبق هادئ لأصوات أول درس في كل مكان (بعد الخمول، على شبكة مناسبة فقط) ═══
+   يستعمل R3kidWarm (طلبات منخفضة الأولوية، اثنان في آن واحد) فيخزّنها عامل الخدمة؛ لا يمسّ محرك الصوت. */
+(function () {
+  try {
+    if (!navigator.serviceWorker || /[?&]kid=0/.test(location.search)) return;
+    var ok = function () {
+      var c = navigator.connection || {};
+      return navigator.onLine !== false && !c.saveData && !/(^|-)2g$/.test(c.effectiveType || "") && c.type !== "cellular";
+    };
+    var run = function () {
+      if (!ok() || !window.R3kidWarm || !window.App || !App.places) return;
+      App.places.forEach(function (p, i) {
+        setTimeout(function () { try { var e = App.nextAt(p); if (e) window.R3kidWarm(e); } catch (x) {} }, i * 2500);
+      });
+    };
+    setTimeout(function () { (window.requestIdleCallback || setTimeout)(run); }, 8000);
+  } catch (e) {}
+})();
