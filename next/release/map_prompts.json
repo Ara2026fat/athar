@@ -1,0 +1,16 @@
+{
+ "refs": {"road":"acee68d5-e334-47b3-ad70-40e874cce9d6","hill":"eb9589d7-0ecf-4089-a180-9a5a9f8a7f56","home":"5b68a4ba-231a-4334-bea3-2f6657befa9f","masjid":"f88762ed-5674-4f84-99f2-dc238e9e3848","spring":"d31e4d3e-f3c5-40a2-8165-b6154950e025"},
+ "aspect_ratio": "9:16",
+ "layout_viewbox_400x720_image_rect_0_0_405_720": {
+  "masjid": {"center":[322,356],"uv":[0.795,0.494]},
+  "hill_tree": {"center":[218,366],"uv":[0.538,0.508]},
+  "home": {"center":[96,420],"uv":[0.237,0.583]},
+  "spring_pool": {"center":[226,528],"uv":[0.558,0.733]},
+  "road_sign": {"center":[330,606],"uv":[0.815,0.842]},
+  "quiet_ui_zone": "top 12% (y<86)",
+  "athar_and_marks_zone": "open grass + path, lower 40%, left-centre"
+ },
+ "day": "A single tall vertical illustration of a peaceful green valley for a children's Islamic learning app, in exactly the same glossy Pixar-like 3D cartoon style, soft warm sunlight, saturated friendly colours and clean modelling as the reference images. Composition from top to bottom: bright blue sky with soft puffy clouds (top 12% calm and uncluttered), a wide misty far valley with a winding blue river and tiny distant village roofs; in the middle band: on the RIGHT a small cream and green-domed mosque with a slender minaret and warm glowing arched door (nobody around it), on the LEFT a cozy rounded clay-coloured house with wooden round-top door and flower pots, in the CENTRE a green rounded hill topped by one big round tree; lower middle: a small clear waterfall pool with lily pads among smooth rocks; a golden dirt road winds from the lower right towards the viewer and a small wooden signpost stands near it. The bottom-left and centre foreground is open soft grass with wild flowers and a gentle path, leaving clear empty space for a character to stand and for small icons. No people, no animals, no birds, no text, no letters, no faces on the sun or clouds, no UI.",
+ "sunset_edit": "Edit this exact image into golden-hour sunset: keep every object, shape and position IDENTICAL, only change lighting and sky: warm orange-pink sky with soft peach clouds, long gentle shadows, warm rim light on the mosque dome and house, windows and door glowing amber. No new objects, no people, no animals, no text.",
+ "night_edit": "Edit this exact image into a calm magical night: keep every object, shape and position IDENTICAL, only change lighting: deep blue starry sky with a plain smooth crescent moon (no face), soft blue moonlight on grass and road, mosque, house windows and doors glowing warm amber, a few small fireflies of light, river reflecting the moon. No new objects, no people, no animals, no text."
+}
