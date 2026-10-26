@@ -173,3 +173,30 @@
 #scene[data-night] .vxLan{animation-name:vxlanN}
 @keyframes vxlanN{0%,100%{opacity:.8;transform:scale(1.25)}50%{opacity:1;transform:scale(1.65)}}
 @media (prefers-reduced-motion:reduce){#vxQ,#vxP,#gate.vx-in{animation:none}}
+/* r10: بطاقة الدرس أدفأ */
+.opt,.chip,.cell{background:linear-gradient(#FFFAEE,#F6E9CF);--c:#E8992B}
+.opts .opt:nth-child(4n+2),.pool .chip:nth-child(4n+2){--c:#C8643C}
+.opts .opt:nth-child(4n+3),.pool .chip:nth-child(4n+3){--c:#7FA84A}
+.opts .opt:nth-child(4n+4),.pool .chip:nth-child(4n+4){--c:#9A6AAE}
+.opt,.chip{font-size:19px;line-height:1.5;box-shadow:inset 10px 0 0 var(--c),0 5px 0 rgba(58,46,36,.28);border-color:rgba(58,46,36,.88)}
+.opt:active,.chip:active{box-shadow:inset 10px 0 0 var(--c)}
+.opt{min-height:78px;padding-block:14px}.chip{min-height:72px;padding-inline:18px}
+.opt.picked{background:#FFF1CC}
+.beat:has(.outcome.good) .opt.picked{background:#E3F4D8}
+.cell{font-size:18px;min-height:80px}
+.btn.next:not(.off){background:linear-gradient(#F7BC5C,#E8992B);color:#3A2E24;box-shadow:0 5px 0 #8A5A12;animation:vxready 2.6s ease-in-out infinite}
+@keyframes vxready{50%{transform:scale(1.025)}}
+.btn.next.off{display:flex;align-items:center;justify-content:center;opacity:.6;background:linear-gradient(#EFE6D2,#E4D8BD);color:#6B5C42;box-shadow:0 4px 0 #B8A98A;border-color:#8A7C62}
+.btn.next.off::before{content:"";width:18px;height:18px;margin-inline-end:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='4' y='9' width='12' height='9' rx='2' fill='%236B5C42'/%3E%3Cpath d='M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9' fill='none' stroke='%236B5C42' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat}
+#app[data-calm] .btn.next{animation:none!important}
+@media (prefers-reduced-motion:reduce){.btn.next{animation:none!important}}
+#ubar{inset-inline:12px;left:12px;right:12px;max-width:420px;margin-inline:auto;bottom:calc(10px + env(safe-area-inset-bottom));flex-wrap:nowrap;padding:8px 12px;font-size:15px;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.28)}
+#ubar span{min-width:0}
+#ubar button{min-height:56px;padding:8px 14px;font-size:16px}
+body:has(#app.instage) #ubar{display:none}
+.toucher,.ayah{background:linear-gradient(#FFFAEE,#F6E9CF);--c:#E8992B;box-shadow:inset 10px 0 0 var(--c),0 5px 0 rgba(58,46,36,.28)}
+.touchers .toucher:nth-child(4n+2){--c:#C8643C}.touchers .toucher:nth-child(4n+3){--c:#7FA84A}.touchers .toucher:nth-child(4n+4){--c:#9A6AAE}
+.toucher:active,.ayah:active{box-shadow:inset 10px 0 0 var(--c)}
+.toucher.seen{background:linear-gradient(#EFF8E8,#D8EDC8)}
+.toucher b{font-size:17px}.ayah{font-size:18px}
+#panel.tight2 .ayah{min-height:38px;padding-block:2px}#panel.tight2 .ayat{gap:4px}#panel.tight2 .ayah .txt{line-height:1.45}

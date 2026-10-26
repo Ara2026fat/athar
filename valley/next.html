@@ -3772,7 +3772,7 @@ function registerSW() {
     if (!ownCtl || reloading) return; reloading = true; location.reload();
   });
   function offerUpdate(worker) {
-    ubarShow("تتوفّر نسخة جديدة من أثر", "تحديث", () => worker.postMessage({ type: "SKIP_WAITING" }), "لاحقًا");
+    ubarShow("تتوفّر نسخة جديدة من أثر", "حدّث", () => worker.postMessage({ type: "SKIP_WAITING" }), "لاحقًا");
   }
 }
 

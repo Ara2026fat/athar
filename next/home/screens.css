@@ -97,16 +97,6 @@ html.sc-sub .sc-i,html.sc-sub .sc-i *{color:#1d1530!important;text-shadow:none!i
 html.sc-sub .sc-i .choice-chev,html.sc-sub .sc-i svg *{stroke:#1d1530}
 html.sc-sub .choice-tile::before{opacity:.3}
 html.sc-sub .sc-w .ct1,html.sc-sub .sc-w .ct2{text-shadow:0 1px 0 rgba(0,0,0,.35)}
-/* مقفل: رمادي فاتح + إطار منقّط + قفل، النص داكن (≥4.5) بلا شفافية */
-html.sc-sub :is(.locked,.lock){opacity:1!important;filter:none!important;border:2.5px dashed #6a6385!important;box-shadow:0 4px 0 rgba(58,43,77,.18)!important;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='11' width='14' height='10' rx='3' fill='%236a6385'/%3E%3Cpath d='M8 11V8a4 4 0 018 0v3' fill='none' stroke='%236a6385' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 12px 10px/22px 22px,linear-gradient(180deg,#f1f2f7,#d9dce7)!important}
-html.sc-sub :is(.locked,.lock),html.sc-sub :is(.locked,.lock) *{color:#2b2542!important;text-shadow:none!important}
-html.sc-sub :is(.locked,.lock)::before,html.sc-sub :is(.locked,.lock)::after{opacity:0!important}
-html.sc-sub :is(.locked,.lock) .choice-icon{background:rgba(255,255,255,.7)}
-html.sc-sub :is(.locked,.lock) svg *{stroke:#4a4565}
-html.sc-sub .adk-hero,html.sc-sub .adk-hero *{color:#fff}
-html.sc-sub .adk-hero{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#0b6b63}
-html.sc-sub .strip-pill:not(.active){opacity:1;filter:saturate(.8)}
 /* أزرار ثابتة اللون */
 html.sc-sub :is(.view,#view-numbers) .seg-btn.active{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.1)),#1b7a3a;text-shadow:none}
 html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1f5fd8}
@@ -155,3 +145,60 @@ html.sc-sub .sc-title{display:flex;flex-direction:column;align-items:flex-start;
 }
 body.bedtime .sc-st,body.bedtime .sc-stars{animation:none;display:none}
 html.sc-sub .surah-nm{font-size:max(18.7px,clamp(16px,4.9vw,21px))}
+
+/* ================= r10 ================= */
+/* (1) PIN: أرقام LTR دائمًا + إخفاء الرمز الافتراضي من شاشة الدخول */
+#pinPad,#pinDots{direction:ltr}
+#view-pin .pin-hint{display:none}
+.sc-pinhint{margin:0 0 10px;padding:10px 14px;border-radius:16px;background:#fff6d8;border:2px solid rgba(58,43,77,.35);font-size:14px;line-height:1.6;color:#3a2b4d}
+/* (5) زر الرجوع/الإعدادات: زجاج كريمي بحدّ داكن كالرئيسية */
+html.sc-sub :is(.back-btn,.gear-btn){background:linear-gradient(180deg,#fffdf4,#ffe9b8);border:2.5px solid var(--sc-line);color:#3a2b4d;text-shadow:none;
+  box-shadow:inset 0 2px 0 #fff,0 5px 0 rgba(58,43,77,.3),0 12px 16px -8px rgba(58,43,77,.45)}
+html.sc-sub .gear-btn svg{width:30px;height:30px;filter:none}
+html.sc-sub .gear-btn svg g,html.sc-sub .gear-btn svg rect{fill:#3a2b4d}
+html.sc-sub .gear-btn svg *{stroke:#3a2b4d}
+html.sc-sub .gear-btn svg circle{fill:none}
+html.sc-sub :is(.back-btn,.gear-btn):active{box-shadow:inset 0 2px 0 #fff,0 1px 0 rgba(58,43,77,.3)}
+/* (2) القوائم: شبكة بطاقات كبيرة */
+html.sc-sub .sc-hub{display:grid;gap:14px;grid-template-columns:1fr}
+html.sc-sub .sc-hub.g2{grid-template-columns:1fr 1fr}
+html.sc-sub .sc-hub>*{margin:0}
+html.sc-sub .sc-hub>:not(.choice-tile){grid-column:1/-1}
+html.sc-sub .sc-hub.g1>.choice-tile{min-height:150px;padding:18px 18px;gap:16px}
+html.sc-sub .sc-hub.g1 .choice-icon{width:96px;height:96px;border-radius:30px}
+html.sc-sub .sc-hub.g1 .ct1{font-size:26px}
+html.sc-sub .sc-hub.g1 .ct2{font-size:15px}
+html.sc-sub .sc-hub.g2>.choice-tile{flex-direction:column;justify-content:center;text-align:center;min-height:178px;padding:16px 10px;gap:8px;width:100%}
+html.sc-sub .sc-hub.g2>.choice-tile.sc-wide{grid-column:1/-1;min-height:150px}
+html.sc-sub .sc-hub.g2 .choice-icon{width:84px;height:84px;border-radius:28px;margin:0;font-size:40px}
+html.sc-sub .sc-hub.g2 .choice-txt{flex:none;width:100%}
+html.sc-sub .sc-hub.g2 .ct1{font-size:20px;line-height:1.25}
+html.sc-sub .sc-hub.g2 .ct2{font-size:13.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.sc-sub .sc-hub.g2 .choice-chev{display:none}
+.sc-bd{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:3px 12px;border-radius:14px;background:rgba(255,255,255,.88);border:2px solid rgba(58,43,77,.5);font-size:14px;font-weight:800;line-height:1.4}
+html.sc-sub :is(.sc-w,.sc-i) .sc-bd,html.sc-sub .sc-bd{color:#3a2b4d!important;text-shadow:none!important}
+.sc-bd i{display:block;width:44px;height:7px;border-radius:5px;background:rgba(58,43,77,.18);overflow:hidden}
+.sc-bd i b{display:block;height:100%;width:var(--p,0%);background:linear-gradient(90deg,#22b36b,#fde047);border-radius:5px}
+html.sc-sub .adk-tile{min-height:132px;justify-content:center}
+html.sc-sub .adk-w{font-size:15px}
+/* (3) مقفل: نفس البطاقة بألوانها مع فانوس مطفأ يضيء عند الوصول */
+html.sc-sub :is(.locked,.lock){opacity:1;filter:saturate(.8) brightness(.96)}
+.sc-lamp{position:absolute;top:10px;left:10px;width:34px;height:34px;pointer-events:none;z-index:3}
+.sc-lamp svg{width:100%;height:100%;filter:drop-shadow(0 2px 0 rgba(58,43,77,.45))}
+.sc-lamp .gl{fill:#d9d2e6}
+.sc-lamp.lit .gl{fill:#FFC93C}
+.sc-lamp.lit{animation:scIgn 1.6s ease-out 1}
+@keyframes scIgn{0%{filter:drop-shadow(0 0 0 rgba(255,201,60,0));scale:.6}30%{scale:1.3;filter:drop-shadow(0 0 16px rgba(255,201,60,.95))}100%{scale:1;filter:drop-shadow(0 0 6px rgba(255,201,60,.6))}}
+/* (4) أيقونات SVG بدل الإيموجي */
+.sc-ic{width:100%;height:100%;display:block;overflow:visible;stroke:#3a2b4d;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.sc-ic text{stroke:none}
+.sc-ie{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;margin:0 .15em}
+.choice-icon .sc-ie{width:62%;height:62%;margin:0;display:block}
+.lib-em:has(.sc-ie){width:60px;height:60px;display:block;margin:0 auto}
+.lib-em .sc-ie,.adk-e .sc-ie,.adk-hero-e .sc-ie{width:100%;height:100%;margin:0;display:block;filter:drop-shadow(0 2px 0 rgba(58,43,77,.3))}
+.adk-e:has(.sc-ie){width:56px;height:56px}
+.adk-hero-e:has(.sc-ie){width:52px;height:52px;flex:none}
+@media (prefers-reduced-motion:reduce){.sc-lamp.lit{animation:none}}
+html.sc-sub .adk-hero,html.sc-sub .adk-hero *{color:#fff}
+html.sc-sub .adk-hero{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#0b6b63}
+html.sc-sub .strip-pill:not(.active){opacity:1;filter:saturate(.8)}

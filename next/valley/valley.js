@@ -473,7 +473,7 @@ function syncHide() {
 }
 var RING = '<svg viewBox="0 0 28 28" aria-hidden="true"><circle class="rp" cx="14" cy="14" r="11" fill="none" stroke="#3FA7C9" stroke-width="2.4"/><circle cx="14" cy="14" r="5.4" fill="#F0A93B" stroke="#3A2E24" stroke-width="2"/><circle cx="12.4" cy="12.4" r="1.6" fill="#fff"/></svg>';
 var LANT = '<svg viewBox="0 0 46 62" aria-hidden="true"><path d="M23 3v7" stroke="#4A3626" stroke-width="3" stroke-linecap="round"/><path d="M14 12h18l-3-5H17z" fill="#C9944A" stroke="#4A3626" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 14h22l3 9v18l-3 8H12l-3-8V23z" fill="#FFE49A" stroke="#4A3626" stroke-width="2.6" stroke-linejoin="round"/><path d="M23 14v35M9 31h28" stroke="#C9944A" stroke-width="2" opacity=".7"/><ellipse cx="23" cy="32" rx="6" ry="8" fill="#FFB43A" opacity=".85"/><path d="M12 49h22l-2 6H14z" fill="#C9944A" stroke="#4A3626" stroke-width="2.4" stroke-linejoin="round"/></svg>';
-var CIRC = /^[◦◌◉◍◇◆◐◑◒○●•]$/;
+var CIRC = /^[◦◌◉◍◇◆◐◑◒◷○●•☾☽☼☀]$/;
 function decorate() {
   [].slice.call(panel.querySelectorAll(".toucher .ico")).forEach(function (e) {
     if (e.dataset.vx) return; e.dataset.vx = 1; if (CIRC.test((e.textContent || "").trim())) e.innerHTML = RING;
