@@ -23,7 +23,9 @@ const PRECACHE = [
   "./img/friends/tamim_wave.webp", "./img/friends/ziyad_wave.webp",
   "./img/bg/home.webp",                                   /* خلفية البوابة/الخريطة نهارًا */
   "./img/bg/hill.webp",
-  "./img/medal/home_day.webp", "./img/medal/masjid_day.webp", "./img/medal/spring_day.webp", "./img/medal/hill_day.webp", "./img/medal/road_day.webp"
+  "./img/medal/home_day.webp", "./img/medal/masjid_day.webp", "./img/medal/spring_day.webp", "./img/medal/hill_day.webp", "./img/medal/road_day.webp",
+  /* علامات الوادي المجسّمة (r12) */
+  "./img/marks/mBalance.webp", "./img/marks/mBanner.webp", "./img/marks/mBlossom.webp", "./img/marks/mCart.webp", "./img/marks/mCompass.webp", "./img/marks/mCrown.webp", "./img/marks/mCurtain.webp", "./img/marks/mDoor.webp", "./img/marks/mEmber.webp", "./img/marks/mFeather.webp", "./img/marks/mFinalSeal.webp", "./img/marks/mGreenDome.webp", "./img/marks/mHarvest.webp", "./img/marks/mHeart.webp", "./img/marks/mHouse2.webp", "./img/marks/mKey.webp", "./img/marks/mLeaf.webp", "./img/marks/mLeafPair.webp", "./img/marks/mLowBranch.webp", "./img/marks/mNest.webp", "./img/marks/mPerfume.webp", "./img/marks/mShelter.webp", "./img/marks/mSpring2.webp", "./img/marks/mStill.webp"
 ];
 const WARM = ["masjid_day","hill","road","spring","home_sun","masjid_sun","hill_sun","road_sun","spring_sun",
               "home_night","masjid_night","hill_night","road_night","spring_night"].map(n => "./img/bg/" + n + ".webp").concat(["home","masjid","spring","hill","road"].reduce((a, k) => a.concat(["sun", "night"].map(v => "./img/medal/" + k + "_" + v + ".webp")), []));
