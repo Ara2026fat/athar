@@ -310,9 +310,13 @@ function tidy() {
   var fx2 = []; var ar = atharRect(); if (ar) fx2.push(ar);
   friendRects(a).forEach(function (r) { fx2.push(r); });
   [].slice.call($("labels").querySelectorAll(".plabel:not(.sleep)")).forEach(function (e) { fx2.push(rel(e.getBoundingClientRect(), a)); });
-  var cap = 52 * k, i, j, pass;
+  /* ميداليات الأماكن المفتوحة: العلامات لا تغطّيها */
+  [].slice.call(scene.querySelectorAll(".place:not(.sleep) .vxmed circle:nth-of-type(1)")).forEach(function (e) {
+    var r = rel(e.getBoundingClientRect(), a); if (r.r - r.l > 10) fx2.push({ l: r.l - 4, r: r.r + 4, t: r.t - 4, b: r.b + 4 });
+  });
+  var cap = 96 * k, i, j, pass;
   function box(o) { var w = o.w * o.sc / 2, h = o.h * o.sc / 2; return { l: o.cx + o.dx - w, r: o.cx + o.dx + w, t: o.cy + o.dy - h, b: o.cy + o.dy + h }; }
-  for (pass = 0; pass < 36; pass++) {
+  for (pass = 0; pass < 60; pass++) {
     var moved = false;
     for (i = 0; i < it.length; i++) {
       var p = it[i]; if (p.fixed || p.isNew) continue;
