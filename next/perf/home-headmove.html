@@ -3793,7 +3793,7 @@
   function wordEnd(){
     markDayActive();
     var box = document.createElement("div"); box.className = "wg";
-    box.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">أتممتَ الجولة، وأضأتَ نورًا جديدًا.</p>';
+    box.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">أتممتَ الجولة بتوفيق الله، وأُضيء نورٌ جديد.</p>';
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto 0"; b.textContent = "جولة أخرى";
     b.addEventListener("click", function(){ gameState = { kind:"word", ayah:player.currentAyah, round:0, max:5, right:0 }; wordRound(); });
     box.appendChild(b); openSheet(box);
@@ -5296,7 +5296,7 @@
       pages:[ { k:"mosque", t:"السادس: نؤمن بالقدر. كلّ شيء بعلم الله وتقديره، فنرضى ونحمد الله." } ] }
   ];
   var BKS = {
-    usul:{ key:"usul", title:"الأصول الثلاثة", sub:"أضئ الفوانيس الثلاثة", ch:USUL, medal:"أضأتَ الفوانيس الثلاثة! ما شاء الله",
+    usul:{ key:"usul", title:"الأصول الثلاثة", sub:"أضئ الفوانيس الثلاثة", ch:USUL, medal:"تمّت الفوانيس الثلاثة، ما شاء الله، والحمد لله",
       fin:"رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلاَمِ دِينًا، وَبِمُحَمَّدٍ رَسُولاً", finR:"من قالها وجبت له الجنة — رواه أبو داود (١٥٢٩)، وصحّحه الألباني", finSay:"رضيتُ بالله ربًّا، وبالإسلام دينًا، وبمحمدٍ رسولًا", finBtn:"⭐ الخاتمة: رضيتُ بالله ربًّا",
       parent:"اسأل طفلك بعد كل فانوس: «من ربّك؟ ما دينك؟ من نبيّك؟» وشجّعه على أن يجيب بصوته.", lan:"فانوس" },
     iman:{ key:"iman", title:"أركان الإيمان", sub:"اجمع الجواهر الستة", ch:IMAN, medal:"جمعتَ الجواهر الستة! ما شاء الله",
@@ -10248,7 +10248,7 @@
     var nDone = cnt("usul"), nIm = cnt("iman"), nQa = cnt("qa"), nKb = cnt("kibar"), nSl = cnt("salah"), nAk = cnt("akhlaq"), nAr = cnt("arkan"), nSr = cnt("sira"), nNm = cnt("asma"), nWd = cnt("wudu"), nSk = cnt("shukr"), nSh = cnt("sahaba"), nFd = cnt("fadail"), nTm = cnt("taam"), nIl = cnt("ilm"), nNw = cnt("nawm"), nJm = cnt("jumua"), nQf = cnt("quranf"), nMs = cnt("masjid"), nRh = cnt("rahma"), nDu = cnt("dua"), nSa = cnt("salam"), nWq = cnt("waqt"), nTb = cnt("tawba"), nTw = cnt("tawadu"), nSb = cnt("sabr"), nSd = cnt("sadaqa"), nJn = cnt("janna"), nTk = cnt("tawakkul"), nYa = cnt("yatim"), nSu = cnt("suhba"), nAm = cnt("amana"), nYs = cnt("yusr"), nDk = cnt("dhikr"), nWl = cnt("walid"), nSq = cnt("sidq"), nHy = cnt("haya"), nJr = cnt("jar"), nRh = cnt("rahim"), nLs = cnt("lisan"), nGh = cnt("ghadab"), nTf = cnt("tafakkur"), nAd = cnt("adl"), nIk = cnt("ikhlas"), nLq = cnt("luqman"), nSl = cnt("sulayman"), nKf = cnt("kahf"), nMy = cnt("maryam"), nQn = cnt("qanaa"), nHz = cnt("husnzann"), nHf = cnt("hifz"), nTw = cnt("taawun"), nTy = cnt("tayyiba"), nRm = cnt("ramadan"), nAy = cnt("ayyub"), nZk = cnt("zakariya"), nDw = cnt("dawud"), nFl = cnt("fil"), nDq = cnt("dhulqarnayn"), nHq = cnt("huquq"), nDs = cnt("dayf"), nKs = cnt("kasb"), nIh = cnt("ihsan"), nQl = cnt("qiyam"), nYn = cnt("yunus"), nNh = cnt("nuh"), nIb = cnt("ibrahim"), nMs = cnt("musa"), nYs = cnt("yusuf"), nAd = cnt("adam"), nIs = cnt("istiqama"), nHb = cnt("hubb"), nKb = cnt("kibr"), nRf = cnt("rifq"), nSm = cnt("ismail"), nGh = cnt("ghar"), nAs = cnt("asiya"), nIr = cnt("isra"), nSl = cnt("salih"), nHd = cnt("hud"), nSh = cnt("shuayb"), nAk = cnt("kursi"), nSik = cnt("surikh"), nNz = cnt("nazafa"), nTq = cnt("tariq"), nAm = cnt("amal"), nFr = cnt("firawn"), nQr = cnt("qarun"), nAj = cnt("janna2"), nSb = cnt("saba"), nTl = cnt("talut"), nFt = cnt("fatiha"), nMh = cnt("mahabba"), nKl = cnt("khuluq");
     var shelf = document.createElement("div"); shelf.className = "lib-shelf";
     var books = [
-      { t:"الأصول الثلاثة للصغار", s: nDone ? ("أضأتَ " + arNum(nDone) + " من ٥ فوانيس") : "ربّي الله، ديني الإسلام، نبيّي محمد ﷺ", e:"🏮", a:"#FF8A3D", b:"#E5489B", k:"usul", go: function(){ usulHome(BKS.usul); } },
+      { t:"الأصول الثلاثة للصغار", s: nDone ? ("أُضيء " + arNum(nDone) + " من ٥ فوانيس") : "ربّي الله، ديني الإسلام، نبيّي محمد ﷺ", e:"🏮", a:"#FF8A3D", b:"#E5489B", k:"usul", go: function(){ usulHome(BKS.usul); } },
       { t:"أركان الإيمان الستة", s: nIm ? ("جمعتَ " + arNum(nIm) + " من ٦ جواهر") : "الله، الملائكة، الكتب، الرسل، اليوم الآخر، القدر", e:"💎", a:"#18B87A", b:"#22B8F0", k:"iman", go: function(){ usulHome(BKS.iman); } },
       { t:"صلاتي", s: nSl ? ("أنهيتَ " + arNum(nSl) + " من ٥ دروس") : "الوضوء، لماذا نصلّي، كيف نصلّي، فضل الصلاة", e:"🕌", a:"#22B8F0", b:"#18B87A", k:"salah", go: function(){ usulHome(BKS.salah); } },
       { t:"الزكاة والصيام والحج", s: nAr ? ("أنهيتَ " + arNum(nAr) + " من ٥ دروس") : "تكملة أركان الإسلام: الصدقة، رمضان، ليلة القدر، الحج", e:"🕋", a:"#10B981", b:"#3B82F6", k:"arkan", go: function(){ usulHome(BKS.arkan); } },

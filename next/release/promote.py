@@ -10,7 +10,7 @@ promote.py: يرقّي معاينتي «أثر» (home-next.html و valley/next.
                                        لأن world.js لا يعدّه معاينة خارج home-next.html أو ?preview=1)
   2) valley/next.html -> valley/index.html  (valley.css وvalley.js يُضمَّنان داخل الصفحة، HOME_URL=../index.html،
                                        كشف القدوم من الرئيسية بالـreferrer لنفس الأصل، preload لخط Rubik)
-  3) sw.js الجذر: إضافة وحدات الرئيسية والصور والخطوط إلى CORE_ASSETS ورفع CACHE_VERSION v82 -> v83
+  3) sw.js الجذر: إضافة وحدات الرئيسية والصور والخطوط إلى CORE_ASSETS ورفع CACHE_VERSION v83 -> v84
   4) valley/sw.js: النسخة المقترحة (precache جزئي + خطوط) بمسارات الخطوط الفعلية ../next/assets/fonts
   5) نسخ احتياطية للملفات الأربعة في --backup (افتراضيًا /tmp/rc_bak) وتقرير نصّي بكل ملف غُيّر.
 الأصول تبقى في مكانها (next/home/*, next/assets/fonts/*) وتُشير إليها الصفحات الحية بمسارات نسبية.
@@ -98,9 +98,9 @@ def build_valley(repo):
 # ---------------------------------------------------------------- sw الجذر
 def build_root_sw(repo):
     s = rd(os.path.join(repo, "sw.js"))
-    if "const CACHE_VERSION = 'v82';" not in s:
-        raise Fail("sw.js: CACHE_VERSION ليس v82 (هل رُقّي سابقًا؟)")
-    s = once(s, "const CACHE_VERSION = 'v82';", "const CACHE_VERSION = 'v83';", "رفع CACHE_VERSION")
+    if "const CACHE_VERSION = 'v83';" not in s:
+        raise Fail("sw.js: CACHE_VERSION ليس v83 (هل رُقّي سابقًا؟)")
+    s = once(s, "const CACHE_VERSION = 'v83';", "const CACHE_VERSION = 'v84';", "رفع CACHE_VERSION")
     items = (["./next/home/" + f for f in HOME_ASSETS_CSS] +
              ["./next/home/" + f for f in HOME_ASSETS_JS] +
              ["./next/home/img/" + f for f in HOME_IMGS] +
