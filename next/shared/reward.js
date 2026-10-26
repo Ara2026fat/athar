@@ -69,7 +69,7 @@
   /* ───────── عبارات التشجيع (نصّ فقط، نبرة هادئة) ───────── */
   var L = {
     ok: ["أحسنتَ، هذا صحيح", "ما شاء الله، إجابة جميلة", "رائع، أنت تنتبه جيدًا", "أصبتَ، واصل", "ممتاز، هكذا يكون التعلّم", "جميل جدًا، تابع", "أحسنتَ، لقد تذكّرتَ", "عمل متقن", "خطوة جميلة أخرى"],
-    lesson: ["أتممتَ الدرس، ما شاء الله", "أحسنتَ، أنهيتَ الدرس بهدوء وانتباه", "جهدك جميل، وهذه نجمتك", "تعلّمتَ شيئًا جديدًا اليوم", "ما شاء الله، أنت تتقدّم", "شكرًا لانتباهك، نجمة لك", "هذه نجمة تعبك الجميل", "أكملتَ الطريق، أحسنتَ", "خطوة بعد خطوة، وها قد وصلت"],
+    lesson: ["أتممتَ الدرس، ما شاء الله", "أحسنتَ، أنهيتَ الدرس بهدوء وانتباه", "جهدك جميل، أحسنتَ", "تعلّمتَ شيئًا جديدًا اليوم", "ما شاء الله، أنت تتقدّم", "شكرًا لانتباهك الجميل", "هذه ثمرة تعبك الجميل", "أكملتَ الطريق، أحسنتَ", "خطوة بعد خطوة، وها قد وصلت"],
     retry: ["لا بأس، حاول مرة أخرى", "أنت تتعلّم، وهذا هو المهم", "المحاولة جميلة، جرّب من جديد", "خذ نفسًا هادئًا ثم أعد المحاولة", "التعلّم يأتي بالتكرار، وأنت قريب", "لا تقلق، نحاول معًا", "محاولة طيبة، لنعد مرة أخرى", "كل مرة تقترب أكثر"],
     back: ["أهلًا بعودتك، اشتقنا لك", "سعيدون برؤيتك من جديد", "مرحبًا بك، لنكمل من حيث توقفنا", "أهلًا يا صديقي، هيا نبدأ بهدوء", "عدتَ، وهذا جميل", "البداية الجديدة جميلة دائمًا"],
     goal: ["أتممتَ هدف اليوم، ما شاء الله", "ثلاث نجوم اليوم، أحسنتَ", "هدفك لهذا اليوم تحقّق", "يوم موفّق، أحسنتَ", "أنجزتَ ما نويتَ اليوم", "عمل اليوم تمّ، هنيئًا لك"],
@@ -124,6 +124,7 @@
     if (m === "home") { var h = $("view-home"); return !!(h && h.classList.contains("active")); }
     if (m === "valley") {
       var g = $("gate"); if (g && !g.classList.contains("off") && g.offsetParent !== null) return false;
+      var it = $("intro"); if (it && it.classList.contains("on")) return false;
       var pn = $("panel"); if (pn && pn.children.length) return false;
       var pr = $("parent"); if (pr && pr.classList.contains("on")) return false;
       return true;
@@ -292,19 +293,19 @@
   function parentCard() {
     var p = cur(), st = p.streak.n && (p.streak.last === today() || p.streak.last === ymd(new Date(Date.now() - 864e5))) ? p.streak.n : 0;
     var c = D.createElement("div"); c.className = "rw-parent";
-    c.innerHTML = '<h3>نجوم الطفل</h3><p>أيام متتالية: ' + num(st) + ' · مجموع النجوم: ' + num(p.total) + ' · رصيده الآن: ' + num(p.stars) + '</p><button class="rw-btn soft" type="button">تصفير المكافآت</button>';
+    c.innerHTML = '<h3>نجوم الطفل</h3><p>أيام متتالية: ' + num(st) + '<br>مجموع النجوم: ' + num(p.total) + '<br>رصيده الآن: ' + num(p.stars) + '</p><button class="rw-btn soft" type="button">تصفير المكافآت</button>';
     var b = c.querySelector("button"), t = 0, ask = false;
     b.onclick = function () {
       if (!ask) { ask = true; b.textContent = "تأكيد التصفير؟ لا رجوع"; b.className = "rw-btn ask"; clearTimeout(t); t = setTimeout(function () { ask = false; b.textContent = "تصفير المكافآت"; b.className = "rw-btn soft"; }, 4000); return; }
       var o = load(); o.profiles[pid()] = fresh(); save(o); syncChip(); gifts(); ask = false; b.textContent = "تمّ التصفير"; b.className = "rw-btn soft"; b.disabled = true;
-      c.querySelector("p").textContent = "أيام متتالية: ٠ · مجموع النجوم: ٠ · رصيده الآن: ٠";
+      c.querySelector("p").innerHTML = "أيام متتالية: ٠<br>مجموع النجوم: ٠<br>رصيده الآن: ٠";
     };
     return c;
   }
   function parentHook() {
     var dash = $("view-dashboard"), par = $("parent");
     function putHome() { if (dash && dash.classList.contains("active") && !dash.querySelector(".rw-parent")) { var g = dash.querySelector(".growth-card"); if (g && g.parentNode) g.parentNode.insertBefore(parentCard(), g.nextSibling); } }
-    function putValley() { if (par && par.classList.contains("on") && !par.querySelector(".rw-parent")) { var c = par.querySelector(".pcard:not(.pgate)"); if (c && c.parentNode) c.parentNode.insertBefore(parentCard(), c); } }
+    function putValley() { if (par && par.classList.contains("on") && !par.querySelector(".rw-parent")) { var c = par.querySelector(".pcard:not(.pgate)"); if (c) { var tg = c.querySelector(".ptag"); c.insertBefore(parentCard(), tg ? tg.nextSibling : c.firstChild); } } }
     try { if (dash) new MutationObserver(function () { if (!dash.classList.contains("active")) { var x = dash.querySelector(".rw-parent"); if (x) x.remove(); } else putHome(); }).observe(dash, { attributes: true, attributeFilter: ["class"] }); } catch (e) {}
     try { if (par) new MutationObserver(function () { if (par.classList.contains("on")) putValley(); }).observe(par, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] }); } catch (e) {}
   }
