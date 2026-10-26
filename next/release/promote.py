@@ -59,7 +59,8 @@ def build_valley(repo):
     js = rd(os.path.join(repo, "next", "valley", "valley.js"))
     if "</script" in js.lower() or "</style" in css.lower():
         raise Fail("valley.js/css يحتويان وسم إغلاق: لا يصح تضمينهما")
-    if "url(" in css:
+    import re as _re
+    if _re.search(r"url\(\s*(?!['\"]?(?:data:|#))",css):
         raise Fail("valley.css فيه url() نسبية: لا يصح تضمينه دون تعديل المسارات")
 
     # أ) تضمين CSS وJS
