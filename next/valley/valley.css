@@ -200,3 +200,4 @@ body:has(#app.instage) #ubar{display:none}
 .toucher.seen{background:linear-gradient(#EFF8E8,#D8EDC8)}
 .toucher b{font-size:17px}.ayah{font-size:18px}
 #panel.tight2 .ayah{min-height:38px;padding-block:2px}#panel.tight2 .ayat{gap:4px}#panel.tight2 .ayah .txt{line-height:1.45}
+#app[data-calm] :is(.vxTw,.tuft,.stream,.tree-sway,.palm){animation:none!important}

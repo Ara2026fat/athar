@@ -34,9 +34,9 @@ return '<svg class="art" viewBox="0 0 170 128" width="170" height="128" aria-hid
 '<rect x="20" y="114" width="130" height="10" rx="5" fill="#f4d9a4"'+ST+'/></svg>'},
 hifz:function(){
 return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidden="true"><defs>'+lg("h1","#5eea8f","#1f9d4d")+lg("h2","#fff6dc","#f1d79a")+'</defs>'+sh(60,90,48)+
-'<g transform="translate(6,0)"><rect x="90" y="30" width="14" height="58" rx="4" fill="url(#h2)"'+ST+'/><path d="M89 31L97 10L105 31Z" fill="url(#h1)"'+ST+'/><rect class="win" x="94" y="42" width="6" height="11" rx="3"'+S2+'/>'+
+'<g transform="translate(6,0)"><rect x="90" y="30" width="14" height="58" rx="4" fill="url(#h2)"'+ST+'/><path d="M89 31L97 10L105 31Z" fill="url(#h1)"'+ST+'/><rect class="win" x="94" y="42" width="6" height="11" rx="3"'+S2+'/><ellipse class="wg" cx="97" cy="47.5" rx="7" ry="10" fill="#ffe48a"/>'+
 '<rect x="6" y="50" width="84" height="38" rx="8" fill="url(#h2)"'+ST+'/><path d="M18 52A30 30 0 0 1 78 52Z" fill="url(#h1)"'+ST+'/><path d="M48 22V11" fill="none"'+ST+'/><circle class="fin" cx="48" cy="9" r="4.5" fill="#ffd24d"'+S2+'/>'+gl(38,36,9,4)+
-'<path d="M38 88V73a10 10 0 0 1 20 0V88Z" class="win"'+ST+'/><rect class="win" x="14" y="62" width="11" height="16" rx="5.5"'+S2+'/><rect class="win" x="71" y="62" width="11" height="16" rx="5.5"'+S2+'/></g></svg>'},
+'<path d="M38 88V73a10 10 0 0 1 20 0V88Z" class="win"'+ST+'/><ellipse class="wg" cx="48" cy="80" rx="10" ry="9" fill="#ffe48a"/><rect class="win" x="14" y="62" width="11" height="16" rx="5.5"'+S2+'/><rect class="win" x="71" y="62" width="11" height="16" rx="5.5"'+S2+'/></g></svg>'},
 noor:function(){
 return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidden="true"><defs>'+lg("n1","#ffb25e","#f2670f")+lg("n2","#2c7a5c","#1b5440")+'</defs>'+sh(60,91,46)+
 '<path d="M32 70L22 90M88 70L98 90M60 70V88" fill="none"'+ST+'/><rect x="10" y="6" width="100" height="66" rx="9" fill="url(#n1)"'+ST+'/><rect x="18" y="14" width="84" height="50" rx="4" fill="url(#n2)"'+S2+'/>'+
@@ -45,8 +45,8 @@ return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidde
 math:function(){
 var cs=[["#ffc033","#f09a07"],["#53c4f7","#1e8fd0"],["#ff7fb5","#e1457f"],["#8be07a","#3fae43"]],d=[1,2,3,4].map(nm),xs=[80,44,8],i,s='';
 var df='';for(i=0;i<4;i++)df+=lg("m"+i,cs[i][0],cs[i][1]);
-for(i=0;i<3;i++)s+='<g class="sw s'+i+'"><rect x="'+xs[i]+'" y="52" width="32" height="34" rx="8" fill="url(#m'+i+')"'+ST+'/><rect x="'+(xs[i]+5)+'" y="57" width="12" height="4" rx="2" fill="#fff" opacity=".5"/><text x="'+(xs[i]+16)+'" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" stroke="#3a2b4d" stroke-width="3" paint-order="stroke" style="font-family:Tajawal,Arial,sans-serif">'+d[i]+'</text></g>';
-s+='<g class="sw s3"><g transform="rotate(-7 60 36)"><rect x="44" y="16" width="32" height="34" rx="8" fill="url(#m3)"'+ST+'/><rect x="49" y="21" width="12" height="4" rx="2" fill="#fff" opacity=".5"/><text x="60" y="43" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" stroke="#3a2b4d" stroke-width="3" paint-order="stroke" style="font-family:Tajawal,Arial,sans-serif">'+d[3]+'</text></g></g>';
+for(i=0;i<3;i++)s+='<g class="sw s'+i+'"><g class="jp"><rect x="'+xs[i]+'" y="52" width="32" height="34" rx="8" fill="url(#m'+i+')"'+ST+'/><rect x="'+(xs[i]+5)+'" y="57" width="12" height="4" rx="2" fill="#fff" opacity=".5"/><text x="'+(xs[i]+16)+'" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" stroke="#3a2b4d" stroke-width="3" paint-order="stroke" style="font-family:Tajawal,Arial,sans-serif">'+d[i]+'</text></g></g>';
+s+='<g class="sw s3"><g class="jp"><g transform="rotate(-7 60 36)"><rect x="44" y="16" width="32" height="34" rx="8" fill="url(#m3)"'+ST+'/><rect x="49" y="21" width="12" height="4" rx="2" fill="#fff" opacity=".5"/><text x="60" y="43" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" stroke="#3a2b4d" stroke-width="3" paint-order="stroke" style="font-family:Tajawal,Arial,sans-serif">'+d[3]+'</text></g></g></g>';
 return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidden="true"><defs>'+df+'</defs>'+sh(60,90,50)+s+'</svg>'},
 lib:function(){
 var c=["#fbbf24","#f472b6","#34d399","#60a5fa","#fb923c","#fde68a","#c084fc"],i,s='',x,h;
@@ -133,7 +133,7 @@ if(!view.classList.contains("active"))return;
 var vh=D.documentElement.clientHeight||W.innerHeight,top=world.getBoundingClientRect().top;
 var hd=D.querySelector("header"),stTop=hd?Math.max(44,hd.offsetHeight-6):52;
 var show=dockShow();$("wDock").style.display=show?"":"none";app.classList.toggle("hw-pk",show);
-var res=show?Math.max(44,$("wDock").offsetHeight+12):0,H=Math.max(420,vh-top),Hs=H-stTop-res;
+var res=(!dis&&!first&&pk)?52:0,H=Math.max(420,vh-top),Hs=H-stTop-res;
 world.style.height=H+"px";
 var w=world.clientWidth;
 sc=Math.min(w/390,Hs/704);

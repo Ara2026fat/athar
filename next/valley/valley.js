@@ -411,11 +411,11 @@ var ph0 = W.phase;
 W.phase = function () { var r = ph0.apply(this, arguments); soft(); return r; };
 var calmCk = 0;
 function guard() {
-  if (app.dataset.calm || !app.classList.contains("instage")) return;
+  if (app.dataset.calm) return;
   var ck = ++calmCk, n = 0, t0 = 0;
   setTimeout(function () {
     function f(t) {
-      if (ck !== calmCk || !app.classList.contains("instage")) return;
+      if (ck !== calmCk || document.hidden || $("gate").offsetParent) return;
       if (!t0) t0 = t; n++;
       if (t - t0 < 2000) return requestAnimationFrame(f);
       if (n * 1000 / (t - t0) < 40) app.dataset.calm = "1";
@@ -423,6 +423,7 @@ function guard() {
     requestAnimationFrame(f);
   }, 1200);
 }
+$("enter").addEventListener("click", function () { setTimeout(guard, 2500); });
 var stGuard = W.stage; W.stage = function () { var r = stGuard.apply(this, arguments); guard(); return r; };
 (function () {
   var stg = $("stage");
