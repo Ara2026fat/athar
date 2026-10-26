@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v82';
+const CACHE_VERSION = 'v83';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
