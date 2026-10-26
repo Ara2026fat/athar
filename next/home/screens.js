@@ -88,11 +88,11 @@
     var cols = [];
     names.forEach(function(n){ var c = parse(el.style.getPropertyValue(n)); if(c) cols.push([n, c]); });
     if(!cols.length) return;
-    if(cols.every(function(x){ return cr(W, mix(x[1], W, .1)) >= 5; })){ el.classList.add("sc-w"); return; }
-    if(cols.every(function(x){ return cr(INK, mix(x[1], K, .08)) >= 5; })){ el.classList.add("sc-i"); return; }
+    if(cols.every(function(x){ return cr(W, mix(x[1], W, .1)) >= 5.6; })){ el.classList.add("sc-w"); return; }
+    if(cols.every(function(x){ return cr(INK, mix(x[1], K, .08)) >= 5.6; })){ el.classList.add("sc-i"); return; }
     cols.forEach(function(x){
       var k = x[1];
-      for(var i = 0; i < 14 && cr(W, mix(k, W, .1)) < 5; i++) k = mix(k, K, .07);
+      for(var i = 0; i < 14 && cr(W, mix(k, W, .1)) < 5.6; i++) k = mix(k, K, .07);
       el.style.setProperty(x[0], "rgb(" + k.map(Math.round).join(",") + ")");
     });
     el.classList.add("sc-w");

@@ -49,7 +49,6 @@
 .w-morning .win{fill:#a9c8e8;opacity:.7}
 .w-evening .win{fill:#ffcf70;opacity:.85}
 .w-night .win{fill:#ffe48a;opacity:1}
-/* أثر */
 .ath{position:absolute;left:0;top:0;width:100px;height:152px;margin:0;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;z-index:6;transition:transform .8s cubic-bezier(.45,.1,.3,1);will-change:transform;-webkit-tap-highlight-color:transparent}
 .ath.nm{transition:none}
 .ath-j,.ath-b,.ath-br{position:absolute;inset:0;display:block}
@@ -69,7 +68,6 @@
 .ath.lk .ath-b{animation:wlook 2.7s ease-in-out}
 .ath-hint{position:absolute;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,236,170,.9);opacity:0;pointer-events:none}
 .w-first .ath-hint{animation:whint 2.2s ease-out infinite}
-/* أول مرة */
 #wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,80%),rgba(8,10,35,0) 0,rgba(8,10,35,.35) 70px,rgba(8,10,35,.9) 230px)}
 .w-first #wDusk{pointer-events:auto}
 #wDusk.off{opacity:0}
@@ -77,14 +75,12 @@
 .w-first .wb:not(.on){opacity:.15;pointer-events:none}
 .wb{transition:opacity .6s}
 .wb.on.flash{z-index:4}
-/* أدوات منقولة */
 #wProf{position:absolute;left:8px;right:8px;top:6px;z-index:30}
 #wDock{position:absolute;left:8px;right:8px;bottom:6px;z-index:30;pointer-events:none}
 #wDock>*{pointer-events:auto}
 #wDock .pack-banner:not(.ok){margin:0;padding:2px 10px;flex-direction:row;align-items:center;justify-content:space-between;gap:6px;border-radius:16px;min-height:32px}
 #wDock .pb-txt span{display:none}#wDock .pb-txt b{font-size:13px}#wDock .pb-row{gap:4px}#wDock .pill-btn{font-size:13px;padding:4px 12px;min-height:28px}#wDock .pack-link{padding:2px 4px;font-size:12px}
 #wDock .pack-banner.ok,#wDock .pack-banner[hidden]{display:none}
-/* إيقاف */
 #homeWorld.w-paused *{animation-play-state:paused!important}
 @keyframes wdrift{from{transform:translateX(-170px)}to{transform:translateX(560px)}}
 @keyframes wsq{40%{transform:scale(1.12,.86)}70%{transform:scale(.95,1.06)}}
@@ -104,8 +100,6 @@ body.bedtime #homeWorld *{animation:none!important}
 #app.hw-on .sig{position:absolute;left:0;right:0;bottom:3px;margin:0;padding:0;z-index:7;pointer-events:none;opacity:.75;line-height:1.2}
 #app.hw-pk .sig{display:none}
 #wb-valley .bd{left:auto;right:0;top:44px;white-space:nowrap}
-
-/* رأس شفاف فوق السماء */
 #app.hw-on header{position:absolute;top:0;left:0;right:0;background:transparent;padding:12px 16px 2px;z-index:9;pointer-events:none}
 #app.hw-on header>*{pointer-events:auto}
 #app.hw-on .brand-mark{width:38px;height:38px}
@@ -116,7 +110,6 @@ body.bedtime #homeWorld *{animation:none!important}
 #app.hw-on .gear-btn svg{width:22px;height:22px;filter:drop-shadow(0 1px 2px rgba(40,30,80,.55))}
 #app.hw-on .gear-btn i{display:none}
 body.hw-home .leaf{display:none}
-/* نوافذ صغيرة */
 .w-pop{position:absolute;z-index:9;pointer-events:auto;background:rgba(255,255,255,.94);border:2.5px solid #3a2b4d;border-radius:18px;padding:8px 12px;box-shadow:0 4px 0 rgba(58,43,77,.25);color:#2b2140;font:800 13px/1.45 'Baloo Bhaijan 2','Tajawal',sans-serif;text-align:center;animation:wpop .26s cubic-bezier(.3,1.5,.5,1);transform-origin:50% 100%}
 .w-pop[hidden]{display:none}
 .w-peek{width:158px;display:flex;flex-direction:column;gap:3px}.w-peek b{font-size:15px}.w-peek span{font-weight:700;font-size:12.5px}
@@ -128,28 +121,24 @@ body.hw-home .leaf{display:none}
 .w-pal .sw{width:48px;height:48px;border-radius:50%;border:2.5px solid #3a2b4d;cursor:pointer;padding:0;box-shadow:0 3px 0 rgba(58,43,77,.28)}
 .w-pal .sw.on{outline:3px solid #fff;box-shadow:0 0 0 5px #3a2b4d}
 @keyframes wpop{from{transform:scale(.6);opacity:0}}
-/* بطاقة الحزمة عائمة */
 #wDock{left:10px;right:10px;bottom:8px;touch-action:none;transition:opacity .2s;animation:wpop .4s ease both}
 #wDock .pack-banner:not(.ok){box-shadow:0 8px 22px rgba(30,20,60,.38);border-width:2px}
 #wPkX{position:absolute;left:-4px;top:-12px;width:30px;height:30px;border-radius:50%;border:2px solid #3a2b4d;background:#fff;color:#3a2b4d;font:800 18px/1 sans-serif;padding:0;z-index:2;cursor:pointer;box-shadow:0 2px 0 rgba(58,43,77,.3)}
 #wPkX::after{content:"";position:absolute;inset:-10px}
-/* حركات الخمول */
-.wb .sw{transform-box:fill-box;transform-origin:50% 100%;animation:wsway 3.6s ease-in-out infinite alternate}
-.wb .sw.s1{animation-duration:4.4s;animation-delay:-1.2s}.wb .sw.s2{animation-duration:3.1s;animation-delay:-2s}.wb .sw.s3{animation-duration:5s;animation-delay:-.6s;transform-origin:50% 90%}
+.wb .sw{transform-box:fill-box;transform-origin:50% 100%;animation:wsway 3.6s ease-in-out infinite alternate,wjp 24s ease-in-out infinite;animation-delay:0s,-6s}
+.wb .sw.s1{animation-duration:4.4s,24s;animation-delay:-1.2s,-12s}.wb .sw.s2{animation-duration:3.1s,24s;animation-delay:-2s,-18s}.wb .sw.s3{animation-duration:5s,24s;animation-delay:-.6s,0s;transform-origin:50% 90%}
 .wb .chk{animation:wchalkO 10s ease-in-out infinite}
-.wb .spk{transform-box:fill-box;transform-origin:center;opacity:0;animation:wspk 10s ease-in-out infinite}
-.wb .bk{animation:wbk 8s ease-in-out infinite}
+.wb .spk{transform-box:fill-box;transform-origin:center;opacity:0;animation:wspk 6s ease-in-out infinite}
+.wb .bk{animation:wbk 6s ease-in-out infinite}
 .wb .fin{transform-box:fill-box;transform-origin:center;animation:wfin 7s ease-in-out infinite}
 @keyframes wsway{from{transform:rotate(-3deg)}to{transform:rotate(3deg) translateY(-1.5px)}}
 @keyframes wchalkO{0%,4%{opacity:0}24%,84%{opacity:1}94%,100%{opacity:0}}
 @keyframes wspk{0%,86%,100%{opacity:0;transform:scale(.2) rotate(0)}91%{opacity:1;transform:scale(1.15) rotate(40deg)}96%{opacity:0;transform:scale(.5) rotate(80deg)}}
-@keyframes wbk{0%,80%,100%{transform:translateY(0)}86%{transform:translateY(-6px)}92%{transform:translateY(0)}}
+@keyframes wbk{0%,60%,100%{transform:translateY(0)}72%,84%{transform:translateY(-13px)}94%{transform:translateY(0)}}
 @keyframes wfin{0%,84%,100%{transform:scale(1)}92%{transform:scale(1.5)}}
 .wb .lan{transform-box:fill-box;transform-origin:50% 0;animation:wlan 4s ease-in-out infinite alternate}
 @keyframes wlan{from{transform:rotate(calc(var(--a)*-1))}to{transform:rotate(var(--a))}}
 #homeWorld.w-busy .wb *{animation-play-state:paused!important}
-
-/* ج6: تباين وأهداف لمس */
 #app.hw-on .brand{background:rgba(14,30,72,.64);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);border-radius:28px;padding:3px 16px 3px 8px}
 #app.hw-on .gear-btn{width:48px;height:48px}
 #app.hw-on .gear-btn svg{width:26px;height:26px}
@@ -164,7 +153,6 @@ body.hw-home .leaf{display:none}
 #wPkX::after{inset:-8px}
 #wProf .prof-chip{min-height:48px;min-width:48px}
 #wDusk:focus-visible{outline:4px solid #ffe28a;outline-offset:-8px}
-/* ج6: إرشاد، احتفال، الوادي، الجمعة */
 .w-nudge .ath-halo{animation:wnudge 1.8s ease-in-out infinite}
 .w-nudge .ath-hint{animation-duration:1.4s;border-width:4px}
 @keyframes wnudge{0%,100%{transform:scale(calc(var(--hs)*1.2));opacity:.8}50%{transform:scale(calc(var(--hs)*2.3));opacity:1}}
@@ -177,3 +165,35 @@ body.hw-home .leaf{display:none}
 .wb.opn::before{animation:wflash .5s ease-out forwards}
 #wLanterns .al-ln.fri .al-sw{transform-box:fill-box;transform-origin:50% 0;transform:scale(1.18)}
 #wLanterns .al-ln.fri .al-halo{opacity:.95;transform:scale(1.25)}
+.wb .art{transform-origin:50% 100%;will-change:transform;animation:wbr 4.6s ease-in-out infinite}
+#wb-hifz .art{animation-delay:-1.2s}#wb-noor .art{animation-delay:-2.4s}#wb-math .art{animation-delay:-3.4s}#wb-lib .art{animation-delay:-.6s}#wb-quiz .art{animation-delay:-1.9s}#wb-adhkar .art{animation-delay:-2.9s}
+@keyframes wbr{50%{transform:scale(1.035,1.02)}}
+@keyframes wjp{0%,12%,100%{translate:0 0;scale:1}3%{translate:0 -15px;scale:.95 1.07}7%{translate:0 0;scale:1.07 .9}}
+#wb-hifz .win{animation:wwin 3s ease-in-out infinite alternate}
+@keyframes wwin{from{fill:#7fa8d6;opacity:.6}to{fill:#ffe48a;opacity:1}}
+@keyframes wsq{30%{transform:scale(1.28,.8)}60%{transform:scale(.9,1.14)}80%{transform:scale(1.05,.97)}}
+.w-sp{position:absolute;width:9px;height:9px;margin:-4px 0 0 -4px;border-radius:50%;background:#fff6c8;box-shadow:0 0 7px 2px rgba(255,214,110,.85);z-index:8;pointer-events:none;animation:wsp .65s ease-out forwards}
+@keyframes wsp{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.w-pb{position:absolute;width:12px;height:7px;margin-left:-6px;border-radius:50%;background:#fff3b0;box-shadow:0 0 9px 3px rgba(255,220,120,.85);opacity:0;pointer-events:none;z-index:1;animation:wpb 2.2s ease-out both}
+@keyframes wpb{0%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1)}70%{opacity:.8}100%{opacity:0}}
+#wLanterns{transform-origin:50% 0}#wLanterns.rp{animation:wrp .8s ease-out}
+@keyframes wrp{25%{transform:rotate(1.3deg)}60%{transform:rotate(-.9deg)}}
+#wLanterns .al-sw.rg{transform-box:fill-box;transform-origin:50% 0;animation:wrg 1.3s ease-out}
+@keyframes wrg{20%{transform:rotate(14deg)}45%{transform:rotate(-10deg)}70%{transform:rotate(5deg)}}
+.w-hill .hw{transform-origin:50% 100%;animation:whw .6s ease-out}
+@keyframes whw{35%{transform:scale(1.015,1.045)}}
+.w-path.pg .d{animation:wpg 1.3s ease-out}
+@keyframes wpg{35%{stroke:#fff;stroke-width:9}}
+.ath-dot{position:absolute;right:-6px;bottom:44px;width:18px;height:18px;border-radius:50%;border:2px solid #3a2b4d;background:radial-gradient(circle at 35% 30%,rgb(var(--hcl)),rgb(var(--hc)));pointer-events:auto;animation:wdot 2.6s ease-in-out infinite}
+@keyframes wdot{50%{transform:scale(1.18)}}
+.w-first .ath-dot{display:none}
+#app.hw-on .gear-btn{background:rgba(255,255,255,.12)!important;opacity:.6}
+#app.hw-on .gear-btn svg{opacity:.8}
+#app.hw-on .gear-btn svg.gr{position:absolute;left:0;top:0;width:100%;height:100%;opacity:1;filter:none;transform:rotate(-90deg);pointer-events:none}
+.gr circle{fill:none;stroke:#ffd24d;stroke-width:3;stroke-linecap:round;stroke-dasharray:145;stroke-dashoffset:145}
+.gear-btn.hold{opacity:1}.gear-btn.hold .gr circle{animation:wgr 1.2s linear forwards}
+@keyframes wgr{to{stroke-dashoffset:0}}
+#homeWorld.w-morning{--sk1:#f4b6c6;--sk2:#ffd2b8;--sk3:#ffe6b0;--h0:#efc2c6;--h1:#ebcfa6;--h2:#cbd49a;--h3:#9cc47e;--glo:rgba(255,196,128,.95)}
+#homeWorld.w-morning .w-glow{top:26%;height:30%}
+#homeWorld.w-morning .w-hill.h2::after{content:"";position:absolute;left:0;right:0;top:12%;height:34%;background:linear-gradient(180deg,rgba(255,236,222,0),rgba(255,236,222,.6) 55%,rgba(255,236,222,0))}
+
