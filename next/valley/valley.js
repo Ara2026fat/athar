@@ -649,4 +649,24 @@ window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayou
   var p0 = W.phase;
   W.phase = function (p) { var r = p0.apply(this, arguments); try { sync(p === undefined ? ph : p | 0); if (p !== undefined) ph = p | 0; } catch (e) {} return r; };
 })();
+
+/* ═══ r12: علامات الوادي بالشكل المجسّم الجديد (صور مجسّمة بدل رسوم SVG المسطّحة) ═══
+   الطيور (mBirds/mBirdsFlock) استُبدلت بريشة (لا كائنات حيّة)؛ «اليدان» بورقتين. */
+(function () {
+var M3 = [["mBanner","mBanner",53,457,34],["mFinalSeal","mFinalSeal",272,302,34],["mHouse2","mHouse2",271,356,42],["mNeighbor","mHouse2",211,406,72],["mLowBranch","mLowBranch",222,430,52],["mEmber","mEmber",124,679,34],["mCurtain","mCurtain",76,428,44],["mShelter","mShelter",68,598,80],["mCrown","mCrown",316,287,34],["mBalance","mBalance",155,488,50],["mScale","mBalance",96,471,64],["mScaleTrue","mBalance",271,488,50],["mBlossom","mBlossom",300,462,34],["mGreenDome","mGreenDome",330,278,36],["mDoor","mDoor",316,375,34],["mOpenDoor","mDoor",106,450,48],["mArch","mDoor",316,374,34],["mHarvest","mHarvest",223,426,55],["mHands","mLeafPair",306,353,34],["mSapling","mLeafPair",120,526,34],["mHeart","mHeart",196,595,34],["mHeartBig","mHeart",200,468,39],["mPulse","mHeart",173,620,46],["mFeather","mFeather",274,595,34],["mPerfume","mPerfume",255,470,40],["mKey","mKey",291,438,34],["mSpring2","mSpring2",151,602,110],["mStill","mStill",200,700,140],["mMirror","mStill",226,546,54],["mCompass","mCompass",272,640,34],["mCart","mCart",327,672,54],["mNest","mNest",238,413,34],["mLeaf","mLeaf",71,315,42],["mBirds","mFeather",192,202,26],["mBirdsFlock","mFeather",182,177,26]];
+var AR = {};
+function boxOf(a, id) { var s = a[4], w = s, h = s, r = AR[a[1]]; if (r) { if (r > 1) h = s / r; else w = s * r; } return [a[2] - w / 2, a[3] - h / 2, w, h]; }
+try {
+  M3.forEach(function (a) {
+    var g = $(a[0]); if (!g) return;
+    [].slice.call(g.children).forEach(function (c) { if (!(c.tagName === "circle" && /lampG|hglG/.test(c.getAttribute("fill") || ""))) g.removeChild(c); });
+    g.removeAttribute("filter"); g.removeAttribute("fill"); g.removeAttribute("stroke"); g.removeAttribute("stroke-width");
+    var im = svgEl("image", { href: "img/marks/" + a[1] + ".webp", preserveAspectRatio: "xMidYMid meet", "data-m3": "1" }, g);
+    var b = [a[2] - a[4] / 2, a[3] - a[4] / 2, a[4], a[4]];
+    im.setAttribute("x", b[0].toFixed(1)); im.setAttribute("y", b[1].toFixed(1)); im.setAttribute("width", b[2].toFixed(1)); im.setAttribute("height", b[3].toFixed(1));
+    im.setAttribute("decoding", "async"); g.classList.add("m3d");
+  });
+} catch (e) {}
+})();
+
 })();
