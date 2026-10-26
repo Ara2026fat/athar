@@ -213,3 +213,8 @@ body:has(#app.instage) #ubar{display:none}
 .gi.gimg::before,.gi.gimg::after{display:none}
 .gi.gimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;z-index:1}
 .gi.gimg.sm{border-width:2px}
+
+/* r13: لوحة مرسومة */
+#scene.vxpaint .vxmed{display:none}
+#scene.vxpaint #vx3d>image:not(.vxm){display:none}
+#scene.vxpaint #vx3d>rect{display:none}

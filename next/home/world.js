@@ -27,8 +27,8 @@ for(i=0;i<=6;i++){a=Math.PI*i/6;s+='<circle cx="'+(85-62*Math.cos(a)).toFixed(1)
 return '<svg class="art" viewBox="0 0 170 128" width="170" height="128" aria-hidden="true"><defs>'+lg("v1","#fff0c9","#f1c985")+lg("v2","#8fd3ff","#ffe6bd")+lg("v3","#ffe27a","#f5b43a")+LGW+
 '<radialGradient id="v4"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><clipPath id="vc"><path d="M34 122V68A51 40 0 0 1 136 68V122Z"/></clipPath></defs>'+sh(85,122,76)+
 '<path d="M12 122V64A73 56 0 0 1 158 64V122Z" fill="url(#v1)"'+ST+'/>'+
-'<g clip-path="url(#vc)"><rect x="30" y="20" width="110" height="104" fill="url(#v2)"/><ellipse cx="85" cy="96" rx="64" ry="36" fill="url(#v4)"/><ellipse cx="92" cy="108" rx="44" ry="20" fill="#a9e9bb"/><ellipse cx="52" cy="124" rx="58" ry="30" fill="#82dca0"/><ellipse cx="128" cy="126" rx="60" ry="34" fill="#55c283"/><path d="M85 126C77 110 99 102 88 91" fill="none" stroke="#fff1b8" stroke-width="9" stroke-linecap="round"/><path d="M85 126C77 110 99 102 88 91" fill="none" stroke="#ffd36a" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="1 7"/>'+
-'<circle cx="64" cy="94" r="2.4" fill="#fff"/><circle cx="108" cy="90" r="2.4" fill="#fff"/><circle cx="56" cy="78" r="2" fill="#fff"/><circle cx="114" cy="74" r="2" fill="#fff"/><circle cx="85" cy="60" r="2.4" fill="#fff"/></g>'+
+'<g clip-path="url(#vc)"><rect x="30" y="20" width="110" height="104" fill="#bfe6ff"/><image href="next/home/img/doors/valley_win.webp" x="30" y="20" width="110" height="104" preserveAspectRatio="xMidYMid slice"/></g>'+
+
 '<path d="M34 122V68A51 40 0 0 1 136 68V122" fill="none"'+ST+'/>'+s+lantern(85,28,.8,"#e9a23b",[4.2,5,0])+
 '<rect x="71" y="0" width="28" height="15" rx="6" fill="url(#v3)"'+ST+'/>'+gl(52,40,16,6,-35)+
 '<rect x="20" y="114" width="130" height="10" rx="5" fill="#f4d9a4"'+ST+'/></svg>'},
@@ -104,6 +104,26 @@ view.insertBefore(world,view.firstChild);
 var stage=$("wStage"),lower=$("wLower"),ath=$("wAthar"),dusk=$("wDusk"),app=$("app");
 var halo=ath.querySelector(".ath-halo"),core=ath.querySelector(".ath-core"),hint=ath.querySelector(".ath-hint"),hills=world.querySelectorAll(".w-hill");
 var bEl={};B.forEach(function(b){bEl[b.k]=$("wb-"+b.k)});
+/* ===== أبواب مجسّمة (r14): صورة webp لكل باب؛ إن لم توجد يبقى رسم SVG الحالي ===== */
+var D3={
+noor:{ov:[["أ",.76,.5],["ب",.5,.5],["ج",.24,.5]],fs:.27,col:"#fff8d6"},
+math:{ov:[["١",.28,.8],["٢",.5,.8],["٣",.72,.8],["٤",.5,.46]],fs:.2,col:"#fff"},
+quiz:{ov:[["٣",.2,.86],["١",.5,.7],["٢",.8,.82]],fs:.18,col:"#fff"},
+hifz:{},lib:{},adhkar:{},valley:{}
+};
+function door3d(k){
+ var el=bEl[k],cfg=D3[k];if(!el||!cfg)return;
+ var im=new Image();im.decoding="async";
+ im.onload=function(){
+  var old=el.querySelector(".art");if(!old||el.querySelector(".art3"))return;
+  var w=document.createElement("span");w.className="art art3";w.setAttribute("aria-hidden","true");
+  im.className="d3";im.alt="";im.draggable=false;w.appendChild(im);
+  if(cfg.ov){var o=document.createElement("span");o.className="d3o";
+   o.innerHTML=cfg.ov.map(function(g){return '<b style="left:'+(g[1]*100)+'%;top:'+(g[2]*100)+'%;font-size:'+Math.round(cfg.fs*(k==="valley"?170:120))+'px;color:'+cfg.col+'">'+g[0]+'</b>'}).join("");w.appendChild(o)}
+  el.replaceChild(w,old);el.classList.add("d3on")};
+ im.onerror=function(){};
+ im.src="next/home/img/doors/"+k+".webp"}
+B.forEach(function(b){door3d(b.k)});
 var pb=$("profileBar"),pk=$("packBanner");
 if(pb)$("wProf").appendChild(pb);
 var pkT=+ls("athar_pk_t")||0,dis=pkT>0&&Date.now()-pkT<6048e5,pkM=false;

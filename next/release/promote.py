@@ -104,6 +104,8 @@ def build_root_sw(repo):
     items = (["./next/home/" + f for f in HOME_ASSETS_CSS] +
              ["./next/home/" + f for f in HOME_ASSETS_JS] +
              ["./next/home/img/" + f for f in HOME_IMGS] +
+             ["./next/home/img/doors/" + f for f in sorted(os.listdir(os.path.join(repo, "next/home/img/doors")))
+              if f.endswith(".webp")] +
              ["./next/assets/fonts/" + f for f in ROOT_FONTS])
     for i in items:
         if not os.path.isfile(os.path.join(repo, i[2:])):

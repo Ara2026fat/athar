@@ -12,7 +12,7 @@
 const CACHE = "athar-shell-v11-assets";
 const KIDC = "athar-kid-v1";   /* أصوات أثر الجديدة: تُخزَّن عند أول طلب (الدرس) لا دفعة واحدة، ولا تُحذف عند تحديث الصدفة */
 const SHELL = ["./", "./index.html"];
-const OPTIONAL = ["./audio/index.json", "./sequence.json"];   /* قد لا توجد: لا تُفشل التثبيت */
+const OPTIONAL = ["./audio/index.json", "./sequence.json", "./img/map/map_day.webp", "./img/map/map_sun.webp", "./img/map/map_night.webp"];   /* قد لا توجد: لا تُفشل التثبيت */
 /* [أصول] ذاكرة مستقلة عن رقم الصدفة: تبقى عند تحديث الصدفة، ويرفع رقمها فقط من يغيّر ملفًا داخل img/ أو fonts/ */
 const ASSETS = "athar-assets-v2";
 const PRECACHE = [

@@ -650,6 +650,43 @@ window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayou
   W.phase = function (p) { var r = p0.apply(this, arguments); try { sync(p === undefined ? ph : p | 0); if (p !== undefined) ph = p | 0; } catch (e) {} return r; };
 })();
 
+/* ═══ r13: لوحة الوادي المرسومة (map_day/sun/night.webp) — تُفعَّل فقط إن وُجدت الصور الثلاث؛ وإلا تبقى الميداليات (r11) ═══
+   مواضع الأماكن PL = [x,y,نصف قطر الحلقة] بإحداثيات viewBox 400x720؛ الصورة تغطي المستطيل MR. عدّلها بعد قياس اللوحة. */
+(function () {
+  var NSX = "http://www.w3.org/2000/svg", NAMES = ["map_day", "map_sun", "map_night"], MR = [0, 0, 405, 720];
+  var PL = { masjid: [322, 356, 40], hill: [218, 366, 40], home: [96, 420, 52], spring: [226, 528, 44], road: [330, 606, 42] };
+  var bg = $("vx3d"); if (!bg) return;
+  var imgs = [], ok = 0, painted = false, cur = -1;
+  function idx(p) { return p === 2 ? 2 : (p === 1 || p === 3) ? 1 : 0; }
+  NAMES.forEach(function (n, i) {
+    var e = document.createElementNS(NSX, "image");
+    e.setAttribute("x", MR[0]); e.setAttribute("y", MR[1]); e.setAttribute("width", MR[2]); e.setAttribute("height", MR[3]);
+    e.setAttribute("preserveAspectRatio", "none"); e.setAttribute("class", "vxi vxm"); e.setAttribute("decoding", "async");
+    bg.appendChild(e); imgs.push(e);
+    var pr = new Image();
+    pr.onload = function () { e.setAttribute("href", "img/map/" + n + ".webp"); if (++ok === NAMES.length) enable(); };
+    pr.onerror = function () {};
+    pr.src = "img/map/" + n + ".webp";
+  });
+  function enable() {
+    painted = true; scene.classList.add("vxpaint");
+    Object.keys(PL).forEach(function (k) {
+      var g = scene.querySelector('.place[data-place="' + k + '"]'), h = g && g.querySelector(".halo"); if (!h) return;
+      h.setAttribute("cx", PL[k][0]); h.setAttribute("cy", PL[k][1]); h.setAttribute("r", PL[k][2]);
+    });
+    var ph = 0; try { ph = S().data.phase | 0; } catch (e) {}
+    cur = -1; sync(ph);
+    try { tidyLater(60); } catch (e) {}
+  }
+  function sync(p) {
+    if (!painted) return; var v = idx(p); if (v === cur) return; cur = v;
+    imgs.forEach(function (e, j) { e.style.opacity = j === v ? 1 : 0; });
+  }
+  var p0 = W.phase;
+  W.phase = function (p) { var r = p0.apply(this, arguments); try { sync(p === undefined ? (S().data.phase | 0) : p | 0); } catch (e) {} return r; };
+  window.VX = window.VX || {}; window.VX.paint = function () { return painted; };
+})();
+
 /* ═══ r12: علامات الوادي بالشكل المجسّم الجديد (صور مجسّمة بدل رسوم SVG المسطّحة) ═══
    الطيور (mBirds/mBirdsFlock) استُبدلت بريشة (لا كائنات حيّة)؛ «اليدان» بورقتين. */
 (function () {
