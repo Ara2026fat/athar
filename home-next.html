@@ -2253,9 +2253,9 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       setInterval(function(){ reg.update().catch(function(){}); }, 60*60*1000);
     }).catch(function(){});
 
-    var reloading = false;
+    var reloading = false, hadCtl = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener("controllerchange", function(){
-      if(reloading) return;
+      if(reloading || !hadCtl) return;
       reloading = true;
       location.reload();
     });
@@ -3081,6 +3081,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     profiles.active = id; saveProfiles();
     progress = loadProgress();
     renderHomeGrid(); renderSky(); renderLantern(); renderProfileBar();
+    try{ if(window.AtharWorld) window.AtharWorld.refresh(); }catch(e){}
   }
   function renderProfileBar(){
     var bar = $("profileBar");
