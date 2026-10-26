@@ -3223,7 +3223,7 @@ const App = {
     host.innerHTML = `<div class="pcard pgate">
       <div class="ptag">للوالد فقط</div>
       <h3>${a} + ${b} = ؟</h3>
-      <input class="pinput" id="pgin" type="number" inputmode="numeric" placeholder="؟">
+      <input class="pinput" id="pgin" aria-label="أدخل الجواب" type="number" inputmode="numeric" placeholder="؟">
       <button class="pbtn" id="pgbtn">دخول لوحة الوالد</button>
       <button class="pbtn ghost" id="pgclose">إغلاق</button></div>`;
     host.classList.add("on");

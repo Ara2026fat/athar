@@ -24,8 +24,6 @@ function haloRect(h, a) {
   return { l: x - r * k, t: y - r * k, r: x + r * k, b: y + r * k };
 }
 function ov(p, q) { var w = Math.min(p.r, q.r) - Math.max(p.l, q.l), h = Math.min(p.b, q.b) - Math.max(p.t, q.t); return (w > 0 && h > 0) ? w * h : 0; }
-
-/* ═══ 0 · مشهد أطول: يُرى عرض الخريطة كاملًا (البيت والمسجد غير مقصوصَين) ═══ */
 var L = 90, VB0 = [0, 0, 400, 720], VBM = [0, -L, 400, 720 + L], vb = VBM.slice(), tw = 0;
 ["sky1", "skyD", "sky2", "sky3", "night", "tint"].forEach(function (id) {
   var r = $(id); if (r) { r.setAttribute("y", -L); r.setAttribute("height", 720 + L); }
@@ -47,16 +45,12 @@ function tweenVB(to, ms) {
 }
 setVB(VBM);
 $("night").style.pointerEvents = "none";
-
-/* ═══ 1 · defs ═══ */
 var defs = scene.querySelector("defs");
 defs.insertAdjacentHTML("beforeend",
   '<linearGradient id="vxHzG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" id="vxH0" stop-color="#fff" stop-opacity="0"/><stop offset=".55" id="vxH1" stop-color="#fff" stop-opacity=".5"/><stop offset="1" id="vxH2" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
   '<radialGradient id="vxLanG"><stop offset="0" stop-color="#FFF1BC" stop-opacity=".95"/><stop offset=".4" stop-color="#FFC95E" stop-opacity=".5"/><stop offset="1" stop-color="#FFB040" stop-opacity="0"/></radialGradient>' +
   '<linearGradient id="vxRoad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBD8A6"/><stop offset="1" stop-color="#D8B97A"/></linearGradient>' +
   '<linearGradient id="vxHill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B6E27A"/><stop offset="1" stop-color="#6DB550"/></linearGradient>');
-
-/* ═══ 2 · سماء حيّة: غيوم ناعمة تنجرف + ضوء الأفق مع الساعة ═══ */
 var sky = svgEl("g", { id: "vxSky", "pointer-events": "none" }, scene, $("clouds"));
 var hz = svgEl("rect", { id: "vxHz", x: -100, y: 150, width: 600, height: 250, fill: "url(#vxHzG)" }, sky);
 var CP = "M-70 16C-92 16-92-10-66-10C-66-34-26-42-12-22C0-46 46-40 48-14C74-22 90 16 62 16Z";
@@ -77,10 +71,7 @@ function horizon() {
   var c = "rgb(" + ca.map(function (x, j) { return Math.round(x + (cb[j] - x) * k); }).join(",") + ")", o = a[2] + (b[2] - a[2]) * k;
   ["vxH0", "vxH1", "vxH2"].forEach(function (id, j) { var s = $(id); s.setAttribute("stop-color", c); s.setAttribute("stop-opacity", j === 1 ? o.toFixed(2) : 0); });
 }
-horizon(); setInterval(horizon, 300000);
-
-
-/* ═══ 2b · إعادة رسم العناصر المعيبة بـSVG نظيف: التلّة والدرب واللافتة (بلا تداخل مع البيت) ═══ */
+horizon(); setInterval(horizon, 60000);
 (function () {
   function place(n) { return scene.querySelector('.place[data-place="' + n + '"]'); }
   function wipe(g) { [].slice.call(g.children).forEach(function (c) { if (!(c.classList && c.classList.contains("halo"))) c.style.display = "none"; }); }
@@ -110,9 +101,6 @@ horizon(); setInterval(horizon, 300000);
       '<path d="M340 580h34M340 586h26" stroke="#B87A2E" stroke-width="2" stroke-linecap="round" opacity=".8"/></g>');
   }
 })();
-
-
-/* ═══ 2c · علامات الضوء: توهّج فقط بلا قرص ولا خطوط؛ وفانوس التلّة على التلّة الجديدة ═══ */
 ["mSunUp", "mSunrise", "mDawn", "mGlow"].forEach(function (id) {
   var g = $(id); if (!g) return;
   [].slice.call(g.children).forEach(function (c) {
@@ -130,8 +118,6 @@ horizon(); setInterval(horizon, 300000);
     fix();
   }
 })();
-
-/* ═══ 3 · أثر: وهج الفانوس، لمس ← قفزة ورفع الفانوس، مشي قصير ═══ */
 var ath = $("athar"), boy = $("boy"), vxJ = null, lan = null, hit = null, liftT = 0;
 var AS = .96;   /* حجم أثر على الخريطة (الأصل .78) */
 function bigger() {
@@ -182,8 +168,6 @@ W.moveTo = function (place) {
   if (ath.getAttribute("transform") !== before) { ath.style.transition = "transform .72s cubic-bezier(.45,.05,.3,1)"; hop(3, 7, 720); }
   return r;
 };
-
-/* ═══ 4 · فقاعة أثر: موضع ذكي ═══ */
 var tailT = null;
 function atharRect() {
   var t = (ath.getAttribute("transform") || "").match(/translate\(\s*(-?[\d.]+)[ ,]+(-?[\d.]+)\s*\)\s*scale\(\s*(-?[\d.]+)/), m = scene.getScreenCTM(), a = appRect();
@@ -250,8 +234,6 @@ try {
   smo.observe(say, { attributes: true, attributeFilter: ["class"] });
   smo.observe(say.querySelector(".b"), { childList: true, characterData: true, subtree: true });
 } catch (e) {}
-
-/* ═══ 5 · أزرار الأماكن: بلا تداخل ولا خروج، والموصى به ينبض ═══ */
 var lab0 = A.labels;
 function relayout() {
   var lay = $("labels"), a = appRect(), AW = a.width, AH = a.height, M = 8, TOP = 84;
@@ -288,8 +270,6 @@ function relayout() {
   });
 }
 A.labels = function () { var r = lab0.apply(this, arguments); try { relayout(); } catch (e) { } return r; };
-
-/* ═══ 6 · علامات: الأحدث أبرز، والأقدم أصغر، وسماء مرتّبة على شبكة، وتجنّب الشخصيات ═══ */
 var tidyT = 0;
 function markRank() {
   var arr = []; try { arr = S().data.marks || []; } catch (e) {}
@@ -317,7 +297,6 @@ function tidy() {
     o.sc = Math.max(.45, Math.min(o.isNew ? 1.12 : base, o.sc)); if (o.g.hasAttribute("transform")) o.sc = 1;
     if (o.isNew) o.g.classList.add("vx-new"); if (o.sky) o.g.classList.add("vx-sky");
   });
-  /* سماء مرتّبة: شبكة صفوف للأقدم عند الازدحام */
   if (n >= 40) {
     var sky = it.filter(function (o) { return o.sky && !o.isNew; }).sort(function (p, q) { return p.cx - q.cx; });
     var cw = 58, cols = Math.max(3, Math.floor((AW - 24) / cw)), top = 96, rh = 56, rows = Math.ceil(sky.length / cols);
@@ -328,7 +307,6 @@ function tidy() {
       o.sc = Math.max(.4, Math.min(o.sc, 50 / Math.max(o.w, o.h, 1))); o.dx = tx - o.cx; o.dy = ty - o.cy; o.fixed = 1;
     });
   }
-  /* عوائق ثابتة: الشخصيات وأزرار الأماكن */
   var fx2 = []; var ar = atharRect(); if (ar) fx2.push(ar);
   friendRects(a).forEach(function (r) { fx2.push(r); });
   [].slice.call($("labels").querySelectorAll(".plabel:not(.sleep)")).forEach(function (e) { fx2.push(rel(e.getBoundingClientRect(), a)); });
@@ -374,8 +352,6 @@ A.paint = function () { var r = paint0.apply(this, arguments); tidyLater(1100); 
 var am0 = W.applyMarks;
 W.applyMarks = function () { var r = am0.apply(this, arguments); tidyLater(300); return r; };
 addEventListener("resize", function () { tidyLater(400); });
-
-/* ═══ 7 · أثرٌ جديد يظهر فوق الخلفية فورًا ثم يستقرّ في واديه ═══ */
 var fx = svgEl("g", { id: "vxFx", "pointer-events": "none" }, scene, $("night"));
 var eff0 = W.effect;
 W.effect = function (mark) {
@@ -409,10 +385,9 @@ function popMark(mark) {
   ], { duration: 3000, easing: "ease-in-out", fill: "forwards" });
   an.onfinish = function () { wrap.remove(); };
 }
-
-/* ═══ 8 · انتقال لطيف بين الخريطة والمكان + جودة الخلفيات ═══ */
 var curPlace = null;
 function soft() {
+  night();
   var ph = 0; try { ph = (S().data.phase | 0); } catch (e) {}
   var on = app.classList.contains("instage") && ((curPlace === "masjid" && ph < 2) || (curPlace === "home" && ph === 1));
   if (on) { app.dataset.soft = "1"; scene.dataset.soft = "1"; } else { delete app.dataset.soft; delete scene.dataset.soft; }
@@ -434,8 +409,6 @@ W.unstage = function () {
 };
 var ph0 = W.phase;
 W.phase = function () { var r = ph0.apply(this, arguments); soft(); return r; };
-
-/* r5: حارس سلاسة. أول ثانيتين داخل الدرس نقيس الإطارات؛ إن قلّت عن 40 يُطفأ تنفّس الخلفية (الأكبر كلفة) على هذا الجهاز فقط */
 var calmCk = 0;
 function guard() {
   if (app.dataset.calm || !app.classList.contains("instage")) return;
@@ -451,8 +424,6 @@ function guard() {
   }, 1200);
 }
 var stGuard = W.stage; W.stage = function () { var r = stGuard.apply(this, arguments); guard(); return r; };
-
-/* حبيبات خفيفة + تدرّج لوني فوق المشهد */
 (function () {
   var stg = $("stage");
   [["vxGrade"], ["vxGrain"], ["vxTone"]].forEach(function (x) { var d = document.createElement("div"); d.id = x[0]; app.insertBefore(d, stg.nextSibling); });
@@ -462,8 +433,6 @@ var stGuard = W.stage; W.stage = function () { var r = stGuard.apply(this, argum
     x.putImageData(im, 0, 0); $("vxGrain").style.backgroundImage = "url(" + c.toDataURL("image/png") + ")";
   } catch (e) {}
 })();
-
-/* ═══ 9 · بطاقة «لا شيء اليوم» للطفل الجديد → ترحيب ودعوة لأول مكان ═══ */
 var rdn = A.renderDailyNone;
 A.renderDailyNone = function () {
   var learned = 0; try { learned = (S().data.learned || []).length; } catch (e) {}
@@ -478,8 +447,6 @@ A.renderDailyNone = function () {
   host.querySelector("#vxlook").onclick = function () { try { AtharAudio.sfx("soft"); } catch (e) {} host.classList.remove("on"); };
   host.onclick = function (e) { if (e.target === host) host.classList.remove("on"); };
 };
-
-/* ═══ 10 · داخل الدروس: أثر يطلّ فوق اللوح، لوحٌ يختفي وقت الكلام، أيقونات لمس، احتفال هادئ ═══ */
 var liftRaf = 0, hideT = 0, DEFT = "translate(150 560) scale(.78)";
 function liftAthar() {
   liftRaf = 0;
@@ -526,12 +493,10 @@ try {
   ["nextup", "daily"].forEach(function (id) { var h = $(id); if (h) new MutationObserver(decorate).observe(h, { childList: true }); });
   addEventListener("resize", function () { liftLater(60); });
 } catch (e) {}
-/* ردّ لمس مرن */
 panel.addEventListener("pointerdown", function (e) {
   var t = e.target.closest && e.target.closest(".opt,.chip,.cell,.toucher,.btn,.ayah"); if (!t || reduce) return;
   t.classList.remove("vxpop"); void t.offsetWidth; t.classList.add("vxpop");
 }, true);
-/* العلامة تطير إلى الخريطة عند زرّ الختام */
 function flyHome(mark) {
   var g = $(mark); if (!g || !g.animate || reduce) return;
   var bb = g.getBBox(), tm = null; try { var cs = g.transform.baseVal.consolidate(); tm = cs && cs.matrix; } catch (e) {}
@@ -548,8 +513,6 @@ panel.addEventListener("click", function (e) {
 }, true);
 var stG = W.stage; W.stage = function () { var r = stG.apply(this, arguments); liftLater(700); return r; };
 var un1 = W.unstage; W.unstage = function () { var r = un1.apply(this, arguments); clearTimeout(hideT); panel.classList.remove("vx-hide"); return r; };
-
-/* ── r5: نجوم/لمعات: بدل 45 حركة منفصلة تُجمَّع كل سلسلة متجاورة في <g> واحد بإيقاع من 3 أطوار ── */
 (function () {
   var run = [], n = 0;
   function flush(parent) {
@@ -569,6 +532,68 @@ var un1 = W.unstage; W.unstage = function () { var r = un1.apply(this, arguments
     flush(par);
   });
 })();
-
+var HOME_URL = "../home-next.html", vh = $("vhome"), leaving = 0, qT;
+if (vh) vh.setAttribute("href", HOME_URL);
+function mk(id, html, ms) {
+  var q = $(id); if (q) q.remove();
+  q = document.createElement("div"); q.id = id; q.innerHTML = html; app.appendChild(q);
+  clearTimeout(qT); if (ms) qT = setTimeout(function () { q.remove(); }, ms);
+  return q;
+}
+if (vh) vh.addEventListener("click", function (e) {
+  if (leaving || !(window.Director && Director.exp && app.classList.contains("instage"))) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  var q = mk("vxQ", '<b>نكمل الدرس؟</b><div><button class="g">أكمل</button><button class="o">الرئيسية</button></div>', 8000);
+  q.querySelector(".g").onclick = function () { q.remove(); };
+  q.querySelector(".o").onclick = function () { leaving = 1; vh.click(); };
+}, true);
+(function () {
+  var g = $("gate"), en = $("enter");
+  if (!g || !en || !(/home-next/.test(document.referrer) || /[?&]from=home/.test((performance.getEntriesByType("navigation")[0] || {}).name || "")) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var ok = 0; try { var c = new (window.AudioContext || window.webkitAudioContext)(); ok = c.state === "running"; c.close(); } catch (e) {}
+  if (!ok) { g.classList.add("vx-in"); return; }
+  setTimeout(function () { g.classList.add("vx-cross"); setTimeout(function () { if (en.onclick) en.click(); }, 600); }, 120);
+})();
+var pend = null;
+function plInfo(p) {
+  var t = 0, d = 0;
+  Object.keys(A.exps).forEach(function (k) { var e = A.exps[k]; if (e && e.scene && e.scene.place === p.place) { t++; try { if (S().isLearned(k)) d++; } catch (x) {} } });
+  return [d, t];
+}
+function rings() {
+  A.places.forEach(function (p) {
+    var h = scene.querySelector('.place[data-place="' + p.place + '"] .halo'); if (!h) return;
+    var g = h.parentNode, o = g.querySelector(".vxPr"), n = plInfo(p), x = +h.getAttribute("cx"), y = +h.getAttribute("cy"), r = +h.getAttribute("r") + 6;
+    if (o) o.remove();
+    o = svgEl("g", { "class": "vxPr", "pointer-events": "none" }, g);
+    svgEl("circle", { cx: x, cy: y, r: r, fill: "none", stroke: "#3A2E24", "stroke-opacity": .16, "stroke-width": 3 }, o);
+    if (n[0]) svgEl("circle", { cx: x, cy: y, r: r, fill: "none", stroke: "#F0A93B", "stroke-width": 3.6, "stroke-linecap": "round", pathLength: 100, "stroke-dasharray": (100 * n[0] / n[1]).toFixed(1) + " 100", transform: "rotate(-90 " + x + " " + y + ")" }, o);
+  });
+}
+var lab2 = A.labels;
+A.labels = function () {
+  var r = lab2.apply(this, arguments);
+  try {
+    rings();
+  } catch (e) {}
+  return r;
+};
+function ar(n) { return n.toLocaleString("ar-EG"); }
+$("labels").addEventListener("click", function (e) {
+  var lb = e.target.closest && e.target.closest(".plabel");
+  var p = lb && !lb.classList.contains("sleep") && A.places.find(function (x) { return I18n.txt(x.label) === lb.textContent; });
+  if (!p) return;
+  e.stopPropagation(); e.preventDefault();
+  if (pend === p && $("vxP")) { $("vxP").remove(); pend = null; return A.open(p); }
+  var n = plInfo(p); pend = p; W.moveTo(p.place);
+  var q = mk("vxP", '<b>' + I18n.txt(p.label) + '</b><div class="n"><svg viewBox="0 0 24 32" width="18" height="24" aria-hidden="true"><path d="M8 6h8l2 4v14l-2 3H8l-2-3V10z" fill="#F0A93B" stroke="#3A2E24" stroke-width="2"/></svg>' + ar(n[0]) + ' / ' + ar(n[1]) + (n[0] && n[0] === n[1] ? " ★" : "") + '</div><button class="g">ادخل</button>', 10000);
+  q.querySelector("button").onclick = function () { q.remove(); pend = null; A.open(p); };
+}, true);
+document.addEventListener("pointerdown", function (e) { var q = $("vxP"); if (q && !q.contains(e.target) && !(e.target.closest && e.target.closest(".plabel"))) { q.remove(); pend = null; } }, true);
+function night() {
+  var h = new Date().getHours(), ph = 0; try { ph = S().data.phase | 0; } catch (e) {}
+  if (ph === 2 || h >= 19 || h < 5) scene.dataset.night = "1"; else delete scene.dataset.night;
+}
+night();
 window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayout, vb: function () { return vb; } };
 })();
