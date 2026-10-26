@@ -167,6 +167,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   <div class="filters" id="filters">
     <button data-f="all" class="on">الكل</button><button data-f="todo">غير مسجَّل</button><button data-f="done">مسجَّل</button>
   </div>
+  <div class="filters" id="kfilters"><button data-k="all" class="on">كل الأنواع</button><button data-k="B1_dhikr_dua">أذكار وأدعية</button><button data-k="B2_hadith_quote">أحاديث ومقتبسات</button><button data-k="B3_sacred_text">نصوص شرعية</button><button data-k="B4_mixed_ayah">نصوص بين الآيات</button></div>
   <ul class="list" id="ulist"></ul>
   <div class="acts"><button class="btn" id="bNextOpen">التالي غير المسجَّل</button><button class="btn primary" id="bExport">تصدير ZIP</button><button class="btn" id="lClose">إغلاق</button></div>
 </div></dialog>
@@ -231,9 +232,9 @@ const S = {
   speaker: "", voice: Q.voice_default || "human_reader", showPending: false, auto: false, fmt: "native", idx: 0, theme: "",
   fs: 1, takes: new Map(),      /* u → {mime, dur, bytes, ts, rec?} للصوت الحالي */
   tash: {},              /* وحدة → نص مشكَّل مستورد */
-  recording: false, busy: false
+  recording: false, busy: false, kf: "all"
 };
-const view = () => ALL.filter(u => S.showPending || !u.pending);
+const view = () => ALL.filter(u => (S.showPending || !u.pending) && (!S.kf || S.kf === "all" || u.kind === S.kf));
 const cur = () => view()[Math.min(S.idx, view().length - 1)];
 const key = u => S.voice + "|" + u;
 const validVoice = v => /^[a-z0-9][a-z0-9_-]{0,40}$/.test(v);
@@ -245,12 +246,12 @@ function tfmt(ms) { const s = Math.floor(ms / 1000), m = Math.floor(s / 60); ret
 
 /* ══════════ حفظ/تحميل الإعدادات ══════════ */
 async function saveMeta() {
-  try { await DB.put("meta", "state", { speaker: S.speaker, voice: S.voice, showPending: S.showPending, auto: S.auto, fmt: S.fmt, idx: S.idx, theme: S.theme, tash: S.tash }); } catch (e) {}
+  try { await DB.put("meta", "state", { speaker: S.speaker, voice: S.voice, showPending: S.showPending, auto: S.auto, fmt: S.fmt, idx: S.idx, kf: S.kf, theme: S.theme, tash: S.tash }); } catch (e) {}
 }
 async function loadMeta() {
   try {
     const m = await DB.get("meta", "state");
-    if (m) { for (const k of ["speaker", "voice", "showPending", "auto", "fmt", "idx", "theme", "tash"]) if (m[k] !== undefined) S[k] = m[k]; }
+    if (m) { for (const k of ["speaker", "voice", "showPending", "auto", "fmt", "idx", "kf", "theme", "tash"]) if (m[k] !== undefined) S[k] = m[k]; }
   } catch (e) {}
   if (!validVoice(S.voice)) S.voice = "human_reader";
   applyTheme();
@@ -595,6 +596,9 @@ function bind() {
   $("bList").onclick = () => { $("dList").showModal(); buildList(); const c = $("ulist").querySelector(".cur"); if (c) c.scrollIntoView({ block: "center" }); };
   $("lClose").onclick = () => $("dList").close();
   $("ulist").onclick = ev => { const li = ev.target.closest("li[data-i]"); if (li) { $("dList").close(); jump(+li.dataset.i); } };
+  const syncK = () => [...$("kfilters").children].forEach(x => x.classList.toggle("on", x.dataset.k === (S.kf || "all")));
+  $("kfilters").onclick = ev => { const b = ev.target.closest("button"); if (!b || S.recording) return; S.kf = b.dataset.k; if (!view().length) S.kf = "all"; S.idx = 0; syncK(); saveMeta(); render(); };
+  window.__syncK = syncK;
   $("filters").onclick = ev => { const b = ev.target.closest("button"); if (!b) return; filt = b.dataset.f; [...$("filters").children].forEach(x => x.classList.toggle("on", x === b)); buildList(); };
   document.addEventListener("keydown", ev => {
     if (document.querySelector("dialog[open]") || /INPUT|SELECT|TEXTAREA/.test((ev.target || {}).tagName || "")) return;
@@ -616,6 +620,7 @@ function bind() {
   let fl = 1; try { const v = parseInt(localStorage.getItem("athar.rec.fs"), 10); if (v >= 0 && v <= 4) fl = v; } catch (e) {}
   setFs(fl);
   if (S.idx >= view().length) S.idx = 0;
+  if (window.__syncK) window.__syncK();
   render();
   if (rec) toast("استُعيد " + num(rec) + " تسجيلًا انقطع قبل اكتماله", 4500);
   window.__rec = { S, ALL, ENTRIES, view, cur, exportSummary, DB, key, jump, get lastZip() { return lastZip; } };
