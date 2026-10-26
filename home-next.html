@@ -2683,7 +2683,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   }
   function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
   function sfx(kind){
-    if(!settings.sfx) return;
+    if(!settings.sfx || settings.bedtime || (document.body && document.body.classList.contains("bedtime"))) return;   /* وقت النوم: صمت كامل */
+    if(kind === "tap" && window.__atharQuietTap > Date.now()) return;   /* نقر باب العالم: صوت «الطرق» الجديد يكفي، فلا نغمة قديمة فوقه */
     if(kind === "tap"){ tone(660, 0, 0.12, 0.07); haptic(8); }
     else if(kind === "turn"){ tone(523, 0, 0.18, 0.08); tone(784, 0.14, 0.3, 0.08); haptic(16); }
     else if(kind === "done"){

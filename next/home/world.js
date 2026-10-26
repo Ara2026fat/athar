@@ -220,11 +220,11 @@ var el=$(b.d);
 var s=jget(KEY());s.seen=1;s.last=b.k;s.t=Date.now();lset(KEY(),JSON.stringify(s));
 pending=null;world.classList.remove("w-busy");ath.classList.remove("walk");
 if(b.k==="valley"&&(PV||!el)){try{W.__atharGateSync&&W.__atharGateSync()}catch(e){}location.href=PV?"valley/next.html":"valley/";return}
-if(el)el.click();
+W.__atharQuietTap=Date.now()+600;if(el)el.click();
 }
 function steps(x0,y0,x1,y1,d){for(var i=1;i<7;i++){var s=D.createElement("i"),f=i/6;s.className="w-pb";s.style.cssText="left:"+(x0+(x1-x0)*f+(i%2?-8:8))+"px;top:"+(y0+(y1-y0)*f-4)+"px;animation-delay:"+(d*f).toFixed(2)+"s";lower.appendChild(s);setTimeout(function(s){s.remove()}.bind(0,s),(d*f+2.4)*1e3)}}
 function walkTo(b){
-if(pending){var p=pending;clearTimeout(p.t);go(p.b);return}
+if(pending){var p=pending;clearTimeout(p.t);if(p.b===b){go(b);return}bEl.valley.classList.remove("opn");pending=null;ath.classList.remove("walk")}   /* آخر نقرة تفوز */
 var el=bEl[b.k];el.classList.remove("jel");void el.offsetWidth;el.classList.add("jel");
 clearTimeout(T.look);
 if(RM){pending={b:b,t:setTimeout(function(){go(b)},140)};return}
