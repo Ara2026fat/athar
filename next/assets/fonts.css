@@ -1,0 +1,15 @@
+/* أثر — خطوط محلية كاملة (Rubik للوادي، وBaloo/Tajawal/Amiri Quran للتطبيق الأول). لا شبكة.
+   كلها OFL من google/fonts، مصغّرة (عربي+لاتيني+علامات) بصيغة woff2. المسارات نسبية لهذا الملف. */
+@font-face{font-family:"Rubik";font-style:normal;font-weight:400 700;font-display:swap;
+  src:url("fonts/rubik-ar-lat-var.woff2") format("woff2");}
+/* الاسم في index.html الجذر مكتوب 'Baloo Bhaijan 2' (بلا a ثانية) فنُعرّفه بهذا الاسم نفسه كي لا تُعدَّل قواعد CSS */
+@font-face{font-family:"Baloo Bhaijan 2";font-style:normal;font-weight:500 800;font-display:swap;
+  src:url("fonts/baloo-bhaijaan2-var.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/tajawal-400.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/tajawal-500.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/tajawal-700.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:800;font-display:swap;src:url("fonts/tajawal-800.woff2") format("woff2");}
+@font-face{font-family:"Amiri Quran";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/amiri-quran.woff2") format("woff2");}
+@font-face{font-family:"Athar Salawat";font-style:normal;font-weight:400 700;font-display:swap;
+  src:url("fonts/salawat-noto.woff2") format("woff2");
+  unicode-range:U+FDFA-FDFB,U+FDFD,U+06D6-06ED;}

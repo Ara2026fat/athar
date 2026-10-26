@@ -1,0 +1,61 @@
+/* ARAFAT ALRAJHI © 2026 — sky.css : قنديل الأيام + سماء النور */
+.asky{position:relative;width:100%;height:100%;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;direction:rtl;font-family:Tajawal,system-ui,sans-serif}
+.asky svg{display:block;overflow:visible}
+.asky-lan{--lt:#6A4A2E;--rope:#6B4A32;contain:layout style;touch-action:manipulation}
+.asky-lan[data-time=dusk]{--lt:#FFE6C4}
+.asky-lan[data-time=night]{--lt:#F6E1B8;--rope:#C9A877}
+.al-rope{fill:none;stroke:var(--rope);stroke-width:2.6;stroke-linecap:round}
+.al-rs{fill:none;stroke:rgba(40,25,10,.18);stroke-width:5;stroke-linecap:round;transform:translateY(2px)}
+.al-ln{cursor:pointer}
+.al-sw use{transition:opacity .4s}
+.al-ln:not(.on) .al-sw{opacity:.85}
+.al-halo{opacity:0;transform-box:fill-box;transform-origin:center;transition:opacity .6s}
+.al-ln.on .al-halo{opacity:.55}
+.asky-lan[data-time=dusk] .al-ln.on .al-halo{opacity:.8}
+.asky-lan[data-time=night] .al-ln.on .al-halo{opacity:1}
+.al-ln.today .al-halo{opacity:.5;animation:alPulse 3.8s ease-in-out infinite}
+.al-ln.today.on .al-halo{opacity:.9;animation-duration:3.2s}
+.al-tx{font-size:10px;font-weight:700;fill:var(--lt);opacity:.8}
+.al-ln.today .al-tx{opacity:1;font-size:10.5px}
+.al-ln.ign .al-halo{animation:alIgn 1.3s ease-out 1}
+.al-ln.fl .al-halo{opacity:1}
+@keyframes alPulse{0%,100%{transform:scale(.88);filter:none}50%{transform:scale(1.1)}}
+@keyframes alIgn{0%{transform:scale(.4);opacity:0}45%{transform:scale(1.5);opacity:1}100%{transform:scale(1)}}
+.asky-sky{overflow:hidden;border-radius:var(--asky-r,0);touch-action:none;cursor:pointer;contain:layout paint style;
+-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent);
+--cf:rgba(255,255,255,.94);--cs:rgba(70,80,120,.32);--ln:rgba(214,150,60,.55)}
+.asky-sky[data-time=dusk]{--cf:rgba(255,226,206,.88);--cs:rgba(110,70,110,.35);--ln:rgba(255,226,170,.6)}
+.asky-sky[data-time=night]{--cf:rgba(96,112,176,.62);--cs:rgba(10,16,48,.5);--ln:rgba(255,236,190,.55)}
+.sk-bg,.sk-bg i{position:absolute;inset:0}
+.nobg .sk-bg{display:none}
+.sk-bg i{opacity:0;transition:opacity .9s}
+.sk-bg .day{background:linear-gradient(#9FD3F2,#CBE8F6 55%,#FFE6C2)}
+.sk-bg .dusk{background:linear-gradient(#5E4E9C,#C9739A 50%,#FFB877 88%,#FFD9A0)}
+.sk-bg .night{background:linear-gradient(#0F1A44,#243476 60%,#43559A)}
+[data-time=day] .sk-bg .day,[data-time=dusk] .sk-bg .dusk,[data-time=night] .sk-bg .night{opacity:1}
+.sk-ln,.sk-cv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sk-ln line{stroke:var(--ln);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linecap:round;opacity:0;stroke-dasharray:100;transition:opacity .8s}
+.sk-ln line.on{opacity:1}
+.sk-ln line.new{animation:skDraw 1.3s ease-out 1}
+@keyframes skDraw{from{stroke-dashoffset:100;opacity:1}to{stroke-dashoffset:0}}
+.sk-dots{position:absolute;inset:0;pointer-events:none}
+.sk-d{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;opacity:.4;
+background:radial-gradient(circle,rgba(255,248,226,.95) 0 32%,rgba(255,248,226,0) 70%)}
+[data-time=day] .sk-d{opacity:.28;background:radial-gradient(circle,rgba(255,255,255,.95) 0 32%,rgba(255,255,255,0) 70%)}
+.sk-d.on{width:calc(var(--z) * 3);height:calc(var(--z) * 3);margin:calc(var(--z) * -1.5) 0 0 calc(var(--z) * -1.5);opacity:.95;
+background:radial-gradient(circle,#FFFDF0 0 13%,rgba(255,226,140,.95) 22%,rgba(255,190,90,.38) 46%,rgba(255,180,80,0) 70%);animation:skTw 4.6s ease-in-out infinite alternate}
+[data-time=day] .sk-d.on{background:radial-gradient(circle,#FFFFFF 0 13%,rgba(255,196,80,.95) 24%,rgba(255,170,60,.4) 48%,rgba(255,170,60,0) 70%)}
+.sk-d.bl:not(.on){background:radial-gradient(circle,#FFFDF0 0 18%,rgba(255,226,140,.9) 30%,rgba(255,190,90,.3) 52%,rgba(255,180,80,0) 70%);opacity:1}
+@keyframes skTw{from{opacity:.7}to{opacity:1}}
+.sk-cl{position:absolute;touch-action:none;will-change:transform}
+.sk-cl .in{width:100%;height:100%;animation:skDrift var(--dur) ease-in-out var(--dl) infinite alternate}
+.sk-cl svg{width:100%;height:100%}
+.sk-cl path{fill:var(--cf);stroke:var(--cs);stroke-width:1.6;stroke-linejoin:round}
+@keyframes skDrift{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+.asky-paused *,.asky-paused{animation-play-state:paused!important}
+.asky-paused{pointer-events:none}
+@media (prefers-reduced-motion:reduce){
+.asky *{animation:none!important;transition:none!important}
+.al-ln.today .al-halo{opacity:.8}
+}
+body.bedtime .asky *{animation:none!important}

@@ -1,0 +1,7 @@
+/* أثر — الوادي: خطوط محلية (لا شبكة). المسارات نسبية لهذا الملف: ضعه بجانب مجلد fonts/ */
+@font-face{font-family:"Rubik";font-style:normal;font-weight:400 700;font-display:swap;
+  src:url("fonts/rubik-ar-lat-var.woff2") format("woff2");}
+/* ﷺ وعلامات الوقف القرآنية لا يحويها Rubik: خط احتياطي صغير (Noto Naskh Arabic، OFL) لهذه الرموز فقط */
+@font-face{font-family:"Athar Salawat";font-style:normal;font-weight:400 700;font-display:swap;
+  src:url("fonts/salawat-noto.woff2") format("woff2");
+  unicode-range:U+FDFA-FDFB,U+FDFD,U+06D6-06ED;}

@@ -2636,7 +2636,7 @@
     $("btnPlay").innerHTML = (state === "listen" || state === "mine") ? PAUSE_SVG :
                              (state === "turn" || state === "rec") ? WAVE_SVG : PLAY_SVG;
   }
-  function burst(){
+  function orbBurst(){
     var w = $("orbWrap");
     w.classList.remove("burst");
     void w.offsetWidth;
@@ -2867,7 +2867,7 @@
     if(cycleDone){
       markTrainedIfPracticed();
       markDayActive();
-      burst();
+      orbBurst();
       sfx("done");
     }
     if(lastOfAll){

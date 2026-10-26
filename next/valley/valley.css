@@ -1,0 +1,102 @@
+/* ═══ أثر · الوادي — تحسينات r2 (وحدة إضافية؛ ?vx=0 يطفئها) ═══ */
+#app{overflow:clip}
+
+/* ── أزرار علوية موحّدة بأسلوب الخريطة: كريمي دافئ، حدّ داكن ناعم، ظلّ سفلي صلب ── */
+#myv,#sett,#snd,#vhome{
+  width:64px!important;height:64px!important;min-width:64px;min-height:64px;box-sizing:border-box;
+  border-radius:20px!important;border:3px solid var(--line)!important;
+  background:linear-gradient(#FFFEF8,#F6E9CD)!important;
+  box-shadow:0 4px 0 rgba(58,46,36,.28),0 8px 14px rgba(58,46,36,.14)!important;
+  top:calc(10px + env(safe-area-inset-top))!important;display:flex!important;align-items:center;justify-content:center;
+  position:absolute;overflow:hidden;color:var(--line)}
+#vhome{inset-inline-start:10px!important;flex-direction:column;gap:2px;width:72px!important;font-size:12.5px}
+#myv{inset-inline-end:86px!important}
+#sett{inset-inline-end:162px!important;color:#3F72BE}
+#snd{inset-inline-end:10px!important}
+#myv svg path{fill:#4DB06A!important;stroke:#2F7D45!important;stroke-width:1.4}
+#myv svg path:first-child{fill:none!important;stroke:#2F7D45!important;stroke-width:2.4}
+#snd svg path:first-child{fill:#47AEBF!important;stroke:#3A2E24!important}
+#snd svg path:not(:first-child){stroke:#2A8FA3!important}
+#myv:active,#sett:active,#snd:active,#vhome:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(58,46,36,.28)!important}
+@media(max-width:340px){#vhome{width:64px!important}}
+
+/* ── نقاط المقدمة RTL ── */
+.idots{direction:rtl}
+
+/* ── فقاعة أثر ── */
+#say{inset-inline:auto!important;left:0;top:0;display:block!important;width:max-content;max-width:300px;padding:0!important;
+  transform:none!important;scale:.86;transform-origin:var(--tox,50%) var(--toy,100%);
+  transition:opacity .3s,scale .34s cubic-bezier(.3,1.5,.5,1)!important;z-index:7}
+#say.on{scale:1}
+#say .b{position:relative;max-width:none!important;width:auto;direction:rtl;text-align:center;line-height:1.55;overflow-wrap:anywhere;
+  padding:9px 16px!important;font-size:17px!important}
+#say .t{display:none!important}
+#say .b::after{content:"";position:absolute;width:14px;height:14px;background:#fff;border:3px solid var(--line);display:none;
+  --tp:50%;--tq:50%}
+#say[data-tail=bottom] .b::after{display:block;left:calc(var(--tp) - 7px);bottom:-9px;transform:rotate(45deg);border-left:0;border-top:0}
+#say[data-tail=top] .b::after{display:block;left:calc(var(--tp) - 7px);top:-9px;transform:rotate(45deg);border-right:0;border-bottom:0}
+#say[data-tail=left] .b::after{display:block;top:calc(var(--tq) - 7px);left:-9px;transform:rotate(45deg);border-right:0;border-top:0}
+#say[data-tail=right] .b::after{display:block;top:calc(var(--tq) - 7px);right:-9px;transform:rotate(45deg);border-left:0;border-bottom:0}
+
+/* ── خريطة: سماء حيّة وضوء ── */
+#vxSky .vxc{animation:vxdrift var(--d,120s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes vxdrift{from{transform:translateX(-170px)}to{transform:translateX(560px)}}
+#vxSky .vxcl{fill:var(--cl,#fff)}#vxSky .vxcs{fill:var(--cs,#C6DAEA)}
+#vxSky .vxco{fill:none;stroke:#3A2E24;stroke-opacity:.2;stroke-width:2.2;stroke-linejoin:round}
+#vxHz{transition:opacity 1.2s}
+#clouds{display:none}
+#app.instage #vxSky{display:none}
+.vxLan{transform-box:fill-box;transform-origin:center;animation:vxlan 3.8s ease-in-out infinite;mix-blend-mode:screen;transition:opacity .4s}
+@keyframes vxlan{0%,100%{opacity:.62;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
+.vxLan.boost{animation:vxboost .9s ease-out 1}
+@keyframes vxboost{0%{transform:scale(1);opacity:1}35%{transform:scale(2.3);opacity:1}100%{transform:scale(1);opacity:.7}}
+#vxHit{cursor:pointer}
+#boyImg,#boyImg2{filter:url(#vxSharp)}
+
+/* أماكن: عمق وظلّ بدل التسطّح، والنائمة تُرى بلطف */
+.place{filter:drop-shadow(0 5px 4px rgba(60,38,18,.30)) saturate(1.1) contrast(1.03)}
+.place.sleep{filter:saturate(.92) brightness(1.03) drop-shadow(0 5px 4px rgba(60,38,18,.26))!important;opacity:1}
+#sun{display:none}
+.place.visited{filter:drop-shadow(0 5px 4px rgba(60,38,18,.30)) saturate(1.1)!important}
+#vxGrade{position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(120% 90% at 78% 8%,rgba(255,226,160,.20),transparent 55%),radial-gradient(130% 100% at 50% 50%,transparent 60%,rgba(70,40,20,.20));mix-blend-mode:soft-light}
+#app.instage #vxGrade{display:none}
+
+/* علامات: طبقات */
+.vx-sky{opacity:.9}
+.vx-tidy{transform-box:fill-box}
+
+/* أزرار الأماكن */
+.plabel{min-width:76px;min-height:60px!important;justify-content:center;padding:6px 16px!important;
+  background:linear-gradient(#FFFEF8,#F6E9CD);box-shadow:0 4px 0 rgba(58,46,36,.28),0 8px 14px rgba(58,46,36,.16)}
+.plabel.ready{background:linear-gradient(#FFF9E0,#FBE29A);border-color:#7A5334}
+.plabel.vx-rec{animation:vxrec 1.9s ease-in-out infinite!important;z-index:2}
+@keyframes vxrec{0%,100%{transform:translate(-50%,0) scale(1);box-shadow:0 4px 0 rgba(58,46,36,.28),0 0 0 0 rgba(240,169,59,.55)}
+  50%{transform:translate(-50%,-4px) scale(1.05);box-shadow:0 4px 0 rgba(58,46,36,.28),0 0 0 11px rgba(240,169,59,0)}}
+.vx-ring{position:absolute;width:104px;height:104px;margin:-52px 0 0 -52px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,236,170,.75) 0,rgba(255,214,120,.35) 45%,transparent 70%);animation:vxring 2.4s ease-in-out infinite}
+@keyframes vxring{0%,100%{transform:scale(.8);opacity:.55}50%{transform:scale(1.18);opacity:1}}
+
+/* مشي أثر */
+#athar{will-change:transform}
+
+/* نقلة أثر تظهر فوق الخلفية */
+#vxFx use{pointer-events:none}
+
+/* بطاقة الترحيب */
+.dcard.vxw{text-align:center}
+.dcard.vxw .gi{margin:0 auto 6px}
+.dcard.vxw h3{font-size:22px;font-weight:700;color:var(--em);margin-bottom:6px}
+
+/* خلفيات ضبابية: حبيبات وتدرّج وسحب كاميرا لطيف */
+#vxGrain{position:absolute;inset:0;pointer-events:none;z-index:2;display:none;opacity:.5;mix-blend-mode:overlay;background-size:96px 96px}
+#vxTone{position:absolute;inset:0;pointer-events:none;z-index:2;display:none;
+  background:linear-gradient(rgba(255,230,190,.10),transparent 35%,rgba(60,30,10,.22)),radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(40,20,8,.28))}
+#app.instage #vxGrain,#app.instage #vxTone{display:block}
+#app.instage:not([data-soft]) #vxGrain{opacity:.22}
+#app.instage:not([data-soft]) #vxTone{opacity:.5}
+#scene[data-soft] #placeBg{transform-box:view-box;transform-origin:50% 100%;animation:vxpull 22s ease-in-out infinite alternate}
+@keyframes vxpull{from{transform:scale(1.035)}to{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){
+  #vxSky .vxc,.vxLan,.plabel.vx-rec,.vx-ring,#scene[data-soft] #placeBg{animation:none!important}
+}
