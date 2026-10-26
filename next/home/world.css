@@ -56,9 +56,10 @@
 .ath-br{animation:wbreath 4s ease-in-out infinite;transform-origin:50% 100%}
 .ath .p{position:absolute;bottom:0;left:50%;height:152px;width:auto;transform:translateX(-50%);opacity:0;pointer-events:none;transition:opacity .15s}
 .ath .p.on{opacity:1}
-.ath-halo{position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(var(--hcl),1) 0,rgba(var(--hc),.62) 34%,rgba(var(--hc),0) 68%);opacity:var(--ha);transform:scale(var(--hs));transition:transform .5s ease,opacity .5s;pointer-events:none}
+.ath-halo{position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(var(--hcl),1) 0,rgba(var(--hc),.7) 32%,rgba(var(--hc),0) 66%);opacity:var(--ha);transform:scale(var(--hs));transition:transform .5s ease,opacity .5s;pointer-events:none}
 .w-evening .ath-halo,.w-night .ath-halo{mix-blend-mode:screen}
 .ath-sh{position:absolute;left:50%;bottom:-4px;width:84px;height:16px;margin-left:-42px;border-radius:50%;background:radial-gradient(ellipse,rgba(40,30,70,.46),rgba(40,30,70,0) 70%);pointer-events:none}
+.ath-core{position:absolute;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.75) 0,rgba(var(--hcl),.55) 40%,rgba(var(--hc),0) 72%);pointer-events:none}
 .ath.glow .ath-halo{transform:scale(calc(var(--hs)*2.5));opacity:1}
 .ath.lkh .ath-halo{animation:wswing .9s ease-in-out 3}
 .ath-nl{position:absolute;left:50%;top:60%;width:1500px;height:1500px;margin:-750px 0 0 -750px;border-radius:50%;background:radial-gradient(circle,rgba(6,10,40,0) 0,rgba(6,10,40,0) 70px,rgba(6,10,40,.42) 360px,rgba(6,10,40,.5) 750px);opacity:var(--nlo);pointer-events:none;display:none}

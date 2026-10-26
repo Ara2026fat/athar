@@ -73,8 +73,8 @@ var B=[
  {k:"valley",d:"doorValley",x:110,y:286,w:170,h:150,l:"الوادي",ax:195,ay:600},
  {k:"hifz",d:"doorHifz",x:256,y:172,w:120,h:120,l:"أحفظ القرآن",ax:210,ay:288},
  {k:"noor",d:"doorLang",x:14,y:172,w:120,h:120,l:"القاعدة النورانية",ax:180,ay:288},
- {k:"math",d:"doorMath",x:256,y:436,w:120,h:120,l:"عالم الأرقام",ax:210,ay:580},
- {k:"lib",d:"doorLib",x:14,y:436,w:120,h:120,l:"مكتبتي",ax:180,ay:580},
+ {k:"math",d:"doorMath",x:256,y:436,w:120,h:120,l:"عالم الأرقام",ax:210,ay:590},
+ {k:"lib",d:"doorLib",x:14,y:436,w:120,h:120,l:"مكتبتي",ax:180,ay:590},
  {k:"quiz",d:"doorQuiz",x:256,y:560,w:120,h:120,l:"المسابقات",ax:210,ay:690},
  {k:"adhkar",d:"doorAdhkar",x:14,y:560,w:120,h:120,l:"أذكاري",ax:180,ay:690}
 ];
@@ -93,20 +93,20 @@ var h='<div class="w-sky"></div><div class="w-glow"></div>'+
  '<div class="w-stage" id="wStage"><div id="wSky"></div>';
 var CL=[[120,120,-5,96],[150,150,-60,128],[176,92,-30,150],[204,110,-80,112]];
 CL.forEach(function(c,i){h+='<div class="w-cl" style="top:'+c[0]+'px;width:'+c[1]+'px;animation-duration:'+c[3]+'s;animation-delay:'+c[2]+'s"><span class="w-cu" data-i="'+i+'">'+CLOUD+'</span></div>'});
-h+='<div id="wLanterns"></div><div class="w-lower" id="wLower"><svg class="w-path" viewBox="0 0 390 704" height="704" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="g" stroke-width="15" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 580H138M195 580H252M195 690H138M195 690H252"/><path class="d" stroke-width="4" stroke-dasharray="1 13" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 580H138M195 580H252M195 690H138M195 690H252"/></g></svg>';
+h+='<div id="wLanterns"></div><div class="w-lower" id="wLower"><svg class="w-path" viewBox="0 0 390 704" height="704" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="g" stroke-width="15" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/><path class="d" stroke-width="4" stroke-dasharray="1 13" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/></g></svg>';
 B.forEach(function(b){
   var big=b.k==="valley";
   h+='<button type="button" class="wb" id="wb-'+b.k+'" data-k="'+b.k+'" aria-label="'+b.l+'" style="left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px">'+ART[b.k]()+'<i class="bd" hidden></i><span class="lb">'+b.l+'</span></button>'});
-h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span class="ath-sh"></span><span class="ath-nl"></span><span class="ath-j"><span class="ath-b"><span class="ath-br">'+
+h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span class="ath-sh"></span><span class="ath-nl"></span><span class="ath-j"><span class="ath-b"><span class="ath-br"><span class="ath-halo"></span>'+
  ['idle','hello','joy','think'].map(function(n){return '<img class="p" data-p="'+n+'" src="next/home/img/'+n+'.webp" alt="" draggable="false">'}).join('')+
- '<span class="ath-hint"></span><span class="ath-halo"></span></span></span></span></button>'+
+ '<span class="ath-hint"></span><span class="ath-core"></span></span></span></span></button>'+
  '<div class="w-pop w-peek" id="wPeek" hidden><b></b><span></span><button type="button" class="go">افتح</button></div>'+
  '<div class="w-pop w-bub" id="wBub" hidden><span>نتابع؟</span><small></small><button type="button" class="go" aria-label="نعم، نتابع">نعم</button></div>'+
  '<div class="w-pop w-pal" id="wPal" hidden>'+COLS.map(function(c,i){return '<button type="button" class="sw" data-i="'+i+'" aria-label="لون الفانوس" style="background:radial-gradient(circle at 35% 30%,rgb('+c[1]+'),rgb('+c[0]+'))"></button>'}).join('')+'</div></div></div><div id="wDusk"></div><div id="wProf"></div><div id="wDock"><button type="button" id="wPkX" aria-label="إخفاء">×</button></div>';
 world.innerHTML=h;
 view.insertBefore(world,view.firstChild);
 var stage=$("wStage"),lower=$("wLower"),ath=$("wAthar"),dusk=$("wDusk"),app=$("app");
-var halo=ath.querySelector(".ath-halo"),hint=ath.querySelector(".ath-hint"),hills=world.querySelectorAll(".w-hill");
+var halo=ath.querySelector(".ath-halo"),core=ath.querySelector(".ath-core"),hint=ath.querySelector(".ath-hint"),hills=world.querySelectorAll(".w-hill");
 var bEl={};B.forEach(function(b){bEl[b.k]=$("wb-"+b.k)});
 /* نقل ما يجب بقاؤه ظاهرًا */
 var pb=$("profileBar"),pk=$("packBanner");
@@ -118,8 +118,8 @@ function hideDock(){dis=true;try{sessionStorage.setItem("athar_pk_dis","1")}catc
 $("wPkX").addEventListener("click",hideDock);
 (function(){var d=$("wDock"),x0=0,y0=0,dx=0,dy=0,on=false;
   d.addEventListener("pointerdown",function(e){if(e.target.id==="wPkX")return;on=true;x0=e.clientX;y0=e.clientY;dx=dy=0});
-  d.addEventListener("pointermove",function(e){if(!on)return;dx=e.clientX-x0;dy=Math.max(0,e.clientY-y0);if(Math.abs(dx)>8||dy>8)d.style.transform="translate("+dx+"px,"+dy+"px)";d.style.opacity=Math.max(.3,1-Math.max(Math.abs(dx),dy)/200)});
-  function up(){if(!on)return;on=false;if(dy>45||Math.abs(dx)>80){hideDock();d.style.transform=d.style.opacity=""}else{d.style.transform=d.style.opacity=""}}
+  d.addEventListener("pointermove",function(e){if(!on)return;dx=e.clientX-x0;dy=Math.max(0,e.clientY-y0);if((Math.abs(dx)>8||dy>8)&&!d._c){d._c=1;try{d.setPointerCapture(e.pointerId)}catch(_){}}if(Math.abs(dx)>8||dy>8)d.style.transform="translate("+dx+"px,"+dy+"px)";d.style.opacity=Math.max(.3,1-Math.max(Math.abs(dx),dy)/200)});
+  function up(){if(!on)return;on=false;d._c=0;if(dy>45||Math.abs(dx)>80){hideDock();d.style.transform=d.style.opacity=""}else{d.style.transform=d.style.opacity=""}}
   d.addEventListener("pointerup",up);d.addEventListener("pointercancel",up)})();
 
 /* ---------- حالة ووقت ---------- */
@@ -162,7 +162,7 @@ function setPose(p){
   curPose=p;
   Array.prototype.forEach.call(ath.querySelectorAll(".p"),function(i){i.classList.toggle("on",i.dataset.p===p)});
   var f=POSE[p],cx=50+(f[0]-.5)*PW[p],cy=AH*f[1];
-  halo.style.left=(cx-50)+"px";halo.style.top=(cy-50)+"px";
+  halo.style.left=(cx-50)+"px";halo.style.top=(cy-50)+"px";core.style.left=(cx-20)+"px";core.style.top=(cy-20)+"px";
   hint.style.left=(cx-35)+"px";hint.style.top=(cy-35)+"px";
   var nl=ath.querySelector(".ath-nl");nl.style.left=cx+"px";nl.style.top=cy+"px";
 }

@@ -290,41 +290,84 @@ function relayout() {
 }
 A.labels = function () { var r = lab0.apply(this, arguments); try { relayout(); } catch (e) { } return r; };
 
-/* ═══ 6 · علامات: ترتيب وطبقات عند الازدحام ═══ */
+/* ═══ 6 · علامات: الأحدث أبرز، والأقدم أصغر، وسماء مرتّبة على شبكة، وتجنّب الشخصيات ═══ */
 var tidyT = 0;
+function markRank() {
+  var arr = []; try { arr = S().data.marks || []; } catch (e) {}
+  var at = {}; try { at = S().data.actAt || {}; } catch (e) {}
+  var t = {}; try { Object.keys(A.exps).forEach(function (id) { var e = A.exps[id]; if (e && e.leaves) t[e.leaves] = Math.max(t[e.leaves] || 0, at[id] || 0); }); } catch (e) {}
+  return { idx: function (m) { return arr.lastIndexOf(m); }, t: t, n: arr.length };
+}
 function tidy() {
   var ids = Object.keys(window.MARKS || {}).filter(function (id) { return id !== "mFriend"; });
   var gs = ids.map($).filter(function (g) { return g && g.getAttribute("opacity") === "1"; });
-  gs.forEach(function (g) { g.style.translate = ""; g.style.scale = ""; g.classList.remove("vx-sky", "vx-tidy"); });
-  if (gs.length < 30 || app.classList.contains("instage")) return;
+  gs.forEach(function (g) { g.style.translate = ""; g.style.scale = ""; g.classList.remove("vx-sky", "vx-tidy", "vx-new"); });
+  if (gs.length < 24 || app.classList.contains("instage")) return;
   var m = scene.getScreenCTM(), a = appRect(); if (!m) return;
-  var hor = m.d * 330 + m.f - a.top, k = m.a, sc = gs.length >= 60 ? .74 : .84;
-  gs.forEach(function (g) {
-    var r = rel(g.getBoundingClientRect(), a);
-    if ((r.t + r.b) / 2 < hor) { g.classList.add("vx-sky"); }
-    if (!g.hasAttribute("transform")) { g.classList.add("vx-tidy"); g.style.transformOrigin = "center"; g.style.scale = String(sc); }
+  var k = m.a, AW = a.width, hor = m.d * 330 + m.f - a.top, n = gs.length, rk = markRank(), now = Date.now();
+  var base = n >= 60 ? .6 : n >= 40 ? .72 : .86, newSet = {};
+  gs.slice().sort(function (p, q) { return rk.idx(q.id) - rk.idx(p.id); }).slice(0, 4).forEach(function (g, i) {
+    if (i < 3 || now - (rk.t[g.id] || 0) < 864e5) newSet[g.id] = 1;
   });
-  var it = gs.map(function (g) { var r = rel(g.getBoundingClientRect(), a); return { g: g, r: r, dx: 0, dy: 0 }; }).filter(function (o) { var w = o.r.r - o.r.l; return w > 3 && w < 300; });
-  var cap = 46 * k, i, j, pass;
-  for (pass = 0; pass < 40; pass++) {
+  var it = gs.map(function (g) {
+    var r = rel(g.getBoundingClientRect(), a), w = r.r - r.l, h = r.b - r.t;
+    return { g: g, r: r, w: w, h: h, cx: (r.l + r.r) / 2, cy: (r.t + r.b) / 2, isNew: !!newSet[g.id], sky: (r.t + r.b) / 2 < hor, dx: 0, dy: 0, sc: 1 };
+  }).filter(function (o) { return o.w > 3 && o.w < 320 && o.h > 3; });
+  it.forEach(function (o) {
+    o.sc = o.isNew ? 1.12 : Math.min(base, 62 / Math.max(o.w, o.h, 1) * (n >= 40 ? 1 : 1.5));
+    o.sc = Math.max(.45, Math.min(o.isNew ? 1.12 : base, o.sc)); if (o.g.hasAttribute("transform")) o.sc = 1;
+    if (o.isNew) o.g.classList.add("vx-new"); if (o.sky) o.g.classList.add("vx-sky");
+  });
+  /* سماء مرتّبة: شبكة صفوف للأقدم عند الازدحام */
+  if (n >= 40) {
+    var sky = it.filter(function (o) { return o.sky && !o.isNew; }).sort(function (p, q) { return p.cx - q.cx; });
+    var cw = 58, cols = Math.max(3, Math.floor((AW - 24) / cw)), top = 96, rh = 56, rows = Math.ceil(sky.length / cols);
+    var maxRows = Math.max(1, Math.floor((hor - 70 - top) / rh)); if (rows > maxRows) { rows = maxRows; }
+    sky.forEach(function (o, i) {
+      var r = Math.min(rows - 1, Math.floor(i / cols)), c = i % cols, inRow = Math.min(cols, sky.length - r * cols), x0 = (AW - inRow * cw) / 2;
+      var tx = x0 + (c + .5) * cw, ty = top + r * rh + rh / 2;
+      o.sc = Math.max(.4, Math.min(o.sc, 50 / Math.max(o.w, o.h, 1))); o.dx = tx - o.cx; o.dy = ty - o.cy; o.fixed = 1;
+    });
+  }
+  /* عوائق ثابتة: الشخصيات وأزرار الأماكن */
+  var fx2 = []; var ar = atharRect(); if (ar) fx2.push(ar);
+  friendRects(a).forEach(function (r) { fx2.push(r); });
+  [].slice.call($("labels").querySelectorAll(".plabel:not(.sleep)")).forEach(function (e) { fx2.push(rel(e.getBoundingClientRect(), a)); });
+  var cap = 52 * k, i, j, pass;
+  function box(o) { var w = o.w * o.sc / 2, h = o.h * o.sc / 2; return { l: o.cx + o.dx - w, r: o.cx + o.dx + w, t: o.cy + o.dy - h, b: o.cy + o.dy + h }; }
+  for (pass = 0; pass < 36; pass++) {
     var moved = false;
+    for (i = 0; i < it.length; i++) {
+      var p = it[i]; if (p.fixed || p.isNew) continue;
+      for (j = 0; j < fx2.length; j++) {
+        var P = box(p), F = fx2[j], w = Math.min(P.r, F.r) - Math.max(P.l, F.l), h = Math.min(P.b, F.b) - Math.max(P.t, F.t);
+        if (w <= 0 || h <= 0 || w * h < .15 * (P.r - P.l) * (P.b - P.t)) continue;
+        moved = true;
+        if (w < h) p.dx += ((P.l + P.r) < (F.l + F.r) ? -1 : 1) * (w + 2); else p.dy += ((P.t + P.b) < (F.t + F.b) ? -1 : 1) * (h + 2);
+      }
+    }
     for (i = 0; i < it.length; i++) for (j = i + 1; j < it.length; j++) {
-      var p = it[i], q = it[j], A1 = { l: p.r.l + p.dx, r: p.r.r + p.dx, t: p.r.t + p.dy, b: p.r.b + p.dy }, B1 = { l: q.r.l + q.dx, r: q.r.r + q.dx, t: q.r.t + q.dy, b: q.r.b + q.dy };
-      var w = Math.min(A1.r, B1.r) - Math.max(A1.l, B1.l), h = Math.min(A1.b, B1.b) - Math.max(A1.t, B1.t);
-      if (w <= 0 || h <= 0) continue;
+      var p2 = it[i], q = it[j]; if ((p2.fixed && q.fixed)) continue;
+      var A1 = box(p2), B1 = box(q), w2 = Math.min(A1.r, B1.r) - Math.max(A1.l, B1.l), h2 = Math.min(A1.b, B1.b) - Math.max(A1.t, B1.t);
+      if (w2 <= 0 || h2 <= 0) continue;
       var small = Math.min((A1.r - A1.l) * (A1.b - A1.t), (B1.r - B1.l) * (B1.b - B1.t));
-      if (w * h < small * .18) continue;
+      if (w2 * h2 < small * .2) continue;
       moved = true;
-      if (w < h) { var s = ((A1.l + A1.r) < (B1.l + B1.r) ? -1 : 1) * (w / 2 + 1); p.dx += s; q.dx -= s; }
-      else { var s2 = ((A1.t + A1.b) < (B1.t + B1.b) ? -1 : 1) * (h / 2 + 1); p.dy += s2; q.dy -= s2; }
+      var wp = p2.fixed ? 0 : (q.fixed ? 1 : .5), wq = q.fixed ? 0 : (p2.fixed ? 1 : .5), pr = p2.isNew ? 0 : wp, qr = q.isNew ? 0 : wq;
+      if (w2 < h2) { var s = ((A1.l + A1.r) < (B1.l + B1.r) ? -1 : 1) * (w2 + 1); p2.dx += s * pr; q.dx -= s * qr; }
+      else { var s2 = ((A1.t + A1.b) < (B1.t + B1.b) ? -1 : 1) * (h2 + 1); p2.dy += s2 * pr; q.dy -= s2 * qr; }
     }
     it.forEach(function (o) {
-      o.dx = Math.max(-cap, Math.min(cap, o.dx)); o.dy = Math.max(-cap, Math.min(cap, o.dy));
-      var l = o.r.l + o.dx, r2 = o.r.r + o.dx; if (l < 6) o.dx += 6 - l; if (r2 > a.width - 6) o.dx -= r2 - (a.width - 6);
+      if (!o.fixed) { o.dx = Math.max(-cap, Math.min(cap, o.dx)); o.dy = Math.max(-cap, Math.min(cap, o.dy)); }
+      var B = box(o); if (B.l < 6) o.dx += 6 - B.l; if (B.r > AW - 6) o.dx -= B.r - (AW - 6); if (B.t < 90) o.dy += 90 - B.t;
     });
     if (!moved) break;
   }
-  it.forEach(function (o) { if (Math.abs(o.dx) > 1 || Math.abs(o.dy) > 1) o.g.style.translate = (o.dx / k).toFixed(1) + "px " + (o.dy / k).toFixed(1) + "px"; });
+  it.forEach(function (o) {
+    o.g.classList.add("vx-tidy"); o.g.style.transformOrigin = "center"; if (!o.g.hasAttribute("transform")) o.g.style.scale = String(+o.sc.toFixed(3));
+    o.g.style.transformBox = "fill-box";
+    if (Math.abs(o.dx) > 1 || Math.abs(o.dy) > 1) o.g.style.translate = (o.dx / k).toFixed(1) + "px " + (o.dy / k).toFixed(1) + "px";
+  });
 }
 function tidyLater(ms) { clearTimeout(tidyT); tidyT = setTimeout(function () { try { tidy(); } catch (e) {} }, ms); }
 var paint0 = A.paint;
@@ -415,5 +458,76 @@ A.renderDailyNone = function () {
   host.querySelector("#vxlook").onclick = function () { try { AtharAudio.sfx("soft"); } catch (e) {} host.classList.remove("on"); };
   host.onclick = function (e) { if (e.target === host) host.classList.remove("on"); };
 };
-window.VX = { placeSay: placeSay, tidy: tidy, relayout: relayout, vb: function () { return vb; } };
+
+/* ═══ 10 · داخل الدروس: أثر يطلّ فوق اللوح، لوحٌ يختفي وقت الكلام، أيقونات لمس، احتفال هادئ ═══ */
+var liftRaf = 0, hideT = 0, DEFT = "translate(150 560) scale(.78)";
+function liftAthar() {
+  liftRaf = 0;
+  if (!app.classList.contains("instage") || !ath) return;
+  var m = scene.getScreenCTM(), a = appRect(), card = panel.firstElementChild;
+  if (!m) return;
+  var up = panel.classList.contains("up") && !panel.classList.contains("vx-hide") && card;
+  var want = DEFT;
+  if (up) {
+    var feetY = a.height - 8 - card.offsetHeight + 12, s = Math.min(.74, (feetY - 100) / (174 * m.d));
+    if (s >= .4) {
+      var ux = (a.left + 58 - m.e) / m.a, uy = (a.top + feetY - m.f) / m.d;
+      want = "translate(" + (ux - 30 * s).toFixed(1) + " " + (uy - 152 * s).toFixed(1) + ") scale(" + s.toFixed(3) + ")";
+    }
+  }
+  if (ath.getAttribute("transform") !== want) ath.setAttribute("transform", want);
+}
+function liftLater(ms) { if (liftRaf) cancelAnimationFrame(liftRaf); setTimeout(function () { liftRaf = requestAnimationFrame(liftAthar); }, ms || 0); }
+function syncHide() {
+  var stg = panel.querySelector(".stage"), empty = !!(stg && !stg.childElementCount);
+  if (empty && panel.classList.contains("up") && app.classList.contains("instage")) {
+    if (!hideT && !panel.classList.contains("vx-hide")) hideT = setTimeout(function () { hideT = 0; var s2 = panel.querySelector(".stage"); if (s2 && !s2.childElementCount) { panel.classList.add("vx-hide"); liftLater(0); } }, 420);
+  } else { clearTimeout(hideT); hideT = 0; if (panel.classList.contains("vx-hide")) { panel.classList.remove("vx-hide"); } }
+}
+var RING = '<svg viewBox="0 0 28 28" aria-hidden="true"><circle class="rp" cx="14" cy="14" r="11" fill="none" stroke="#3FA7C9" stroke-width="2.4"/><circle cx="14" cy="14" r="5.4" fill="#F0A93B" stroke="#3A2E24" stroke-width="2"/><circle cx="12.4" cy="12.4" r="1.6" fill="#fff"/></svg>';
+var LANT = '<svg viewBox="0 0 46 62" aria-hidden="true"><path d="M23 3v7" stroke="#4A3626" stroke-width="3" stroke-linecap="round"/><path d="M14 12h18l-3-5H17z" fill="#C9944A" stroke="#4A3626" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 14h22l3 9v18l-3 8H12l-3-8V23z" fill="#FFE49A" stroke="#4A3626" stroke-width="2.6" stroke-linejoin="round"/><path d="M23 14v35M9 31h28" stroke="#C9944A" stroke-width="2" opacity=".7"/><ellipse cx="23" cy="32" rx="6" ry="8" fill="#FFB43A" opacity=".85"/><path d="M12 49h22l-2 6H14z" fill="#C9944A" stroke="#4A3626" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+var CIRC = /^[◦◌◉◍◇◆◐◑◒○●•]$/;
+function decorate() {
+  [].slice.call(panel.querySelectorAll(".toucher .ico")).forEach(function (e) {
+    if (e.dataset.vx) return; e.dataset.vx = 1; if (CIRC.test((e.textContent || "").trim())) e.innerHTML = RING;
+  });
+  [].slice.call(document.querySelectorAll(".lcard.end,.ncard,.dcard.done")).forEach(function (c) {
+    if (c.dataset.vx) return; c.dataset.vx = 1;
+    var l = document.createElement("div"); l.className = "vxlant"; l.innerHTML = LANT;
+    var host = c.classList.contains("lcard") ? c : c; host.insertBefore(l, host.firstChild);
+    var sp = document.createElement("div"); sp.className = "vxspecks";
+    for (var i = 0; i < 7; i++) { var d = document.createElement("i"); d.style.left = (8 + i * 13) + "%"; d.style.animationDelay = (-i * 1.1) + "s"; d.style.animationDuration = (6 + (i % 3)) + "s"; sp.appendChild(d); }
+    host.appendChild(sp);
+  });
+}
+try {
+  var pmo = new MutationObserver(function () { syncHide(); decorate(); liftLater(40); });
+  pmo.observe(panel, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  ["nextup", "daily"].forEach(function (id) { var h = $(id); if (h) new MutationObserver(decorate).observe(h, { childList: true }); });
+  addEventListener("resize", function () { liftLater(60); });
+} catch (e) {}
+/* ردّ لمس مرن */
+panel.addEventListener("pointerdown", function (e) {
+  var t = e.target.closest && e.target.closest(".opt,.chip,.cell,.toucher,.btn,.ayah"); if (!t || reduce) return;
+  t.classList.remove("vxpop"); void t.offsetWidth; t.classList.add("vxpop");
+}, true);
+/* العلامة تطير إلى الخريطة عند زرّ الختام */
+function flyHome(mark) {
+  var g = $(mark); if (!g || !g.animate || reduce) return;
+  var bb = g.getBBox(), tm = null; try { var cs = g.transform.baseVal.consolidate(); tm = cs && cs.matrix; } catch (e) {}
+  var cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2; if (tm) { var x = tm.a * cx + tm.c * cy + tm.e; cy = tm.b * cx + tm.d * cy + tm.f; cx = x; }
+  var s = Math.max(.9, Math.min(2, 80 / Math.max(10, bb.width, bb.height))), T = { x: vb[0] + vb[2] / 2, y: 250 };
+  var w = svgEl("g", {}, fx), u = svgEl("use", {}, w); u.setAttribute("href", "#" + mark);
+  var tf = function (x, y, k) { return "translate(" + x + "px," + y + "px) scale(" + k + ") translate(" + (-cx) + "px," + (-cy) + "px)"; };
+  var an = w.animate([{ transform: tf(T.x, T.y, s), opacity: 1, offset: 0 }, { transform: tf(T.x, T.y, s), opacity: 1, offset: .3 }, { transform: tf(cx, cy, 1), opacity: .9, offset: .85 }, { transform: tf(cx, cy, 1), opacity: 0, offset: 1 }], { duration: 1800, easing: "ease-in-out", fill: "forwards" });
+  an.onfinish = function () { w.remove(); };
+}
+panel.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest(".lesson-close .btn"); if (!b) return;
+  try { var D = window.Director, mk = D && D.exp && D.exp.leaves; if (mk && S().hasMark(mk) && app.classList.contains("instage")) flyHome(mk); } catch (x) {}
+}, true);
+var st1 = W.stage; W.stage = function () { var r = st1.apply(this, arguments); liftLater(700); return r; };
+var un1 = W.unstage; W.unstage = function () { var r = un1.apply(this, arguments); clearTimeout(hideT); panel.classList.remove("vx-hide"); return r; };
+
+window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayout, vb: function () { return vb; } };
 })();
