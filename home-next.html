@@ -15,9 +15,29 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="أثر القرآن">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijan+2:wght@500;600;700;800&family=Tajawal:wght@400;500;700;800&family=Amiri+Quran&display=swap" rel="stylesheet">
+<style id="localFonts">
+@font-face{font-family:"Baloo Bhaijan 2";font-style:normal;font-weight:500 800;font-display:swap;
+  src:url("next/assets/fonts/baloo-bhaijaan2-var.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:400;font-display:swap;src:url("next/assets/fonts/tajawal-400.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:500;font-display:swap;src:url("next/assets/fonts/tajawal-500.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:700;font-display:swap;src:url("next/assets/fonts/tajawal-700.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:800;font-display:swap;src:url("next/assets/fonts/tajawal-800.woff2") format("woff2");}
+@font-face{font-family:"Amiri Quran";font-style:normal;font-weight:400;font-display:swap;src:url("next/assets/fonts/amiri-quran.woff2") format("woff2");}
+@font-face{font-family:"Athar Salawat";font-style:normal;font-weight:400 700;font-display:swap;
+  src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");
+  unicode-range:U+FDFA-FDFB,U+FDFD,U+06D6-06ED;}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:400;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:500;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:700;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
+@font-face{font-family:"Tajawal";font-style:normal;font-weight:800;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
+@font-face{font-family:"Baloo Bhaijan 2";font-style:normal;font-weight:500 800;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
+</style>
+<style id="wBootCss">#wBoot{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,var(--b1,#62b6f6),var(--b2,#a6dbfb) 20%,var(--b3,#d2eed8) 38%,var(--b4,#6fbf8e));transition:opacity .4s}#wBoot.off{opacity:0;pointer-events:none}
+html.hw-pre #view-home>:not(#homeWorld){display:none!important}
+html.hw-pre #app header{position:absolute;top:0;left:0;right:0;background:transparent;padding:12px 16px 2px;z-index:9}
+html.hw-pre #app .brand-mark{width:38px;height:38px}html.hw-pre #app .brand-text{font-size:23px}html.hw-pre #app .brand-text span{font-size:12.5px;font-weight:700}
+html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{padding:3px 16px 3px 8px}html.hw-pre #app .sig{position:absolute;left:0;right:0;bottom:3px;margin:0;padding:0;z-index:7;pointer-events:none;opacity:.75;line-height:1.2}html.hw-pre #app main{padding:0}</style>
+<script>(function(){try{var q=new URLSearchParams(location.search),h=new Date().getHours(),t=q.get("t")||(h>=5&&h<11?"morning":h>=11&&h<15?"day":h>=15&&h<19?"evening":"night"),P={morning:["#8fd0ff","#ffe4cf","#ffd5a8","#7fbf8a"],evening:["#7d73cf","#f4a3ad","#ffcb86","#5a6291"],night:["#0e1236","#1c2860","#37478a","#121a41"]}[t];if(P){var r=document.documentElement.style;r.setProperty("--b1",P[0]);r.setProperty("--b2",P[1]);r.setProperty("--b3",P[2]);r.setProperty("--b4",P[3])}document.documentElement.classList.add("hw-pre");setTimeout(function(){var b=document.getElementById("wBoot");if(b){b.remove();document.documentElement.classList.remove("hw-pre")}},7000)}catch(e){}})()</script>
 <style>
   :root{
     --bg:#F3F7EF;
@@ -1355,6 +1375,7 @@
 </style><!--ATHAR-HOME-CSS-END-->
 </head>
 <body>
+<div id="wBoot" aria-hidden="true"></div>
 
 <!-- مكتبة رموز شخصيّتي «ورقة» و«قُمَير» — تُستدعى بـ <use> في أكثر من مكان -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -3115,7 +3136,7 @@
   function pad2(n){ return n < 10 ? "0" + n : "" + n; }
   function todayStr(){ var d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
   function daysKey(){ return "athar_days_v1_" + profiles.active; }
-  function loadDays(){ try{ return JSON.parse(localStorage.getItem(daysKey())) || []; }catch(e){ return []; } }
+  function loadDays(){ try{ var a = JSON.parse(localStorage.getItem(daysKey())); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
   function markDayActive(){
     try{ misTick(); }catch(e){}
     var d = loadDays(), t = todayStr();

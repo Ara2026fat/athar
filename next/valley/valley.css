@@ -51,7 +51,7 @@
 .vxLan.boost{animation:vxboost .9s ease-out 1}
 @keyframes vxboost{0%{transform:scale(1);opacity:1}35%{transform:scale(2.3);opacity:1}100%{transform:scale(1);opacity:.7}}
 #vxHit{cursor:pointer}
-#boyImg,#boyImg2{filter:url(#vxSharp)}
+/* r5: الحدّة مخبوزة في الصورة (valley.js) */
 
 /* أماكن: عمق وظلّ بدل التسطّح، والنائمة تُرى بلطف */
 .place{filter:drop-shadow(0 5px 4px rgba(60,38,18,.30)) saturate(1.1) contrast(1.03)}
@@ -156,7 +156,8 @@
 .panel-cap{text-shadow:0 1px 0 rgba(255,255,255,.7)}
 .pdot.on{background:#F0A93B;box-shadow:0 0 0 3px rgba(240,169,59,.25)}
 /* الخلفية تتنفّس */
-#app.instage:not([data-soft]) #placeBg{transform-box:view-box;transform-origin:50% 100%;animation:vxbreathe 18s ease-in-out infinite alternate}
+/* r5: التنفّس على عنصر svg نفسه (تركيب على المعالج الرسومي) لا على صورة داخل svg (إعادة رسم كل إطار) */
+#app.instage:not([data-soft]) #scene{transform-origin:50% 100%;will-change:transform;animation:vxbreathe 18s ease-in-out infinite alternate}
 @keyframes vxbreathe{from{transform:scale(1.022)}to{transform:scale(1)}}
 /* احتفال هادئ: ضوء فانوس وذرّات ضوء بطيئة */
 .vxlant{position:relative;width:74px;height:74px;margin:-2px auto 4px;display:grid;place-items:center}
@@ -172,6 +173,30 @@
 .vx-tidy{transition:translate .6s ease,scale .6s ease}
 .vx-new{filter:drop-shadow(0 0 7px rgba(255,214,120,.95))}
 @media(prefers-reduced-motion:reduce){
-  .vxlant::before,.vxspecks i,.toucher .ico .rp,.panel-art svg,#app.instage #placeBg,.vxpop,.opt.picked{animation:none!important}
+  .vxlant::before,.vxspecks i,.toucher .ico .rp,.panel-art svg,#app.instage #placeBg,.vxpop,.opt.picked,#app.instage #scene{animation:none!important}
   .vx-tidy{transition:none}
 }
+/* ضغط الأحجام على الشاشات القصيرة (لا ينزل عن 64px) */
+#panel.tight .opt{min-height:64px;padding-block:8px}
+#panel.tight .toucher{min-height:78px}
+#panel.tight .cell,#panel.tight .chip{min-height:64px}
+#panel.tight2 .toucher{min-height:68px}
+#panel.tight .opt,#panel.tight2 .opt{padding-inline-start:62px}
+
+/* ═══ r5: أداء ═══ */
+/* داخل الدرس وخلف البطاقات: حركات المشهد المخفية (نجوم، أعشاب، جداول...) تُجمَّد، ويبقى أثر والأصدقاء */
+#app.instage #scene *:not(#boy):not(#boy *):not(#vxJ):not(#vxJ *):not(.vxLan):not([id^="fr_"]):not([id^="fr_"] *):not(#placeBg):not(#placeBg *),
+#app:has(#intro.on,#daily.on,#nextup.on,#parent.on,#settings.on) #scene *:not(#boy):not(#boy *){animation-play-state:paused}
+/* بوابة الدخول: بعد الإخفاء لا حركة تحتها */
+#gate.off{visibility:hidden;transition:opacity .8s,visibility 0s .8s}
+#gate.off,#gate.off *,#gate.off *::before,#gate.off *::after{animation-play-state:paused!important}
+.vxTw{animation:twinkle 3.4s ease-in-out infinite}.vxTw1{animation-delay:-1.1s}.vxTw2{animation-delay:-2.3s}
+.tuft:not(.d2){animation:none}
+.stream{animation-timing-function:steps(7,end)}
+@media (prefers-reduced-motion:reduce){.vxTw,.tuft,.stream{animation:none}}
+#app[data-calm].instage #scene{animation:none!important;will-change:auto}
+/* r5: حركات بطيئة جدًا تُحدَّث بخطوات صغيرة (≈4 مرات/ث، أقل من بكسلين) فلا يُعاد رسم المشهد كل إطار */
+#vxSky .vxc{animation-timing-function:steps(480,end)}
+.cloud{animation-timing-function:steps(100,end)}
+/* لمعات الليل: لا حركة والنهار (طبقة النجوم شفافة) */
+#stars[style*="opacity: 0;"] .vxTw{animation-play-state:paused}

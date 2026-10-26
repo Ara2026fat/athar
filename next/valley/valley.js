@@ -54,8 +54,7 @@ defs.insertAdjacentHTML("beforeend",
   '<linearGradient id="vxHzG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" id="vxH0" stop-color="#fff" stop-opacity="0"/><stop offset=".55" id="vxH1" stop-color="#fff" stop-opacity=".5"/><stop offset="1" id="vxH2" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
   '<radialGradient id="vxLanG"><stop offset="0" stop-color="#FFF1BC" stop-opacity=".95"/><stop offset=".4" stop-color="#FFC95E" stop-opacity=".5"/><stop offset="1" stop-color="#FFB040" stop-opacity="0"/></radialGradient>' +
   '<linearGradient id="vxRoad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBD8A6"/><stop offset="1" stop-color="#D8B97A"/></linearGradient>' +
-  '<linearGradient id="vxHill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B6E27A"/><stop offset="1" stop-color="#6DB550"/></linearGradient>' +
-  '<filter id="vxSharp" color-interpolation-filters="sRGB"><feConvolveMatrix order="3" kernelMatrix="0 -.28 0 -.28 2.12 -.28 0 -.28 0" divisor="1" bias="0" preserveAlpha="true" edgeMode="duplicate"/></filter>');
+  '<linearGradient id="vxHill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B6E27A"/><stop offset="1" stop-color="#6DB550"/></linearGradient>');
 
 /* ═══ 2 · سماء حيّة: غيوم ناعمة تنجرف + ضوء الأفق مع الساعة ═══ */
 var sky = svgEl("g", { id: "vxSky", "pointer-events": "none" }, scene, $("clouds"));
@@ -384,6 +383,11 @@ W.effect = function (mark) {
   try { if (mark && app.classList.contains("instage")) popMark(mark); } catch (e) {}
   return r;
 };
+function cloneMark(g) {
+  var c = g.cloneNode(true); c.removeAttribute("id"); c.setAttribute("opacity", "1"); c.style.animation = "none"; c.style.opacity = "1"; c.style.translate = ""; c.style.scale = ""; c.style.filter = "";
+  [].slice.call(c.querySelectorAll("[id]")).forEach(function (n) { n.removeAttribute("id"); });
+  c.setAttribute("class", ""); return c;
+}
 function popMark(mark) {
   var g = $(mark); if (!g || !g.animate) return;
   var m = scene.getScreenCTM(); if (!m) return;
@@ -391,8 +395,7 @@ function popMark(mark) {
   function ap(x, y) { return tm ? { x: tm.a * x + tm.c * y + tm.e, y: tm.b * x + tm.d * y + tm.f } : { x: x, y: y }; }
   var p1 = ap(bb.x, bb.y), p2 = ap(bb.x + bb.width, bb.y + bb.height), cx = (p1.x + p2.x) / 2, cy = (p1.y + p2.y) / 2, bw = Math.abs(p2.x - p1.x), bh = Math.abs(p2.y - p1.y);
   var s = Math.max(.9, Math.min(2.2, 84 / Math.max(10, bw, bh))), T = { x: vb[0] + vb[2] / 2, y: 232 };
-  var wrap = svgEl("g", { opacity: "0" }, fx), use = svgEl("use", {}, wrap);
-  use.setAttribute("href", "#" + mark);
+  var wrap = svgEl("g", { opacity: "0" }, fx), use = cloneMark(g); wrap.appendChild(use);
   var halo = svgEl("circle", { cx: 0, cy: 0, r: 60, fill: "url(#vxLanG)" }, wrap, use);
   function tf(x, y, k) { return "translate(" + x + "px," + y + "px) scale(" + k + ") translate(" + (-cx) + "px," + (-cy) + "px)"; }
   try { halo.setAttribute("transform", "translate(" + cx + " " + cy + ")"); } catch (e) {}
@@ -431,6 +434,23 @@ W.unstage = function () {
 };
 var ph0 = W.phase;
 W.phase = function () { var r = ph0.apply(this, arguments); soft(); return r; };
+
+/* r5: حارس سلاسة. أول ثانيتين داخل الدرس نقيس الإطارات؛ إن قلّت عن 40 يُطفأ تنفّس الخلفية (الأكبر كلفة) على هذا الجهاز فقط */
+var calmCk = 0;
+function guard() {
+  if (app.dataset.calm || !app.classList.contains("instage")) return;
+  var ck = ++calmCk, n = 0, t0 = 0;
+  setTimeout(function () {
+    function f(t) {
+      if (ck !== calmCk || !app.classList.contains("instage")) return;
+      if (!t0) t0 = t; n++;
+      if (t - t0 < 2000) return requestAnimationFrame(f);
+      if (n * 1000 / (t - t0) < 40) app.dataset.calm = "1";
+    }
+    requestAnimationFrame(f);
+  }, 1200);
+}
+var stGuard = W.stage; W.stage = function () { var r = stGuard.apply(this, arguments); guard(); return r; };
 
 /* حبيبات خفيفة + تدرّج لوني فوق المشهد */
 (function () {
@@ -517,7 +537,7 @@ function flyHome(mark) {
   var bb = g.getBBox(), tm = null; try { var cs = g.transform.baseVal.consolidate(); tm = cs && cs.matrix; } catch (e) {}
   var cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2; if (tm) { var x = tm.a * cx + tm.c * cy + tm.e; cy = tm.b * cx + tm.d * cy + tm.f; cx = x; }
   var s = Math.max(.9, Math.min(2, 80 / Math.max(10, bb.width, bb.height))), T = { x: vb[0] + vb[2] / 2, y: 250 };
-  var w = svgEl("g", {}, fx), u = svgEl("use", {}, w); u.setAttribute("href", "#" + mark);
+  var w = svgEl("g", {}, fx); w.appendChild(cloneMark(g));
   var tf = function (x, y, k) { return "translate(" + x + "px," + y + "px) scale(" + k + ") translate(" + (-cx) + "px," + (-cy) + "px)"; };
   var an = w.animate([{ transform: tf(T.x, T.y, s), opacity: 1, offset: 0 }, { transform: tf(T.x, T.y, s), opacity: 1, offset: .3 }, { transform: tf(cx, cy, 1), opacity: .9, offset: .85 }, { transform: tf(cx, cy, 1), opacity: 0, offset: 1 }], { duration: 1800, easing: "ease-in-out", fill: "forwards" });
   an.onfinish = function () { w.remove(); };
@@ -526,8 +546,29 @@ panel.addEventListener("click", function (e) {
   var b = e.target.closest && e.target.closest(".lesson-close .btn"); if (!b) return;
   try { var D = window.Director, mk = D && D.exp && D.exp.leaves; if (mk && S().hasMark(mk) && app.classList.contains("instage")) flyHome(mk); } catch (x) {}
 }, true);
-var st1 = W.stage; W.stage = function () { var r = st1.apply(this, arguments); liftLater(700); return r; };
+var stG = W.stage; W.stage = function () { var r = stG.apply(this, arguments); liftLater(700); return r; };
 var un1 = W.unstage; W.unstage = function () { var r = un1.apply(this, arguments); clearTimeout(hideT); panel.classList.remove("vx-hide"); return r; };
+
+/* ── r5: نجوم/لمعات: بدل 45 حركة منفصلة تُجمَّع كل سلسلة متجاورة في <g> واحد بإيقاع من 3 أطوار ── */
+(function () {
+  var run = [], n = 0;
+  function flush(parent) {
+    if (!run.length) return;
+    var g = svgEl("g", { "class": "vxTw vxTw" + (n++ % 3) });
+    parent.insertBefore(g, run[0]);
+    run.forEach(function (c) { c.classList.remove("star"); c.removeAttribute("style"); g.appendChild(c); });
+    run = [];
+  }
+  var seen = [];
+  [].forEach.call(document.querySelectorAll("#scene .star"), function (st) { if (seen.indexOf(st.parentNode) < 0) seen.push(st.parentNode); });
+  seen.forEach(function (par) {
+    run = [];
+    [].slice.call(par.children).forEach(function (c) {
+      if (c.classList && c.classList.contains("star")) run.push(c); else flush(par);
+    });
+    flush(par);
+  });
+})();
 
 window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayout, vb: function () { return vb; } };
 })();

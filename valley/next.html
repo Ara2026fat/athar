@@ -8,16 +8,18 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style id="vxFonts">
+/* خطوط محلية (لا شبكة): عند الدمج انقل next/assets/fonts إلى fonts/ وعدّل المسار */
+@font-face{font-family:"Rubik";font-style:normal;font-weight:400 700;font-display:swap;src:url("../next/assets/fonts/rubik-ar-lat-var.woff2") format("woff2")}
+@font-face{font-family:"Athar Salawat";font-style:normal;font-weight:400 700;font-display:swap;src:url("../next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD,U+06D6-06ED}
+</style>
 <style>
 :root{--em:#1E6F5C;--cream:#F0E6D2;--gold:#F0A93B;--ink:#20342E;--soft:#5E5140;
   --line:#3A2E24;--wood:#7A5334}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;user-select:none}
 html,body{height:100%;overflow:hidden;background:#07110D}
-body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center}
+body{font-family:Rubik,"Athar Salawat",system-ui,sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center}
 #app{position:relative;width:100%;height:100%;max-width:520px;overflow:hidden;background:#8FCDEA}
 #stage{position:absolute;inset:0}
 #stage svg{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -3991,8 +3993,17 @@ window.addEventListener("load", () => {
     var r = enter0.apply(this, arguments);
     if (cfg.bg) {
       try { var nx = A.places.find(function(p){ return A.nextAt(p); }); if (nx) preload(bgFile(nx.place)); } catch (e) {}
-      var rest = function(){ Object.keys(BG).forEach(function(k){ preload(bgFile(k)); }); Object.keys(BG).forEach(function(k){ preload(BG[k].day); preload(BG[k].sun); preload(BG[k].night); }); POSES.forEach(function(p){ var i = new Image(); i.src = poseUrl(p); }); };
-      (window.requestIdleCallback || function(f){ setTimeout(f, 2500); })(rest, { timeout: 5000 });
+      /* r5: تحميل كسول مرحلي. 1) وقت الفراغ: خلفيات الأماكن بوقت اليوم الحالي فقط (5 ملفات) 2) فراغ ثانٍ وبشرط شبكة جيدة وبلا saveData: الوضعيات وبقية أوقات اليوم. وما يفوت يُحمَّل عند الحاجة (showBg). */
+      var idle = window.requestIdleCallback || function(f){ setTimeout(f, 2500); };
+      var good = function(){ var c = navigator.connection; return !(c && (c.saveData || /(^|-)2g$|3g/.test(c.effectiveType || ""))); };
+      idle(function(){
+        Object.keys(BG).forEach(function(k){ preload(bgFile(k)); });
+        if (!good()) return;
+        setTimeout(function(){ idle(function(){ if (!good()) return;
+          POSES.forEach(function(p){ var i = new Image(); i.decoding = "async"; i.src = poseUrl(p); });
+          Object.keys(BG).forEach(function(k){ preload(BG[k].day); preload(BG[k].sun); preload(BG[k].night); });
+        }, { timeout: 8000 }); }, 6000);
+      }, { timeout: 5000 });
     }
     return r;
   };

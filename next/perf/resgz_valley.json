@@ -1,0 +1,350 @@
+[
+ {
+  "name": "valley",
+  "cpu": 1,
+  "net": false,
+  "loadMs": 733,
+  "bytesKB": 517,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 496,
+  "load": 728,
+  "ttfb": 76,
+  "fcp": 472,
+  "cls": 0,
+  "lcp": 472,
+  "longtasks": [],
+  "ltTotal": 0,
+  "ltBlocking": 0,
+  "fps": {
+   "frames": 359,
+   "fps": 59.8,
+   "p95ms": 16.8,
+   "maxms": 33.4,
+   "over50": 0
+  },
+  "idle": {
+   "taskPct": 34.5,
+   "scriptPct": 0.4,
+   "layoutPct": 1.2,
+   "stylePct": 5
+  },
+  "ltIdle": 0,
+  "nodes": 1826,
+  "heapMB": 4.1,
+  "heapTotMB": 6.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 4,
+  "net": true,
+  "loadMs": 3041,
+  "bytesKB": 522,
+  "reqs": 13,
+  "errs": [],
+  "dcl": 2689,
+  "load": 3025,
+  "ttfb": 9,
+  "fcp": 616,
+  "cls": 0.07,
+  "lcp": 788,
+  "longtasks": [
+   [
+    476,
+    101
+   ],
+   [
+    1698,
+    88
+   ],
+   [
+    1793,
+    96
+   ],
+   [
+    4040,
+    52
+   ],
+   [
+    4093,
+    53
+   ]
+  ],
+  "ltTotal": 390,
+  "ltBlocking": 140,
+  "fps": {
+   "frames": 317,
+   "fps": 52.7,
+   "p95ms": 33.4,
+   "maxms": 66.6,
+   "over50": 2
+  },
+  "idle": {
+   "taskPct": 83.4,
+   "scriptPct": 2.1,
+   "layoutPct": 2.1,
+   "stylePct": 15.1
+  },
+  "ltIdle": 0,
+  "nodes": 1942,
+  "heapMB": 4.1,
+  "heapTotMB": 6.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 6,
+  "net": true,
+  "loadMs": 3423,
+  "bytesKB": 522,
+  "reqs": 13,
+  "errs": [],
+  "dcl": 2964,
+  "load": 3421,
+  "ttfb": 14,
+  "fcp": 780,
+  "cls": 0.07,
+  "lcp": 936,
+  "longtasks": [
+   [
+    483,
+    191
+   ],
+   [
+    1757,
+    141
+   ],
+   [
+    2029,
+    176
+   ],
+   [
+    2904,
+    59
+   ],
+   [
+    4607,
+    51
+   ],
+   [
+    4888,
+    54
+   ],
+   [
+    5627,
+    51
+   ],
+   [
+    6074,
+    53
+   ]
+  ],
+  "ltTotal": 776,
+  "ltBlocking": 376,
+  "fps": {
+   "frames": 227,
+   "fps": 37.6,
+   "p95ms": 50,
+   "maxms": 166.7,
+   "over50": 8
+  },
+  "idle": {
+   "taskPct": 90.1,
+   "scriptPct": 4.7,
+   "layoutPct": 2.3,
+   "stylePct": 15.4
+  },
+  "ltIdle": 4,
+  "nodes": 1911,
+  "heapMB": 4.1,
+  "heapTotMB": 6.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 4,
+  "net": false,
+  "loadMs": 993,
+  "bytesKB": 517,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 848,
+  "load": 989,
+  "ttfb": 20,
+  "fcp": 492,
+  "cls": 0.011,
+  "lcp": 492,
+  "longtasks": [
+   [
+    377,
+    93
+   ],
+   [
+    530,
+    82
+   ],
+   [
+    623,
+    127
+   ],
+   [
+    1750,
+    55
+   ],
+   [
+    2082,
+    60
+   ],
+   [
+    2207,
+    87
+   ]
+  ],
+  "ltTotal": 504,
+  "ltBlocking": 204,
+  "fps": {
+   "frames": 321,
+   "fps": 53.4,
+   "p95ms": 33.4,
+   "maxms": 50,
+   "over50": 0
+  },
+  "idle": {
+   "taskPct": 77.1,
+   "scriptPct": 1.5,
+   "layoutPct": 2.9,
+   "stylePct": 15.7
+  },
+  "ltIdle": 0,
+  "nodes": 1824,
+  "heapMB": 4.1,
+  "heapTotMB": 6.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 6,
+  "net": false,
+  "loadMs": 1151,
+  "bytesKB": 517,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 1133,
+  "load": 1147,
+  "ttfb": 6,
+  "fcp": 584,
+  "cls": 0.008,
+  "lcp": 584,
+  "longtasks": [
+   [
+    399,
+    126
+   ],
+   [
+    556,
+    111
+   ],
+   [
+    677,
+    173
+   ],
+   [
+    936,
+    54
+   ],
+   [
+    1032,
+    61
+   ],
+   [
+    1422,
+    67
+   ],
+   [
+    4179,
+    62
+   ]
+  ],
+  "ltTotal": 654,
+  "ltBlocking": 304,
+  "fps": {
+   "frames": 217,
+   "fps": 36.2,
+   "p95ms": 50,
+   "maxms": 66.6,
+   "over50": 4
+  },
+  "idle": {
+   "taskPct": 87.7,
+   "scriptPct": 1.3,
+   "layoutPct": 3.7,
+   "stylePct": 20.8
+  },
+  "ltIdle": 4,
+  "nodes": 1824,
+  "heapMB": 4,
+  "heapTotMB": 6.6,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ }
+]

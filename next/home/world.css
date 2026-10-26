@@ -136,14 +136,44 @@ body.hw-home .leaf{display:none}
 /* حركات الخمول */
 .wb .sw{transform-box:fill-box;transform-origin:50% 100%;animation:wsway 3.6s ease-in-out infinite alternate}
 .wb .sw.s1{animation-duration:4.4s;animation-delay:-1.2s}.wb .sw.s2{animation-duration:3.1s;animation-delay:-2s}.wb .sw.s3{animation-duration:5s;animation-delay:-.6s;transform-origin:50% 90%}
-.wb .chk{stroke-dasharray:1;animation:wchalk 10s ease-in-out infinite}
-.wb .cdt{animation:wcdt 10s ease-in-out infinite}
+.wb .chk{animation:wchalkO 10s ease-in-out infinite}
 .wb .spk{transform-box:fill-box;transform-origin:center;opacity:0;animation:wspk 10s ease-in-out infinite}
 .wb .bk{animation:wbk 8s ease-in-out infinite}
 .wb .fin{transform-box:fill-box;transform-origin:center;animation:wfin 7s ease-in-out infinite}
 @keyframes wsway{from{transform:rotate(-3deg)}to{transform:rotate(3deg) translateY(-1.5px)}}
-@keyframes wchalk{0%,4%{stroke-dashoffset:1;opacity:1}24%{stroke-dashoffset:0}84%{stroke-dashoffset:0;opacity:1}94%,100%{stroke-dashoffset:0;opacity:0}}
-@keyframes wcdt{0%,24%{opacity:0}30%,84%{opacity:1}94%,100%{opacity:0}}
+@keyframes wchalkO{0%,4%{opacity:0}24%,84%{opacity:1}94%,100%{opacity:0}}
 @keyframes wspk{0%,86%,100%{opacity:0;transform:scale(.2) rotate(0)}91%{opacity:1;transform:scale(1.15) rotate(40deg)}96%{opacity:0;transform:scale(.5) rotate(80deg)}}
 @keyframes wbk{0%,80%,100%{transform:translateY(0)}86%{transform:translateY(-6px)}92%{transform:translateY(0)}}
 @keyframes wfin{0%,84%,100%{transform:scale(1)}92%{transform:scale(1.5)}}
+.wb .lan{transform-box:fill-box;transform-origin:50% 0;animation:wlan 4s ease-in-out infinite alternate}
+@keyframes wlan{from{transform:rotate(calc(var(--a)*-1))}to{transform:rotate(var(--a))}}
+#homeWorld.w-busy .wb *{animation-play-state:paused!important}
+
+/* ج6: تباين وأهداف لمس */
+#app.hw-on .brand{background:rgba(14,30,72,.64);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);border-radius:28px;padding:3px 16px 3px 8px}
+#app.hw-on .gear-btn{width:48px;height:48px}
+#app.hw-on .gear-btn svg{width:26px;height:26px}
+.w-night .wb .lb{background:rgba(14,18,48,.94);color:#fff;border-color:#c3ccff}
+.w-night .wb .bd{background:#fff6cf;color:#2b2140}
+#wLanterns .al-tx{font-size:13px;font-weight:800;opacity:1;fill:#3a2616;stroke:rgba(255,255,255,.95);stroke-width:3.6px;paint-order:stroke;stroke-linejoin:round}
+#wLanterns [data-time=dusk] .al-tx,#wLanterns [data-time=night] .al-tx{fill:#fff6e0;stroke:rgba(24,16,52,.92)}
+#wDock .pack-link{position:relative;color:#5c3a00}
+#wDock .pack-link::after,#wDock .pill-btn::after{content:"";position:absolute;left:-10px;right:-10px;top:50%;height:48px;margin-top:-24px}
+#wDock .pill-btn{position:relative}
+#wPkX{width:36px;height:36px;top:-14px}
+#wPkX::after{inset:-8px}
+#wProf .prof-chip{min-height:48px;min-width:48px}
+#wDusk:focus-visible{outline:4px solid #ffe28a;outline-offset:-8px}
+/* ج6: إرشاد، احتفال، الوادي، الجمعة */
+.w-nudge .ath-halo{animation:wnudge 1.8s ease-in-out infinite}
+.w-nudge .ath-hint{animation-duration:1.4s;border-width:4px}
+@keyframes wnudge{0%,100%{transform:scale(calc(var(--hs)*1.2));opacity:.8}50%{transform:scale(calc(var(--hs)*2.3));opacity:1}}
+#wFall{position:absolute;left:0;top:0;width:390px;height:300px;overflow:hidden;pointer-events:none;z-index:4}
+.w-fl{position:absolute;top:-12px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle,#fffdf0 0,rgba(255,224,130,.95) 40%,rgba(255,200,90,0) 72%);animation:wfall 2.4s ease-in forwards}
+@keyframes wfall{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(270px) scale(1.2);opacity:0}}
+.w-bub.say{min-width:128px}.w-bub.say .go,.w-bub.say small{display:none}
+.wb.opn .art{animation:wopn .5s ease-in-out forwards}
+@keyframes wopn{0%{transform:scale(1)}100%{transform:scale(1.16)}}
+.wb.opn::before{animation:wflash .5s ease-out forwards}
+#wLanterns .al-ln.fri .al-sw{transform-box:fill-box;transform-origin:50% 0;transform:scale(1.18)}
+#wLanterns .al-ln.fri .al-halo{opacity:.95;transform:scale(1.25)}

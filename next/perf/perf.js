@@ -1,6 +1,6 @@
 const {chromium}=require('playwright');
 const fs=require('fs');
-const BASE='http://localhost:8099/';
+const BASE=process.env.BASE||'http://localhost:8099/';
 const SLOW4G={offline:false,latency:150,downloadThroughput:1.6*1024*1024/8,uploadThroughput:750*1024/8,connectionType:'cellular4g'};
 const INIT=`
 (()=>{
@@ -8,7 +8,7 @@ const INIT=`
  const R=window.requestAnimationFrame.bind(window),C=window.cancelAnimationFrame.bind(window);
  window.requestAnimationFrame=function(cb){window.__raf.sched++;const id=R(function(t){window.__raf.live.delete(id);window.__raf.calls++;cb(t)});window.__raf.live.add(id);return id};
  window.cancelAnimationFrame=function(id){window.__raf.cancel++;window.__raf.live.delete(id);return C(id)};
- window.__lt=[];window.__fcp=null;window.__lcp=null;
+ window.__lt=[];window.__fcp=null;window.__lcp=null;window.__cls=0;try{new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)window.__cls+=e.value}).observe({type:'layout-shift',buffered:true})}catch(e){}
  try{new PerformanceObserver(l=>{for(const e of l.getEntries())window.__lt.push([Math.round(e.startTime),Math.round(e.duration)])}).observe({type:'longtask',buffered:true})}catch(e){}
  try{new PerformanceObserver(l=>{for(const e of l.getEntries())if(e.name==='first-contentful-paint')window.__fcp=e.startTime}).observe({type:'paint',buffered:true})}catch(e){}
  try{new PerformanceObserver(l=>{for(const e of l.getEntries())window.__lcp=e.startTime}).observe({type:'largest-contentful-paint',buffered:true})}catch(e){}
@@ -34,7 +34,7 @@ async function run(name,url,w,h,cpu,net,opts={}){
  const nav=await p.evaluate(()=>{const n=performance.getEntriesByType('navigation')[0];return {dcl:Math.round(n.domContentLoadedEventEnd),load:Math.round(n.loadEventEnd),ttfb:Math.round(n.responseStart)}});
  Object.assign(o,nav);
  await p.waitForTimeout(opts.settle||2500);
- o.fcp=await p.evaluate(()=>Math.round(window.__fcp||-1));o.lcp=await p.evaluate(()=>Math.round(window.__lcp||-1));
+ o.fcp=await p.evaluate(()=>Math.round(window.__fcp||-1));o.cls=await p.evaluate(()=>+window.__cls.toFixed(3));o.lcp=await p.evaluate(()=>Math.round(window.__lcp||-1));
  o.longtasks=await p.evaluate(()=>window.__lt);
  o.ltTotal=o.longtasks.reduce((a,x)=>a+x[1],0);o.ltBlocking=o.longtasks.reduce((a,x)=>a+Math.max(0,x[1]-50),0);
  // idle window
@@ -62,5 +62,5 @@ if(require.main===module){(async()=>{
   const r=await run(which,u,w,h,cpu,net,{ready:rd});
   console.log(JSON.stringify(r));out.push(r);
  }
- fs.writeFileSync('/home/claude/athar/next/perf/res_'+which+'.json',JSON.stringify(out,null,1));
+ fs.writeFileSync('/home/claude/athar/next/perf/resgz_'+which+'.json',JSON.stringify(out,null,1));
 })()}

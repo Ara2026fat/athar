@@ -1,0 +1,430 @@
+[
+ {
+  "name": "valley",
+  "cpu": 1,
+  "net": false,
+  "loadMs": 636,
+  "bytesKB": 1289,
+  "reqs": 11,
+  "errs": [],
+  "dcl": 486,
+  "load": 565,
+  "ttfb": 8,
+  "fcp": 504,
+  "lcp": 504,
+  "longtasks": [
+   [
+    1716,
+    66
+   ]
+  ],
+  "ltTotal": 66,
+  "ltBlocking": 16,
+  "fps": {
+   "frames": 254,
+   "fps": 42.3,
+   "p95ms": 66.7,
+   "maxms": 150,
+   "over50": 17
+  },
+  "idle": {
+   "taskPct": 44.1,
+   "scriptPct": 0.6,
+   "layoutPct": 1.4,
+   "stylePct": 5.9
+  },
+  "ltIdle": 5,
+  "nodes": 1824,
+  "heapMB": 4,
+  "heapTotMB": 6.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 4,
+  "net": true,
+  "loadMs": 7159,
+  "bytesKB": 1330,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 7110,
+  "load": 7113,
+  "ttfb": 14,
+  "fcp": 1004,
+  "lcp": 1060,
+  "longtasks": [
+   [
+    747,
+    125
+   ],
+   [
+    4875,
+    88
+   ],
+   [
+    5242,
+    121
+   ],
+   [
+    5371,
+    156
+   ],
+   [
+    6669,
+    52
+   ],
+   [
+    6774,
+    169
+   ],
+   [
+    6945,
+    155
+   ],
+   [
+    7665,
+    72
+   ],
+   [
+    8122,
+    51
+   ],
+   [
+    8272,
+    117
+   ],
+   [
+    8404,
+    101
+   ],
+   [
+    8538,
+    54
+   ],
+   [
+    9540,
+    50
+   ],
+   [
+    10173,
+    57
+   ]
+  ],
+  "ltTotal": 1368,
+  "ltBlocking": 668,
+  "fps": {
+   "frames": 144,
+   "fps": 23.9,
+   "p95ms": 116.7,
+   "maxms": 266.6,
+   "over50": 28
+  },
+  "idle": {
+   "taskPct": 61.9,
+   "scriptPct": 5.4,
+   "layoutPct": 2.8,
+   "stylePct": 9
+  },
+  "ltIdle": 12,
+  "nodes": 1781,
+  "heapMB": 3.4,
+  "heapTotMB": 5.1,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 6,
+  "net": true,
+  "loadMs": 6994,
+  "bytesKB": 1330,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 6962,
+  "load": 6963,
+  "ttfb": 73,
+  "fcp": 988,
+  "lcp": 1016,
+  "longtasks": [
+   [
+    835,
+    117
+   ],
+   [
+    5242,
+    178
+   ],
+   [
+    5434,
+    131
+   ],
+   [
+    5566,
+    50
+   ],
+   [
+    5634,
+    68
+   ],
+   [
+    6453,
+    83
+   ],
+   [
+    6764,
+    70
+   ],
+   [
+    6860,
+    72
+   ],
+   [
+    7345,
+    57
+   ],
+   [
+    7448,
+    104
+   ],
+   [
+    7984,
+    101
+   ],
+   [
+    9172,
+    117
+   ],
+   [
+    9309,
+    145
+   ],
+   [
+    9604,
+    68
+   ],
+   [
+    9673,
+    78
+   ],
+   [
+    9990,
+    63
+   ]
+  ],
+  "ltTotal": 1502,
+  "ltBlocking": 702,
+  "fps": {
+   "frames": 144,
+   "fps": 24,
+   "p95ms": 99.9,
+   "maxms": 200.1,
+   "over50": 30
+  },
+  "idle": {
+   "taskPct": 81.8,
+   "scriptPct": 4.1,
+   "layoutPct": 2.6,
+   "stylePct": 15.8
+  },
+  "ltIdle": 26,
+  "nodes": 1781,
+  "heapMB": 3.4,
+  "heapTotMB": 4.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 4,
+  "net": false,
+  "loadMs": 1595,
+  "bytesKB": 1330,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 1475,
+  "load": 1478,
+  "ttfb": 21,
+  "fcp": 792,
+  "lcp": 792,
+  "longtasks": [
+   [
+    484,
+    285
+   ],
+   [
+    940,
+    54
+   ],
+   [
+    1039,
+    129
+   ],
+   [
+    1186,
+    102
+   ],
+   [
+    3368,
+    94
+   ],
+   [
+    3884,
+    99
+   ]
+  ],
+  "ltTotal": 763,
+  "ltBlocking": 463,
+  "fps": {
+   "frames": 231,
+   "fps": 38.4,
+   "p95ms": 50,
+   "maxms": 116.7,
+   "over50": 10
+  },
+  "idle": {
+   "taskPct": 78.8,
+   "scriptPct": 1.5,
+   "layoutPct": 2.5,
+   "stylePct": 14.3
+  },
+  "ltIdle": 7,
+  "nodes": 1824,
+  "heapMB": 4,
+  "heapTotMB": 6.6,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "valley",
+  "cpu": 6,
+  "net": false,
+  "loadMs": 1409,
+  "bytesKB": 1330,
+  "reqs": 12,
+  "errs": [],
+  "dcl": 1381,
+  "load": 1397,
+  "ttfb": 6,
+  "fcp": 636,
+  "lcp": 636,
+  "longtasks": [
+   [
+    509,
+    91
+   ],
+   [
+    678,
+    107
+   ],
+   [
+    807,
+    172
+   ],
+   [
+    980,
+    82
+   ],
+   [
+    1176,
+    59
+   ],
+   [
+    2052,
+    49
+   ],
+   [
+    3391,
+    70
+   ],
+   [
+    4085,
+    50
+   ],
+   [
+    4156,
+    50
+   ],
+   [
+    4264,
+    70
+   ]
+  ],
+  "ltTotal": 800,
+  "ltBlocking": 301,
+  "fps": {
+   "frames": 193,
+   "fps": 32.2,
+   "p95ms": 66.6,
+   "maxms": 100.1,
+   "over50": 19
+  },
+  "idle": {
+   "taskPct": 81.3,
+   "scriptPct": 1.4,
+   "layoutPct": 2.2,
+   "stylePct": 19
+  },
+  "ltIdle": 12,
+  "nodes": 1824,
+  "heapMB": 4,
+  "heapTotMB": 6.8,
+  "listeners": 59,
+  "domCount": {
+   "all": 1015,
+   "svg": 952,
+   "anim": 0,
+   "filters": 5,
+   "imgs": 1
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ }
+]

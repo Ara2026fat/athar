@@ -1,0 +1,391 @@
+[
+ {
+  "name": "home",
+  "cpu": 1,
+  "net": false,
+  "loadMs": 591,
+  "bytesKB": 564,
+  "reqs": 14,
+  "errs": [],
+  "dcl": 539,
+  "load": 584,
+  "ttfb": 107,
+  "fcp": 564,
+  "cls": 0,
+  "lcp": 564,
+  "longtasks": [
+   [
+    461,
+    79
+   ]
+  ],
+  "ltTotal": 79,
+  "ltBlocking": 29,
+  "fps": {
+   "frames": 360,
+   "fps": 60,
+   "p95ms": 16.8,
+   "maxms": 16.8,
+   "over50": 0
+  },
+  "idle": {
+   "taskPct": 32.6,
+   "scriptPct": 0.4,
+   "layoutPct": 13.4,
+   "stylePct": 3.3
+  },
+  "ltIdle": 0,
+  "nodes": 3179,
+  "heapMB": 5.6,
+  "heapTotMB": 8.1,
+  "listeners": 284,
+  "domCount": {
+   "all": 1780,
+   "svg": 1007,
+   "anim": 4,
+   "filters": 0,
+   "imgs": 6
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "home",
+  "cpu": 4,
+  "net": true,
+  "loadMs": 3782,
+  "bytesKB": 564,
+  "reqs": 14,
+  "errs": [],
+  "dcl": 3217,
+  "load": 3780,
+  "ttfb": 6,
+  "fcp": 836,
+  "cls": 0.928,
+  "lcp": 1452,
+  "longtasks": [
+   [
+    446,
+    191
+   ],
+   [
+    2301,
+    196
+   ],
+   [
+    2949,
+    183
+   ]
+  ],
+  "ltTotal": 570,
+  "ltBlocking": 420,
+  "fps": {
+   "frames": 313,
+   "fps": 52,
+   "p95ms": 33.3,
+   "maxms": 66.7,
+   "over50": 3
+  },
+  "idle": {
+   "taskPct": 73,
+   "scriptPct": 0.8,
+   "layoutPct": 20.6,
+   "stylePct": 6
+  },
+  "ltIdle": 0,
+  "nodes": 3358,
+  "heapMB": 5.6,
+  "heapTotMB": 8.1,
+  "listeners": 284,
+  "domCount": {
+   "all": 1780,
+   "svg": 1007,
+   "anim": 4,
+   "filters": 0,
+   "imgs": 6
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "home",
+  "cpu": 6,
+  "net": true,
+  "loadMs": 4370,
+  "bytesKB": 564,
+  "reqs": 14,
+  "errs": [],
+  "dcl": 3637,
+  "load": 4319,
+  "ttfb": 4,
+  "fcp": 700,
+  "cls": 0.928,
+  "lcp": 1104,
+  "longtasks": [
+   [
+    442,
+    205
+   ],
+   [
+    2380,
+    210
+   ],
+   [
+    3173,
+    481
+   ],
+   [
+    3655,
+    93
+   ],
+   [
+    3925,
+    70
+   ],
+   [
+    4018,
+    131
+   ],
+   [
+    4225,
+    103
+   ],
+   [
+    4806,
+    68
+   ],
+   [
+    4874,
+    144
+   ],
+   [
+    5299,
+    57
+   ],
+   [
+    5441,
+    50
+   ],
+   [
+    5775,
+    58
+   ],
+   [
+    5871,
+    64
+   ],
+   [
+    6091,
+    54
+   ],
+   [
+    6421,
+    66
+   ],
+   [
+    6525,
+    52
+   ],
+   [
+    7384,
+    64
+   ]
+  ],
+  "ltTotal": 1970,
+  "ltBlocking": 1120,
+  "fps": {
+   "frames": 227,
+   "fps": 37.8,
+   "p95ms": 50,
+   "maxms": 66.7,
+   "over50": 6
+  },
+  "idle": {
+   "taskPct": 90,
+   "scriptPct": 1.3,
+   "layoutPct": 28.6,
+   "stylePct": 10.8
+  },
+  "ltIdle": 3,
+  "nodes": 3320,
+  "heapMB": 5.6,
+  "heapTotMB": 8.1,
+  "listeners": 284,
+  "domCount": {
+   "all": 1780,
+   "svg": 1007,
+   "anim": 4,
+   "filters": 0,
+   "imgs": 6
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "home",
+  "cpu": 4,
+  "net": false,
+  "loadMs": 1278,
+  "bytesKB": 563,
+  "reqs": 13,
+  "errs": [],
+  "dcl": 1154,
+  "load": 1271,
+  "ttfb": 8,
+  "fcp": 652,
+  "cls": 0.058,
+  "lcp": 1336,
+  "longtasks": [
+   [
+    311,
+    239
+   ],
+   [
+    623,
+    185
+   ],
+   [
+    869,
+    293
+   ],
+   [
+    1184,
+    61
+   ],
+   [
+    1567,
+    52
+   ]
+  ],
+  "ltTotal": 830,
+  "ltBlocking": 580,
+  "fps": {
+   "frames": 312,
+   "fps": 51.9,
+   "p95ms": 33.4,
+   "maxms": 116.7,
+   "over50": 3
+  },
+  "idle": {
+   "taskPct": 73.8,
+   "scriptPct": 0.8,
+   "layoutPct": 22,
+   "stylePct": 7.9
+  },
+  "ltIdle": 2,
+  "nodes": 3177,
+  "heapMB": 5.6,
+  "heapTotMB": 8.1,
+  "listeners": 284,
+  "domCount": {
+   "all": 1780,
+   "svg": 1007,
+   "anim": 4,
+   "filters": 0,
+   "imgs": 6
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ },
+ {
+  "name": "home",
+  "cpu": 6,
+  "net": false,
+  "loadMs": 1502,
+  "bytesKB": 563,
+  "reqs": 13,
+  "errs": [],
+  "dcl": 1358,
+  "load": 1499,
+  "ttfb": 10,
+  "fcp": 840,
+  "cls": 0.058,
+  "lcp": 1600,
+  "longtasks": [
+   [
+    416,
+    290
+   ],
+   [
+    713,
+    174
+   ],
+   [
+    961,
+    406
+   ],
+   [
+    1384,
+    103
+   ],
+   [
+    1671,
+    55
+   ],
+   [
+    2219,
+    50
+   ],
+   [
+    2522,
+    108
+   ],
+   [
+    3180,
+    61
+   ],
+   [
+    3674,
+    73
+   ],
+   [
+    3866,
+    56
+   ]
+  ],
+  "ltTotal": 1376,
+  "ltBlocking": 876,
+  "fps": {
+   "frames": 260,
+   "fps": 43.1,
+   "p95ms": 33.4,
+   "maxms": 100,
+   "over50": 3
+  },
+  "idle": {
+   "taskPct": 90.8,
+   "scriptPct": 0.8,
+   "layoutPct": 24.6,
+   "stylePct": 7.7
+  },
+  "ltIdle": 3,
+  "nodes": 3178,
+  "heapMB": 5.6,
+  "heapTotMB": 8.3,
+  "listeners": 284,
+  "domCount": {
+   "all": 1780,
+   "svg": 1007,
+   "anim": 4,
+   "filters": 0,
+   "imgs": 6
+  },
+  "raf": {
+   "sched": 1,
+   "calls": 1,
+   "live": 0
+  }
+ }
+]

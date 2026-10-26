@@ -64,12 +64,12 @@ html.sc-sub .lq-say{min-height:52px;padding:10px 28px;font-size:17px;font-weight
 html.sc-sub .pill-btn{min-height:52px;font-size:16px}
 html.sc-sub .mini-btn{min-height:46px;font-size:15px}
 html.sc-sub .nm-chip{min-height:48px;padding:8px 20px;font-size:16px;border:2px solid rgba(58,43,77,.25)}
-html.sc-sub .letter-tile{min-width:44px}
+html.sc-sub .letter-tile{min-width:48px}
 
 /* ---------- ردود لمس مرنة (كل الشاشات بما فيها المصحف: نقر فقط، بلا تغيير تخطيط) ---------- */
-:is(.lq-say,.pill-btn,.mini-btn,.start-btn,.seg-btn,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.choice-tile,.ps-card,.us-chip,.us-lan,.lt-h,.wg-opt,.ayq-stage,.ayq-opt,.nm-chip,.surah-card,.pin-key,.back-btn,.gear-btn,.ctrl-btn,.lq-opt){
+:is(.lq-say,.pill-btn,.mini-btn,.start-btn,.seg-btn,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.choice-tile,.ps-card,.us-chip,.us-lan,.lt-h,.wg-opt,.ayq-stage,.ayq-opt,.nm-chip,.surah-card,.pin-key,.back-btn,.gear-btn,.ctrl-btn,.lq-opt,.ayah-pick-chip,.lib-book,.rep-b,.sheet-x,.prof-chip,.cert-btn){
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .26s var(--sc-ease),filter .2s}
-:is(.lq-say,.pill-btn,.mini-btn,.start-btn,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.choice-tile,.ps-card,.us-chip,.us-lan,.lt-h,.wg-opt,.ayq-stage,.ayq-opt,.nm-chip,.surah-card,.lq-opt):not(.locked):not(.lock):active{transform:translateY(5px) scale(.96);filter:brightness(1.07) saturate(1.2);transition-duration:.06s}
+:is(.lq-say,.pill-btn,.mini-btn,.start-btn,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.choice-tile,.ps-card,.us-chip,.us-lan,.lt-h,.wg-opt,.ayq-stage,.ayq-opt,.nm-chip,.surah-card,.lq-opt,.ayah-pick-chip,.lib-book,.rep-b,.sheet-x,.prof-chip,.cert-btn):not(.locked):not(.lock):active{transform:translateY(5px) scale(.96);filter:brightness(1.07) saturate(1.2);transition-duration:.06s}
 :is(.letter-tile,.choice-tile,.adk-tile,.ps-card,.surah-card).locked:active{transform:translateY(3px)}
 .sc-pop{animation:scPop .42s var(--sc-ease)}
 @keyframes scPop{0%{scale:1}35%{scale:1.09}70%{scale:.97}100%{scale:1}}
@@ -79,7 +79,8 @@ html.sc-on .view.active:not(#view-home){animation:scIn .22s ease-out both}
 @keyframes scIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
 
 /* ---------- شاشة المصحف: تنسيق خفيف فقط (لا تدخل في الإطار ولا التلاوة) ---------- */
-#view-surah .back-btn{width:46px;height:46px}
+#view-surah .back-btn{width:48px;height:48px}
+body.in-surah .gear-btn{width:48px;height:48px}
 
 @media (prefers-reduced-motion:reduce){
   html.sc-on .view.active:not(#view-home){animation:none}
@@ -87,3 +88,70 @@ html.sc-on .view.active:not(#view-home){animation:scIn .22s ease-out both}
   :is(.lq-say,.pill-btn,.mini-btn,.start-btn,.seg-btn,.letter-tile,.adk-tile,.adk-opt,.choice-tile,.ps-card,.us-chip,.back-btn,.gear-btn,.nm-chip,.surah-card){transition:none}
 }
 body.bedtime .sc-pop{animation:none}
+
+/* ================= r7 ================= */
+/* --- (1) تباين: لون النص يُحسب في JS (sc-w أبيض / sc-i داكن) ويُغمَّق --c عند الحاجة --- */
+html.sc-sub :is(.sc-w,.sc-i)[style*="--c"]{background:linear-gradient(180deg,rgba(255,255,255,.2) 0,rgba(255,255,255,0) 46%,rgba(0,0,0,.12) 100%),var(--c)}
+html.sc-sub .sc-w,html.sc-sub .sc-w *{color:#fff!important}
+html.sc-sub .sc-i,html.sc-sub .sc-i *{color:#1d1530!important;text-shadow:none!important}
+html.sc-sub .sc-i .choice-chev,html.sc-sub .sc-i svg *{stroke:#1d1530}
+html.sc-sub .choice-tile::before{opacity:.3}
+html.sc-sub .sc-w .ct1,html.sc-sub .sc-w .ct2{text-shadow:0 1px 0 rgba(0,0,0,.35)}
+/* مقفل: رمادي فاتح + إطار منقّط + قفل، النص داكن (≥4.5) بلا شفافية */
+html.sc-sub :is(.locked,.lock){opacity:1!important;filter:none!important;border:2.5px dashed #6a6385!important;box-shadow:0 4px 0 rgba(58,43,77,.18)!important;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='11' width='14' height='10' rx='3' fill='%236a6385'/%3E%3Cpath d='M8 11V8a4 4 0 018 0v3' fill='none' stroke='%236a6385' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 12px 10px/22px 22px,linear-gradient(180deg,#f1f2f7,#d9dce7)!important}
+html.sc-sub :is(.locked,.lock),html.sc-sub :is(.locked,.lock) *{color:#2b2542!important;text-shadow:none!important}
+html.sc-sub :is(.locked,.lock)::before,html.sc-sub :is(.locked,.lock)::after{opacity:0!important}
+html.sc-sub :is(.locked,.lock) .choice-icon{background:rgba(255,255,255,.7)}
+html.sc-sub :is(.locked,.lock) svg *{stroke:#4a4565}
+html.sc-sub .adk-hero,html.sc-sub .adk-hero *{color:#fff}
+html.sc-sub .adk-hero{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#0b6b63}
+html.sc-sub .strip-pill:not(.active){opacity:1;filter:saturate(.8)}
+/* أزرار ثابتة اللون */
+html.sc-sub :is(.view,#view-numbers) .seg-btn.active{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.1)),#1b7a3a;text-shadow:none}
+html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1f5fd8}
+html.sc-sub .pill-btn,html.sc-sub .glass-card .pill-btn{background:linear-gradient(180deg,#a8690f,#8a5a12);color:#fff}
+html.sc-sub .nm-chip{color:#3f3a55}
+html.sc-sub .nm-chip.on{background:#5b2fc4;color:#fff}
+html.sc-sub .muted,html.sc-sub .pin-hint,html.sc-sub small{color:#4f4a66}
+html.sc-sub .ayah-pick-chip.in{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#1b7a3a;text-shadow:none}
+html.sc-sub .ayah-pick-chip.edge{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(0,0,0,.05)),#F2B705;color:#1d1530;text-shadow:none}
+html.sc-sub .start-btn{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#1b7a3a;color:#fff;text-shadow:none}
+
+/* --- (2) أهداف اللمس ≥48 --- */
+html.sc-sub .seg-btn{min-width:56px}
+html.sc-sub .ayah-pick-grid{grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px}
+html.sc-sub .ayah-pick-chip{min-width:48px;min-height:48px}
+html.sc-sub .mini-btn{min-height:48px;padding:8px 18px}
+html.sc-sub .ayq-opt,html.sc-sub .us-opt{min-height:52px}
+html.sc-sub .ps-exit{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;font-size:15px}
+#sheetX,.sheet-x{width:48px;height:48px}
+.rep-b{width:40px;height:40px;position:relative;margin:0 4px}
+.rep-b::after{content:"";position:absolute;inset:-4px}
+.rep-grp{gap:4px}
+#view-surah .ctrl-btn.small{width:48px;height:48px}
+#view-surah .range-reset{position:relative}
+#view-surah .range-reset::after{content:"";position:absolute;inset:-13px -4px}
+#view-surah .range-input{min-height:48px}
+
+/* --- (4) بهجة: ظهور متدرّج + شريط تقدم + نجوم النجاح --- */
+.sc-st{animation:scCard .3s var(--sc-ease) both;animation-delay:calc(var(--sc-i,0)*40ms)}
+@keyframes scCard{from{opacity:0;translate:0 16px;scale:.92}to{opacity:1;translate:0 0;scale:1}}
+html.sc-sub .sc-title{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.sc-prog{display:block;width:min(150px,100%);height:9px;border-radius:6px;background:rgba(255,255,255,.7);border:1.5px solid rgba(58,43,77,.5);overflow:hidden;box-shadow:inset 0 1px 2px rgba(58,43,77,.2)}
+.sc-prog b{display:block;height:100%;width:var(--p,0%);border-radius:6px;background:linear-gradient(90deg,var(--g1,#22b36b),var(--g2,#7be0a0));transition:width .6s var(--sc-ease)}
+.sc-prog[hidden]{display:none}
+.sc-stars{position:fixed;left:0;right:0;top:0;height:100%;pointer-events:none;z-index:60;overflow:hidden}
+.sc-stars i{position:absolute;bottom:-30px;left:calc(var(--x)*1%);width:var(--s,22px);height:var(--s,22px);background:linear-gradient(135deg,#ffe066,#ffb703);
+  clip-path:polygon(50% 0,62% 36%,98% 38%,69% 60%,80% 96%,50% 74%,20% 96%,31% 60%,2% 38%,38% 36%);
+  animation:scFly 1.8s ease-out both;animation-delay:calc(var(--d)*1ms)}
+@keyframes scFly{0%{translate:0 0;rotate:0deg;opacity:0;scale:.5}15%{opacity:1;scale:1}100%{translate:calc(var(--dx)*1px) -78vh;rotate:300deg;opacity:0;scale:.9}}
+.sc-stars{filter:drop-shadow(0 2px 0 rgba(58,43,77,.55))}
+
+@media (prefers-reduced-motion:reduce){
+  .sc-st,.sc-stars i{animation:none!important}
+  .sc-stars{display:none}
+  .sc-prog b{transition:none}
+}
+body.bedtime .sc-st,body.bedtime .sc-stars{animation:none;display:none}
+html.sc-sub .surah-nm{font-size:max(18.7px,clamp(16px,4.9vw,21px))}
