@@ -17,7 +17,7 @@ const OPTIONAL = ["./audio/index.json", "./sequence.json", "./img/map/map_day.we
 const ASSETS = "athar-assets-v2";
 const PRECACHE = [
   "./fonts/rubik-ar-lat-var.woff2", "./fonts/salawat-noto.woff2",
-  "../next/shared/reward.css", "../next/shared/reward.js",   /* نجوم أثر: وحدة مشتركة */
+  "../next/shared/reward.css", "../next/shared/reward.js", "../next/shared/nav.js",   /* نجوم أثر: وحدة مشتركة */
   "./img/athar/idle.webp", "./img/athar/hello.webp", "./img/athar/joy.webp", "./img/athar/think.webp",
   "./img/athar/read.webp", "./img/athar/listen.webp", "./img/athar/cheer.webp",
   "./img/friends/aws_wave.webp", "./img/friends/baraa_wave.webp", "./img/friends/rayyan_wave.webp",
