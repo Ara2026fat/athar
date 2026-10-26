@@ -80,7 +80,7 @@
   function mix(a,b,t){ return [0,1,2].map(function(i){ return a[i] * (1 - t) + b[i] * t; }); }
   function lum(c){ var f = function(v){ v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; return .2126 * f(c[0]) + .7152 * f(c[1]) + .0722 * f(c[2]); }
   function cr(a,b){ var x = lum(a), y = lum(b); if(x < y){ var t = x; x = y; y = t; } return (x + .05) / (y + .05); }
-  var W = [255,255,255], INK = [29,21,48], K = [0,0,0];
+  var W = [255,255,255], INK = [18,11,34], K = [0,0,0];
   function tone(el){
     if(el.getAttribute("data-sc")) return;
     el.setAttribute("data-sc","1");
