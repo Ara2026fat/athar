@@ -1,0 +1,79 @@
+/* نجوم أثر — شريحة العدّاد + التشجيع + «مقتنياتي». يشترك فيه الجذر والوادي. بلا خطوط/مكتبات خارجية. */
+:root{--rw-ink:#3A2E24;--rw-cream1:#FFF8E6;--rw-cream2:#F5E7C4;--rw-gold:#F2B71F;--rw-gold2:#FFD966;--rw-green:#2A8067}
+.rw-chip,.rw-toast,.rw-sheet,.rw-fly{font-family:"Rubik","Tajawal","Baloo Bhaijan 2",system-ui,sans-serif;direction:rtl}
+.rw-chip{position:fixed;z-index:35;min-width:64px;height:48px;padding:0 12px 0 10px;display:none;align-items:center;justify-content:center;gap:6px;
+  background:linear-gradient(#FFF8E6,#F5E7C4);color:var(--rw-ink);border:2.5px solid var(--rw-ink);border-radius:18px;
+  box-shadow:0 4px 0 rgba(58,46,36,.35),0 8px 14px rgba(0,0,0,.14),inset 0 2px 0 rgba(255,255,255,.7);
+  font-weight:800;font-size:19px;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.rw-chip.on{display:inline-flex}
+.rw-chip svg{width:26px;height:26px;flex:none;filter:drop-shadow(0 1px 0 rgba(58,46,36,.4))}
+.rw-chip:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(58,46,36,.35)}
+.rw-chip.pulse{animation:rwPulse .6s ease}
+@keyframes rwPulse{0%{transform:scale(1)}35%{transform:scale(1.14)}100%{transform:scale(1)}}
+html.rw-home .rw-chip{top:calc(14px + env(safe-area-inset-top));left:74px}
+html.rw-valley .rw-chip{top:calc(84px + env(safe-area-inset-top));inset-inline-start:10px}
+html.rw-gold .rw-chip{border-color:#B8860B;background:linear-gradient(#FFF3C2,#FFE08A);box-shadow:0 4px 0 rgba(184,134,11,.5),0 0 14px rgba(255,200,60,.65),inset 0 2px 0 rgba(255,255,255,.8)}
+@media (max-width:370px){html.rw-home .rw-chip{left:70px;min-width:60px;font-size:18px}}
+/* طيران النجمة */
+.rw-fly{position:fixed;z-index:9500;left:0;top:0;width:34px;height:34px;pointer-events:none;will-change:transform,opacity}
+.rw-fly svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+/* التشجيع */
+.rw-toast{position:fixed;z-index:9400;left:50%;top:calc(90px + env(safe-area-inset-top));transform:translate(-50%,-8px);opacity:0;pointer-events:none;
+  max-width:min(86vw,360px);padding:10px 18px;border-radius:20px;text-align:center;font-weight:700;font-size:17px;line-height:1.5;color:var(--rw-ink);
+  background:linear-gradient(#FFFDF5,#FBEFD0);border:2px solid var(--rw-ink);box-shadow:0 4px 0 rgba(58,46,36,.3),0 10px 18px rgba(0,0,0,.14);transition:opacity .28s ease,transform .28s ease}
+.rw-toast.show{opacity:1;transform:translate(-50%,0)}
+.rw-toast.bot{top:auto;bottom:calc(104px + env(safe-area-inset-bottom))}
+.rw-toast b{color:#B07A00;font-weight:800;margin-inline-start:8px;white-space:nowrap}
+.rw-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* مقتنياتي */
+.rw-sheet{position:fixed;inset:0;z-index:9600;display:none;align-items:flex-end;justify-content:center;background:rgba(40,28,16,.5);-webkit-tap-highlight-color:transparent}
+.rw-sheet.on{display:flex}
+.rw-box{width:min(100%,520px);max-height:88vh;max-height:88dvh;display:flex;flex-direction:column;background:linear-gradient(#FFFBEF,#F7EBCB);color:var(--rw-ink);
+  border:3px solid var(--rw-ink);border-bottom:0;border-radius:28px 28px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.25);animation:rwUp .34s cubic-bezier(.2,.9,.3,1)}
+@keyframes rwUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.rw-head{display:flex;align-items:center;gap:12px;padding:14px 16px 8px}
+.rw-ring{position:relative;width:76px;height:76px;flex:none}
+.rw-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rw-ring .num{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:24px}
+.rw-hinfo{flex:1;min-width:0;font-size:15px;line-height:1.6;font-weight:600}
+.rw-hinfo strong{font-size:18px;font-weight:800;display:block}
+.rw-x{width:48px;height:48px;flex:none;border-radius:16px;border:2.5px solid var(--rw-ink);background:linear-gradient(#FFF8E6,#F5E7C4);color:var(--rw-ink);font-size:22px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 rgba(58,46,36,.3)}
+.rw-tabs{display:flex;gap:8px;padding:6px 14px 10px}
+.rw-tab{flex:1;min-height:48px;border-radius:16px;border:2.5px solid rgba(58,46,36,.55);background:#FFF6DC;color:var(--rw-ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.rw-tab[aria-selected=true]{background:linear-gradient(#FFE08A,#F2B71F);border-color:var(--rw-ink);box-shadow:0 3px 0 rgba(58,46,36,.35)}
+.rw-body{overflow:auto;-webkit-overflow-scrolling:touch;padding:4px 14px calc(18px + env(safe-area-inset-bottom));flex:1}
+.rw-note{font-size:14px;color:#6B5C42;margin:2px 2px 10px;line-height:1.6}
+.rw-row{display:flex;align-items:center;gap:12px;padding:10px;margin-bottom:10px;border:2px solid rgba(58,46,36,.4);border-radius:18px;background:#FFFCF3;min-height:68px}
+.rw-sw{width:46px;height:46px;flex:none;border-radius:50%;border:2.5px solid var(--rw-ink);box-shadow:0 2px 0 rgba(58,46,36,.3),inset 0 2px 3px rgba(255,255,255,.6)}
+.rw-row .t{flex:1;font-weight:700;font-size:17px;line-height:1.4}
+.rw-row .t small{display:block;font-weight:600;font-size:13px;color:#6B5C42}
+.rw-btn{min-width:96px;min-height:48px;padding:0 14px;border-radius:16px;border:2.5px solid var(--rw-ink);background:linear-gradient(#FFE08A,#F2B71F);color:var(--rw-ink);font:inherit;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 3px 0 rgba(58,46,36,.35);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.rw-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(58,46,36,.35)}
+.rw-btn.ok{background:linear-gradient(#DFF0D4,#B6DCA2)}
+.rw-btn.soft{background:#F3E9CF;border-color:rgba(58,46,36,.5);color:#6B5C42;box-shadow:none}
+.rw-btn.ask{background:linear-gradient(#FFD0B8,#F29A74)}
+.rw-btn[disabled]{opacity:.55;cursor:default}
+.rw-btn svg{width:18px;height:18px}
+.rw-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.rw-cell{min-width:0;aspect-ratio:1;border-radius:18px;border:2px solid rgba(58,46,36,.35);background:#FFFCF3;display:grid;place-items:center;position:relative;padding:6px}
+.rw-cell img{width:100%;height:100%;min-width:0;object-fit:contain}
+.rw-cell.lock img{filter:brightness(0);opacity:.2}
+.rw-cell.got{border-color:#B8860B;background:linear-gradient(#FFFDF0,#FFF0C2)}
+.rw-cell .nm{position:absolute;bottom:2px;inset-inline:0;text-align:center;font-size:11px;font-weight:700;color:#6B5C42;line-height:1.1}
+.rw-sw-on{position:relative;width:56px;height:34px;flex:none;border-radius:18px;border:2.5px solid var(--rw-ink);background:#E4D9BE;cursor:pointer;padding:0}
+.rw-sw-on::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--rw-ink);transition:transform .2s}
+.rw-sw-on[aria-checked=true]{background:#8BD36B}
+.rw-sw-on[aria-checked=true]::after{transform:translateX(-22px)}
+html[dir=ltr] .rw-sw-on[aria-checked=true]::after{transform:translateX(22px)}
+.rw-progress{height:8px;border-radius:6px;background:#EADFC2;overflow:hidden;margin-top:6px}
+.rw-progress i{display:block;height:100%;background:linear-gradient(90deg,#F2B71F,#FFD966)}
+/* بطاقة ولي الأمر */
+.rw-parent{margin:12px 0;padding:14px 16px;border-radius:22px;border:2px solid rgba(58,46,36,.4);background:linear-gradient(#FFFBEF,#F7EBCB);color:var(--rw-ink);direction:rtl;text-align:right;font-family:inherit}
+.rw-parent h3{margin:0 0 6px;font-size:18px}
+.rw-parent p{margin:0 0 10px;font-size:15px;line-height:1.7}
+.rw-parent .rw-btn{width:100%}
+/* هدايا */
+html.rw-warm::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(120% 80% at 50% 0%,rgba(255,210,120,.20),rgba(255,170,90,.06) 60%,transparent)}
+@media (prefers-reduced-motion:reduce){.rw-chip.pulse,.rw-box{animation:none}.rw-toast{transition:opacity .01s}.rw-fly{display:none}}
+#wPal .sw.rw-lock{position:relative;filter:grayscale(.55) brightness(.9)}
+#wPal .sw.rw-lock::after{content:"";position:absolute;inset:28%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='4' y='9' width='12' height='9' rx='2' fill='%233A2E24'/%3E%3Cpath d='M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9' fill='none' stroke='%233A2E24' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat}
