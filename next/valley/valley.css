@@ -24,15 +24,15 @@
 .idots{direction:rtl}
 
 /* ── فقاعة أثر ── */
-#say{inset-inline:auto!important;left:0;top:0;display:block!important;width:max-content;max-width:300px;padding:0!important;
+#say{inset-inline:auto;left:0;top:0;display:block!important;width:max-content;max-width:300px;padding:0!important;
   transform:none!important;scale:.86;transform-origin:var(--tox,50%) var(--toy,100%);
   transition:opacity .3s,scale .34s cubic-bezier(.3,1.5,.5,1)!important;z-index:7}
 #say.on{scale:1}
 #say .b{position:relative;max-width:none!important;width:auto;direction:rtl;text-align:center;line-height:1.55;overflow-wrap:anywhere;
   padding:9px 16px!important;font-size:17px!important}
 #say .t{display:none!important}
-#say .b::after{content:"";position:absolute;width:14px;height:14px;background:#fff;border:3px solid var(--line);display:none;
-  --tp:50%;--tq:50%}
+#say .b::after{content:"";position:absolute;width:14px;height:14px;background:#fff;border:3px solid var(--line);display:none}
+#say .b{--tp:50%;--tq:50%}
 #say[data-tail=bottom] .b::after{display:block;left:calc(var(--tp) - 7px);bottom:-9px;transform:rotate(45deg);border-left:0;border-top:0}
 #say[data-tail=top] .b::after{display:block;left:calc(var(--tp) - 7px);top:-9px;transform:rotate(45deg);border-right:0;border-bottom:0}
 #say[data-tail=left] .b::after{display:block;top:calc(var(--tq) - 7px);left:-9px;transform:rotate(45deg);border-right:0;border-top:0}

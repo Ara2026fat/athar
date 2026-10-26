@@ -1,0 +1,89 @@
+/* شاشات الطفل الفرعية (D / r3) — طبقة موحّدة فوق home-next.html. كل شيء مقيّد بـ html.sc-sub
+   (أي شاشة غير الرئيسية وغير شاشة المصحف) ما عدا ردود اللمس. لا يمسّ التلاوة ولا نصوصًا قرآنية. */
+:root{--sc-ink:#3a2b4d;--sc-line:rgba(58,43,77,.55);--sc-ease:cubic-bezier(.3,1.6,.5,1)}
+
+/* ---------- خلفية متناسقة مع عالم الرئيسية: سماء فاتحة + سحب ناعمة ---------- */
+html.sc-sub,html.sc-sub body{background:linear-gradient(180deg,#a9dcff 0,#d3efff 150px,#eaf7f0 340px,#f3f7ef 560px) no-repeat #f3f7ef;background-attachment:scroll}
+html.sc-sub #app{background:none}
+html.sc-sub #app::before{content:"";position:absolute;left:0;right:0;top:0;height:230px;pointer-events:none;z-index:0;
+  background:radial-gradient(60px 26px at 18% 62px,rgba(255,255,255,.85),rgba(255,255,255,0) 100%),
+             radial-gradient(84px 30px at 70% 38px,rgba(255,255,255,.8),rgba(255,255,255,0) 100%),
+             radial-gradient(70px 24px at 92% 120px,rgba(255,255,255,.7),rgba(255,255,255,0) 100%),
+             radial-gradient(90px 28px at 30% 150px,rgba(255,255,255,.55),rgba(255,255,255,0) 100%)}
+html.sc-sub main{position:relative;z-index:1}
+html.sc-sub .leaf{display:none}
+
+/* ---------- رأس موحّد: [رجوع زجاجي 56] [عنوان] ........ [إعدادات 56] ---------- */
+html.sc-sub header{position:absolute;top:16px;left:18px;right:auto;padding:0;width:auto;z-index:6}
+html.sc-sub header .brand{display:none}
+html.sc-sub .gear-btn{width:56px;height:56px;font-size:24px}
+html.sc-sub .browse-head,html.sc-sub .back-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:10px 0 14px;min-height:56px}
+html.sc-sub .browse-head .back-btn,html.sc-sub .back-row .back-btn{order:1;flex:none}
+html.sc-sub .sc-title,html.sc-sub .back-row .surah-title{order:2;flex:1 1 0;min-width:0;max-width:calc(100% - 140px);margin:0;
+  font-family:'Baloo Bhaijan 2','Tajawal',sans-serif;font-weight:800;font-size:25px;line-height:1.25;color:#24402b;text-shadow:0 2px 0 rgba(255,255,255,.7)}
+html.sc-sub .browse-head .seg{order:3;flex:1 1 100%;margin:0}
+html.sc-sub #view-pin .back-btn,html.sc-sub #btnPinBack{width:auto;min-width:56px;padding:0 24px;white-space:nowrap;font-size:19px;font-weight:800;gap:6px}
+
+/* زر الرجوع: زجاج أبيض + حدّ داكن ناعم + سهم كبير */
+html.sc-sub .back-btn{width:56px;height:56px;border-radius:50%;font-size:30px;line-height:1;font-weight:800;color:#24402b;text-shadow:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.55));
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:2.5px solid var(--sc-line);
+  box-shadow:inset 0 2px 0 #fff,0 5px 0 rgba(58,43,77,.3),0 12px 16px -8px rgba(58,43,77,.45)}
+html.sc-sub .back-btn:active{transform:translateY(4px) scale(.96);box-shadow:inset 0 2px 0 #fff,0 1px 0 rgba(58,43,77,.3)}
+
+/* ---------- تبويبات ---------- */
+html.sc-sub .seg{padding:6px;border-radius:26px;background:rgba(255,255,255,.62);border:2px solid rgba(58,43,77,.28);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);gap:4px;overflow-x:auto;scrollbar-width:none;box-shadow:inset 0 3px 6px rgba(58,43,77,.12)}
+html.sc-sub .seg::-webkit-scrollbar{display:none}
+html.sc-sub .seg-btn,html.sc-sub #view-numbers .seg-btn{min-height:56px;padding:6px 8px;font-size:16px;white-space:nowrap;border-radius:20px;flex:1 0 auto;color:#4a4560;
+  transition:transform .22s var(--sc-ease)}
+html.sc-sub #view-numbers .seg-btn{padding:6px 4px;font-size:15px}
+html.sc-sub .seg-btn:active{transform:scale(.94)}
+html.sc-sub :is(.view,#view-numbers) .seg-btn.active{color:#fff;border:2px solid var(--sc-line)}
+
+/* ---------- عناوين وشروح ---------- */
+html.sc-sub .intro h1{font-size:26px;line-height:1.3;color:#24402b}
+html.sc-sub .intro.small h1{font-size:24px}
+html.sc-sub .intro p{font-size:16px;line-height:1.6;color:#4f4a66}
+html.sc-sub #view-noor .door-intro h1,html.sc-sub #view-door .door-intro h1,html.sc-sub #view-quiz .door-intro h1{display:none}
+html.sc-sub #view-noor .door-intro,html.sc-sub #view-door .door-intro,html.sc-sub #view-quiz .door-intro{margin-top:0}
+html.sc-sub small,html.sc-sub .muted,html.sc-sub .pin-hint,html.sc-sub .nm-alt{font-size:13.5px}
+html.sc-sub .nm-alt{font-size:13px}
+html.sc-sub .ct2{font-size:14.5px;line-height:1.5}
+html.sc-sub .ct1{font-size:27px}
+
+/* ---------- بطاقات جيلية: حدّ داكن ناعم + ألوان مشبعة ---------- */
+html.sc-sub :is(.choice-tile,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.ayq-stage,.ayq-opt,.ps-card,.us-lan,.us-chip,.wg-opt,.lt-h,.lt-big,.lt-pic,.surah-card,.start-btn,.mini-btn,.lq-say,.pill-btn){
+  border-color:var(--sc-line)}
+html.sc-sub :is(.choice-tile,.letter-tile,.adk-tile,.adk-opt,.ayq-stage,.ps-card,.us-chip,.lt-h,.surah-card){filter:saturate(1.12)}
+html.sc-sub :is(.ayq-card,.ps-lesson,.section-card){border-color:rgba(58,43,77,.4)}
+
+/* ---------- أزرار ---------- */
+html.sc-sub .lq-say{min-height:52px;padding:10px 28px;font-size:17px;font-weight:800;border:2px solid var(--sc-line);box-shadow:0 5px 0 rgba(58,43,77,.38),inset 0 2px 0 rgba(255,255,255,.45)}
+html.sc-sub .pill-btn{min-height:52px;font-size:16px}
+html.sc-sub .mini-btn{min-height:46px;font-size:15px}
+html.sc-sub .nm-chip{min-height:48px;padding:8px 20px;font-size:16px;border:2px solid rgba(58,43,77,.25)}
+html.sc-sub .letter-tile{min-width:44px}
+
+/* ---------- ردود لمس مرنة (كل الشاشات بما فيها المصحف: نقر فقط، بلا تغيير تخطيط) ---------- */
+:is(.lq-say,.pill-btn,.mini-btn,.start-btn,.seg-btn,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.choice-tile,.ps-card,.us-chip,.us-lan,.lt-h,.wg-opt,.ayq-stage,.ayq-opt,.nm-chip,.surah-card,.pin-key,.back-btn,.gear-btn,.ctrl-btn,.lq-opt){
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .26s var(--sc-ease),filter .2s}
+:is(.lq-say,.pill-btn,.mini-btn,.start-btn,.letter-tile,.adk-tile,.adk-opt,.adk-hero,.choice-tile,.ps-card,.us-chip,.us-lan,.lt-h,.wg-opt,.ayq-stage,.ayq-opt,.nm-chip,.surah-card,.lq-opt):not(.locked):not(.lock):active{transform:translateY(5px) scale(.96);filter:brightness(1.07) saturate(1.2);transition-duration:.06s}
+:is(.letter-tile,.choice-tile,.adk-tile,.ps-card,.surah-card).locked:active{transform:translateY(3px)}
+.sc-pop{animation:scPop .42s var(--sc-ease)}
+@keyframes scPop{0%{scale:1}35%{scale:1.09}70%{scale:.97}100%{scale:1}}
+
+/* ---------- انتقال ظهور بين الشاشات (≤250ms) ---------- */
+html.sc-on .view.active:not(#view-home){animation:scIn .22s ease-out both}
+@keyframes scIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+
+/* ---------- شاشة المصحف: تنسيق خفيف فقط (لا تدخل في الإطار ولا التلاوة) ---------- */
+#view-surah .back-btn{width:46px;height:46px}
+
+@media (prefers-reduced-motion:reduce){
+  html.sc-on .view.active:not(#view-home){animation:none}
+  .sc-pop{animation:none}
+  :is(.lq-say,.pill-btn,.mini-btn,.start-btn,.seg-btn,.letter-tile,.adk-tile,.adk-opt,.choice-tile,.ps-card,.us-chip,.back-btn,.gear-btn,.nm-chip,.surah-card){transition:none}
+}
+body.bedtime .sc-pop{animation:none}
