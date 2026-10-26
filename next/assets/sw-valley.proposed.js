@@ -14,17 +14,19 @@ const KIDC = "athar-kid-v1";   /* أصوات أثر الجديدة: تُخزَّ
 const SHELL = ["./", "./index.html"];
 const OPTIONAL = ["./audio/index.json", "./sequence.json"];   /* قد لا توجد: لا تُفشل التثبيت */
 /* [أصول] ذاكرة مستقلة عن رقم الصدفة: تبقى عند تحديث الصدفة، ويرفع رقمها فقط من يغيّر ملفًا داخل img/ أو fonts/ */
-const ASSETS = "athar-assets-v1";
+const ASSETS = "athar-assets-v2";
 const PRECACHE = [
   "./fonts/rubik-ar-lat-var.woff2", "./fonts/salawat-noto.woff2",
   "./img/athar/idle.webp", "./img/athar/hello.webp", "./img/athar/joy.webp", "./img/athar/think.webp",
   "./img/athar/read.webp", "./img/athar/listen.webp", "./img/athar/cheer.webp",
   "./img/friends/aws_wave.webp", "./img/friends/baraa_wave.webp", "./img/friends/rayyan_wave.webp",
   "./img/friends/tamim_wave.webp", "./img/friends/ziyad_wave.webp",
-  "./img/bg/home.webp"                                    /* خلفية البوابة/الخريطة نهارًا */
+  "./img/bg/home.webp",                                   /* خلفية البوابة/الخريطة نهارًا */
+  "./img/bg/hill.webp",
+  "./img/medal/home_day.webp", "./img/medal/masjid_day.webp", "./img/medal/spring_day.webp", "./img/medal/hill_day.webp", "./img/medal/road_day.webp"
 ];
 const WARM = ["masjid_day","hill","road","spring","home_sun","masjid_sun","hill_sun","road_sun","spring_sun",
-              "home_night","masjid_night","hill_night","road_night","spring_night"].map(n => "./img/bg/" + n + ".webp");
+              "home_night","masjid_night","hill_night","road_night","spring_night"].map(n => "./img/bg/" + n + ".webp").concat(["home","masjid","spring","hill","road"].reduce((a, k) => a.concat(["sun", "night"].map(v => "./img/medal/" + k + "_" + v + ".webp")), []));
 
 self.addEventListener("install", e => {
   e.waitUntil((async () => {

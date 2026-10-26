@@ -203,3 +203,13 @@ body:has(#app.instage) #ubar{display:none}
 #app[data-calm] :is(.vxTw,.tuft,.stream,.tree-sway,.palm){animation:none!important}
 #ubar .ghost{width:auto;margin:0;flex:none;min-height:56px;padding:8px 8px;font-size:15px;text-decoration:none;border:0}
 #ubar button{flex:none}#ubar span{flex:1 1 auto;font-size:15px;line-height:1.4}
+
+/* r11 */
+.vxold{display:none!important}
+.vxi{opacity:0;transition:opacity .9s ease}
+.vxmed{pointer-events:auto}
+@media(prefers-reduced-motion:reduce){.vxi{transition:none}}
+.gi.gimg{border-radius:50%;background:#FFF4DA;border:3px solid #3A2A1E;box-shadow:0 4px 0 rgba(58,42,30,.25),0 8px 14px rgba(58,42,30,.25)}
+.gi.gimg::before,.gi.gimg::after{display:none}
+.gi.gimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;z-index:1}
+.gi.gimg.sm{border-width:2px}

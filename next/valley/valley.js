@@ -597,4 +597,56 @@ function night() {
 }
 night();
 window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayout, vb: function () { return vb; } };
+
+/* ═══ r11: المشهد المجسّم — خلفية 3D كاملة + ميداليات الأماكن (بدل رسوم SVG المسطّحة القديمة) ═══ */
+(function () {
+  var BG = ["hill", "hill_sun", "hill_night"], VAR = ["day", "sun", "night"];
+  var MED = { masjid: [322, 356, 40], hill: [218, 366, 40], home: [96, 420, 52], spring: [226, 528, 44], road: [330, 606, 42] };
+  var NSX = "http://www.w3.org/2000/svg", XL = "http://www.w3.org/1999/xlink", cur = -1;
+  function mk(tag, at, par) { var e = document.createElementNS(NSX, tag); for (var k in at) e.setAttribute(k, at[k]); if (par) par.appendChild(e); return e; }
+  function idx(p) { return p === 2 ? 2 : (p === 1 || p === 3) ? 1 : 0; }
+  var kids = [].slice.call(scene.children), firstPl = kids.findIndex(function (c) { return c.classList && c.classList.contains("place"); });
+  kids.forEach(function (c, i) { if (i > 0 && i < firstPl) c.classList.add("vxold"); });
+  ["night", "tint"].forEach(function (id) { var e = $(id); if (e) e.classList.add("vxold"); });
+  [].slice.call(scene.querySelectorAll("#tree,.palm")).forEach(function (e) { var g = e; while (g.parentNode && g.parentNode !== scene) g = g.parentNode; g.classList.add("vxold"); });
+  var defs = scene.querySelector("defs");
+  var lg = mk("linearGradient", { id: "vx3f", x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  mk("stop", { offset: 0, "stop-color": "#7EC3EE" }, lg); mk("stop", { offset: 1, "stop-color": "#5FA845" }, lg);
+  var bg = mk("g", { id: "vx3d", "pointer-events": "none" });
+  scene.insertBefore(bg, scene.children[1]);
+  mk("rect", { x: -400, y: -400, width: 1200, height: 1500, fill: "url(#vx3f)" }, bg);
+  var bgI = BG.map(function (n, i) { var e = mk("image", { x: -28, y: -95, width: 456, height: 815, preserveAspectRatio: "none", "class": "vxi" }, bg); e.dataset.src = "img/bg/" + n + ".webp"; return e; });
+  var meds = {};
+  Object.keys(MED).forEach(function (k) {
+    var g = scene.querySelector('.place[data-place="' + k + '"]'); if (!g) return;
+    var m = MED[k], x = m[0], y = m[1], r = m[2], h = g.querySelector(".halo");
+    [].slice.call(g.children).forEach(function (c) { if (c !== h) c.classList.add("vxold"); });
+    if (h) { h.setAttribute("cx", x); h.setAttribute("cy", y); h.setAttribute("r", r + 3); }
+    var d = mk("g", { "class": "vxmed" }, g);
+    mk("ellipse", { cx: x, cy: y + r + 3, rx: r * .92, ry: 8, fill: "#2E1C0C", opacity: .3, filter: "url(#sf)" }, d);
+    mk("circle", { cx: x, cy: y, r: r + 3.5, fill: "#FFF4DA", stroke: "#3A2A1E", "stroke-width": 3 }, d);
+    var cp = mk("clipPath", { id: "vxc_" + k }, d); mk("circle", { cx: x, cy: y, r: r }, cp);
+    var ig = mk("g", { "clip-path": "url(#vxc_" + k + ")" }, d);
+    meds[k] = VAR.map(function (v) { var e = mk("image", { x: x - r, y: y - r, width: 2 * r, height: 2 * r, preserveAspectRatio: "xMidYMid slice", "class": "vxi" }, ig); e.dataset.src = "img/medal/" + k + "_" + v + ".webp"; return e; });
+    mk("circle", { cx: x, cy: y, r: r, fill: "none", stroke: "#3A2A1E", "stroke-opacity": .28, "stroke-width": 1.4 }, d);
+    mk("path", { d: "M" + (x - r * .62) + " " + (y - r * .5) + "A" + (r * .78) + " " + (r * .78) + " 0 0 1 " + (x + r * .1) + " " + (y - r * .78), fill: "none", stroke: "#fff", "stroke-opacity": .55, "stroke-width": 3, "stroke-linecap": "round" }, d);
+  });
+  function show(arr, i) {
+    arr.forEach(function (e, j) {
+      if (j === i) {
+        var go = function () { e.style.opacity = 1; arr.forEach(function (o, q) { if (q !== i) o.style.opacity = 0; }); };
+        if (!e.getAttribute("href")) { e.addEventListener("load", go, { once: true }); e.setAttribute("href", e.dataset.src); }
+        else go();
+      }
+    });
+  }
+  function sync(p) {
+    var v = idx(p); if (v === cur) return; cur = v;
+    show(bgI, v); Object.keys(meds).forEach(function (k) { show(meds[k], v); });
+  }
+  var ph = 0; try { ph = S().data.phase | 0; } catch (e) {}
+  sync(ph);
+  var p0 = W.phase;
+  W.phase = function (p) { var r = p0.apply(this, arguments); try { sync(p === undefined ? ph : p | 0); if (p !== undefined) ph = p | 0; } catch (e) {} return r; };
+})();
 })();
