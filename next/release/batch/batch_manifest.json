@@ -1,0 +1,1592 @@
+{
+ "version": 1,
+ "project": "athar-valley",
+ "prepared": "2026-10-27",
+ "prepare_only": true,
+ "rules": "HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+ "negative_default": [
+  "people",
+  "humans",
+  "hands",
+  "animals",
+  "birds",
+  "insects",
+  "faces",
+  "text",
+  "letters",
+  "numerals",
+  "calligraphy",
+  "logo",
+  "watermark",
+  "brand characters",
+  "harsh shadows",
+  "photorealistic",
+  "scary mood"
+ ],
+ "model": {
+  "name": "seedream_v5_pro",
+  "label": "Seedream 5.0 Pro",
+  "resolution": "2K",
+  "credits_each": 2.5,
+  "fallback": "gpt_image_2_5 (r14 alternative) / nano_banana_pro (edits)",
+  "note": "Used before for the approved mark sheets (r12). Confirm live price with models_explore before the run."
+ },
+ "order": [
+  "PILOT: map_day, door_hifz, S2, S12 (approve style)",
+  "then map_sun, map_night",
+  "then remaining doors",
+  "then S3,S6,S7,S9,S10,S11"
+ ],
+ "estimate": {
+  "model": {
+   "name": "seedream_v5_pro",
+   "label": "Seedream 5.0 Pro",
+   "resolution": "2K",
+   "credits_each": 2.5,
+   "fallback": "gpt_image_2_5 (r14 alternative) / nano_banana_pro (edits)",
+   "note": "Used before for the approved mark sheets (r12). Confirm live price with models_explore before the run."
+  },
+  "images_total": 17,
+  "images_by_group": {
+   "map": 3,
+   "door": 6,
+   "marks_sheet": 8
+  },
+  "pilot_images": [
+   "map_day",
+   "door_hifz",
+   "S2",
+   "S12"
+  ],
+  "pilot_credits": 10.0,
+  "full_run_credits_incl_pilot": 42.5,
+  "remaining_after_pilot": 32.5,
+  "retry_buffer_credits": 12.8,
+  "recommended_budget": 57.8,
+  "marks_final_files": 48,
+  "marks_ids_served": 50,
+  "not_regenerated_flat": [
+   "mDust",
+   "mGreen",
+   "mRoad2",
+   "mHome",
+   "mFriend (character, no living beings)"
+  ]
+ },
+ "items": [
+  {
+   "id": "map_day",
+   "group": "map",
+   "pilot": true,
+   "target": "valley/img/map/map_day.webp",
+   "kind": "map",
+   "aspect_ratio": "9:16",
+   "gen_size": "2K portrait",
+   "final_px": [
+    810,
+    1440
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single tall vertical illustration of a peaceful green valley for a children's Islamic learning app, in exactly the same glossy Pixar-like 3D cartoon style, soft warm sunlight, saturated friendly colours and clean modelling as the reference images. Composition from top to bottom: bright blue sky with soft puffy clouds (top 12% calm and uncluttered), a wide misty far valley with a winding blue river and tiny distant village roofs; in the middle band: on the RIGHT a small cream and green-domed mosque with a slender minaret and warm glowing arched door (nobody around it), on the LEFT a cozy rounded clay-coloured house with wooden round-top door and flower pots, in the CENTRE a green rounded hill topped by one big round tree; lower middle: a small clear waterfall pool with lily pads among smooth rocks; a golden dirt road winds from the lower right towards the viewer and a small wooden signpost stands near it. The bottom-left and centre foreground is open soft grass with wild flowers and a gentle path, leaving clear empty space for a character to stand and for small icons. No people, no animals, no birds, no text, no letters, no faces on the sun or clouds, no UI. LANDMARK PLACEMENT (percent of image width / height from the top-left corner) - keep these exact areas: cream green-domed mosque with minaret at x 66-93%, y 41-56% (right side, upper-middle); green rounded hill with ONE big round tree at x 34-74%, y 45-57% (centre); cozy rounded clay house with wooden round-top door at x 2-45%, y 46-68% (left); small clear waterfall pool with lily pads and smooth rocks spanning x 0-99%, y 67-83% (centre, pool centre about x 56%, y 73%); golden dirt road starting at the bottom-right and winding up toward the mosque, x 58-96%, y 57-100%, with a small wooden blank signpost near x 82%, y 84%. Top 12% of the image must be calm sky only. Lower-left and centre foreground: open soft grass and a gentle path, empty. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "text on signpost",
+    "extra buildings",
+    "characters"
+   ],
+   "references": [
+    {
+     "path": "valley/img/bg/masjid_day.webp",
+     "role": "mosque"
+    },
+    {
+     "path": "valley/img/bg/hill.webp",
+     "role": "hill"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "house"
+    },
+    {
+     "path": "valley/img/bg/spring.webp",
+     "role": "spring"
+    },
+    {
+     "path": "valley/img/bg/road.webp",
+     "role": "road"
+    }
+   ],
+   "reference_note": "Local approved landmark art (valley/img/bg/*). Map-prompt refs from r13 already exist on Higgsfield as ids in map_prompts.json 'refs' (may be expired); do NOT re-upload until the run session starts.",
+   "postprocess": {
+    "op": "map",
+    "cover_crop": "9:16",
+    "webp_quality": "82->40 search",
+    "budget_kb": 250,
+    "bg_removal": false
+   },
+   "notes": "Generate 2 seeds if first misses the hit boxes; overlay check with wire_check.js. Fine-tune PL in valley.js if slightly off."
+  },
+  {
+   "id": "map_sun",
+   "group": "map",
+   "pilot": false,
+   "target": "valley/img/map/map_sun.webp",
+   "kind": "map",
+   "aspect_ratio": "9:16",
+   "gen_size": "2K portrait (image edit)",
+   "final_px": [
+    810,
+    1440
+   ],
+   "model": "seedream_v5_pro (edit/i2i; fallback nano_banana_pro)",
+   "prompt": "Edit this exact image into golden-hour sunset: keep every object, shape and position IDENTICAL, only change lighting and sky: warm orange-pink sky with soft peach clouds, long gentle shadows, warm rim light on the mosque dome and house, windows and door glowing amber. No new objects, no people, no animals, no text. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "moved objects",
+    "new objects",
+    "changed composition"
+   ],
+   "references": [
+    {
+     "from_output": "map_day",
+     "role": "the approved day map - edit THIS exact image"
+    }
+   ],
+   "depends_on": "map_day",
+   "postprocess": {
+    "op": "map",
+    "cover_crop": "9:16",
+    "webp_quality": "82->40 search",
+    "budget_kb": 250,
+    "bg_removal": false
+   },
+   "notes": "Must keep geometry pixel-identical to map_day so one hit layout serves all 3 variants. Reject if any landmark shifts."
+  },
+  {
+   "id": "map_night",
+   "group": "map",
+   "pilot": false,
+   "target": "valley/img/map/map_night.webp",
+   "kind": "map",
+   "aspect_ratio": "9:16",
+   "gen_size": "2K portrait (image edit)",
+   "final_px": [
+    810,
+    1440
+   ],
+   "model": "seedream_v5_pro (edit/i2i; fallback nano_banana_pro)",
+   "prompt": "Edit this exact image into a calm magical night: keep every object, shape and position IDENTICAL, only change lighting: deep blue starry sky with a plain smooth crescent moon (no face), soft blue moonlight on grass and road, mosque, house windows and doors glowing warm amber, a few small fireflies of light, river reflecting the moon. No new objects, no people, no animals, no text. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "moved objects",
+    "new objects",
+    "changed composition"
+   ],
+   "references": [
+    {
+     "from_output": "map_day",
+     "role": "the approved day map - edit THIS exact image"
+    }
+   ],
+   "depends_on": "map_day",
+   "postprocess": {
+    "op": "map",
+    "cover_crop": "9:16",
+    "webp_quality": "82->40 search",
+    "budget_kb": 250,
+    "bg_removal": false
+   },
+   "notes": "Must keep geometry pixel-identical to map_day so one hit layout serves all 3 variants. Reject if any landmark shifts."
+  },
+  {
+   "id": "door_hifz",
+   "group": "door",
+   "pilot": true,
+   "target": "next/home/img/doors/hifz.webp",
+   "kind": "door",
+   "aspect_ratio": "4:3",
+   "gen_size": "2K",
+   "final_px": [
+    480,
+    384
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single a small cream mosque with a green dome, a short minaret with a green cap and a golden finial, an arched wooden door with warm glowing windows, tiny golden crescent-free finial (use a plain golden ball), no people. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "digits on objects",
+    "writing on board",
+    "floor",
+    "cast shadow"
+   ],
+   "references": [
+    {
+     "path": "next/home/img/doors/valley_win.webp",
+     "role": "approved door style"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "palette / lighting"
+    },
+    {
+     "path": "valley/img/athar/idle.webp",
+     "role": "3D render style (do not reproduce the character)"
+    }
+   ],
+   "postprocess": {
+    "op": "door",
+    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "trim": true,
+    "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+    "webp_quality": "85->45 search, alpha",
+    "budget_kb": 60,
+    "bg_removal": true
+   },
+   "notes": "Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."
+  },
+  {
+   "id": "door_noor",
+   "group": "door",
+   "pilot": false,
+   "target": "next/home/img/doors/noor.webp",
+   "kind": "door",
+   "aspect_ratio": "4:3",
+   "gen_size": "2K",
+   "final_px": [
+    480,
+    384
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single an orange-framed classroom chalkboard on a small wooden easel, EMPTY dark green slate (no writing at all), tiny chalk piece and eraser on the tray, friendly children's-school feel. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "digits on objects",
+    "writing on board",
+    "floor",
+    "cast shadow"
+   ],
+   "references": [
+    {
+     "path": "next/home/img/doors/valley_win.webp",
+     "role": "approved door style"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "palette / lighting"
+    },
+    {
+     "path": "valley/img/athar/idle.webp",
+     "role": "3D render style (do not reproduce the character)"
+    }
+   ],
+   "postprocess": {
+    "op": "door",
+    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "trim": true,
+    "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+    "webp_quality": "85->45 search, alpha",
+    "budget_kb": 60,
+    "bg_removal": true
+   },
+   "notes": "Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."
+  },
+  {
+   "id": "door_lib",
+   "group": "door",
+   "pilot": false,
+   "target": "next/home/img/doors/lib.webp",
+   "kind": "door",
+   "aspect_ratio": "4:3",
+   "gen_size": "2K",
+   "final_px": [
+    480,
+    384
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single a purple wooden bookcase with two shelves full of colourful books and a few books leaning, rounded corners, cheerful palette. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "digits on objects",
+    "writing on board",
+    "floor",
+    "cast shadow"
+   ],
+   "references": [
+    {
+     "path": "next/home/img/doors/valley_win.webp",
+     "role": "approved door style"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "palette / lighting"
+    },
+    {
+     "path": "valley/img/athar/idle.webp",
+     "role": "3D render style (do not reproduce the character)"
+    }
+   ],
+   "postprocess": {
+    "op": "door",
+    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "trim": true,
+    "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+    "webp_quality": "85->45 search, alpha",
+    "budget_kb": 60,
+    "bg_removal": true
+   },
+   "notes": "Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."
+  },
+  {
+   "id": "door_math",
+   "group": "door",
+   "pilot": false,
+   "target": "next/home/img/doors/math.webp",
+   "kind": "door",
+   "aspect_ratio": "4:3",
+   "gen_size": "2K",
+   "final_px": [
+    480,
+    384
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single four chunky rounded toy blocks in gold, sky-blue, pink and green, stacked as a small pyramid (three at the bottom, one on top slightly tilted), faces of the blocks completely blank and smooth (no digits). glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "digits on objects",
+    "writing on board",
+    "floor",
+    "cast shadow"
+   ],
+   "references": [
+    {
+     "path": "next/home/img/doors/valley_win.webp",
+     "role": "approved door style"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "palette / lighting"
+    },
+    {
+     "path": "valley/img/athar/idle.webp",
+     "role": "3D render style (do not reproduce the character)"
+    }
+   ],
+   "postprocess": {
+    "op": "door",
+    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "trim": true,
+    "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+    "webp_quality": "85->45 search, alpha",
+    "budget_kb": 60,
+    "bg_removal": true
+   },
+   "notes": "Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."
+  },
+  {
+   "id": "door_adhkar",
+   "group": "door",
+   "pilot": false,
+   "target": "next/home/img/doors/adhkar.webp",
+   "kind": "door",
+   "aspect_ratio": "4:3",
+   "gen_size": "2K",
+   "final_px": [
+    480,
+    384
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single a teal metal hanging frame with three glowing golden Arabic-style lanterns of different sizes hanging from the bar, warm light inside each, small teal base plate. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "digits on objects",
+    "writing on board",
+    "floor",
+    "cast shadow"
+   ],
+   "references": [
+    {
+     "path": "next/home/img/doors/valley_win.webp",
+     "role": "approved door style"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "palette / lighting"
+    },
+    {
+     "path": "valley/img/athar/idle.webp",
+     "role": "3D render style (do not reproduce the character)"
+    }
+   ],
+   "postprocess": {
+    "op": "door",
+    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "trim": true,
+    "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+    "webp_quality": "85->45 search, alpha",
+    "budget_kb": 60,
+    "bg_removal": true
+   },
+   "notes": "Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."
+  },
+  {
+   "id": "door_quiz",
+   "group": "door",
+   "pilot": false,
+   "target": "next/home/img/doors/quiz.webp",
+   "kind": "door",
+   "aspect_ratio": "4:3",
+   "gen_size": "2K",
+   "final_px": [
+    480,
+    384
+   ],
+   "model": "seedream_v5_pro",
+   "prompt": "A single a golden trophy cup standing on a three-step pink podium (middle step tallest), podium front faces completely blank and smooth (no digits). glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "digits on objects",
+    "writing on board",
+    "floor",
+    "cast shadow"
+   ],
+   "references": [
+    {
+     "path": "next/home/img/doors/valley_win.webp",
+     "role": "approved door style"
+    },
+    {
+     "path": "valley/img/bg/home.webp",
+     "role": "palette / lighting"
+    },
+    {
+     "path": "valley/img/athar/idle.webp",
+     "role": "3D render style (do not reproduce the character)"
+    }
+   ],
+   "postprocess": {
+    "op": "door",
+    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "trim": true,
+    "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+    "webp_quality": "85->45 search, alpha",
+    "budget_kb": 60,
+    "bg_removal": true
+   },
+   "notes": "Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."
+  },
+  {
+   "id": "door_valley",
+   "group": "door",
+   "pilot": false,
+   "target": "next/home/img/doors/valley_win.webp",
+   "kind": "existing",
+   "note": "ALREADY EXISTS - no generation (cropped from valley/img/bg/home.webp)."
+  },
+  {
+   "id": "S2",
+   "group": "marks_sheet",
+   "pilot": true,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a small wooden lamp-post with a glowing arched amber lantern on top, (2) a green leaf-shaped shield with a soft cream stripe, (3) a small wooden three-step pulpit staircase in warm brown wood, (4) a round red wax seal with a raised ring edge, completely blank and smooth, (5) a small rocky cave opening with a dark warm glowing inside, (6) a wooden signpost with two blank arrow boards pointing left and right. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mBeacon",
+     "target": "valley/img/marks/mBeacon.webp",
+     "serves_marks": [
+      "mBeacon"
+     ],
+     "object": "a small wooden lamp-post with a glowing arched amber lantern on top"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mShield",
+     "target": "valley/img/marks/mShield.webp",
+     "serves_marks": [
+      "mShield"
+     ],
+     "object": "a green leaf-shaped shield with a soft cream stripe"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mMinbar",
+     "target": "valley/img/marks/mMinbar.webp",
+     "serves_marks": [
+      "mMinbar"
+     ],
+     "object": "a small wooden three-step pulpit staircase in warm brown wood"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mSeal",
+     "target": "valley/img/marks/mSeal.webp",
+     "serves_marks": [
+      "mSeal"
+     ],
+     "object": "a round red wax seal with a raised ring edge, completely blank and smooth"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mCave",
+     "target": "valley/img/marks/mCave.webp",
+     "serves_marks": [
+      "mCave"
+     ],
+     "object": "a small rocky cave opening with a dark warm glowing inside"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mTwoPaths",
+     "target": "valley/img/marks/mTwoPaths.webp",
+     "serves_marks": [
+      "mTwoPaths"
+     ],
+     "object": "a wooden signpost with two blank arrow boards pointing left and right"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S3",
+   "group": "marks_sheet",
+   "pilot": false,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a colourful pinwheel on a wooden stick, (2) a plush maroon prayer cushion with a gold trim, (3) a clear glass prism casting a small rainbow, (4) an open book with blank cream pages and a warm glow above it, (5) a small wall calendar with a red top and two coloured dots, no digits, (6) a round gold coin with an embossed plain ring, no inscription. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mWindmill",
+     "target": "valley/img/marks/mWindmill.webp",
+     "serves_marks": [
+      "mWindmill"
+     ],
+     "object": "a colourful pinwheel on a wooden stick"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mSeat",
+     "target": "valley/img/marks/mSeat.webp",
+     "serves_marks": [
+      "mSeat",
+      "mMat"
+     ],
+     "object": "a plush maroon prayer cushion with a gold trim"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mPrism",
+     "target": "valley/img/marks/mPrism.webp",
+     "serves_marks": [
+      "mPrism"
+     ],
+     "object": "a clear glass prism casting a small rainbow"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mLampBook",
+     "target": "valley/img/marks/mLampBook.webp",
+     "serves_marks": [
+      "mLampBook"
+     ],
+     "object": "an open book with blank cream pages and a warm glow above it"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mCalendar",
+     "target": "valley/img/marks/mCalendar.webp",
+     "serves_marks": [
+      "mCalendar"
+     ],
+     "object": "a small wall calendar with a red top and two coloured dots, no digits"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mCoin",
+     "target": "valley/img/marks/mCoin.webp",
+     "serves_marks": [
+      "mCoin"
+     ],
+     "object": "a round gold coin with an embossed plain ring, no inscription"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S6",
+   "group": "marks_sheet",
+   "pilot": false,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a single plump wheat grain seed, (2) a small brown leather coin pouch tied with a cord, (3) a coil of thick rope, (4) a small brass bell with a handle, (5) a smooth round clay pot with one gentle zigzag crack down its side, (6) a wooden torch with a warm flame. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mGrain",
+     "target": "valley/img/marks/mGrain.webp",
+     "serves_marks": [
+      "mGrain"
+     ],
+     "object": "a single plump wheat grain seed"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mPurse",
+     "target": "valley/img/marks/mPurse.webp",
+     "serves_marks": [
+      "mPurse"
+     ],
+     "object": "a small brown leather coin pouch tied with a cord"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mRope",
+     "target": "valley/img/marks/mRope.webp",
+     "serves_marks": [
+      "mRope"
+     ],
+     "object": "a coil of thick rope"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mBell",
+     "target": "valley/img/marks/mBell.webp",
+     "serves_marks": [
+      "mBell"
+     ],
+     "object": "a small brass bell with a handle"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mCrack",
+     "target": "valley/img/marks/mCrack.webp",
+     "serves_marks": [
+      "mCrack"
+     ],
+     "object": "a smooth round clay pot with one gentle zigzag crack down its side"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mTorch",
+     "target": "valley/img/marks/mTorch.webp",
+     "serves_marks": [
+      "mTorch"
+     ],
+     "object": "a wooden torch with a warm flame"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S7",
+   "group": "marks_sheet",
+   "pilot": false,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a sheer light-blue and white silk scarf draped in a gentle arch, (2) two small round green trees side by side, (3) a faceted blue gemstone, (4) a wooden bowl full of brown dates, (5) a small cream canvas tent with a pointed top, (6) a ceramic bowl of creamy porridge topped with a red and a green garnish. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mVeil",
+     "target": "valley/img/marks/mVeil.webp",
+     "serves_marks": [
+      "mVeil"
+     ],
+     "object": "a sheer light-blue and white silk scarf draped in a gentle arch"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mTwoTrees",
+     "target": "valley/img/marks/mTwoTrees.webp",
+     "serves_marks": [
+      "mTwoTrees"
+     ],
+     "object": "two small round green trees side by side"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mGem",
+     "target": "valley/img/marks/mGem.webp",
+     "serves_marks": [
+      "mGem"
+     ],
+     "object": "a faceted blue gemstone"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mDates",
+     "target": "valley/img/marks/mDates.webp",
+     "serves_marks": [
+      "mDates"
+     ],
+     "object": "a wooden bowl full of brown dates"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mCaravan",
+     "target": "valley/img/marks/mCaravan.webp",
+     "serves_marks": [
+      "mCaravan"
+     ],
+     "object": "a small cream canvas tent with a pointed top"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mBowl",
+     "target": "valley/img/marks/mBowl.webp",
+     "serves_marks": [
+      "mBowl"
+     ],
+     "object": "a ceramic bowl of creamy porridge topped with a red and a green garnish"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S9",
+   "group": "marks_sheet",
+   "pilot": false,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a wooden treasure chest with brass fittings, (2) a golden crescent ring shape, plain and smooth, (3) a clay water jug with a handle, (4) a soft pastel rainbow arc, (5) a short trail of five smooth cream stepping stones, (6) a small hanging brass lantern with a warm glowing light. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mChest",
+     "target": "valley/img/marks/mChest.webp",
+     "serves_marks": [
+      "mChest"
+     ],
+     "object": "a wooden treasure chest with brass fittings"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mCrescent",
+     "target": "valley/img/marks/mCrescent.webp",
+     "serves_marks": [
+      "mCrescent"
+     ],
+     "object": "a golden crescent ring shape, plain and smooth"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mJug",
+     "target": "valley/img/marks/mJug.webp",
+     "serves_marks": [
+      "mJug"
+     ],
+     "object": "a clay water jug with a handle"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mRainbow",
+     "target": "valley/img/marks/mRainbow.webp",
+     "serves_marks": [
+      "mRainbow"
+     ],
+     "object": "a soft pastel rainbow arc"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mSteps",
+     "target": "valley/img/marks/mSteps.webp",
+     "serves_marks": [
+      "mSteps"
+     ],
+     "object": "a short trail of five smooth cream stepping stones"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mLanterns",
+     "target": "valley/img/marks/mLanterns.webp",
+     "serves_marks": [
+      "mLanterns"
+     ],
+     "object": "a small hanging brass lantern with a warm glowing light"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S10",
+   "group": "marks_sheet",
+   "pilot": false,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a simple black cube building draped in dark cloth with one plain golden band near the top, no writing, no door details, no people, (2) a soft fluffy white cloud, completely plain, (3) a short curved piece of sandy cream path, (4) a folded green cloth cloak, (5) a small brass padlock (symbol of keeping silent; no lips, no face), (6) a slender cream minaret tower with a green cap and a golden ball finial. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mKaaba",
+     "target": "valley/img/marks/mKaaba.webp",
+     "serves_marks": [
+      "mKaaba"
+     ],
+     "object": "a simple black cube building draped in dark cloth with one plain golden band near the top, no writing, no door details, no people"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mQuiet",
+     "target": "valley/img/marks/mQuiet.webp",
+     "serves_marks": [
+      "mQuiet"
+     ],
+     "object": "a soft fluffy white cloud, completely plain"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mPath",
+     "target": "valley/img/marks/mPath.webp",
+     "serves_marks": [
+      "mPath"
+     ],
+     "object": "a short curved piece of sandy cream path"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mCloak",
+     "target": "valley/img/marks/mCloak.webp",
+     "serves_marks": [
+      "mCloak"
+     ],
+     "object": "a folded green cloth cloak"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mClosedLips",
+     "target": "valley/img/marks/mClosedLips.webp",
+     "serves_marks": [
+      "mClosedLips"
+     ],
+     "object": "a small brass padlock (symbol of keeping silent; no lips, no face)"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mMinaret",
+     "target": "valley/img/marks/mMinaret.webp",
+     "serves_marks": [
+      "mMinaret"
+     ],
+     "object": "a slender cream minaret tower with a green cap and a golden ball finial"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S11",
+   "group": "marks_sheet",
+   "pilot": false,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a closed cream-and-teal book with a ribbon bookmark and a plain blank cover, (2) a rolled cream scroll tied with a red ribbon, blank, (3) three chunky rounded wooden toy blocks stacked, faces completely blank and smooth, (4) a plain smooth golden crescent moon with a few tiny stars, no face, (5) four glossy golden five-point stars of different sizes in a loose cluster, no faces, (6) five small glowing golden orbs of light in a gentle arc, no faces. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mBook",
+     "target": "valley/img/marks/mBook.webp",
+     "serves_marks": [
+      "mBook"
+     ],
+     "object": "a closed cream-and-teal book with a ribbon bookmark and a plain blank cover"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mWords",
+     "target": "valley/img/marks/mWords.webp",
+     "serves_marks": [
+      "mWords"
+     ],
+     "object": "a rolled cream scroll tied with a red ribbon, blank"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mLetters",
+     "target": "valley/img/marks/mLetters.webp",
+     "serves_marks": [
+      "mLetters"
+     ],
+     "object": "three chunky rounded wooden toy blocks stacked, faces completely blank and smooth"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "moon",
+     "target": "valley/img/marks/moon.webp",
+     "serves_marks": [
+      "moon"
+     ],
+     "object": "a plain smooth golden crescent moon with a few tiny stars, no face"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mStarsFour",
+     "target": "valley/img/marks/mStarsFour.webp",
+     "serves_marks": [
+      "mStarsFour"
+     ],
+     "object": "four glossy golden five-point stars of different sizes in a loose cluster, no faces"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mFiveLights",
+     "target": "valley/img/marks/mFiveLights.webp",
+     "serves_marks": [
+      "mFiveLights"
+     ],
+     "object": "five small glowing golden orbs of light in a gentle arc, no faces"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  },
+  {
+   "id": "S12",
+   "group": "marks_sheet",
+   "pilot": true,
+   "kind": "sheet",
+   "aspect_ratio": "3:2",
+   "gen_size": "2K (3 cols x 2 rows)",
+   "model": "seedream_v5_pro",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) six small glowing golden orbs of light in two rows of three, no faces, (2) seven small glowing golden orbs of light in a gentle arch, no faces, (3) one large glowing golden orb of light with a soft inner core, (4) a soft round warm-white glowing light orb with gentle rays, (5) a golden half-sun rising over a small green hill with soft rays, no face, (6) a golden sun disc with soft rays just above a flat horizon line, no face. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "negative": [
+    "people",
+    "humans",
+    "hands",
+    "animals",
+    "birds",
+    "insects",
+    "faces",
+    "text",
+    "letters",
+    "numerals",
+    "calligraphy",
+    "logo",
+    "watermark",
+    "brand characters",
+    "harsh shadows",
+    "photorealistic",
+    "scary mood",
+    "touching objects",
+    "floor",
+    "cast shadow",
+    "grid lines"
+   ],
+   "references": [
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s4.jpg",
+     "role": "approved style (r12 sheet)"
+    },
+    {
+     "path": "next/release/batch/refs/approved_marks_sheet_s8.jpg",
+     "role": "approved style (r12 sheet)"
+    }
+   ],
+   "cells": [
+    {
+     "index": 1,
+     "row": 0,
+     "col": 0,
+     "stem": "mSix",
+     "target": "valley/img/marks/mSix.webp",
+     "serves_marks": [
+      "mSix"
+     ],
+     "object": "six small glowing golden orbs of light in two rows of three, no faces"
+    },
+    {
+     "index": 2,
+     "row": 0,
+     "col": 1,
+     "stem": "mSeven",
+     "target": "valley/img/marks/mSeven.webp",
+     "serves_marks": [
+      "mSeven"
+     ],
+     "object": "seven small glowing golden orbs of light in a gentle arch, no faces"
+    },
+    {
+     "index": 3,
+     "row": 0,
+     "col": 2,
+     "stem": "mCore",
+     "target": "valley/img/marks/mCore.webp",
+     "serves_marks": [
+      "mCore"
+     ],
+     "object": "one large glowing golden orb of light with a soft inner core"
+    },
+    {
+     "index": 4,
+     "row": 1,
+     "col": 0,
+     "stem": "mGlow",
+     "target": "valley/img/marks/mGlow.webp",
+     "serves_marks": [
+      "mGlow"
+     ],
+     "object": "a soft round warm-white glowing light orb with gentle rays"
+    },
+    {
+     "index": 5,
+     "row": 1,
+     "col": 1,
+     "stem": "mDawn",
+     "target": "valley/img/marks/mDawn.webp",
+     "serves_marks": [
+      "mDawn"
+     ],
+     "object": "a golden half-sun rising over a small green hill with soft rays, no face"
+    },
+    {
+     "index": 6,
+     "row": 1,
+     "col": 2,
+     "stem": "mSunUp",
+     "target": "valley/img/marks/mSunUp.webp",
+     "serves_marks": [
+      "mSunUp",
+      "mSunrise"
+     ],
+     "object": "a golden sun disc with soft rays just above a flat horizon line, no face"
+    }
+   ],
+   "postprocess": {
+    "op": "sheet",
+    "key": "magenta #FF00FF flood-fill + despill",
+    "split": "connected components -> 3x2 cells (dilate-merge)",
+    "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
+    "budget_kb": 40,
+    "bg_removal": true
+   },
+   "notes": "One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."
+  }
+ ]
+}
