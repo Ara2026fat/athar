@@ -259,7 +259,7 @@
     384
    ],
    "model": "seedream_v5_pro",
-   "prompt": "A single a small cream mosque with a green dome, a short minaret with a green cap and a golden finial, an arched wooden door with warm glowing windows, tiny golden crescent-free finial (use a plain golden ball), no people. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A single a small cream mosque with a green dome, a short minaret with a green cap and a golden finial, an arched wooden door with warm glowing windows, tiny golden crescent-free finial (use a plain golden ball), no people. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure violet-purple #7B2FF7 background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -299,7 +299,7 @@
    ],
    "postprocess": {
     "op": "door",
-    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "key": "violet #7B2FF7 flood-fill from border + edge despill",
     "trim": true,
     "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
     "webp_quality": "85->45 search, alpha",
@@ -321,7 +321,7 @@
     384
    ],
    "model": "seedream_v5_pro",
-   "prompt": "A single an orange-framed classroom chalkboard on a small wooden easel, EMPTY dark green slate (no writing at all), tiny chalk piece and eraser on the tray, friendly children's-school feel. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A single an orange-framed classroom chalkboard on a small wooden easel, EMPTY dark green slate (no writing at all), tiny chalk piece and eraser on the tray, friendly children's-school feel. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure violet-purple #7B2FF7 background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -361,7 +361,7 @@
    ],
    "postprocess": {
     "op": "door",
-    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "key": "violet #7B2FF7 flood-fill from border + edge despill",
     "trim": true,
     "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
     "webp_quality": "85->45 search, alpha",
@@ -383,7 +383,7 @@
     384
    ],
    "model": "seedream_v5_pro",
-   "prompt": "A single a purple wooden bookcase with two shelves full of colourful books and a few books leaning, rounded corners, cheerful palette. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A single a purple wooden bookcase with two shelves full of colourful books and a few books leaning, rounded corners, cheerful palette. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure violet-purple #7B2FF7 background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -423,7 +423,7 @@
    ],
    "postprocess": {
     "op": "door",
-    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "key": "violet #7B2FF7 flood-fill from border + edge despill",
     "trim": true,
     "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
     "webp_quality": "85->45 search, alpha",
@@ -445,7 +445,7 @@
     384
    ],
    "model": "seedream_v5_pro",
-   "prompt": "A single four chunky rounded toy blocks in gold, sky-blue, pink and green, stacked as a small pyramid (three at the bottom, one on top slightly tilted), faces of the blocks completely blank and smooth (no digits). glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A single four chunky rounded toy blocks in gold, sky-blue, pink and green, stacked as a small pyramid (three at the bottom, one on top slightly tilted), faces of the blocks completely blank and smooth (no digits). glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure violet-purple #7B2FF7 background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -485,7 +485,7 @@
    ],
    "postprocess": {
     "op": "door",
-    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "key": "violet #7B2FF7 flood-fill from border + edge despill",
     "trim": true,
     "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
     "webp_quality": "85->45 search, alpha",
@@ -507,7 +507,7 @@
     384
    ],
    "model": "seedream_v5_pro",
-   "prompt": "A single a teal metal hanging frame with three glowing golden Arabic-style lanterns of different sizes hanging from the bar, warm light inside each, small teal base plate. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A single a teal metal hanging frame with three glowing golden Arabic-style lanterns of different sizes hanging from the bar, warm light inside each, small teal base plate. glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure violet-purple #7B2FF7 background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -547,7 +547,7 @@
    ],
    "postprocess": {
     "op": "door",
-    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "key": "violet #7B2FF7 flood-fill from border + edge despill",
     "trim": true,
     "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
     "webp_quality": "85->45 search, alpha",
@@ -569,7 +569,7 @@
     384
    ],
    "model": "seedream_v5_pro",
-   "prompt": "A single a golden trophy cup standing on a three-step pink podium (middle step tallest), podium front faces completely blank and smooth (no digits). glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure magenta #FF00FF background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A single a golden trophy cup standing on a three-step pink podium (middle step tallest), podium front faces completely blank and smooth (no digits). glossy Pixar-like 3D cartoon icon, soft rounded forms, warm soft studio light, subtle ambient occlusion, rich saturated yet gentle colors, matches the style of the Athar valley scenes and the boy character; single object centred with ~8% margin, three-quarter front view, flat uniform pure violet-purple #7B2FF7 background (no gradient, no floor, no cast shadow beyond a tiny contact shadow), no people, no animals, no faces, no text or letters or numerals anywhere, no watermark HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -609,7 +609,7 @@
    ],
    "postprocess": {
     "op": "door",
-    "key": "magenta #FF00FF flood-fill from border + edge despill",
+    "key": "violet #7B2FF7 flood-fill from border + edge despill",
     "trim": true,
     "canvas": "480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
     "webp_quality": "85->45 search, alpha",
@@ -634,7 +634,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a small wooden lamp-post with a glowing arched amber lantern on top, (2) a green leaf-shaped shield with a soft cream stripe, (3) a small wooden three-step pulpit staircase in warm brown wood, (4) a round red wax seal with a raised ring edge, completely blank and smooth, (5) a small rocky cave opening with a dark warm glowing inside, (6) a wooden signpost with two blank arrow boards pointing left and right. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a small wooden lamp-post with a glowing arched amber lantern on top, (2) a green leaf-shaped shield with a soft cream stripe, (3) a small wooden three-step pulpit staircase in warm brown wood, (4) a round red wax seal with a raised ring edge, completely blank and smooth, (5) a small rocky cave opening with a dark warm glowing inside, (6) a wooden signpost with two blank arrow boards pointing left and right. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -738,7 +738,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -754,7 +754,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a colourful pinwheel on a wooden stick, (2) a plush maroon prayer cushion with a gold trim, (3) a clear glass prism casting a small rainbow, (4) an open book with blank cream pages and a warm glow above it, (5) a small wall calendar with a red top and two coloured dots, no digits, (6) a round gold coin with an embossed plain ring, no inscription. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a colourful pinwheel on a wooden stick, (2) a plush maroon prayer cushion with a gold trim, (3) a clear glass prism casting a small rainbow, (4) an open book with blank cream pages and a warm glow above it, (5) a small wall calendar with a red top and two coloured dots, no digits, (6) a round gold coin with an embossed plain ring, no inscription. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -859,7 +859,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -875,7 +875,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a single plump wheat grain seed, (2) a small brown leather coin pouch tied with a cord, (3) a coil of thick rope, (4) a small brass bell with a handle, (5) a smooth round clay pot with one gentle zigzag crack down its side, (6) a wooden torch with a warm flame. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a single plump wheat grain seed, (2) a small brown leather coin pouch tied with a cord, (3) a coil of thick rope, (4) a small brass bell with a handle, (5) a smooth round clay pot with one gentle zigzag crack down its side, (6) a wooden torch with a warm flame. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -979,7 +979,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -995,7 +995,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a sheer light-blue and white silk scarf draped in a gentle arch, (2) two small round green trees side by side, (3) a faceted blue gemstone, (4) a wooden bowl full of brown dates, (5) a small cream canvas tent with a pointed top, (6) a ceramic bowl of creamy porridge topped with a red and a green garnish. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a sheer light-blue and white silk scarf draped in a gentle arch, (2) two small round green trees side by side, (3) a faceted blue gemstone, (4) a wooden bowl full of brown dates, (5) a small cream canvas tent with a pointed top, (6) a ceramic bowl of creamy porridge topped with a red and a green garnish. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -1099,7 +1099,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -1115,7 +1115,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a wooden treasure chest with brass fittings, (2) a golden crescent ring shape, plain and smooth, (3) a clay water jug with a handle, (4) a soft pastel rainbow arc, (5) a short trail of five smooth cream stepping stones, (6) a small hanging brass lantern with a warm glowing light. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a wooden treasure chest with brass fittings, (2) a golden crescent ring shape, plain and smooth, (3) a clay water jug with a handle, (4) a soft pastel rainbow arc, (5) a short trail of five smooth cream stepping stones, (6) a small hanging brass lantern with a warm glowing light. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -1219,7 +1219,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -1235,7 +1235,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a simple black cube building draped in dark cloth with one plain golden band near the top, no writing, no door details, no people, (2) a soft fluffy white cloud, completely plain, (3) a short curved piece of sandy cream path, (4) a folded green cloth cloak, (5) a small brass padlock (symbol of keeping silent; no lips, no face), (6) a slender cream minaret tower with a green cap and a golden ball finial. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a simple black cube building draped in dark cloth with one plain golden band near the top, no writing, no door details, no people, (2) a soft fluffy white cloud, completely plain, (3) a short curved piece of sandy cream path, (4) a folded green cloth cloak, (5) a small brass padlock (symbol of keeping silent; no lips, no face), (6) a slender cream minaret tower with a green cap and a golden ball finial. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -1339,7 +1339,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -1355,7 +1355,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a closed cream-and-teal book with a ribbon bookmark and a plain blank cover, (2) a rolled cream scroll tied with a red ribbon, blank, (3) three chunky rounded wooden toy blocks stacked, faces completely blank and smooth, (4) a plain smooth golden crescent moon with a few tiny stars, no face, (5) four glossy golden five-point stars of different sizes in a loose cluster, no faces, (6) five small glowing golden orbs of light in a gentle arc, no faces. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) a closed cream-and-teal book with a ribbon bookmark and a plain blank cover, (2) a rolled cream scroll tied with a red ribbon, blank, (3) three chunky rounded wooden toy blocks stacked, faces completely blank and smooth, (4) a plain smooth golden crescent moon with a few tiny stars, no face, (5) four glossy golden five-point stars of different sizes in a loose cluster, no faces, (6) five small glowing golden orbs of light in a gentle arc, no faces. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -1459,7 +1459,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,
@@ -1475,7 +1475,7 @@
    "aspect_ratio": "3:2",
    "gen_size": "2K (3 cols x 2 rows)",
    "model": "seedream_v5_pro",
-   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure magenta background (#FF00FF), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) six small glowing golden orbs of light in two rows of three, no faces, (2) seven small glowing golden orbs of light in a gentle arch, no faces, (3) one large glowing golden orb of light with a soft inner core, (4) a soft round warm-white glowing light orb with gentle rays, (5) a golden half-sun rising over a small green hill with soft rays, no face, (6) a golden sun disc with soft rays just above a flat horizon line, no face. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
+   "prompt": "A sprite sheet of exactly 6 separate small game-icon objects arranged in a clean 3 columns by 2 rows grid, each object centered in its own cell with very wide empty margins so nothing touches anything else, all on one perfectly flat solid pure violet-purple background (#7B2FF7), no ground, no cast shadow on the background, no text, no letters, no people, no animals, no faces. Style: glossy Pixar-like 3D cartoon render for a children's Islamic learning game, soft warm golden lighting, rounded chunky friendly shapes, smooth clay-like materials with gentle highlights, matching the look of a stylised animated-movie village. Every object must be one clean standalone item, fully visible, and clearly different in shape from the others. Objects: (1) six small glowing golden orbs of light in two rows of three, no faces, (2) seven small glowing golden orbs of light in a gentle arch, no faces, (3) one large glowing golden orb of light with a soft inner core, (4) a soft round warm-white glowing light orb with gentle rays, (5) a golden half-sun rising over a small green hill with soft rays, no face, (6) a golden sun disc with soft rays just above a flat horizon line, no face. HARD CONTENT RULES: absolutely no people, no humans, no hands, no animals, no birds, no insects, no fish, no faces (not even on the sun, moon, clouds, stars or objects), no text, no letters, no numerals, no calligraphy, no symbols that look like writing, no logos, no watermark, no brand or known cartoon characters. Calm, warm, child-friendly palette (soft golds, leaf greens, cream, sky blue, gentle terracotta), never scary, never dark or harsh.",
    "negative": [
     "people",
     "humans",
@@ -1580,7 +1580,7 @@
    ],
    "postprocess": {
     "op": "sheet",
-    "key": "magenta #FF00FF flood-fill + despill",
+    "key": "violet #7B2FF7 flood-fill + despill",
     "split": "connected components -> 3x2 cells (dilate-merge)",
     "per_icon": "trim, pad 4%, fit 256px longest side, webp alpha q85->50",
     "budget_kb": 40,

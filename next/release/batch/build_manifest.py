@@ -135,7 +135,7 @@ def build():
             references=[dict(path="next/home/img/doors/valley_win.webp", role="approved door style"),
                         dict(path="valley/img/bg/home.webp", role="palette / lighting"),
                         dict(path="valley/img/athar/idle.webp", role="3D render style (do not reproduce the character)")],
-            postprocess=dict(op="door", key="magenta #FF00FF flood-fill from border + edge despill", trim=True, canvas="480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
+            postprocess=dict(op="door", key="violet #7B2FF7 flood-fill from border + edge despill", trim=True, canvas="480x384 (5:4, matches .art3 aspect 120/96), object bottom-aligned",
                              webp_quality="85->45 search, alpha", budget_kb=60, bg_removal=True),
             notes="Letters/numerals on noor/math/quiz are drawn in code (world.js D3 table) - image must stay blank."))
     items.append(dict(id="door_valley", group="door", pilot=False, target="next/home/img/doors/valley_win.webp", kind="existing",
@@ -149,7 +149,7 @@ def build():
             references=[dict(path="next/release/batch/refs/approved_marks_sheet_s4.jpg", role="approved style (r12 sheet)"),
                         dict(path="next/release/batch/refs/approved_marks_sheet_s8.jpg", role="approved style (r12 sheet)")],
             cells=[dict(index=i + 1, row=i // 3, col=i % 3, stem=c[0], target="valley/img/marks/%s.webp" % c[0], serves_marks=[c[0]] + c[1], object=c[2]) for i, c in enumerate(cells)],
-            postprocess=dict(op="sheet", key="magenta #FF00FF flood-fill + despill", split="connected components -> 3x2 cells (dilate-merge)",
+            postprocess=dict(op="sheet", key="violet #7B2FF7 flood-fill + despill", split="connected components -> 3x2 cells (dilate-merge)",
                              per_icon="trim, pad 4%, fit 256px longest side, webp alpha q85->50", budget_kb=40, bg_removal=True),
             notes="One generation = 6 final marks. Reject the sheet if any object touches another or a face appears."))
         for c in cells:
@@ -177,7 +177,9 @@ def main():
         rules=RULES, negative_default=NEG, model=MODEL,
         order=["PILOT: map_day, door_hifz, S2, S12 (approve style)", "then map_sun, map_night", "then remaining doors", "then S3,S6,S7,S9,S10,S11"],
         estimate=est, items=items)
-    json.dump(out, open(os.path.join(HERE, "batch_manifest.json"), "w"), ensure_ascii=False, indent=1)
+    _txt = json.dumps(out, ensure_ascii=False, indent=1)
+    _txt = _txt.replace("#FF00FF", "#7B2FF7").replace("pure magenta", "pure violet-purple").replace("magenta", "violet")
+    open(os.path.join(HERE, "batch_manifest.json"), "w").write(_txt)
     json.dump(dict(comment="Append to M3 array in next/valley/valley.js after marks arrive: [markId, imageStem, cx, cy, size] (centre/size from original SVG bbox)", M3_additions=m3),
               open(os.path.join(HERE, "m3_patch.json"), "w"), indent=0)
     print(json.dumps(est, indent=1))

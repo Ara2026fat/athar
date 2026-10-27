@@ -6,7 +6,7 @@
 Input files are matched by stem to manifest ids: map_day.png, map_sun.jpg, map_night.png, door_hifz.png, S2.png ... S12.png
 (any of png/jpg/jpeg/webp). Writes to the manifest target paths under --root (or --out-root for a safe trial).
 
-Background removal: generation uses a flat #FF00FF background, so the default is a deterministic magenta key
+Background removal: generation uses a flat #7B2FF7 (violet) background, so the default is a deterministic magenta key
 (flood-fill from the image border + soft edge + despill). Only background-connected magenta is removed, so pink/purple parts of
 the object survive. `--rembg` switches to rembg if it is installed (pip install rembg); otherwise the magenta key is the documented fallback.
 """
@@ -26,6 +26,8 @@ def find_input(d, stem):
     g = sorted(glob.glob(os.path.join(d, stem + "*")))
     return g[0] if g else None
 
+KEY = (123, 47, 247)   # flat violet #7B2FF7 background (owner asked for no pink)
+
 def key_magenta(im, hard=70.0, soft=150.0, use_rembg=False):
     """RGBA with the border-connected magenta background removed."""
     im = im.convert("RGB")
@@ -36,7 +38,7 @@ def key_magenta(im, hard=70.0, soft=150.0, use_rembg=False):
         except Exception as e:
             print("  rembg unavailable (%s) -> magenta key" % e)
     a = np.asarray(im).astype(np.float32)
-    d = np.sqrt((a[..., 0] - 255) ** 2 + a[..., 1] ** 2 + (a[..., 2] - 255) ** 2)
+    d = np.sqrt((a[..., 0] - KEY[0]) ** 2 + (a[..., 1] - KEY[1]) ** 2 + (a[..., 2] - KEY[2]) ** 2)
     cand = d < soft
     lab, n = ndi.label(cand)
     border = np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))
