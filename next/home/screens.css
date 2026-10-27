@@ -75,8 +75,8 @@ html.sc-sub .letter-tile{min-width:48px}
 @keyframes scPop{0%{scale:1}35%{scale:1.09}70%{scale:.97}100%{scale:1}}
 
 /* ---------- انتقال ظهور بين الشاشات (≤250ms) ---------- */
-html.sc-on .view.active:not(#view-home){animation:scIn .22s ease-out both}
-@keyframes scIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+html.sc-on .view.active:not(#view-home){animation:scIn var(--mx-base,.22s) var(--mx-ease,ease-out) both}
+@keyframes scIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
 
 /* ---------- شاشة المصحف: تنسيق خفيف فقط (لا تدخل في الإطار ولا التلاوة) ---------- */
 #view-surah .back-btn{width:48px;height:48px}

@@ -218,3 +218,33 @@ body:has(#app.instage) #ubar,body:has(#gate:not(.off)) #ubar{display:none}
 #scene.vxpaint .vxmed{display:none}
 #scene.vxpaint #vx3d>image:not(.vxm){display:none}
 #scene.vxpaint #vx3d>rect{display:none}
+
+/* ═══ r19 · حركة هادئة (previews فقط) ═══ */
+/* عنصر لفت انتباه واحد في الخريطة: تسمية المكان المقترح تطفو ببطء (transform فقط)، وهالات «جاهز» ساكنة */
+@keyframes vxrec2{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-3px)}}
+.plabel.vx-rec{animation:vxrec2 3.2s ease-in-out infinite!important}
+.plabel.ready{animation:vxrec2 3.2s ease-in-out infinite}
+.vx-ring{animation:vxring 3.6s ease-in-out infinite}
+.place.ready .halo{animation:none}
+#scene .vxLan:not(.boost),#scene[data-night] .vxLan:not(.boost){animation:none!important;opacity:.85}
+.vxspecks i,.toucher .ico .rp{animation:none!important}
+.vxlant::before{animation:none;opacity:.8}
+/* حلقات Ken-Burns البطيئة تُعيد رسم مشهد SVG كامل: نوقفها حفاظًا على الأداء */
+#app.instage:not([data-soft]) #scene{animation:none!important;will-change:auto}
+.panel-art svg{animation:none}
+#scene[data-soft] #placeBg{animation:none}
+/* زر «التالي»: الدعوة الوحيدة داخل اللوح، أبطأ وأخفّ */
+@keyframes vxready2{50%{transform:scale(1.02)}}
+.btn.next:not(.off){animation:vxready2 3.4s ease-in-out infinite}
+/* ضغط لطيف */
+.btn:active,.opt:active,.chip:active,.cell:active,.toucher:active{transform:translateY(3px) scale(.97)}
+.place{transform-box:fill-box;transform-origin:50% 100%;transition:filter .8s ease,opacity .8s ease,scale var(--mx-fast,160ms) var(--mx-ease,ease-out)}
+.place:active{scale:.96}
+/* دخول متدرّج لتسميات الأماكن */
+.plabel{animation:mxRise var(--mx-slow,380ms) var(--mx-ease,ease-out) backwards}
+.plabel:nth-child(2){animation-delay:55ms}.plabel:nth-child(3){animation-delay:110ms}.plabel:nth-child(4){animation-delay:165ms}.plabel:nth-child(5){animation-delay:220ms}.plabel:nth-child(n+6){animation-delay:275ms}
+.plabel.vx-rec{animation-delay:0s}
+/* دخول المكان: تكبير لطيف للخلفية بعد النقر (opacity يتولاه الانتقال الأصلي) */
+@keyframes vxzin{from{transform:scale(1.07)}to{transform:scale(1)}}
+#placeBg.vx-zin{transform-box:view-box;transform-origin:50% 100%;animation:vxzin 460ms var(--mx-ease,ease-out)}
+@media(prefers-reduced-motion:reduce){.plabel,.plabel.ready,.place,#placeBg.vx-zin{animation:none;transition:none}.plabel.vx-rec{animation:none!important}}

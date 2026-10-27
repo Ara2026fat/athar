@@ -730,3 +730,17 @@ try {
     setTimeout(function () { (window.requestIdleCallback || setTimeout)(run); }, 8000);
   } catch (e) {}
 })();
+
+/* ═══ r19 · تكبير دخول المكان (placeBg) — يُراقب instage فقط، لا يمسّ منطق التنقل ═══ */
+(function () {
+  try {
+    var app = document.getElementById("app"), bg = document.getElementById("placeBg");
+    if (!app || !bg || !window.MutationObserver) return;
+    var rm = matchMedia("(prefers-reduced-motion: reduce)").matches, was = app.classList.contains("instage");
+    new MutationObserver(function () {
+      var now = app.classList.contains("instage");
+      if (now && !was && !rm) { bg.classList.remove("vx-zin"); void bg.getBoundingClientRect(); bg.classList.add("vx-zin"); setTimeout(function () { bg.classList.remove("vx-zin"); }, 520); }
+      was = now;
+    }).observe(app, { attributes: true, attributeFilter: ["class"] });
+  } catch (e) {}
+})();

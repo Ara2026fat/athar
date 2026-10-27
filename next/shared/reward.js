@@ -230,10 +230,17 @@
       D.addEventListener("keydown", function (e) { if (e.key === "Escape" && sheet.classList.contains("on")) close(); });
       D.body.appendChild(sheet);
     }
-    render(); sheet.classList.add("on"); tick();
+    closing = 0; sheet.classList.remove("out"); render(); sheet.classList.add("on"); tick();
     var x = sheet.querySelector(".rw-x"); if (x) try { x.focus({ preventScroll: true }); } catch (e) {}
   }
-  function close() { if (sheet) sheet.classList.remove("on"); confirmI = -1; tick(); try { chip.focus({ preventScroll: true }); } catch (e) {} }
+  var closing = 0;
+  function close() {
+    if (!sheet || closing) return;
+    var fin = function () { closing = 0; sheet.classList.remove("on", "out"); confirmI = -1; tick(); try { chip.focus({ preventScroll: true }); } catch (e) {} };
+    var rm = false; try { rm = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+    if (rm || !sheet.classList.contains("on")) return fin();
+    closing = 1; sheet.classList.add("out"); setTimeout(fin, 170);
+  }
   function ring(p) {
     var r = 32, c = 2 * Math.PI * r, f = Math.min(1, p.day.earned / GOAL);
     return '<div class="rw-ring" aria-label="هدف اليوم: ' + num(Math.min(p.day.earned, GOAL)) + ' من ' + num(GOAL) + '"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="' + r + '" fill="none" stroke="#EADFC2" stroke-width="9"/><circle cx="38" cy="38" r="' + r + '" fill="none" stroke="#F2B71F" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - f)).toFixed(1) + '"/></svg><div class="num">' + num(Math.min(p.day.earned, GOAL)) + '</div></div>';
