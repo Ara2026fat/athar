@@ -26,6 +26,7 @@ def find_input(d, stem):
     g = sorted(glob.glob(os.path.join(d, stem + "*")))
     return g[0] if g else None
 
+STRONG = False   # --strong-despill: cut the violet halo around glowing marks
 KEY = (123, 47, 247)   # flat violet #7B2FF7 background (owner asked for no pink)
 
 def key_magenta(im, hard=70.0, soft=150.0, use_rembg=False):
@@ -65,6 +66,22 @@ def key_magenta(im, hard=70.0, soft=150.0, use_rembg=False):
     # a 1px erosion of alpha removes the last halo
     al = ndi.grey_erosion(out[..., 3], size=(2, 2))
     out[..., 3] = al
+    if STRONG:
+        # glow halos are generated blended with the violet background: replace the colour of every semi-transparent pixel
+        # with the colour of the nearest solid pixel, and tighten the alpha ramp so the halo fades out sooner.
+        alpha = out[..., 3].astype(np.float32) / 255.0
+        # violet-tinted halo pixels (blue clearly above green, red above green) are background bleed: fade them out by tint
+        rf, gf, bf = (out[..., i].astype(np.float32) for i in range(3))
+        tint = np.clip(((bf - gf) - 8.0) / 28.0, 0, 1) * (rf > gf - 6)
+        alpha = alpha * (1.0 - tint)
+        solid = alpha >= 0.98
+        if solid.any():
+            _, (iy, ix) = ndi.distance_transform_edt(~solid, return_indices=True)
+            semi = alpha < 0.98
+            for c in range(3):
+                ch = out[..., c]
+                ch[semi] = ch[iy[semi], ix[semi]]
+        out[..., 3] = (np.clip((alpha - 0.40) / 0.60, 0, 1) * 255).astype(np.uint8)
     return Image.fromarray(out, "RGBA")
 
 def trim(im, pad_frac=0.04, thr=12):
@@ -170,7 +187,10 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--rembg", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--strong-despill", action="store_true", help="stronger violet-halo removal (glow marks: use with --only S12)")
     a = ap.parse_args()
+    global STRONG
+    STRONG = a.strong_despill
     man = json.load(open(a.manifest))
     only = set(filter(None, a.only.split(",")))
     root = a.out_root or a.root
