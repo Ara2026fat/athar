@@ -67,13 +67,13 @@ return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidde
 '<ellipse cx="60" cy="86" rx="30" ry="6" fill="#14b8a6"'+S2+'/>'+lantern(40,24,1.1,"#14b8a6",[3.4,7,0])+lantern(66,30,1.3,"#0fa090",[4.1,6,1.3])+lantern(92,22,1.0,"#14b8a6",[3.7,8,2.1])+'</svg>'}
 };
 var B=[
-{k:"valley",d:"doorValley",x:110,y:286,w:170,h:150,l:"الوادي",ax:195,ay:600},
-{k:"hifz",d:"doorHifz",x:256,y:172,w:120,h:120,l:"أحفظ القرآن",ax:210,ay:288},
-{k:"noor",d:"doorLang",x:14,y:172,w:120,h:120,l:"القاعدة النورانية",ax:180,ay:288},
-{k:"math",d:"doorMath",x:256,y:436,w:120,h:120,l:"عالم الأرقام",ax:210,ay:590},
-{k:"lib",d:"doorLib",x:14,y:436,w:120,h:120,l:"مكتبتي",ax:180,ay:590},
-{k:"quiz",d:"doorQuiz",x:256,y:560,w:120,h:120,l:"المسابقات",ax:210,ay:690},
-{k:"adhkar",d:"doorAdhkar",x:14,y:560,w:120,h:120,l:"أذكاري",ax:180,ay:690}
+{k:"valley",d:"doorValley",x:154,y:128,w:124,h:94,l:"الوادي",ax:236,ay:470},
+{k:"hifz",d:"doorHifz",x:290,y:296,w:100,h:110,l:"أحفظ القرآن",ax:300,ay:480},
+{k:"noor",d:"doorLang",x:30,y:262,w:100,h:80,l:"القاعدة النورانية",ax:140,ay:470},
+{k:"math",d:"doorMath",x:20,y:520,w:100,h:80,l:"عالم الأرقام",ax:140,ay:610},
+{k:"lib",d:"doorLib",x:16,y:372,w:100,h:80,l:"مكتبتي",ax:130,ay:530},
+{k:"quiz",d:"doorQuiz",x:286,y:440,w:100,h:80,l:"المسابقات",ax:300,ay:560},
+{k:"adhkar",d:"doorAdhkar",x:150,y:410,w:100,h:80,l:"أذكاري",ax:225,ay:560}
 ];
 var HOME={ax:195,ay:702},AH=152;
 var POSE={idle:[.27,.6],hello:[.22,.6],think:[.25,.6],joy:[.2,.85]};
@@ -86,7 +86,7 @@ var h='<div class="w-sky"></div><div class="w-glow"></div>'+
 '<div class="w-hill h1"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 70C50 20 110 30 170 60S300 20 400 55V200H0Z"/></svg></div>'+
 '<div class="w-hill h2"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 50C70 20 120 70 200 45S330 10 400 50V200H0Z"/></svg></div>'+
 '<div class="w-hill h3"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 40C80 10 150 50 220 30S340 25 400 38V200H0Z"/></svg></div>'+
-'<div class="w-stage" id="wStage"><div id="wSky"></div>';
+'<div class="w-stage" id="wStage"><div class="w-map" id="wMap"><img class="mi on" alt="" draggable="false"><img class="mi" alt="" draggable="false"><i class="mv"></i></div><div id="wSky"></div>';
 var CL=[[120,120,-5,96],[150,150,-60,128],[176,92,-30,150],[204,110,-80,112]];
 CL.forEach(function(c,i){h+='<div class="w-cl" style="top:'+c[0]+'px;width:'+c[1]+'px;animation-duration:'+c[3]+'s;animation-delay:'+c[2]+'s"><span class="w-cu" data-i="'+i+'">'+CLOUD+'</span></div>'});
 h+='<div id="wFall" aria-hidden="true"></div><div id="wLanterns"></div><div class="w-lower" id="wLower"><svg class="w-path" viewBox="0 0 390 704" height="704" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="g" stroke-width="15" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/><path class="d" stroke-width="4" stroke-dasharray="1 13" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/></g></svg>';
@@ -123,7 +123,7 @@ function door3d(k){
   el.replaceChild(w,old);el.classList.add("d3on")};
  im.onerror=function(){};
  im.src="next/home/img/doors/"+k+".webp"}
-B.forEach(function(b){door3d(b.k)});
+B.forEach(function(b){if(b.k==="hifz")bEl.hifz.classList.add("ghost");else door3d(b.k)});
 var pb=$("profileBar"),pk=$("packBanner");
 if(pb)$("wProf").appendChild(pb);
 var pkT=+ls("athar_pk_t")||0,dis=pkT>0&&Date.now()-pkT<6048e5,pkM=false;
@@ -138,12 +138,24 @@ function up(){if(!on)return;on=false;d._c=0;if(dy>45||Math.abs(dx)>80){hideDock(
 d.addEventListener("pointerup",up);d.addEventListener("pointercancel",up)})();
 var st=jget(KEY()),first=!st.seen&&qs.get("first")!=="0"||qs.get("first")==="1";
 var per="day",late=false;
+var mapN=0,mapK="";
+function mapVar(){var n=+ls("athar_map_n")||0;if(!W.__mapCounted){W.__mapCounted=1;n++;lset("athar_map_n",String(n))}var q=+qs.get("m");return q>=1&&q<=3?q:(n%3)+1}
+function setMap(){
+var mp=$("wMap");if(!mp)return;
+var kind=per==="night"?"night":per==="evening"?"sun":"day",key=kind+mapVar();
+if(key===mapK)return;mapK=key;
+var im=mp.querySelectorAll(".mi"),nx=im[mapN?0:1],cu=im[mapN?1:0];mapN=mapN?0:1;
+var src="next/home/img/map/"+key+".webp";
+function sw(){nx.classList.add("on");cu.classList.remove("on");world.classList.add("w-mapon")}
+nx.onload=sw;nx.onerror=function(){};nx.src=src;if(nx.complete&&nx.naturalWidth)sw();
+}
 function period(){
 var t=qs.get("t"),hr=qs.get("h");hr=hr!=null?+hr:new Date().getHours();
 per=t||(hr>=5&&hr<11?"morning":hr>=11&&hr<15?"day":hr>=15&&hr<19?"evening":"night");
 late=per==="night"&&(hr>=21||hr<5);
 world.className=world.className.replace(/\bw-(morning|day|evening|night)\b/g,"").trim()+" w-"+per;
 world.classList.toggle("w-late",late);
+setMap();
 if(skyApi)try{skyApi.setTime(skyTime())}catch(e){}
 }
 var skyApi=null;function skyTime(){return per==="night"?"night":per==="evening"?"dusk":"day"}
@@ -161,6 +173,7 @@ ex=Math.max(0,Hs/sc-704);
 stage.style.top=stTop+"px";
 stage.style.height=(704+ex)+"px";
 stage.style.transform="translate("+((w-390*sc)/2)+"px,0) scale("+sc+")";
+var mp=$("wMap"),mt=stTop/sc;mp.style.top=(-mt)+"px";mp.style.height=(704+ex+mt)+"px";mp.style.left="-"+Math.max(0,((w/sc)-390)/2)+"px";mp.style.width=Math.max(390,w/sc)+"px";
 lower.style.top=ex+"px";
 $("wSky").style.height=(180+ex*.85)+"px";
 $("wProf").style.top=(stTop+2)+"px";

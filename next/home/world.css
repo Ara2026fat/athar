@@ -218,3 +218,17 @@ body.hw-home .leaf{display:none}
 .wb .jp,.wb .spk,.wb .bk,.wb .fin{animation:none!important}
 .wb .art3 .d3,.w-cl{will-change:auto}
 @media (prefers-reduced-motion:reduce){#homeWorld:not(.w-first) .wb{animation:none}.wb.zin .art{transition:none}}
+
+/* ===== خريطة الوادي المولّدة (v2) ===== */
+.w-map{position:absolute;z-index:0;overflow:hidden;pointer-events:none}
+.w-map .mi{position:absolute;left:-4%;top:0;width:108%;height:100%;object-fit:cover;object-position:56% 50%;opacity:0;transition:opacity 1.6s ease;animation:wmk 50s ease-in-out infinite alternate}
+.w-map .mi.on{opacity:1}
+.w-map .mv{position:absolute;left:0;right:0;top:0;height:30%;background:linear-gradient(180deg,rgba(10,20,50,.35),transparent)}
+@keyframes wmk{from{transform:translateX(-8px)}to{transform:translateX(8px)}}
+#homeWorld.w-mapon .w-sky,#homeWorld.w-mapon .w-glow,#homeWorld.w-mapon .w-hill,#homeWorld.w-mapon .w-cl,#homeWorld.w-mapon .w-path,#homeWorld.w-mapon #wSky{display:none!important}
+#homeWorld.w-mapon .wb{filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+@media (prefers-reduced-motion:reduce){.w-map .mi{animation:none}}
+
+#homeWorld .wb.ghost .art{opacity:0}
+#homeWorld .wb.ghost::before{content:"";position:absolute;left:50%;top:44%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:radial-gradient(circle,rgba(255,226,140,.55),rgba(255,226,140,0) 70%);animation:wgh 3.2s ease-in-out infinite}
+@keyframes wgh{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.95;transform:scale(1.15)}}
