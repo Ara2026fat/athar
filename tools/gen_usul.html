@@ -37,6 +37,10 @@ details summary{cursor:pointer;color:var(--m)}
 <label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3</option><option value="eleven_multilingual_v2">eleven_multilingual_v2</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option></select>
 <label for="st">الثبات</label><select id="st"><option value="1">١٫٠ ثابت (موصى به)</option><option value="0.5">٠٫٥ طبيعي</option><option value="0">٠٫٠ حر</option></select>
 <label for="al">لفظ الجلالة</label><select id="al"><option value="1">ألف خنجرية (موصى به)</option><option value="0">الأصل</option><option value="2">فتحة صريحة</option><option value="3">كلمة قبلها</option><option value="4">ألف وصل</option></select>
+<label for="rules">قواعد استبدال (سطر لكل قاعدة: كلمة=&gt;بديل)</label><textarea id="rules" rows="3" dir="rtl" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line)">على الله=>عَلَى اللهِ
+من الله=>مِنَ اللهِ
+إلى الله=>إِلَى اللهِ
+عند الله=>عِنْدَ اللهِ</textarea>
 </details>
 <div class="sm" id="est"></div>
 </div>
@@ -62,7 +66,8 @@ function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l
  if(v===3)return pre+(!px&&al&&pre===""?"قَالَ ":"")+px+core(A,L);
  if(v===4)return pre+px+core(!px&&al?"ٱ":A,L);
  return m})}
-const sentOf=i=>allahVar(L[i].text,$("al").value);
+function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
+const sentOf=i=>allahVar(applyRules(L[i].text),$("al").value);
 class Fatal extends Error{}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function tts(text){
@@ -125,9 +130,10 @@ function pick3(){
  for(let i=0;i<L.length&&out.length<3;i++){if(!out.includes(i)&&L[i].text.length>30)out.push(i)}
  return out;
 }
+$("al").onchange=est;$("rules").oninput=est;
 $("smp").onclick=()=>run(pick3(),null);
 $("all").onclick=()=>run(L.map((_,i)=>i),null);
-["al","mo","st"].forEach(k=>$(k).onchange=()=>{
+["mo","st"].forEach(k=>$(k).onchange=()=>{
  // تغيير الإعداد: تُمسح الجمل المولَّدة ليُعاد توليدها بالإعداد الجديد
  if(L.some(l=>l.blob)&&confirm("تغيير هذا الإعداد يمسح ما وُلّد ليُعاد توليده. تابع؟")){L.forEach(l=>{l.blob=null;l.bytes=null});LINES.forEach((_,i)=>row(i))}
  est()});
