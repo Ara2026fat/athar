@@ -86,7 +86,7 @@ var h='<div class="w-sky"></div><div class="w-glow"></div>'+
 '<div class="w-hill h1"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 70C50 20 110 30 170 60S300 20 400 55V200H0Z"/></svg></div>'+
 '<div class="w-hill h2"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 50C70 20 120 70 200 45S330 10 400 50V200H0Z"/></svg></div>'+
 '<div class="w-hill h3"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 40C80 10 150 50 220 30S340 25 400 38V200H0Z"/></svg></div>'+
-'<div class="w-stage" id="wStage"><div class="w-map" id="wMap"><img class="mi on" alt="" draggable="false"><img class="mi" alt="" draggable="false"><i class="mv"></i></div><div id="wSky"></div>';
+'<div class="w-stage" id="wStage"><button type="button" class="w-snd" id="wSnd" aria-label="الصوت"></button><div class="w-map" id="wMap"><img class="mi on" alt="" draggable="false"><img class="mi" alt="" draggable="false"><i class="mv"></i></div><div id="wSky"></div>';
 var CL=[[120,120,-5,96],[150,150,-60,128],[176,92,-30,150],[204,110,-80,112]];
 CL.forEach(function(c,i){h+='<div class="w-cl" style="top:'+c[0]+'px;width:'+c[1]+'px;animation-duration:'+c[3]+'s;animation-delay:'+c[2]+'s"><span class="w-cu" data-i="'+i+'">'+CLOUD+'</span></div>'});
 h+='<div id="wFall" aria-hidden="true"></div><div id="wLanterns"></div><div class="w-lower" id="wLower"><svg class="w-path" viewBox="0 0 390 704" height="704" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="g" stroke-width="15" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/><path class="d" stroke-width="4" stroke-dasharray="1 13" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/></g></svg>';
@@ -101,6 +101,7 @@ h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span clas
 '<div class="w-pop w-pal" id="wPal" hidden>'+COLS.map(function(c,i){return '<button type="button" class="sw" data-i="'+i+'" aria-label="لون الفانوس: '+CN[i]+'" style="background:radial-gradient(circle at 35% 30%,rgb('+c[1]+'),rgb('+c[0]+'))"></button>'}).join('')+'</div></div></div><div id="wDusk" role="button" tabindex="0" aria-label="أضئ الفانوس"></div><div id="wProf"></div><div id="wDock"><button type="button" id="wPkX" aria-label="إخفاء">×</button></div>';
 world.innerHTML=h;
 view.insertBefore(world,view.firstChild);
+var sb=$("wSnd");function sbU(){sb.textContent=(!W.HomeAudio||W.HomeAudio.on)?"🔊":"🔇"}sbU();sb.addEventListener("click",function(e){e.stopPropagation();var A=W.HomeAudio;if(A){A.unlock();A.set(!A.on);sbU()}});
 var stage=$("wStage"),lower=$("wLower"),ath=$("wAthar"),dusk=$("wDusk"),app=$("app");
 var halo=ath.querySelector(".ath-halo"),core=ath.querySelector(".ath-core"),hint=ath.querySelector(".ath-hint"),hills=world.querySelectorAll(".w-hill");
 var bEl={};B.forEach(function(b){bEl[b.k]=$("wb-"+b.k)});
@@ -155,7 +156,7 @@ per=t||(hr>=5&&hr<11?"morning":hr>=11&&hr<15?"day":hr>=15&&hr<19?"evening":"nigh
 late=per==="night"&&(hr>=21||hr<5);
 world.className=world.className.replace(/\bw-(morning|day|evening|night)\b/g,"").trim()+" w-"+per;
 world.classList.toggle("w-late",late);
-setMap();
+setMap();if(W.HomeAudio)W.HomeAudio.period(per);
 if(skyApi)try{skyApi.setTime(skyTime())}catch(e){}
 }
 var skyApi=null;function skyTime(){return per==="night"?"night":per==="evening"?"dusk":"day"}
@@ -210,6 +211,7 @@ function later(n,f,ms){clearTimeout(T[n]);T[n]=setTimeout(f,ms)}
 function stopT(){for(var k in T)clearTimeout(T[k]);T={}}
 function poseFor(ms,p){setPose(p);later("pose",function(){setPose("idle")},ms)}
 function jump(){
+if(W.HomeAudio&&!W.HomeAudio.speaking())W.HomeAudio.motivate();
 if(RM){poseFor(800,"joy");return}
 ath.classList.remove("jump");void ath.offsetWidth;ath.classList.add("jump");
 ath.classList.add("glow");poseFor(900,"joy");later("gl",function(){ath.classList.remove("glow","jump")},950);
@@ -246,8 +248,8 @@ var el=bEl[b.k];el.classList.remove("jel");void el.offsetWidth;el.classList.add(
 clearTimeout(T.look);
 if(RM){pending={b:b,t:setTimeout(function(){go(b)},140)};return}
 var dx=b.ax-ax,dy=b.ay-ay,dist=Math.sqrt(dx*dx+dy*dy),dur=Math.min(.9,Math.max(.45,.4+dist/900));
-world.classList.add("w-busy");  ath.classList.add("walk");setPose("idle");steps(ax,ay,b.ax,b.ay,dur);put(b.ax,b.ay,dur);
-pending={b:b,t:setTimeout(function(){ath.classList.remove("walk");setPose("hello");var op=b.k==="valley";if(op)bEl.valley.classList.add("opn");pending.t=setTimeout(function(){go(b)},op?520:140)},dur*1000+30)};
+world.classList.add("w-busy");  if(W.HomeAudio){W.HomeAudio.say(b.k);W.HomeAudio.steps(dur*1000)}ath.classList.add("walk");setPose("idle");steps(ax,ay,b.ax,b.ay,dur);put(b.ax,b.ay,dur);
+pending={b:b,t:setTimeout(function(){ath.classList.remove("walk");setPose("hello");var op=b.k==="valley";if(op)bEl.valley.classList.add("opn");pending.t=setTimeout(function(){var HA=W.HomeAudio;if(HA&&HA.speaking())HA.after(function(){if(pending&&pending.b===b){HA.sfx("whoosh",.4);go(b)}});else{if(HA)HA.sfx("whoosh",.4);go(b)}},op?520:140)},dur*1000+30)};
 }
 B.forEach(function(b,i){
 var el=bEl[b.k];el.style.setProperty("--i",i);
