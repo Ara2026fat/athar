@@ -503,15 +503,23 @@ async function toWav(blob, rate = 24000) {
 async function sha256hex(u8) { try { const h = await crypto.subtle.digest("SHA-256", u8); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, "0")).join(""); } catch (e) { return ""; } }
 
 let lastZip = null;
+let EXP_SES = 0;   /* 0 = كل الجلسات، وإلا رقم الجلسة المطلوب تصديرها */
 function exportSummary() {
-  const done = ALL.filter(u => !u.pending && S.takes.has(u.u));
+  const sesOf = {}; ALL.forEach(u => sesOf[u.u] = u.session);
+  const has = x => S.takes.has(x) && (!EXP_SES || sesOf[x] === EXP_SES);
+  const done = ALL.filter(u => !u.pending && has(u.u));
   const ids = new Set(), inc = [];
   for (const [id, e] of Object.entries(ENTRIES)) {
     const us = e.parts.filter(p => p.u).map(p => p.u);
-    if (!us.some(x => S.takes.has(x))) continue;
-    if (us.every(x => S.takes.has(x)) && e.ok) ids.add(id); else inc.push(id);
+    if (!us.some(has)) continue;
+    if (us.every(has) && e.ok) ids.add(id); else inc.push(id);
   }
   return { done, ids, inc };
+}
+function sesPicker() {
+  let h = "<label style=\"display:block;margin:6px 0\">ماذا تُصدِّر؟ <select id=\"expSes\" style=\"font:inherit;padding:6px\"><option value=\"0\">كل ما سُجِّل</option>";
+  for (let i = 1; i <= Q.sessions; i++) h += "<option value=\"" + i + "\"" + (EXP_SES === i ? " selected" : "") + ">الجلسة " + num(i) + " فقط (" + num(sessionDone(i)) + "/" + num(sessionTotal(i)) + ")</option>";
+  return h + "</select></label>";
 }
 function openExport() {
   const { done, ids, inc } = exportSummary();
@@ -519,8 +527,10 @@ function openExport() {
   $("expSum").innerHTML = "الصوت: <b class=\"uid\">" + S.voice + "</b> · المتحدث: <b>" + (S.speaker || "—") + "</b><br>ملفات مسجَّلة: <b>" + num(done.length) + "</b> من " + num(ALL.filter(u => !u.pending).length) +
     "<br>أسطر مكتملة تُربط بالمحرّك: <b>" + num(ids.size) + "</b>" + (inc.length ? "<br>أسطر ناقصة (بعض مقاطعها لم تُسجَّل): " + num(inc.length) : "") +
     "<br>الحجم التقريبي: " + (bytes / 1048576).toFixed(1) + " م.ب" + (S.fmt === "wav" ? " (قبل التحويل إلى WAV)" : "") + (S.speaker ? "" : "<br><span class=\"chip warn\">لم تُدخل اسم المتحدث بعد</span>");
+  $("expSum").insertAdjacentHTML("afterbegin", sesPicker());
+  $("expSes").onchange = e => { EXP_SES = parseInt(e.target.value, 10) || 0; openExport(); };
   $("expMsg").textContent = ""; $("expBar").hidden = true; $("eShare").hidden = true; $("eGo").disabled = done.length === 0;
-  $("dExp").showModal();
+  if (!$("dExp").open) $("dExp").showModal();
 }
 async function doExport() {
   if (!validVoice(S.voice)) { $("expMsg").textContent = "اسم الصوت غير صالح."; return; }
@@ -553,7 +563,7 @@ async function doExport() {
     files.push({ name: "README.txt", data: enc.encode(readme) });
     const zip = zipBuild(files); lastZip = zip;
     const d = new Date(), p2 = x => String(x).padStart(2, "0");
-    const fname = "athar-human-" + S.voice + "-" + d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + "-" + p2(d.getHours()) + p2(d.getMinutes()) + ".zip";
+    const fname = "athar-human-" + S.voice + (EXP_SES ? "-s" + EXP_SES : "") + "-" + d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + "-" + p2(d.getHours()) + p2(d.getMinutes()) + ".zip";
     const a = document.createElement("a"); a.href = URL.createObjectURL(zip); a.download = fname; a.id = "dl"; document.body.appendChild(a); a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     $("expMsg").textContent = "تم إنشاء " + fname + " (" + (zip.size / 1048576).toFixed(1) + " م.ب) — " + num(done.length) + " ملفًا و" + num(ids.size) + " سطرًا مربوطًا.";
