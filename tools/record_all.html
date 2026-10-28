@@ -358,7 +358,7 @@ const MIMES = ["audio/mp4;codecs=mp4a.40.2", "audio/mp4", "audio/webm;codecs=opu
 function pickMime() { if (typeof MediaRecorder === "undefined") return ""; return MIMES.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch (e) { return false; } }) || ""; }
 const extOf = m => /mp4|m4a|aac/.test(m) ? "m4a" : /webm/.test(m) ? "webm" : /ogg/.test(m) ? "ogg" : /wav/.test(m) ? "wav" : /mpeg|mp3/.test(m) ? "mp3" : "bin";
 
-const R = { stream: null, mr: null, chunks: [], t0: 0, tick: 0, actx: null, an: null, peak: 0, raf: 0, unit: null, mime: "", wake: null, cancelled: false };
+const R = { fail: 0, stream: null, mr: null, chunks: [], t0: 0, tick: 0, actx: null, an: null, peak: 0, raf: 0, unit: null, mime: "", wake: null, cancelled: false };
 async function getStream() {
   if (R.stream && R.stream.getTracks().every(t => t.readyState === "live" && !t.muted)) return R.stream;
   R.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
@@ -377,7 +377,7 @@ async function startRec() {
     toast(e && e.name === "NotAllowedError" ? "لم يُسمح باستخدام الميكروفون. فعّل الإذن من إعدادات المتصفح ثم أعد المحاولة." : "تعذّر فتح الميكروفون: " + (e && e.name || "خطأ"), 5500); return;
   }
   const mime = pickMime();
-  try { R.mr = new MediaRecorder(st, mime ? { mimeType: mime, audioBitsPerSecond: 96000 } : undefined); } catch (e) { R.mr = new MediaRecorder(st); }
+  try { R.mr = (R.fail > 0) ? new MediaRecorder(st) : new MediaRecorder(st, mime ? { mimeType: mime, audioBitsPerSecond: 96000 } : undefined); } catch (e) { R.mr = new MediaRecorder(st); }   /* بعد فشل: الوضع الافتراضي للمتصفح */
   R.mime = R.mr.mimeType || mime || "audio/webm"; R.chunks = []; R.unit = u.u; R.cancelled = false; R.peak = 0;
   const k = key(u.u);
   R.mr.ondataavailable = ev => {
@@ -395,7 +395,7 @@ async function startRec() {
     loop();
   } catch (e) {}
   try { if (navigator.wakeLock) R.wake = await navigator.wakeLock.request("screen"); } catch (e) {}
-  R.t0 = performance.now(); R.mr.start(1000); S.recording = true; S.busy = false;
+  R.t0 = performance.now(); (R.fail > 0 ? R.mr.start() : R.mr.start(1000)); S.recording = true; S.busy = false;
   $("bRec").classList.add("on"); $("bRec").setAttribute("aria-label", "إيقاف التسجيل");
   $("bRec").innerHTML = "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"6\" y=\"6\" width=\"12\" height=\"12\" rx=\"2\"/></svg>";
   R.tick = setInterval(() => { $("timer").textContent = "● " + tfmt(performance.now() - R.t0); }, 200);
@@ -420,9 +420,9 @@ async function finishRec(k) {
     if (R.cancelled) { await DB.del("partial", k); toast("أُلغي التسجيل؛ بقي التسجيل السابق كما هو"); }
     else {
       const blob = new Blob(R.chunks, { type: R.mime });
-      if (dur < 0.5 || blob.size < 1500) { await DB.del("partial", k); stopStream(); toast("التسجيل قصير جدًا — لم يُحفظ. جدّدت الميكروفون، أعد المحاولة الآن."); }
+      if (dur < 0.5 || blob.size < 1500) { await DB.del("partial", k); R.fail++; stopStream(); toast("التسجيل قصير جدًا — لم يُحفظ. (" + dur.toFixed(1) + "ث / " + blob.size + "B / " + (R.chunks.length) + " / " + (R.mime || "?") + ") غيّرت طريقة التسجيل، أعد المحاولة.", 7000); }
       else {
-        await DB.put("takes", k, { blob, mime: R.mime, dur, ts: Date.now() });
+        R.fail = 0; await DB.put("takes", k, { blob, mime: R.mime, dur, ts: Date.now() });
         await DB.del("partial", k);
         const words = ((cur() && textOf(cur())) || "").trim().split(/\s+/).filter(Boolean).length;
         const shortHint = words >= 4 && dur < words * 0.28 ? "⚠ المقطع أقصر من المتوقع — استمع إليه وأعده إن لزم" : "";
