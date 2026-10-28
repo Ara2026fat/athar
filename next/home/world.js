@@ -67,7 +67,7 @@ return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidde
 '<ellipse cx="60" cy="86" rx="30" ry="6" fill="#14b8a6"'+S2+'/>'+lantern(40,24,1.1,"#14b8a6",[3.4,7,0])+lantern(66,30,1.3,"#0fa090",[4.1,6,1.3])+lantern(92,22,1.0,"#14b8a6",[3.7,8,2.1])+'</svg>'}
 };
 var B=[
-{k:"valley",d:"doorValley",x:154,y:128,w:124,h:94,l:"الوادي",ax:236,ay:470},
+{k:"valley",d:"doorValley",x:154,y:108,w:124,h:94,l:"الوادي",ax:244,ay:600},
 {k:"hifz",d:"doorHifz",x:290,y:296,w:100,h:110,l:"أحفظ القرآن",ax:300,ay:480},
 {k:"noor",d:"doorLang",x:30,y:262,w:100,h:80,l:"القاعدة النورانية",ax:140,ay:470},
 {k:"math",d:"doorMath",x:20,y:520,w:100,h:80,l:"عالم الأرقام",ax:140,ay:610},
