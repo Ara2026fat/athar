@@ -29,10 +29,10 @@ details summary{cursor:pointer;color:var(--m)}
 </style></head><body>
 <h1>صوت كتاب «الأصول الثلاثة»</h1>
 <ol>
-<li>الصق مفتاح ElevenLabs واضغط «ولّد الكل».</li>
-<li>استمع لكل جملة ▶ ثم اضغط <b>✓ صح</b> أو <b>✗ خطأ</b>.</li>
-<li>الجملة الخاطئة نعدّلها وحدها ونعيد توليدها ↻.</li>
-<li>حين تصير كل الجمل «صح» يُفتح زر «نزّل الملف».</li>
+<li>الصق المفتاح. كل جملة فيها مسودة بالتشكيل، وتستطيع تعديلها أو إزالة التشكيل بحرية.</li>
+<li>اضغط «ولّد الكل» أو ولّد جملة جملة.</li>
+<li>استمع ▶ ثم اضغط <b>✓ صح</b> أو <b>✗ خطأ</b>.</li>
+<li>عدّل الخاطئة في خانتها ثم ↻. يُفتح زر التنزيل حين تصير كلها «صح».</li>
 </ol>
 <div class="card">
 <label for="k">مفتاح ElevenLabs</label>
@@ -42,10 +42,7 @@ details summary{cursor:pointer;color:var(--m)}
 <label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3</option><option value="eleven_multilingual_v2">eleven_multilingual_v2</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option></select>
 <label for="st">الثبات</label><select id="st"><option value="1">١٫٠ ثابت (موصى به)</option><option value="0.5">٠٫٥ طبيعي</option><option value="0">٠٫٠ حر</option></select>
 <label for="al">لفظ الجلالة</label><select id="al"><option value="1">ألف خنجرية (موصى به)</option><option value="0">الأصل</option><option value="2">فتحة صريحة</option><option value="3">كلمة قبلها</option><option value="4">ألف وصل</option></select>
-<label for="rules">قواعد استبدال (سطر لكل قاعدة: كلمة=&gt;بديل)</label><textarea id="rules" rows="3" dir="rtl" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line)">على الله=>عَلَى اللهِ
-من الله=>مِنَ اللهِ
-إلى الله=>إِلَى اللهِ
-عند الله=>عِنْدَ اللهِ</textarea>
+<label for="rules">قواعد استبدال (سطر لكل قاعدة: كلمة=&gt;بديل)</label><textarea id="rules" rows="3" dir="rtl" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line)"></textarea>
 </details>
 <div class="sm" id="est"></div>
 </div>
@@ -55,6 +52,7 @@ details summary{cursor:pointer;color:var(--m)}
 <div id="list" class="card"></div>
 <script>
 const LINES=["ما أجمل النهار! الشمس تُضيء الدنيا. مَن الذي خلق الشمس؟ الذي خلقها هو الله.", "الليل والنهار والشمس والقمر: كلّها علامات تدلّنا على الله.", "اضغط على النهار والليل", "هذا القمر، خلقه الله", "هذا النهار، خلقه الله", "هذه الشمس، خلقها الله", "هذا الليل، خلقه الله", "من ربّك؟", "ربّي الله", "هيا نبني أركان الإسلام الخمسة", "الشهادتان. أقول: لا إله إلا الله، محمد رسول الله", "الصلاة. أصلّي لله", "الزكاة. نُعطي الفقراء جزءًا من أموالنا", "صوم رمضان. نصوم في شهر رمضان", "الحجّ. نزور بيت الله الحرام في مكة", "بنينا أركان الإسلام الخمسة", "ما دينك؟", "ديني الإسلام", "من نبيّك؟", "نبيّي محمد ﷺ", "لمن الحمد والشكر؟", "نحمد الله لأنه ربّنا ورازقنا.", "كم إلهًا لنا؟", "الله وحده هو ربّنا ومعبودنا.", "ماذا أعطانا الله لنشكره؟", "نشكر الله بأن نستعمل سمعنا وبصرنا في الخير.", "لماذا خلقنا الله؟", "نعبد الله وحده، ونصلّي له ونطيعه.", "ديني الإسلام: أن أعبد الله وحده، وأسمع كلامه وأُطيعه.", "ماذا طلب الله من الناس؟", "ربّنا هو الذي خلقنا، فنعبده ونتّقيه.", "ما الدين عند الله؟", "نبيّي اسمه محمد بن عبد الله ﷺ، وُلد في مدينة مكة.", "ديننا الإسلام، نعبد الله وحده ونتّبع نبيّه ﷺ.", "لماذا أرسل الله محمدًا ﷺ؟", "كان النبي ﷺ رحيمًا بالناس والصغار.", "كيف وصف الله خُلُق نبيّنا ﷺ؟", "نتعلم من النبي ﷺ حسن الخلق.", "ماذا يفعل الله وملائكته على النبي ﷺ؟", "وأمرنا الله أن نصلّي عليه ونسلّم، فنقول: صلّى الله عليه وسلّم.", "كيف يكون حبّنا للنبي ﷺ؟", "من أحبّ النبي ﷺ اتّبع سنّته.", "وفي الليل يظهر القمر وتلمع النجوم. مَن الذي خلقها؟ هو الله.", "والله جعل الأرض لنا مكانًا نعيش عليه، والسماء فوقنا، وأنزل المطر فتخرج لنا الثمار.", "ربّي هو الله، الذي ربّاني ورعاني بنعمه.", "الإسلام له خمسة أركان، مثل خمسة أعمدة يقوم عليها البيت.", "اختاره الله رسولًا إلينا، ونزل عليه القرآن.", "ثم هاجر إلى المدينة، وبنى فيها مسجده.", "نحبّ نبيّنا ﷺ، ونصلّي عليه، ونقول: صلّى الله عليه وسلّم.", "تمّت الفوانيس الثلاثة، ما شاء الله، والحمد لله"];
+const DRAFT=["مَا أَجْمَلَ النَّهَارَ! الشَّمْسُ تُضِيءُ الدُّنْيَا. مَنِ الَّذِي خَلَقَ الشَّمْسَ؟ الَّذِي خَلَقَهَا هُوَ اللهُ.", "اللَّيْلُ وَالنَّهَارُ وَالشَّمْسُ وَالْقَمَرُ: كُلُّهَا عَلَامَاتٌ تَدُلُّنَا عَلَى اللهِ.", "اضْغَطْ عَلَى النَّهَارِ وَاللَّيْلِ", "هَذَا الْقَمَرُ، خَلَقَهُ اللهُ", "هَذَا النَّهَارُ، خَلَقَهُ اللهُ", "هَذِهِ الشَّمْسُ، خَلَقَهَا اللهُ", "هَذَا اللَّيْلُ، خَلَقَهُ اللهُ", "مَنْ رَبُّكَ؟", "رَبِّيَ اللهُ", "هَيَّا نَبْنِي أَرْكَانَ الْإِسْلَامِ الْخَمْسَةَ", "الشَّهَادَتَانِ. أَقُولُ: لَا إِلَهَ إِلَّا اللهُ، مُحَمَّدٌ رَسُولُ اللهِ", "الصَّلَاةُ. أُصَلِّي لِلَّهِ", "الزَّكَاةُ. نُعْطِي الْفُقَرَاءَ جُزْءًا مِنْ أَمْوَالِنَا", "صَوْمُ رَمَضَانَ. نَصُومُ فِي شَهْرِ رَمَضَانَ", "الْحَجُّ. نَزُورُ بَيْتَ اللهِ الْحَرَامَ فِي مَكَّةَ", "بَنَيْنَا أَرْكَانَ الْإِسْلَامِ الْخَمْسَةَ", "مَا دِينُكَ؟", "دِينِيَ الْإِسْلَامُ", "مَنْ نَبِيُّكَ؟", "نَبِيِّيَ مُحَمَّدٌ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ", "لِمَنِ الْحَمْدُ وَالشُّكْرُ؟", "نَحْمَدُ اللهَ لِأَنَّهُ رَبُّنَا وَرَازِقُنَا.", "كَمْ إِلَهًا لَنَا؟", "اللهُ وَحْدَهُ هُوَ رَبُّنَا وَمَعْبُودُنَا.", "مَاذَا أَعْطَانَا اللهُ لِنَشْكُرَهُ؟", "نَشْكُرُ اللهَ بِأَنْ نَسْتَعْمِلَ سَمْعَنَا وَبَصَرَنَا فِي الْخَيْرِ.", "لِمَاذَا خَلَقَنَا اللهُ؟", "نَعْبُدُ اللهَ وَحْدَهُ، وَنُصَلِّي لَهُ وَنُطِيعُهُ.", "دِينِيَ الْإِسْلَامُ: أَنْ أَعْبُدَ اللهَ وَحْدَهُ، وَأَسْمَعَ كَلَامَهُ وَأُطِيعَهُ.", "مَاذَا طَلَبَ اللهُ مِنَ النَّاسِ؟", "رَبُّنَا هُوَ الَّذِي خَلَقَنَا، فَنَعْبُدُهُ وَنَتَّقِيهِ.", "مَا الدِّينُ عِنْدَ اللهِ؟", "نَبِيِّيَ اسْمُهُ مُحَمَّدُ بْنُ عَبْدِ اللهِ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ، وُلِدَ فِي مَدِينَةِ مَكَّةَ.", "دِينُنَا الْإِسْلَامُ، نَعْبُدُ اللهَ وَحْدَهُ وَنَتَّبِعُ نَبِيَّهُ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ.", "لِمَاذَا أَرْسَلَ اللهُ مُحَمَّدًا صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ؟", "كَانَ النَّبِيُّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ رَحِيمًا بِالنَّاسِ وَالصِّغَارِ.", "كَيْفَ وَصَفَ اللهُ خُلُقَ نَبِيِّنَا صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ؟", "نَتَعَلَّمُ مِنَ النَّبِيِّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ حُسْنَ الْخُلُقِ.", "مَاذَا يَفْعَلُ اللهُ وَمَلَائِكَتُهُ عَلَى النَّبِيِّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ؟", "وَأَمَرَنَا اللهُ أَنْ نُصَلِّيَ عَلَيْهِ وَنُسَلِّمَ، فَنَقُولُ: صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ.", "كَيْفَ يَكُونُ حُبُّنَا لِلنَّبِيِّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ؟", "مَنْ أَحَبَّ النَّبِيَّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ اتَّبَعَ سُنَّتَهُ.", "وَفِي اللَّيْلِ يَظْهَرُ الْقَمَرُ وَتَلْمَعُ النُّجُومُ. مَنِ الَّذِي خَلَقَهَا؟ هُوَ اللهُ.", "وَاللهُ جَعَلَ الْأَرْضَ لَنَا مَكَانًا نَعِيشُ عَلَيْهِ، وَالسَّمَاءُ فَوْقَنَا، وَأَنْزَلَ الْمَطَرَ فَتَخْرُجُ لَنَا الثِّمَارُ.", "رَبِّيَ هُوَ اللهُ، الَّذِي رَبَّانِي وَرَعَانِي بِنِعَمِهِ.", "الْإِسْلَامُ لَهُ خَمْسَةُ أَرْكَانٍ، مِثْلُ خَمْسَةِ أَعْمِدَةٍ يَقُومُ عَلَيْهَا الْبَيْتُ.", "اخْتَارَهُ اللهُ رَسُولًا إِلَيْنَا، وَنَزَلَ عَلَيْهِ الْقُرْآنُ.", "ثُمَّ هَاجَرَ إِلَى الْمَدِينَةِ، وَبَنَى فِيهَا مَسْجِدَهُ.", "نُحِبُّ نَبِيَّنَا صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ، وَنُصَلِّي عَلَيْهِ، وَنَقُولُ: صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ.", "تَمَّتِ الْفَوَانِيسُ الثَّلَاثَةُ، مَا شَاءَ اللهُ، وَالْحَمْدُ لِلَّهِ"];
 const $=id=>document.getElementById(id);
 const L=LINES.map(t=>({text:t,blob:null,sent:null,bytes:null,mark:null,custom:null,al:null}));
 function vNorm(t){return String(t).replace(/[ً-ٰٟـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[!؟?.,،:؛]+/g," ").replace(/\s+/g," ").replace(/^ | $/g,"")}
@@ -73,7 +71,8 @@ function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l
  return m})}
 function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
 const alOf=i=>L[i].al==null?$("al").value:L[i].al;
-const sentOf=i=>L[i].custom!=null?L[i].custom:allahVar(applyRules(L[i].text),alOf(i));
+const defOf=i=>allahVar(applyRules(DRAFT[i]),alOf(i));
+const sentOf=i=>L[i].custom!=null?L[i].custom:defOf(i);
 class Fatal extends Error{}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function tts(text){
@@ -120,37 +119,33 @@ function row(i){
  let r=$("r"+i);
  if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
  const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
- const open=r.querySelector("textarea")&&r.dataset.open==="1";
  r.innerHTML="";
- const tx=document.createElement("div");tx.className="tx";tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓":l.mark==="bad"?"  ✗":"");r.appendChild(tx);
+ const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
+ const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
+ const ta=document.createElement("textarea");ta.rows=2;ta.dir="rtl";ta.value=sentOf(i);ta.id="ta"+i;
+ ta.addEventListener("input",()=>{
+  const v=ta.value;l.custom=(v===defOf(i))?null:v;
+  if(l.blob&&l.mark){l.mark=null;r.className="ln";setTx();est()}
+  const w=document.getElementById("w"+i);if(w)w.textContent=l.blob?"تغيّر النص — اضغط ↻ لإعادة التوليد":"";
+  save(i);
+ });
+ r.appendChild(ta);
+ const w=document.createElement("div");w.id="w"+i;w.className="sm";r.appendChild(w);
  const bt=document.createElement("div");bt.className="bt";r.appendChild(bt);
  const mk=(txt,cls,fn)=>{const b=document.createElement("button");b.textContent=txt;if(cls)b.className=cls;b.onclick=fn;bt.appendChild(b);return b};
- if(!l.blob){mk("ولّد هذه الجملة","",async()=>{await one(i,true)});}
- else{
+ mk(l.blob?"↻ أعد التوليد":"ولّد","",async()=>{l.custom=(ta.value===defOf(i))?null:ta.value;try{await one(i,true)}catch(e){}});
+ if(l.blob){
   mk("▶ استمع","s",()=>play(i));
-  mk("✓ صح","good",()=>{l.mark="ok";r.dataset.open="0";save(i);row(i);est()});
-  mk("✗ خطأ","badb",()=>{l.mark="bad";r.dataset.open="1";save(i);row(i);est()});
+  mk("✓ صح","good",()=>{l.mark="ok";save(i);row(i);est()});
+  mk("✗ خطأ","badb",()=>{l.mark="bad";save(i);row(i);est()});
  }
- mk(r.dataset.open==="1"?"إخفاء التعديل":"✎ تعديل/إعادة","s",()=>{r.dataset.open=r.dataset.open==="1"?"0":"1";row(i)});
- if(r.dataset.open==="1"){
-  const ed=document.createElement("div");ed.className="ed";
-  const ta=document.createElement("textarea");ta.rows=3;ta.dir="rtl";ta.value=sentOf(i);ed.appendChild(ta);
-  const sel=document.createElement("select");
-  [["","لفظ الجلالة: حسب الإعداد العام"],["0","الأصل"],["1","ألف خنجرية"],["2","فتحة صريحة"],["3","كلمة قبلها"],["4","ألف وصل"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;sel.appendChild(o)});
-  sel.value=l.al==null?"":String(l.al);ed.appendChild(sel);
-  const row2=document.createElement("div");row2.className="bt";
-  const g=document.createElement("button");g.textContent="↻ أعد التوليد بهذا النص";
-  g.onclick=async()=>{
-   const chosen=sel.value===""?null:+sel.value;
-   if(chosen!==l.al){l.al=chosen;l.custom=null;ta.value=sentOf(i)}
-   const gen=allahVar(applyRules(l.text),alOf(i));
-   l.custom=(ta.value.trim()&&ta.value!==gen)?ta.value:null;
-   await one(i,true);
-  };
-  row2.appendChild(g);
-  const rs=document.createElement("button");rs.className="s";rs.textContent="رجوع للنص الأصلي";rs.onclick=()=>{l.custom=null;l.al=null;row(i);est()};row2.appendChild(rs);
-  ed.appendChild(row2);r.appendChild(ed);
- }
+ mk("إزالة التشكيل","s",()=>{ta.value=ta.value.replace(/[ً-ٰٟ]/g,"");ta.dispatchEvent(new Event("input"))});
+ mk("المسودة","s",()=>{l.custom=null;l.al=null;ta.value=defOf(i);ta.dispatchEvent(new Event("input"));row(i)});
+ const sel=document.createElement("select");sel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
+ [["","لفظ الجلالة: عام"],["0","الأصل"],["1","ألف خنجرية"],["2","فتحة صريحة"],["3","كلمة قبلها"],["4","ألف وصل"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;sel.appendChild(o)});
+ sel.value=l.al==null?"":String(l.al);
+ sel.onchange=()=>{l.al=sel.value===""?null:+sel.value;l.custom=null;ta.value=defOf(i);ta.dispatchEvent(new Event("input"))};
+ bt.appendChild(sel);
 }
 async function one(i,autoplay){
  const l=L[i];$("msg").textContent="";
