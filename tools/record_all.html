@@ -142,6 +142,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
     <div class="row2">
       <button class="btn" id="bPlay" disabled>▶ استمع</button>
       <button class="btn" id="bRedo" disabled>↺ أعد التسجيل</button>
+      <button class="btn" id="bSkip">⊘ استبعد المقطع</button>
     </div>
     </div>
   </section>
@@ -201,7 +202,10 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 "use strict";
 /* ══════════ البيانات المضمَّنة ══════════ */
 const Q = JSON.parse(document.getElementById("queue").textContent);
-const ALL = Q.units;                         /* وحدات التسجيل بترتيب المسار */
+const ALL = Q.units;
+const SKIPKEY = "athar.rec.skip.all";
+(function(){ let k = []; try { k = JSON.parse(localStorage.getItem(SKIPKEY) || "[]"); } catch (e) {} const st = new Set(k); ALL.forEach(u => { if (st.has(u.u)) u.skip = true; }); })();
+function saveSkip() { try { localStorage.setItem(SKIPKEY, JSON.stringify(ALL.filter(u => u.skip).map(u => u.u))); } catch (e) {} }                         /* وحدات التسجيل بترتيب المسار */
 const ENTRIES = Q.entries;                   /* id → {parts:[{u}|{url:[…]}], ok} */
 const HASHES = Q.hashes;                     /* id → pack_key للنص عند البناء (لكشف تغيّر النص) */
 const TASH0 = Q.tashkeel || {};              /* تشكيل كامل مقترح (وحدة → نص) */
@@ -246,7 +250,7 @@ const S = {
   tash: {},              /* وحدة → نص مشكَّل مستورد */
   recording: false, busy: false, kf: "all"
 };
-const view = () => ALL.filter(u => (S.showPending || !u.pending) && (!S.kf || S.kf === "all" || u.kind === S.kf));
+const view = () => ALL.filter(u => (S.showPending || (!u.pending && !u.skip)) && (!S.kf || S.kf === "all" || u.kind === S.kf));
 const cur = () => view()[Math.min(S.idx, view().length - 1)];
 const key = u => S.voice + "|" + u;
 const validVoice = v => /^[a-z0-9][a-z0-9_-]{0,40}$/.test(v);
@@ -323,7 +327,7 @@ function render() {
   $("scroll").scrollTop = 0;
   const tb = tashBadge(u);
   $("cmeta").innerHTML =
-    "<span class=\"chip\">" + (u.pending ? "معلّق" : "الجلسة " + num(u.session) + " من " + num(Q.sessions)) + "</span>" +
+    "<span class=\"chip\">" + (u.skip ? "مستبعد" : u.pending ? "معلّق" : "الجلسة " + num(u.session) + " من " + num(Q.sessions)) + "</span>" +
     "<span class=\"chip " + (tk ? "ok" : "") + "\">" + (tk ? "مسجَّل ✓" : "بلا تسجيل") + "</span>" +
     "<span class=\"chip " + tb[1] + "\">" + tb[0] + "</span>" +
     (u.ids.length > 1 ? "<span class=\"chip\">مشترك بين " + num(u.ids.length) + " أسطر</span>" : "") +
@@ -334,6 +338,7 @@ function render() {
   $("tinfo").textContent = S.recording ? "جارٍ التسجيل… اضغط المربع عند الانتهاء" : u.pending ? "هذا السطر معلّق: يحتوي لفظ آية بلا علامة ﴿﴾ — انتظر قرار المالك قبل تسجيله." : (tk ? "تسجيل محفوظ · " + fmtDur(tk.dur) + " · " + Math.round(tk.bytes / 1024) + " ك.ب" + (tk.rec ? " · (مُستعاد بعد انقطاع)" : "") + (tk.hint ? " · " + tk.hint : "") : "اضغط الزر الأحمر وابدأ القراءة بعد ثانية من الصمت");
   $("bPlay").disabled = !tk || S.recording; $("bRedo").disabled = S.recording ? false : !tk;
   $("bRedo").textContent = S.recording ? "✕ ألغِ التسجيل" : "↺ أعد التسجيل";
+  $("bSkip").textContent = u.skip ? "↩ أعده للقائمة" : "⊘ استبعد المقطع"; $("bSkip").disabled = S.recording;
   $("bPrev").disabled = S.idx === 0 || S.recording; $("bNext").disabled = S.idx >= V.length - 1 || S.recording;
   $("bRec").disabled = S.busy;
   const done = V.filter(x => S.takes.has(x.u)).length;
@@ -345,8 +350,8 @@ function render() {
   document.title = "تسجيل أثر — " + u.u;
   buildList();
 }
-function sessionTotal(s) { return ALL.filter(x => x.session === s && !x.pending).length; }
-function sessionDone(s) { return ALL.filter(x => x.session === s && !x.pending && S.takes.has(x.u)).length; }
+function sessionTotal(s) { return ALL.filter(x => x.session === s && (!x.pending && !x.skip)).length; }
+function sessionDone(s) { return ALL.filter(x => x.session === s && (!x.pending && !x.skip) && S.takes.has(x.u)).length; }
 
 /* ══════════ التسجيل ══════════ */
 const MIMES = ["audio/mp4;codecs=mp4a.40.2", "audio/mp4", "audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"];
@@ -443,7 +448,7 @@ function setFs(l) { S.fs = Math.max(0, Math.min(4, l)); document.documentElement
   $("bFm").disabled = S.fs === 0; $("bFp").disabled = S.fs === 4; const sc = $("scroll"); if (sc) sc.scrollTop = 0; }
 function go(d) { if (S.recording) return; if (audioEl) { audioEl.pause(); audioEl = null; $("bPlay").textContent = "▶ استمع"; } S.idx = Math.max(0, Math.min(view().length - 1, S.idx + d)); saveMeta(); render(); }
 function jump(i) { S.idx = i; saveMeta(); render(); }
-function nextOpen() { const V = view(); for (let k = 1; k <= V.length; k++) { const i = (S.idx + k) % V.length; if (!S.takes.has(V[i].u)) { jump(i); return; } } toast("سُجِّلت كل الأسطر الظاهرة ✓"); }
+function nextOpen() { const V = view(); for (let k = 1; k <= V.length; k++) { const i = (S.idx + k) % V.length; if (!S.takes.has(V[i].u) && !V[i].skip && !V[i].pending) { jump(i); return; } } toast("سُجِّلت كل الأسطر الظاهرة ✓"); }
 
 /* ══════════ الفهرس ══════════ */
 let filt = "all";
@@ -507,7 +512,7 @@ let EXP_SES = 0;   /* 0 = كل الجلسات، وإلا رقم الجلسة ا�
 function exportSummary() {
   const sesOf = {}; ALL.forEach(u => sesOf[u.u] = u.session);
   const has = x => S.takes.has(x) && (!EXP_SES || sesOf[x] === EXP_SES);
-  const done = ALL.filter(u => !u.pending && has(u.u));
+  const done = ALL.filter(u => (!u.pending && !u.skip) && has(u.u));
   const ids = new Set(), inc = [];
   for (const [id, e] of Object.entries(ENTRIES)) {
     const us = e.parts.filter(p => p.u).map(p => p.u);
@@ -524,7 +529,7 @@ function sesPicker() {
 function openExport() {
   const { done, ids, inc } = exportSummary();
   const bytes = done.reduce((a, u) => a + (S.takes.get(u.u).bytes || 0), 0);
-  $("expSum").innerHTML = "الصوت: <b class=\"uid\">" + S.voice + "</b> · المتحدث: <b>" + (S.speaker || "—") + "</b><br>ملفات مسجَّلة: <b>" + num(done.length) + "</b> من " + num(ALL.filter(u => !u.pending).length) +
+  $("expSum").innerHTML = "الصوت: <b class=\"uid\">" + S.voice + "</b> · المتحدث: <b>" + (S.speaker || "—") + "</b><br>ملفات مسجَّلة: <b>" + num(done.length) + "</b> من " + num(ALL.filter(u => (!u.pending && !u.skip)).length) +
     "<br>أسطر مكتملة تُربط بالمحرّك: <b>" + num(ids.size) + "</b>" + (inc.length ? "<br>أسطر ناقصة (بعض مقاطعها لم تُسجَّل): " + num(inc.length) : "") +
     "<br>الحجم التقريبي: " + (bytes / 1048576).toFixed(1) + " م.ب" + (S.fmt === "wav" ? " (قبل التحويل إلى WAV)" : "") + (S.speaker ? "" : "<br><span class=\"chip warn\">لم تُدخل اسم المتحدث بعد</span>");
   $("expSum").insertAdjacentHTML("afterbegin", sesPicker());
@@ -537,7 +542,7 @@ async function doExport() {
   const { done, ids, inc } = exportSummary(); if (!done.length) return;
   $("eGo").disabled = true; $("expBar").hidden = false; const bar = $("expBar").firstElementChild;
   const files = [], man = { schema: "athar-record/1", tool: "record.html", created: new Date().toISOString(), speaker: S.speaker || "", voice: S.voice, audio_root: "audio/" + S.voice + "/", format: S.fmt, units: [], entries: {}, incomplete: inc, pending_excluded: ALL.filter(u => u.pending).length, text_hash: {} };
-  const fileOf = {}; let n = 0;
+  man.skipped = ALL.filter(u => u.skip).map(u => ({ u: u.u, text: u.disp })); const fileOf = {}; let n = 0;
   try {
     for (const u of done) {
       const t = await DB.get("takes", key(u.u)); if (!t) continue;
@@ -596,6 +601,7 @@ function bind() {
   $("bRec").onclick = () => S.recording ? stopRec(false) : startRec();
   $("bPrev").onclick = () => go(-1); $("bNext").onclick = () => go(1);
   $("bPlay").onclick = playTake;
+  $("bSkip").onclick = () => { const u = view()[S.idx]; if (!u || S.recording) return; u.skip = !u.skip; saveSkip(); toast(u.skip ? "استُبعد — لن يُحسب ولن يمنع التصدير" : "أُعيد المقطع للقائمة"); render(); };
   $("bRedo").onclick = () => { if (S.recording) stopRec(true); else startRec(); };
   $("bNextOpen").onclick = () => { $("dList").close(); nextOpen(); };
   $("bFp").onclick = () => setFs(S.fs + 1); $("bFm").onclick = () => setFs(S.fs - 1);
@@ -643,7 +649,7 @@ const CATS = [
 function buildHome() {
   const box = $("cats"); let h = "";
   CATS.forEach(c => {
-    const us = ALL.filter(u => !u.pending && (c.k === "all" || u.kind === c.k)), d = us.filter(u => S.takes.has(u.u)).length;
+    const us = ALL.filter(u => (!u.pending && !u.skip) && (c.k === "all" || u.kind === c.k)), d = us.filter(u => S.takes.has(u.u)).length;
     const pct = us.length ? Math.round(d * 100 / us.length) : 0;
     h += "<button class=\"cat" + (c.full ? " full" : "") + (d && d === us.length ? " fin" : "") + "\" data-k=\"" + c.k + "\"><span class=\"ic\">" + c.ic + "</span><b>" + c.n + "</b><small>" + num(d) + " من " + num(us.length) + (d === us.length && d ? " ✓" : "") + "</small>" + (c.full ? "" : "<span class=\"pb\"><i style=\"width:" + pct + "%\"></i></span>") + "</button>";
   });
