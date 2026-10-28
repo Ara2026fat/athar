@@ -78,6 +78,8 @@ H.motivate=function(){var n=MOTIV[Math.floor(Math.random()*MOTIV.length)];if(n==
 H.greet=function(){var n=H.per==="night"?"night":H.per==="evening"?"evening":H.per==="morning"?"morning":null;
  var d=new Date().toDateString();if(ls("athar_home_greet")===d)return;lset("athar_home_greet",d);
  H.say(n||"hello")};
+H.hold=function(on){if(on){H.stopVoice();if(H.amb)try{H.amb.pause()}catch(e){}}else if(H.on&&H.unlocked){if(H.amb)try{H.amb.play().catch(function(){})}catch(e){}else H.startAmb(H.ambKey||"day")}};
+H.back=function(){var L=["well","next","mash","can"];H._b=((H._b||0)+1)%L.length;return H.say(L[H._b])};
 H.set=function(on){H.on=!!on;lset("athar_home_snd",on?"1":"0");if(!on){H.stopVoice();if(H.amb)try{H.amb.pause()}catch(e){}H.amb=null;H.ambKey=""}else{H.period(H.per)}};
 H.unlock=function(){
  if(H.unlocked)return;H.unlocked=true;loadVoice();
