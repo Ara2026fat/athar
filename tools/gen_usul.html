@@ -49,8 +49,8 @@ details summary{cursor:pointer;color:var(--m)}
 <div class="row"><button id="all">ولّد غير المولَّد</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
 <div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button></div>
 <div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
-<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button></div>
-<div class="sm">الإصدار ٣ · المعتمد ✓ محفوظ في هذا المتصفح، وتنزيله لا يمسحه.</div>
+<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
+<div class="sm">الإصدار ٤ · المعتمد ✓ محفوظ في هذا المتصفح. نزّل نسخة احتياطية، فإن ضاع شيء اضغط «استرجع من ملف نزّلته».</div>
 <div id="list" class="card"></div>
 <script>
 const LINES=["ما أجمل النهار! الشمس تُضيء الدنيا. مَن الذي خلق الشمس؟ الذي خلقها هو الله.", "الليل والنهار والشمس والقمر: كلّها علامات تدلّنا على الله.", "اضغط على النهار والليل", "هذا القمر، خلقه الله", "هذا النهار، خلقه الله", "هذه الشمس، خلقها الله", "هذا الليل، خلقه الله", "من ربّك؟", "ربّي الله", "هيا نبني أركان الإسلام الخمسة", "الشهادتان. أقول: لا إله إلا الله، محمد رسول الله", "الصلاة. أصلّي لله", "الزكاة. نُعطي الفقراء جزءًا من أموالنا", "صوم رمضان. نصوم في شهر رمضان", "الحجّ. نزور بيت الله الحرام في مكة", "بنينا أركان الإسلام الخمسة", "ما دينك؟", "ديني الإسلام", "من نبيّك؟", "نبيّي محمد ﷺ", "لمن الحمد والشكر؟", "نحمد الله لأنه ربّنا ورازقنا.", "كم إلهًا لنا؟", "الله وحده هو ربّنا ومعبودنا.", "ماذا أعطانا الله لنشكره؟", "نشكر الله بأن نستعمل سمعنا وبصرنا في الخير.", "لماذا خلقنا الله؟", "نعبد الله وحده، ونصلّي له ونطيعه.", "ديني الإسلام: أن أعبد الله وحده، وأسمع كلامه وأُطيعه.", "ماذا طلب الله من الناس؟", "ربّنا هو الذي خلقنا، فنعبده ونتّقيه.", "ما الدين عند الله؟", "نبيّي اسمه محمد بن عبد الله ﷺ، وُلد في مدينة مكة.", "ديننا الإسلام، نعبد الله وحده ونتّبع نبيّه ﷺ.", "لماذا أرسل الله محمدًا ﷺ؟", "كان النبي ﷺ رحيمًا بالناس والصغار.", "كيف وصف الله خُلُق نبيّنا ﷺ؟", "نتعلم من النبي ﷺ حسن الخلق.", "ماذا يفعل الله وملائكته على النبي ﷺ؟", "وأمرنا الله أن نصلّي عليه ونسلّم، فنقول: صلّى الله عليه وسلّم.", "كيف يكون حبّنا للنبي ﷺ؟", "من أحبّ النبي ﷺ اتّبع سنّته.", "وفي الليل يظهر القمر وتلمع النجوم. مَن الذي خلقها؟ هو الله.", "والله جعل الأرض لنا مكانًا نعيش عليه، والسماء فوقنا، وأنزل المطر فتخرج لنا الثمار.", "ربّي هو الله، الذي ربّاني ورعاني بنعمه.", "الإسلام له خمسة أركان، مثل خمسة أعمدة يقوم عليها البيت.", "اختاره الله رسولًا إلينا، ونزل عليه القرآن.", "ثم هاجر إلى المدينة، وبنى فيها مسجده.", "نحبّ نبيّنا ﷺ، ونصلّي عليه، ونقول: صلّى الله عليه وسلّم.", "تمّت الفوانيس الثلاثة، ما شاء الله، والحمد لله"];
@@ -170,6 +170,29 @@ async function runMany(idx){
  try{for(const i of idx){await one(i,false)}}catch(e){}
  busy=false;$("all").disabled=false;est();
 }
+$("imp").onclick=()=>$("impf").click();
+$("impf").onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const buf=new Uint8Array(await file.arrayBuffer()),dv=new DataView(buf.buffer),files={};let o=0;
+  while(o+30<=buf.length&&dv.getUint32(o,true)===0x04034b50){
+   const sz=dv.getUint32(o+18,true),nl=dv.getUint16(o+26,true),xl=dv.getUint16(o+28,true);
+   const name=new TextDecoder().decode(buf.subarray(o+30,o+30+nl));
+   files[name]=buf.subarray(o+30+nl+xl,o+30+nl+xl+sz);o+=30+nl+xl+sz;
+  }
+  if(!files["usul-index.json"]||!files["sp_usul.bin"])throw new Error("الملف ليس نسخة من هذه الصفحة");
+  const meta=JSON.parse(new TextDecoder().decode(files["usul-index.json"])),bin=files["sp_usul.bin"];
+  let n=0;
+  for(let i=0;i<L.length;i++){
+   const ent=meta.e[vHash(L[i].text)];if(!ent||L[i].mark==="ok")continue;
+   const by=bin.slice(ent[1],ent[1]+ent[2]);
+   L[i].bytes=by;L[i].blob=new Blob([by],{type:"audio/mpeg"});L[i].sent=meta.texts[vHash(L[i].text)]||"";L[i].mark="ok";L[i].custom=null;L[i].note="";
+   await save(i);n++;
+  }
+  alert("تم استرجاع "+n+" جملة معتمدة.");
+ }catch(err){alert("تعذّر الاسترجاع: "+err.message)}
+ e.target.value="";LINES.forEach((_,i)=>row(i));est();
+};
 $("tg").onclick=()=>{showAll=!showAll;LINES.forEach((_,i)=>row(i));est()};
 $("cp").onclick=async()=>{
  const bad=L.map((l,i)=>[l,i]).filter(([l])=>l.mark==="bad");
