@@ -404,8 +404,9 @@ async function startRec() {
 function stopRec(cancel) {
   if (!S.recording || !R.mr) return;
   R.cancelled = !!cancel; clearInterval(R.tick); cancelAnimationFrame(R.raf);
-  S.recording = false;
-  try { R.mr.stop(); } catch (e) { finishRec(key(R.unit)); }
+  S.recording = false; R.dur0 = (performance.now() - R.t0) / 1000;
+  const fin = () => { try { R.mr.requestData(); } catch (e) {} try { R.mr.stop(); } catch (e) { finishRec(key(R.unit)); } };
+  if (cancel) fin(); else { $("bRec").disabled = true; setTimeout(() => { $("bRec").disabled = false; fin(); }, 700); }   /* ذيل 0.7ث حتى لا يُقصّ آخر الكلام */
 }
 async function finishRec(k) {
   const dur = (performance.now() - R.t0) / 1000;
@@ -423,7 +424,9 @@ async function finishRec(k) {
       else {
         await DB.put("takes", k, { blob, mime: R.mime, dur, ts: Date.now() });
         await DB.del("partial", k);
-        const hint = R.peak < 0.04 ? "الصوت ضعيف — قرّب الميكروفون" : R.peak > 0.98 ? "الصوت عالٍ ومقطوع — ابتعد قليلًا" : "";
+        const words = ((cur() && textOf(cur())) || "").trim().split(/\s+/).filter(Boolean).length;
+        const shortHint = words >= 4 && dur < words * 0.28 ? "⚠ المقطع أقصر من المتوقع — استمع إليه وأعده إن لزم" : "";
+        const hint = shortHint || (R.peak < 0.04 ? "الصوت ضعيف — قرّب الميكروفون" : R.peak > 0.98 ? "الصوت عالٍ ومقطوع — ابتعد قليلًا" : "");
         S.takes.set(u, { mime: R.mime, dur, bytes: blob.size, ts: Date.now(), hint });
         toast(hint || "حُفظ التسجيل ✓");
         if (S.auto) { const V = view(); if (cur() && cur().u === u && S.idx < V.length - 1) S.idx++; await saveMeta(); }
