@@ -17,17 +17,22 @@ button:disabled{opacity:.5}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 150px}
 .bar{height:10px;background:#eee4c8;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--g)}
 .sm{font-size:15px;color:var(--m)}.err{color:var(--r);font-weight:700}
-.ln{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding:8px 0}
-.ln span{flex:1;font-size:16px}.ln button{width:auto;min-height:40px;padding:6px 12px}
-.ok{color:var(--g)}
+.ln{border-top:1px solid var(--line);padding:10px 0}
+.ln .tx{font-size:17px;margin-bottom:6px}
+.ln .bt{display:flex;gap:6px;flex-wrap:wrap}
+.ln button{width:auto;flex:1 1 70px;min-height:42px;padding:6px 10px}
+.ln.ok{background:#f0f8f3}.ln.bad{background:#fdeeee}
+.good{background:var(--g)}.badb{background:var(--r)}
+.ed{margin-top:8px}.ed textarea{width:100%;font:inherit;font-size:17px;padding:10px;border-radius:12px;border:1px solid var(--line)}
+.ed select{margin:6px 0}
 details summary{cursor:pointer;color:var(--m)}
 </style></head><body>
 <h1>صوت كتاب «الأصول الثلاثة»</h1>
 <ol>
-<li>الصق مفتاح ElevenLabs.</li>
-<li>اضغط «عيّنة» واسمعها (٣ جمل).</li>
-<li>إن أعجبك الصوت اضغط «ولّد الكل».</li>
-<li>اضغط «نزّل الملف» وأرسله لي.</li>
+<li>الصق مفتاح ElevenLabs واضغط «ولّد الكل».</li>
+<li>استمع لكل جملة ▶ ثم اضغط <b>✓ صح</b> أو <b>✗ خطأ</b>.</li>
+<li>الجملة الخاطئة نعدّلها وحدها ونعيد توليدها ↻.</li>
+<li>حين تصير كل الجمل «صح» يُفتح زر «نزّل الملف».</li>
 </ol>
 <div class="card">
 <label for="k">مفتاح ElevenLabs</label>
@@ -44,14 +49,14 @@ details summary{cursor:pointer;color:var(--m)}
 </details>
 <div class="sm" id="est"></div>
 </div>
-<div class="row"><button id="smp">عيّنة (٣ جمل)</button><button id="all">ولّد الكل</button></div>
+<div class="row"><button id="all">ولّد الكل</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
 <div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
 <div class="row"><button id="dl" class="s" disabled>نزّل الملف</button></div>
 <div id="list" class="card"></div>
 <script>
 const LINES=["ما أجمل النهار! الشمس تُضيء الدنيا. مَن الذي خلق الشمس؟ الذي خلقها هو الله.", "الليل والنهار والشمس والقمر: كلّها علامات تدلّنا على الله.", "اضغط على النهار والليل", "هذا القمر، خلقه الله", "هذا النهار، خلقه الله", "هذه الشمس، خلقها الله", "هذا الليل، خلقه الله", "من ربّك؟", "ربّي الله", "هيا نبني أركان الإسلام الخمسة", "الشهادتان. أقول: لا إله إلا الله، محمد رسول الله", "الصلاة. أصلّي لله", "الزكاة. نُعطي الفقراء جزءًا من أموالنا", "صوم رمضان. نصوم في شهر رمضان", "الحجّ. نزور بيت الله الحرام في مكة", "بنينا أركان الإسلام الخمسة", "ما دينك؟", "ديني الإسلام", "من نبيّك؟", "نبيّي محمد ﷺ", "لمن الحمد والشكر؟", "نحمد الله لأنه ربّنا ورازقنا.", "كم إلهًا لنا؟", "الله وحده هو ربّنا ومعبودنا.", "ماذا أعطانا الله لنشكره؟", "نشكر الله بأن نستعمل سمعنا وبصرنا في الخير.", "لماذا خلقنا الله؟", "نعبد الله وحده، ونصلّي له ونطيعه.", "ديني الإسلام: أن أعبد الله وحده، وأسمع كلامه وأُطيعه.", "ماذا طلب الله من الناس؟", "ربّنا هو الذي خلقنا، فنعبده ونتّقيه.", "ما الدين عند الله؟", "نبيّي اسمه محمد بن عبد الله ﷺ، وُلد في مدينة مكة.", "ديننا الإسلام، نعبد الله وحده ونتّبع نبيّه ﷺ.", "لماذا أرسل الله محمدًا ﷺ؟", "كان النبي ﷺ رحيمًا بالناس والصغار.", "كيف وصف الله خُلُق نبيّنا ﷺ؟", "نتعلم من النبي ﷺ حسن الخلق.", "ماذا يفعل الله وملائكته على النبي ﷺ؟", "وأمرنا الله أن نصلّي عليه ونسلّم، فنقول: صلّى الله عليه وسلّم.", "كيف يكون حبّنا للنبي ﷺ؟", "من أحبّ النبي ﷺ اتّبع سنّته.", "وفي الليل يظهر القمر وتلمع النجوم. مَن الذي خلقها؟ هو الله.", "والله جعل الأرض لنا مكانًا نعيش عليه، والسماء فوقنا، وأنزل المطر فتخرج لنا الثمار.", "ربّي هو الله، الذي ربّاني ورعاني بنعمه.", "الإسلام له خمسة أركان، مثل خمسة أعمدة يقوم عليها البيت.", "اختاره الله رسولًا إلينا، ونزل عليه القرآن.", "ثم هاجر إلى المدينة، وبنى فيها مسجده.", "نحبّ نبيّنا ﷺ، ونصلّي عليه، ونقول: صلّى الله عليه وسلّم.", "تمّت الفوانيس الثلاثة، ما شاء الله، والحمد لله"];
 const $=id=>document.getElementById(id);
-const L=LINES.map(t=>({text:t,blob:null,sent:null,bytes:null}));
+const L=LINES.map(t=>({text:t,blob:null,sent:null,bytes:null,mark:null,custom:null,al:null}));
 function vNorm(t){return String(t).replace(/[ً-ٰٟـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[!؟?.,،:؛]+/g," ").replace(/\s+/g," ").replace(/^ | $/g,"")}
 function vHash(t){const n=vNorm(t);let x=5381;for(let i=0;i<n.length;i++)x=(((x<<5)+x)^n.charCodeAt(i))>>>0;return x.toString(16)}
 const D="[\\u064B-\\u065F\\u0670]*",LET="\\u0621-\\u064A\\u0671";
@@ -67,7 +72,8 @@ function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l
  if(v===4)return pre+px+core(!px&&al?"ٱ":A,L);
  return m})}
 function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
-const sentOf=i=>allahVar(applyRules(L[i].text),$("al").value);
+const alOf=i=>L[i].al==null?$("al").value:L[i].al;
+const sentOf=i=>L[i].custom!=null?L[i].custom:allahVar(applyRules(L[i].text),alOf(i));
 class Fatal extends Error{}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function tts(text){
@@ -80,7 +86,7 @@ async function tts(text){
   catch(e){if(a<3){await sleep(1500*(a+1));continue}throw e}
   if(r.ok)return r.blob();
   const tx=(await r.text()).slice(0,300);
-  if(/quota/i.test(tx))throw new Fatal("نفد الرصيد. ما تم توليده محفوظ في الصفحة؛ زد الرصيد ثم اضغط «ولّد الكل».");
+  if(/quota/i.test(tx))throw new Fatal("نفد الرصيد. ما تم توليده محفوظ؛ زد الرصيد ثم تابع.");
   if(r.status===401)throw new Fatal("المفتاح غير صالح.");
   if(r.status===429){await sleep(Math.min(30000,1500*2**a));continue}
   if(r.status>=500&&a<3){await sleep(2000);continue}
@@ -88,55 +94,84 @@ async function tts(text){
  }
  throw new Error("ازدحام متكرر؛ أعد المحاولة بعد قليل");
 }
+/* حفظ دائم في المتصفح (لا يشمل المفتاح) */
+let DB=null;
+const pq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function openDB(){try{DB=await new Promise((res,rej)=>{const r=indexedDB.open("athar-gen-usul",1);r.onupgradeneeded=()=>r.result.createObjectStore("lines");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}catch(e){DB=null}}
+async function save(i){if(!DB)return;const l=L[i];try{await pq(DB.transaction("lines","readwrite").objectStore("lines").put({text:l.text,blob:l.blob,sent:l.sent,mark:l.mark,custom:l.custom,al:l.al},i))}catch(e){window.__saveErr=String(e)}}
+async function load(){if(!DB)return;try{const st=DB.transaction("lines").objectStore("lines");const ks=await pq(st.getAllKeys()),vs=await pq(st.getAll());
+ for(let n=0;n<ks.length;n++){const i=ks[n],v=vs[n];if(L[i]&&v&&v.text===L[i].text&&v.blob){L[i].blob=v.blob;L[i].sent=v.sent;L[i].mark=v.mark;L[i].custom=v.custom;L[i].al=v.al;L[i].bytes=new Uint8Array(await v.blob.arrayBuffer())}}}catch(e){window.__loadErr=String(e)}}
+const SET=["vid","mo","st","al","rules"];
+function saveSet(){try{const o={};SET.forEach(k=>o[k]=$(k).value);localStorage.setItem("athar-gen-usul-set",JSON.stringify(o))}catch(e){}}
+function loadSet(){try{const o=JSON.parse(localStorage.getItem("athar-gen-usul-set")||"null");if(o)SET.forEach(k=>{if(o[k]!=null)$(k).value=o[k]})}catch(e){}}
 const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 function est(){
+ const gen=L.filter(l=>l.blob).length,ok=L.filter(l=>l.mark==="ok").length,bad=L.filter(l=>l.mark==="bad").length;
  const tot=L.reduce((a,l,i)=>a+sentOf(i).length,0);
- $("est").textContent="عدد الجمل: "+nAr(L.length)+" · الحروف: نحو "+nAr(tot)+" (تُحسب من رصيدك)";
- const n=L.filter(l=>l.blob).length;
- $("big").textContent=nAr(n)+" / "+nAr(L.length);
- $("pb").style.width=(100*n/L.length)+"%";
- $("dl").disabled=n<L.length;
+ $("est").textContent="الجمل: "+nAr(L.length)+" · الحروف: نحو "+nAr(tot);
+ $("big").textContent="مولَّدة "+nAr(gen)+" · صح "+nAr(ok)+" · خطأ "+nAr(bad)+" · من "+nAr(L.length);
+ $("pb").style.width=(100*ok/L.length)+"%";
+ $("dl").disabled=ok<L.length;
+ $("redo").disabled=!bad;
 }
+let cur=null;
+function play(i){try{if(cur){cur.pause()}}catch(e){}cur=new Audio(URL.createObjectURL(L[i].blob));cur.play().catch(()=>{})}
 function row(i){
  let r=$("r"+i);
- if(!r){r=document.createElement("div");r.className="ln";r.id="r"+i;$("list").appendChild(r)}
- const l=L[i];
+ if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
+ const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
+ const open=r.querySelector("textarea")&&r.dataset.open==="1";
  r.innerHTML="";
- const s=document.createElement("span");s.textContent=(l.blob?"✓ ":"")+l.text;if(l.blob)s.className="ok";r.appendChild(s);
- if(l.blob){
-  const p=document.createElement("button");p.className="s";p.textContent="▶";p.onclick=()=>{const a=new Audio(URL.createObjectURL(l.blob));a.play()};r.appendChild(p);
-  const g=document.createElement("button");g.className="s";g.textContent="↻";g.title="إعادة توليد";g.onclick=async()=>{g.disabled=true;try{await gen(i)}catch(e){$("msg").textContent=e.message}row(i);est()};r.appendChild(g);
+ const tx=document.createElement("div");tx.className="tx";tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓":l.mark==="bad"?"  ✗":"");r.appendChild(tx);
+ const bt=document.createElement("div");bt.className="bt";r.appendChild(bt);
+ const mk=(txt,cls,fn)=>{const b=document.createElement("button");b.textContent=txt;if(cls)b.className=cls;b.onclick=fn;bt.appendChild(b);return b};
+ if(!l.blob){mk("ولّد هذه الجملة","",async()=>{await one(i,true)});}
+ else{
+  mk("▶ استمع","s",()=>play(i));
+  mk("✓ صح","good",()=>{l.mark="ok";r.dataset.open="0";save(i);row(i);est()});
+  mk("✗ خطأ","badb",()=>{l.mark="bad";r.dataset.open="1";save(i);row(i);est()});
+ }
+ mk(r.dataset.open==="1"?"إخفاء التعديل":"✎ تعديل/إعادة","s",()=>{r.dataset.open=r.dataset.open==="1"?"0":"1";row(i)});
+ if(r.dataset.open==="1"){
+  const ed=document.createElement("div");ed.className="ed";
+  const ta=document.createElement("textarea");ta.rows=3;ta.dir="rtl";ta.value=sentOf(i);ed.appendChild(ta);
+  const sel=document.createElement("select");
+  [["","لفظ الجلالة: حسب الإعداد العام"],["0","الأصل"],["1","ألف خنجرية"],["2","فتحة صريحة"],["3","كلمة قبلها"],["4","ألف وصل"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;sel.appendChild(o)});
+  sel.value=l.al==null?"":String(l.al);ed.appendChild(sel);
+  const row2=document.createElement("div");row2.className="bt";
+  const g=document.createElement("button");g.textContent="↻ أعد التوليد بهذا النص";
+  g.onclick=async()=>{
+   const chosen=sel.value===""?null:+sel.value;
+   if(chosen!==l.al){l.al=chosen;l.custom=null;ta.value=sentOf(i)}
+   const gen=allahVar(applyRules(l.text),alOf(i));
+   l.custom=(ta.value.trim()&&ta.value!==gen)?ta.value:null;
+   await one(i,true);
+  };
+  row2.appendChild(g);
+  const rs=document.createElement("button");rs.className="s";rs.textContent="رجوع للنص الأصلي";rs.onclick=()=>{l.custom=null;l.al=null;row(i);est()};row2.appendChild(rs);
+  ed.appendChild(row2);r.appendChild(ed);
  }
 }
-async function gen(i){
- const sent=sentOf(i),blob=await tts(sent);
- L[i].blob=blob;L[i].sent=sent;L[i].bytes=new Uint8Array(await blob.arrayBuffer());
+async function one(i,autoplay){
+ const l=L[i];$("msg").textContent="";
+ try{
+  const sent=sentOf(i),blob=await tts(sent);
+  l.blob=blob;l.sent=sent;l.bytes=new Uint8Array(await blob.arrayBuffer());l.mark=null;
+  await save(i);
+  if(autoplay)play(i);
+ }catch(e){$("msg").textContent=e.message;throw e}
+ finally{row(i);est()}
 }
 let busy=false;
-async function run(idx,playFirst){
- if(busy)return;busy=true;$("smp").disabled=$("all").disabled=true;$("msg").textContent="";
- try{
-  for(const i of idx){
-   if(L[i].blob)continue;
-   await gen(i);row(i);est();
-  }
-  if(playFirst&&playFirst.length){const a=new Audio(URL.createObjectURL(L[playFirst[0]].blob));a.play()}
- }catch(e){$("msg").textContent=e.message}
- busy=false;$("smp").disabled=$("all").disabled=false;est();
+async function runMany(idx){
+ if(busy)return;busy=true;$("all").disabled=$("redo").disabled=true;
+ try{for(const i of idx){await one(i,false)}}catch(e){}
+ busy=false;$("all").disabled=false;est();
 }
-function pick3(){
- const a=L.findIndex(l=>/الله/.test(l.text));
- const out=[a>=0?a:0];
- for(let i=0;i<L.length&&out.length<3;i++){if(!out.includes(i)&&L[i].text.length>30)out.push(i)}
- return out;
-}
-$("al").onchange=est;$("rules").oninput=est;
-$("smp").onclick=()=>run(pick3(),null);
-$("all").onclick=()=>run(L.map((_,i)=>i),null);
-["mo","st"].forEach(k=>$(k).onchange=()=>{
- // تغيير الإعداد: تُمسح الجمل المولَّدة ليُعاد توليدها بالإعداد الجديد
- if(L.some(l=>l.blob)&&confirm("تغيير هذا الإعداد يمسح ما وُلّد ليُعاد توليده. تابع؟")){L.forEach(l=>{l.blob=null;l.bytes=null});LINES.forEach((_,i)=>row(i))}
- est()});
+$("all").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>!L[i].blob));
+$("redo").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>L[i].mark==="bad"));
+["vid","mo","st","al","rules"].forEach(k=>{$(k).addEventListener("change",()=>{saveSet();est()});});
+$("rules").addEventListener("input",()=>{saveSet();est()});
 const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
 const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
 function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off=0;const d=new Date(),dt=((d.getFullYear()-1980)<<9|(d.getMonth()+1)<<5|d.getDate())&0xFFFF,tm=(d.getHours()<<11|d.getMinutes()<<5|(d.getSeconds()>>1))&0xFFFF;
@@ -149,7 +184,7 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,csz,true);e.setUint32(16,off,true);
  return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
 $("dl").onclick=()=>{
- const chunks=[],e={},texts={};let off=0;
+ if(L.some(l=>l.mark!=="ok"))return;const chunks=[],e={},texts={};let off=0;
  L.forEach(l=>{const h=vHash(l.text);if(e[h])return;e[h]=[0,off,l.bytes.length];texts[h]=l.text;chunks.push(l.bytes);off+=l.bytes.length});
  const bin=new Uint8Array(off);let p=0;chunks.forEach(c=>{bin.set(c,p);p+=c.length});
  const meta={schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("vid").value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts};
@@ -157,5 +192,5 @@ $("dl").onclick=()=>{
  const a=document.createElement("a");a.href=URL.createObjectURL(z);a.download="athar-usul-voice.zip";document.body.appendChild(a);a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
 };
-LINES.forEach((_,i)=>row(i));est();
+(async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));est()})();
 </script></body></html>
