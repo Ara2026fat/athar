@@ -360,7 +360,7 @@ const extOf = m => /mp4|m4a|aac/.test(m) ? "m4a" : /webm/.test(m) ? "webm" : /og
 
 const R = { stream: null, mr: null, chunks: [], t0: 0, tick: 0, actx: null, an: null, peak: 0, raf: 0, unit: null, mime: "", wake: null, cancelled: false };
 async function getStream() {
-  if (R.stream && R.stream.getTracks().every(t => t.readyState === "live")) return R.stream;
+  if (R.stream && R.stream.getTracks().every(t => t.readyState === "live" && !t.muted)) return R.stream;
   R.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
   return R.stream;
 }
@@ -420,7 +420,7 @@ async function finishRec(k) {
     if (R.cancelled) { await DB.del("partial", k); toast("أُلغي التسجيل؛ بقي التسجيل السابق كما هو"); }
     else {
       const blob = new Blob(R.chunks, { type: R.mime });
-      if (dur < 0.5 || blob.size < 1500) { await DB.del("partial", k); toast("التسجيل قصير جدًا — لم يُحفظ. أعد المحاولة."); }
+      if (dur < 0.5 || blob.size < 1500) { await DB.del("partial", k); stopStream(); toast("التسجيل قصير جدًا — لم يُحفظ. جدّدت الميكروفون، أعد المحاولة الآن."); }
       else {
         await DB.put("takes", k, { blob, mime: R.mime, dur, ts: Date.now() });
         await DB.del("partial", k);
