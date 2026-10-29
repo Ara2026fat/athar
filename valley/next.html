@@ -79,7 +79,9 @@ body{font-family:Rubik,"Athar Salawat",system-ui,sans-serif;color:var(--ink);dis
   box-shadow:0 4px 0 rgba(58,46,36,.25)}
 .plabel.ready{animation:beck 2.2s ease-in-out infinite}
 .plabel.done{background:linear-gradient(#DFF0D4,#C3E3AF);border-color:#4E9E63;box-shadow:0 4px 0 #3E7A4E}
-.plabel.sleep{display:none}
+.plabel b{font-weight:700;line-height:1.2}.plabel small{font-size:12px;font-weight:500;opacity:.75;line-height:1.2}.plabel{flex-direction:column;justify-content:center;gap:1px;text-align:center}
+.plabel.ready,.plabel.done{margin-top:30px}
+.plabel.sleep{display:flex;opacity:.82;filter:saturate(.45);min-height:50px;pointer-events:none;box-shadow:0 3px 0 rgba(58,46,36,.18)}
 .plabel:active{transform:translate(-50%,4px);box-shadow:none}
 
 /* ── فقاعة أثر ── */
@@ -3502,7 +3504,11 @@ const App = {
       d.className = "plabel" + (open ? (done ? " done" : " ready") : " sleep");
       d.style.left = (s.x - box.left) + "px";
       d.style.top = (s.y - box.top) + "px";
-      d.textContent = open ? I18n.txt(p.label) : "";
+      const tot = (p.exps || []).length, dn = (p.exps || []).filter(id => State.isLearned(id)).length;
+      const ar = n => Number(n).toLocaleString("ar-EG");
+      d.innerHTML = "<b></b><small></small>";
+      d.firstChild.textContent = I18n.txt(p.label);
+      d.lastChild.textContent = tot ? (open ? ar(dn) + " من " + ar(tot) + " درسًا" : ar(tot) + " درسًا · 🔒") : "";
       if (open) d.onclick = () => this.open(p);
       lay.append(d);
     });
