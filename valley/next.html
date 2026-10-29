@@ -12,6 +12,30 @@
 /* خطوط محلية (لا شبكة): عند الدمج انقل next/assets/fonts إلى fonts/ وعدّل المسار */
 @font-face{font-family:"Rubik";font-style:normal;font-weight:400 700;font-display:swap;src:url("../next/assets/fonts/rubik-ar-lat-var.woff2") format("woff2")}
 @font-face{font-family:"Athar Salawat";font-style:normal;font-weight:400 700;font-display:swap;src:url("../next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD,U+06D6-06ED}
+
+/* ── الخريطة الكاملة: كل الأماكن والدروس، للطفل وولي الأمر ── */
+#fmap{position:absolute;top:calc(10px + env(safe-area-inset-top));inset-inline-end:238px;z-index:9;width:60px;height:60px;border-radius:15px;border:2px solid rgba(255,255,255,.75);background:linear-gradient(155deg,#FFF0C2,#F2B340 55%,#B8741A);box-shadow:0 5px 0 rgba(0,0,0,.22),inset 0 2px 0 rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+#fmap:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.22)}
+#app:has(#panel.up) #fmap,#app:has(#gate:not(.off)) #fmap{display:none}
+#fullmap{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;background:linear-gradient(#EAF4E6,#FFF8E6);color:#3A2E24}
+#fullmap.on{display:flex;animation:rise .4s ease-out}
+#fullmap .fh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 14px 8px}
+#fullmap h2{margin:0;font-size:22px}
+#fullmap .fx{min-width:48px;min-height:48px;border-radius:14px;border:3px solid #3A2E24;background:#fff;font-size:22px;font-weight:700;cursor:pointer}
+#fullmap .fsum{padding:0 16px 8px;font-size:15px;opacity:.8}
+#fullmap .fb{flex:1;overflow:auto;padding:4px 12px 24px;-webkit-overflow-scrolling:touch}
+.fp{background:#fff;border:3px solid #3A2E24;border-radius:18px;margin:10px 0;overflow:hidden;box-shadow:0 4px 0 rgba(58,46,36,.2)}
+.fp.cur{border-color:#E39A22;box-shadow:0 4px 0 #B8741A}
+.fp.fut{opacity:.8}
+.fp>button{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;background:none;border:0;font:inherit;font-size:19px;font-weight:700;color:inherit;cursor:pointer;text-align:start}
+.fp .fn{flex:1}.fp small{font-size:14px;font-weight:500;opacity:.75}
+.fp .fbar{height:8px;background:#EFE6CF;margin:0 14px 10px;border-radius:6px;overflow:hidden}
+.fp .fbar i{display:block;height:100%;background:#4E9E63}
+.fp ol{list-style:none;margin:0;padding:0 14px 12px;display:none}
+.fp.open ol{display:block}
+.fp li{display:flex;gap:8px;align-items:center;padding:7px 0;border-top:1px dashed #E3D9BD;font-size:16px}
+.fp li.d{color:#3E7A4E}.fp li.n{font-weight:700;color:#B8741A}
+.fp .go{margin:0 14px 12px;min-height:52px;width:calc(100% - 28px);border:3px solid #3A2E24;border-radius:16px;background:linear-gradient(#F8BE5A,#E8962A);font:inherit;font-size:18px;font-weight:700;cursor:pointer}
 </style>
 <style>
 :root{--em:#1E6F5C;--cream:#F0E6D2;--gold:#F0A93B;--ink:#20342E;--soft:#5E5140;
@@ -4341,6 +4365,38 @@ window.addEventListener("load", () => {
   }
   if (window.R3seqGate) window.R3seqGate();
   window.R3 = { mouthTest: function(a){ mouth(a); }, talk: function(on){ if (on) { talking = true; cancelAnimationFrame(talkRaf); talkRaf = requestAnimationFrame(talkLoop); } else live.end(); }, fitNow: function(){ tighten(); fit(); }, refit: refit, cfg: cfg, pose: pose, setPose: setPose, stage: function(p){ W.stage(p); }, unstage: function(){ W.unstage(); } };
+})();
+</script>
+<script>
+/* الخريطة الكاملة (زر 🗺): تُخفى أثناء الدرس؛ للاطّلاع فقط، والذهاب للمكان الحالي */
+(function () {
+  function boot() {
+    var A = window.App, app = document.getElementById("app");
+    if (!A || !app || document.getElementById("fmap")) return;
+    var b = document.createElement("button"); b.id = "fmap"; b.setAttribute("aria-label", "الخريطة الكاملة");
+    b.innerHTML = '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" fill="#fff" stroke="#6A4630" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 4v14M15 6v14" stroke="#6A4630" stroke-width="1.6"/></svg>';
+    var o = document.createElement("div"); o.id = "fullmap"; o.setAttribute("role", "dialog");
+    app.append(b, o);
+    var ar = function (n) { return Number(n).toLocaleString("ar-EG"); };
+    function render() {
+      var nx = null; try { var pl = A.plan(); nx = pl && pl.kind === "next" ? pl : null; } catch (e) {}
+      var tot = 0, dn = 0, html = "";
+      (A.places || []).forEach(function (p) {
+        var ids = p.exps || [], d = ids.filter(function (id) { return State.isLearned(id); }).length;
+        tot += ids.length; dn += d;
+        var cur = nx && nx.place && nx.place.place === p.place, fin = ids.length && d === ids.length;
+        html += '<div class="fp' + (cur ? " cur open" : fin ? "" : " fut") + '" data-p="' + p.place + '"><button type="button"><span class="fn">' + I18n.txt(p.label) + '<br><small>' + ar(d) + " من " + ar(ids.length) + ' درسًا' + (cur ? " · أنت هنا" : fin ? " · اكتمل ✓" : "") + '</small></span><span>' + (cur ? "📍" : fin ? "✅" : "▾") + '</span></button><div class="fbar"><i style="width:' + (ids.length ? 100 * d / ids.length : 0) + '%"></i></div><ol>' +
+          ids.map(function (id) { var e = A.exps[id]; var t = e ? I18n.txt(e.title) : id; var isN = nx && nx.exp && nx.exp.id === id; var dd = State.isLearned(id); return '<li class="' + (dd ? "d" : isN ? "n" : "") + '"><span>' + (dd ? "✓" : isN ? "◀" : "○") + '</span><span>' + t + '</span></li>'; }).join("") + '</ol>' +
+          (cur ? '<button type="button" class="go">هيّا نكمل هنا</button>' : "") + '</div>';
+      });
+      o.innerHTML = '<div class="fh"><h2>🗺 خريطة وادينا</h2><button type="button" class="fx" aria-label="إغلاق">✕</button></div><div class="fsum">' + ar(dn) + " من " + ar(tot) + ' درسًا — المس اسم المكان لترى دروسه</div><div class="fb">' + html + '</div>';
+      o.querySelector(".fx").onclick = function () { o.classList.remove("on"); };
+      o.querySelectorAll(".fp>button:not(.go)").forEach(function (h) { h.onclick = function () { h.parentNode.classList.toggle("open"); }; });
+      var g = o.querySelector(".go"); if (g) g.onclick = function () { o.classList.remove("on"); var p = (A.places || []).find(function (q) { return q.place === nx.place.place; }); if (p) A.open(p); };
+    }
+    b.onclick = function () { try { render(); } catch (e) { console.error(e); return; } o.classList.add("on"); };
+  }
+  if (document.readyState === "loading") addEventListener("DOMContentLoaded", function () { setTimeout(boot, 0); }); else setTimeout(boot, 0);
 })();
 </script>
 <script src="../next/valley/valley.js"></script>
