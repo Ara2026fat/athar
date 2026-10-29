@@ -104,8 +104,8 @@ body{font-family:Rubik,"Athar Salawat",system-ui,sans-serif;color:var(--ink);dis
 .plabel.ready{animation:beck 2.2s ease-in-out infinite}
 .plabel.done{background:linear-gradient(#DFF0D4,#C3E3AF);border-color:#4E9E63;box-shadow:0 4px 0 #3E7A4E}
 .plabel b{font-weight:700;line-height:1.2}.plabel small{font-size:12px;font-weight:500;opacity:.75;line-height:1.2}.plabel{flex-direction:column;justify-content:center;gap:1px;text-align:center}
-.plabel.ready,.plabel.done{margin-top:30px}
-.plabel.sleep{display:flex;opacity:.82;filter:saturate(.45);min-height:50px;pointer-events:none;box-shadow:0 3px 0 rgba(58,46,36,.18)}
+.plabel.sleep{display:flex;opacity:.72;filter:saturate(.5);min-height:32px!important;padding:3px 12px;font-size:14px;pointer-events:none;box-shadow:none;border-width:2px}
+.plabel.ready,.plabel.done{min-height:46px}
 .plabel:active{transform:translate(-50%,4px);box-shadow:none}
 
 /* ── فقاعة أثر ── */
@@ -3521,9 +3521,8 @@ const App = {
       const nx = this.nextAt(p);
       const open = !!nx || this.anyDone(p);
       const done = !nx && this.anyDone(p);
-      const pt = svg.createSVGPoint();
-      pt.x = +g.getAttribute("cx"); pt.y = +g.getAttribute("cy") + (+g.getAttribute("r"));
-      const s = pt.matrixTransform(svg.getScreenCTM());
+      const hr = g.getBoundingClientRect();   /* يشمل تكبير المكان الجاهز */
+      const s = { x: hr.left + hr.width / 2, y: hr.bottom + 4 };
       const d = document.createElement("div");
       d.className = "plabel" + (open ? (done ? " done" : " ready") : " sleep");
       d.style.left = (s.x - box.left) + "px";
@@ -3532,7 +3531,7 @@ const App = {
       const ar = n => Number(n).toLocaleString("ar-EG");
       d.innerHTML = "<b></b><small></small>";
       d.firstChild.textContent = I18n.txt(p.label);
-      d.lastChild.textContent = tot ? (open ? ar(dn) + " من " + ar(tot) + " درسًا" : ar(tot) + " درسًا · 🔒") : "";
+      d.lastChild.textContent = open && tot ? ar(dn) + " من " + ar(tot) : "";
       if (open) d.onclick = () => this.open(p);
       lay.append(d);
     });
