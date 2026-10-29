@@ -1,0 +1,487 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مولّد أصوات الوادي — الدفعة المتبقية (176)</title>
+<style>
+body{margin:0;font-family:"Segoe UI",Tahoma,sans-serif;background:#f4f1ff;color:#2b2150;line-height:1.7}
+header{background:linear-gradient(135deg,#6d5bef,#e5489b 55%,#ff9a3c);color:#fff;padding:20px 14px;text-align:center}h1{margin:0;font-size:24px}
+main{max-width:760px;margin:0 auto;padding:12px}.card{background:#fff;border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 3px 0 rgba(60,40,140,.12)}
+h2{margin:0 0 6px;font-size:19px;display:flex;align-items:center;gap:8px}.num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#7c4dff;color:#fff;font-size:19px;flex:none}
+label{display:block;font-weight:700;margin:10px 0 4px}input,select{width:100%;box-sizing:border-box;min-height:52px;padding:10px;border:2px solid #cfc7f5;border-radius:12px;font:inherit;font-size:16px}
+.btn{border:0;border-radius:14px;min-height:56px;padding:10px 16px;font:inherit;font-size:18px;font-weight:800;color:#fff;background:#7c4dff;cursor:pointer;margin:8px 0 0;width:100%}.btn.g{background:#1f9d55}.btn.o{background:#ff7a45}.btn.big{min-height:68px;font-size:22px}.btn.gray{background:#8d86b3}.btn:disabled{opacity:.5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.two .btn{font-size:16px}
+.bar{height:14px;border-radius:8px;background:#e8e4f8;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c4dff,#e5489b);transition:width .3s}
+.ok{color:#1f9d55}.err{color:#e5484d;font-weight:700}.warn{color:#b26a00}small{opacity:.75}
+.tip{background:#fff7e0;border:2px dashed #f0b429;border-radius:12px;padding:8px 10px;font-size:14px;margin:8px 0}
+.est{background:#efeaff;border-radius:12px;padding:8px 10px;margin:10px 0;font-size:16px}.est b{font-size:18px}
+details{margin:10px 0}summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.msg{min-height:22px;margin-top:6px;font-size:15px}.msg code{background:#efeaff;border-radius:8px;padding:1px 6px}
+audio{width:100%;margin-top:6px}
+</style></head><body><header><h1>🌄 مولّد أصوات «الوادي» — أثر</h1><div id="sub">…</div></header><main>
+<div class="card"><b>الخطوات:</b> ١) ألصق المفتاح وأرقام الصوتين واسمع العيّنة ← ٢) «ابدأ التوليد» (يُحفظ التقدّم، ويمكنك الإكمال لاحقًا) ← ٣) «نزّل الحزم» وأرسلها لي.
+<div class="tip">افتحه في <b>Chrome</b> لا في معاينة تطبيق Claude. لا تُغلق الصفحة أثناء التوليد، وأبقِ الشاشة مفتوحة. المفتاح يبقى في متصفحك فقط.</div></div>
+
+<div class="card"><h2><span class="num">١</span> المفتاح والصوتان</h2>
+<label for="key">مفتاح API</label><input id="key" type="password" placeholder="sk_..." dir="ltr" autocomplete="off" spellcheck="false">
+<div class="msg" id="quota"></div>
+<label for="vid_a">رقم الصوت (Voice ID) — صوت «أثر»</label><input id="vid_a" placeholder="رقم الصوت" dir="ltr" autocomplete="off" spellcheck="false">
+<label for="vid_n">رقم الصوت (Voice ID) — صوت «الراوي» <small>(اختياري: إن تُرك فارغًا يُستعمل صوت أثر)</small></label><input id="vid_n" placeholder="اتركه فارغًا لاستعمال صوت أثر" dir="ltr" autocomplete="off" spellcheck="false">
+<div class="two"><button class="btn g" id="smp_a">🔊 اسمع عيّنة أثر</button><button class="btn g" id="smp_n">🔊 اسمع عيّنة الراوي</button></div>
+<div class="msg" id="smpMsg"></div><div id="ab"></div></div>
+
+<div class="card"><h2><span class="num">٢</span> التوليد</h2>
+<div class="est" id="est"></div>
+<button class="btn o big" id="go">⚡ ابدأ التوليد</button><button class="btn gray" id="stop" disabled>⏸ إيقاف مؤقت</button>
+<div class="bar"><i id="pb"></i></div><div id="st"></div><div id="er" class="err"></div></div>
+
+<div class="card"><h2><span class="num">٣</span> التنزيل</h2>
+<div id="outInfo"></div>
+<button class="btn g big" id="dl" disabled>⬇️ نزّل الحزم</button>
+<div class="msg" id="dlMsg"></div>
+<div class="tip">فُكّ الضغط وضع المجلد <b>audio</b> بجانب ملف الوادي، فيشغّله الوادي تلقائيًا.</div></div>
+
+<div class="card"><details><summary>⚙️ متقدّم (لا تحتاجه عادةً)</summary>
+<div class="grid4"><div><label for="a_stab">الثبات</label><input id="a_stab" type="number" step="0.05" min="0" max="1" inputmode="decimal"></div>
+<div><label for="a_sim">التشابه</label><input id="a_sim" type="number" step="0.05" min="0" max="1" inputmode="decimal"></div>
+<div><label for="a_style">الأسلوب</label><input id="a_style" type="number" step="0.05" min="0" max="1" inputmode="decimal"></div>
+<div><label for="a_speed">السرعة</label><input id="a_speed" type="number" step="0.01" min="0.7" max="1.2" inputmode="decimal"></div></div>
+<button class="btn gray" id="a_reset">↩️ أعد القيم الافتراضية</button>
+<button class="btn gray" id="a_wipe">🗑️ امسح المقاطع المحفوظة في هذا المتصفح</button>
+<div class="msg" id="a_msg"></div><small>النموذج eleven_flash_v2_5 · الجودة ٣٢ kbps · التشكيل الانتقائي مفعّل دائمًا.</small></details></div>
+</main>
+<script type="application/json" id="units-data">{"units": [{"unit": "403cf3a7", "parent": "403cf3a7", "voice": "athar", "batch": "B2", "text": "أوه… نسينا!", "pause_after_ms": 0, "pack_key": "403cf3a7"}, {"unit": "7fd9fa85", "parent": "7fd9fa85", "voice": "athar", "batch": "B2", "text": "كُل يا صديقي", "pause_after_ms": 0, "pack_key": "7fd9fa85"}, {"unit": "37958132", "parent": "37958132", "voice": "athar", "batch": "B2", "text": "شبعتُ! والآن؟", "pause_after_ms": 0, "pack_key": "37958132"}, {"unit": "fc2ba4b5", "parent": "fc2ba4b5", "voice": "athar", "batch": "B2", "text": "انظر إلى الشجرة!", "pause_after_ms": 0, "pack_key": "fc2ba4b5"}, {"unit": "50ee93fe", "parent": "50ee93fe", "voice": "athar", "batch": "B2", "text": "بالترتيب… ابدأ من الأعلى", "pause_after_ms": 0, "pack_key": "50ee93fe"}, {"unit": "47b5b1d0", "parent": "47b5b1d0", "voice": "athar", "batch": "B2", "text": "توقّف المطر…", "pause_after_ms": 0, "pack_key": "47b5b1d0"}, {"unit": "4b431ebf", "parent": "4b431ebf", "voice": "athar", "batch": "B2", "text": "انظر إلى واديك", "pause_after_ms": 0, "pack_key": "4b431ebf"}, {"unit": "46b5d238", "parent": "46b5d238", "voice": "athar", "batch": "B2", "text": "كل هذا… بتوفيق الله، ثم بعملك", "pause_after_ms": 0, "pack_key": "46b5d238"}, {"unit": "e7f5b420", "parent": "e7f5b420", "voice": "narrator", "batch": "B2", "text": "بسم الله", "pause_after_ms": 0, "pack_key": "e7f5b420"}, {"unit": "a8c7fa75", "parent": "a8c7fa75", "voice": "narrator", "batch": "B2", "text": "اللهم صيّبًا نافعًا", "pause_after_ms": 0, "pack_key": "a8c7fa75"}, {"unit": "8249cd1b", "parent": "8249cd1b", "voice": "narrator", "batch": "B2", "text": "مطرنا بفضل الله ورحمته", "pause_after_ms": 0, "pack_key": "8249cd1b"}, {"unit": "fa3e6ee", "parent": "fa3e6ee", "voice": "narrator", "batch": "B2", "text": "باسمك اللهم أموت وأحيا", "pause_after_ms": 0, "pack_key": "fa3e6ee"}, {"unit": "18a4ae9", "parent": "18a4ae9", "voice": "athar", "batch": "B2", "text": "الماء يجري! الحمد لله", "pause_after_ms": 0, "pack_key": "18a4ae9"}, {"unit": "ca2162f8", "parent": "ca2162f8", "voice": "narrator", "batch": "B2", "text": "ابدأ أنت بالسلام. رتّب التحية.", "pause_after_ms": 0, "pack_key": "ca2162f8"}, {"unit": "3c8a1050", "parent": "3c8a1050", "voice": "athar", "batch": "B2", "text": "كل هذا من ربّي", "pause_after_ms": 0, "pack_key": "3c8a1050"}, {"unit": "4ebc1cf3", "parent": "4ebc1cf3", "voice": "narrator", "batch": "B2", "text": "وأنت، إذا اختلفتَ مع أصحابك على شيء، ماذا تصنع؟", "pause_after_ms": 0, "pack_key": "4ebc1cf3"}, {"unit": "c0ad705b", "parent": "c0ad705b", "voice": "narrator", "batch": "B2", "text": "أنت وثلاثةٌ من أصحابك تريدون جميعًا أن تحملوا الصندوق أوّلًا.", "pause_after_ms": 0, "pack_key": "c0ad705b"}, {"unit": "3d7a5050", "parent": "3d7a5050", "voice": "narrator", "batch": "B2", "text": "فيغضب أصحابك. وقد رأيتَ كيف جعل النبي صلى الله عليه وسلم لكلِّ قبيلةٍ طرفًا.", "pause_after_ms": 0, "pack_key": "3d7a5050"}, {"unit": "e014a0c3", "parent": "e014a0c3", "voice": "athar", "batch": "B2", "text": "انظر إلى واديك… ما شاء الله، وفّقك الله لهذا الخير", "pause_after_ms": 0, "pack_key": "e014a0c3"}, {"unit": "bd4a81e3", "parent": "bd4a81e3", "voice": "athar", "batch": "B2", "text": "أربعةٌ فقط ينجون", "pause_after_ms": 0, "pack_key": "bd4a81e3"}, {"unit": "e605e37", "parent": "e605e37", "voice": "narrator", "batch": "B2", "text": "ولدان يكنسان الفناء. أيّهما عمله أعظم؟", "pause_after_ms": 0, "pack_key": "e605e37"}, {"unit": "54361522", "parent": "54361522", "voice": "narrator", "batch": "B2", "text": "الأوّل يكنس ليراه الناس فيمدحوه. والثاني يكنس لله، لا ينتظر من أحد شيئًا.", "pause_after_ms": 0, "pack_key": "54361522"}, {"unit": "260e0bcf", "parent": "260e0bcf", "voice": "narrator", "batch": "B2", "text": "العملان متشابهان في الظاهر، لكنّ الفرق في القلب، لا في اليد.", "pause_after_ms": 0, "pack_key": "260e0bcf"}, {"unit": "f583f658", "parent": "f583f658", "voice": "athar", "batch": "B2", "text": "وأحيانًا يحدث ما لا نحبّ", "pause_after_ms": 0, "pack_key": "f583f658"}, {"unit": "128caf60", "parent": "128caf60", "voice": "athar", "batch": "B2", "text": "كلّما خرجتَ ورجعت… كلمة", "pause_after_ms": 0, "pack_key": "128caf60"}, {"unit": "597436df", "parent": "597436df", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: للطريق حقّ: غضّ البصر، وكفّ الأذى، وردّ السلام، والأمر بالمعروف، وإماطة الأذى صدقة.", "pause_after_ms": 0, "pack_key": "597436df"}, {"unit": "316e2205", "parent": "316e2205", "voice": "athar", "batch": "B2", "text": "يومُك مقسومٌ على خمس", "pause_after_ms": 0, "pack_key": "316e2205"}, {"unit": "9d3514da", "parent": "9d3514da", "voice": "narrator", "batch": "B2", "text": "قال النبي ﷺ: من كان يؤمن بالله واليوم الآخر فلا يؤذي جاره.", "pause_after_ms": 0, "pack_key": "9d3514da"}, {"unit": "c52a2b63", "parent": "c52a2b63", "voice": "athar", "batch": "B2", "text": "ورقةٌ واحدة… تكفي لتتذكّر", "pause_after_ms": 0, "pack_key": "c52a2b63"}, {"unit": "81567413", "parent": "81567413", "voice": "narrator", "batch": "B2", "text": "لا أحد من الناس. أمّا الذي يعلم الورقةَ إذا سقطت، أفلا يراك؟", "pause_after_ms": 0, "pack_key": "81567413"}, {"unit": "8b6555cb", "parent": "8b6555cb", "voice": "narrator", "batch": "B2", "text": "هذه هي المراقبة: أن تتركه لأنّه يراك، لا لأنّهم يرونك.", "pause_after_ms": 0, "pack_key": "8b6555cb"}, {"unit": "2d06ba08", "parent": "2d06ba08", "voice": "narrator", "batch": "B2", "text": "أرسلهم الله إلى عباده ليعلّموهم، ويبشّروهم بالخير والجنّة، وينذروهم عن الشرّ والنار.", "pause_after_ms": 0, "pack_key": "2d06ba08"}, {"unit": "521b5685", "parent": "521b5685", "voice": "narrator", "batch": "B2", "text": "اذكر لأبيك أو أمّك أركان الإيمان الستّة دون أن تنسى واحدًا.", "pause_after_ms": 0, "pack_key": "521b5685"}, {"unit": "838bdbb7", "parent": "838bdbb7", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: أركان الإيمان ستّة: الإيمان بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، والقدر خيره وشرّه.", "pause_after_ms": 0, "pack_key": "838bdbb7"}, {"unit": "74ac4e89", "parent": "74ac4e89", "voice": "narrator", "batch": "B2", "text": "القدر أربع مراتب، كلٌّ منها قبل التي تليها. رتّبها.", "pause_after_ms": 0, "pack_key": "74ac4e89"}, {"unit": "1d36c964", "parent": "1d36c964", "voice": "narrator", "batch": "B2", "text": "كلُّ ما أصابك كان مكتوبًا في كتابٍ قبل أن تُولد. فمن يخاف من غدٍ يعلمه الله؟", "pause_after_ms": 0, "pack_key": "1d36c964"}, {"unit": "f79bd507", "parent": "f79bd507", "voice": "narrator", "batch": "B2", "text": "إذا فاتك اليوم شيءٌ تحبّه، قل: قدّر الله وما شاء فعل، ولا تقل: لو.", "pause_after_ms": 0, "pack_key": "f79bd507"}, {"unit": "70277caa", "parent": "70277caa", "voice": "athar", "batch": "B2", "text": "قصّةُ طفلٍ… فقد أباه قبل أن يراه", "pause_after_ms": 0, "pack_key": "70277caa"}, {"unit": "c195d9fa", "parent": "c195d9fa", "voice": "narrator", "batch": "B2", "text": "فقدَ أباه وأمّه وجدّه، ثم صار خيرَ من مشى على الأرض. فلا تحزن لفقدٍ، فربُّك لا يترك من يرعاه.", "pause_after_ms": 0, "pack_key": "c195d9fa"}, {"unit": "fe1c29e2", "parent": "fe1c29e2", "voice": "narrator", "batch": "B2", "text": "جيشٌ كامل ومعه الفيَلة، ردّه الله بطيرٍ صغير. فما أصغرَ القوّة إذا أرادها الله.", "pause_after_ms": 0, "pack_key": "fe1c29e2"}, {"unit": "9e8a0cf4", "parent": "9e8a0cf4", "voice": "narrator", "batch": "B2", "text": "ولدٌ يحبّ الله كثيرًا، فقال: سأُصلّي الفجر خمس ركعات بدل ركعتين، فهذا أكثر أجرًا.", "pause_after_ms": 0, "pack_key": "9e8a0cf4"}, {"unit": "1de33018", "parent": "1de33018", "voice": "narrator", "batch": "B2", "text": "نيّته طيّبة، لكنّ العبادة تُؤخذ كما عُلِّمناها، لا كما نحبّ.", "pause_after_ms": 0, "pack_key": "1de33018"}, {"unit": "11520aa1", "parent": "11520aa1", "voice": "narrator", "batch": "B2", "text": "إذا أردتَ عبادةً اليوم، اسأل أباك أو أمّك: هل فعلها النبي صلى الله عليه وسلم هكذا؟", "pause_after_ms": 0, "pack_key": "11520aa1"}, {"unit": "6cf5d268", "parent": "6cf5d268", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: من أحدث في أمرنا هذا ما ليس منه فهو ردّ، وفيه النهي عن الابتداع، وأنّ الأعمال المحدَثة مردودة.", "pause_after_ms": 0, "pack_key": "6cf5d268"}, {"unit": "35119bfb", "parent": "35119bfb", "voice": "narrator", "batch": "B2", "text": "ثلاث عشرة سنةً يدعو ويُؤذى، ولم ييأس. فكم يومًا صبرتَ أنت على أمرٍ أردتَه؟", "pause_after_ms": 0, "pack_key": "35119bfb"}, {"unit": "df863075", "parent": "df863075", "voice": "athar", "batch": "B2", "text": "نعمتان تعيش فيهما ولا تشعر بهما", "pause_after_ms": 0, "pack_key": "df863075"}, {"unit": "e46bf957", "parent": "e46bf957", "voice": "narrator", "batch": "B2", "text": "سورةٌ عن يوم القيامة، ثم تتكلّم عن يتيمٍ ولقمة. فالإيمان يُرى في يدك قبل لسانك.", "pause_after_ms": 0, "pack_key": "e46bf957"}, {"unit": "edfc8038", "parent": "edfc8038", "voice": "athar", "batch": "B2", "text": "بيتٌ يقصده الناس من كل مكان", "pause_after_ms": 0, "pack_key": "edfc8038"}, {"unit": "476e0d24", "parent": "476e0d24", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: لا يؤمن أحدكم حتى يحبّ لأخيه ما يحبّ لنفسه، وذلك من كمال الإيمان.", "pause_after_ms": 0, "pack_key": "476e0d24"}, {"unit": "9b89e7c1", "parent": "9b89e7c1", "voice": "narrator", "batch": "B2", "text": "أمامك واجبٌ صعب، جلستَ إليه مرّتين ولم تفهمه، وتعبتَ.", "pause_after_ms": 0, "pack_key": "9b89e7c1"}, {"unit": "4187dfb2", "parent": "4187dfb2", "voice": "narrator", "batch": "B2", "text": "اعتمدتَ على قوّتك وحدها، فانتهت. وهناك من لا تنتهي قوّته.", "pause_after_ms": 0, "pack_key": "4187dfb2"}, {"unit": "53d2dc80", "parent": "53d2dc80", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: لا حول ولا قوّة إلا بالله كنزٌ من كنوز الجنّة، وفيها تبرّؤ العبد من حوله وقوّته، واعتماده على الله وحده.", "pause_after_ms": 0, "pack_key": "53d2dc80"}, {"unit": "195d62a2", "parent": "195d62a2", "voice": "athar", "batch": "B2", "text": "ذهب عنّا… لكنّه لم يتركنا", "pause_after_ms": 0, "pack_key": "195d62a2"}, {"unit": "a722c311", "parent": "a722c311", "voice": "narrator", "batch": "B2", "text": "تُوفّي نبيّنا صلى الله عليه وسلم في شهر ربيع الأوّل، من السنة الحادية عشرة من الهجرة، وله من العمر ثلاثٌ وستّون سنة.", "pause_after_ms": 0, "pack_key": "a722c311"}, {"unit": "785bac80", "parent": "785bac80", "voice": "narrator", "batch": "B2", "text": "لكنّه لم يتركنا في ظلام. المس لتعرف ماذا ترك.", "pause_after_ms": 0, "pack_key": "785bac80"}, {"unit": "c96ad0b7", "parent": "c96ad0b7", "voice": "narrator", "batch": "B2", "text": "ليلها كنهارها، لا يزيغ عنها إلا هالك.", "pause_after_ms": 0, "pack_key": "c96ad0b7"}, {"unit": "bcea034a", "parent": "bcea034a", "voice": "narrator", "batch": "B2", "text": "والطريق واضح، فلا تُظلِمه بظنّك. اسأل من يعلم.", "pause_after_ms": 0, "pack_key": "bcea034a"}, {"unit": "1998c594", "parent": "1998c594", "voice": "narrator", "batch": "B2", "text": "ما تركك حائرًا يومًا، ما من خيرٍ إلا دلّك عليه، ولا شرٍّ إلا حذّرك منه.", "pause_after_ms": 0, "pack_key": "1998c594"}, {"unit": "63a40fe7", "parent": "63a40fe7", "voice": "narrator", "batch": "B2", "text": "قل بسم الله غدًا قبل وضوئك، والذكر بعده، قبل أن تفعل شيئًا آخر.", "pause_after_ms": 0, "pack_key": "63a40fe7"}, {"unit": "a9efaee6", "parent": "a9efaee6", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: قبل الوضوء بسم الله، وبعده أشهد أن لا إله إلا الله وحده لا شريك له وأشهد أن محمدًا عبده ورسوله، وعند الخروج بسم الله توكّلت على الله.", "pause_after_ms": 0, "pack_key": "a9efaee6"}, {"unit": "90613fa5", "parent": "90613fa5", "voice": "athar", "batch": "B2", "text": "حولك خلقٌ لا تراه", "pause_after_ms": 0, "pack_key": "90613fa5"}, {"unit": "1e4da9e8", "parent": "1e4da9e8", "voice": "narrator", "batch": "B2", "text": "خلقهم الله من نور. قال النبي صلى الله عليه وسلم: خُلقت الملائكة من نور.", "pause_after_ms": 0, "pack_key": "1e4da9e8"}, {"unit": "663da47e", "parent": "663da47e", "voice": "narrator", "batch": "B2", "text": "خلقٌ لا يعصون الله ما أمرهم، وأنت تراهم في قلبك ولا تراهم بعينك.", "pause_after_ms": 0, "pack_key": "663da47e"}, {"unit": "b5febd6", "parent": "b5febd6", "voice": "athar", "batch": "B2", "text": "كيف تُصلّي حين لا يراك أحد؟", "pause_after_ms": 0, "pack_key": "b5febd6"}, {"unit": "fd2d06f7", "parent": "fd2d06f7", "voice": "narrator", "batch": "B2", "text": "أنت وحدك في الغرفة تُصلّي، ولا أحد يراك.", "pause_after_ms": 0, "pack_key": "fd2d06f7"}, {"unit": "e3b47453", "parent": "e3b47453", "voice": "narrator", "batch": "B2", "text": "فإن لم تكن تراه، فإنّه يراك.", "pause_after_ms": 0, "pack_key": "e3b47453"}, {"unit": "926ad5b6", "parent": "926ad5b6", "voice": "narrator", "batch": "B2", "text": "لو رأيتَ الله أمامك، أكنتَ تُصلّي هكذا؟ إنّه يراك الآن.", "pause_after_ms": 0, "pack_key": "926ad5b6"}, {"unit": "e30a9cde", "parent": "e30a9cde", "voice": "narrator", "batch": "B2", "text": "غدًا اختبارك. قال لك صاحبك: لا تذاكر، توكّل على الله وكفى.", "pause_after_ms": 0, "pack_key": "e30a9cde"}, {"unit": "4b5a7214", "parent": "4b5a7214", "voice": "narrator", "batch": "B2", "text": "هذا تواكل لا توكّل. فالتوكّل يكون مع الأخذ بالأسباب.", "pause_after_ms": 0, "pack_key": "4b5a7214"}, {"unit": "976187cc", "parent": "976187cc", "voice": "narrator", "batch": "B2", "text": "قال تعالى: ومن يتوكّل على الله فهو حسبه، أي كافيه.", "pause_after_ms": 0, "pack_key": "976187cc"}, {"unit": "f5fb3db3", "parent": "f5fb3db3", "voice": "narrator", "batch": "B2", "text": "وينقص بالمعصية. كذبةٌ أو غيبةٌ أو ترك صلاة، كلّها تنقصه.", "pause_after_ms": 0, "pack_key": "f5fb3db3"}, {"unit": "1e9fcbc2", "parent": "1e9fcbc2", "voice": "narrator", "batch": "B2", "text": "افعل اليوم طاعةً صغيرة تزيد بها إيمانك، واترك معصيةً تنقصه.", "pause_after_ms": 0, "pack_key": "1e9fcbc2"}, {"unit": "23893ebc", "parent": "23893ebc", "voice": "athar", "batch": "B2", "text": "قلبُك يسير بجناحين", "pause_after_ms": 0, "pack_key": "23893ebc"}, {"unit": "80423915", "parent": "80423915", "voice": "narrator", "batch": "B2", "text": "قال لك صاحبك: أخطأتُ خطأً كبيرًا، ولن يغفر الله لي أبدًا.", "pause_after_ms": 0, "pack_key": "80423915"}, {"unit": "74fdf2c1", "parent": "74fdf2c1", "voice": "narrator", "batch": "B2", "text": "لا تُقنِطه، فالله يقول: نبّئ عبادي أنّي أنا الغفور الرحيم.", "pause_after_ms": 0, "pack_key": "74fdf2c1"}, {"unit": "74dc6e0e", "parent": "74dc6e0e", "voice": "narrator", "batch": "B2", "text": "اقرأ الفاتحة في صلاةٍ واحدة اليوم وأنت تتذكّر معناها آيةً آية.", "pause_after_ms": 0, "pack_key": "74dc6e0e"}, {"unit": "5edc04dd", "parent": "5edc04dd", "voice": "athar", "batch": "B2", "text": "يومٌ تتكلّم فيه الأرض", "pause_after_ms": 0, "pack_key": "5edc04dd"}, {"unit": "443d10ec", "parent": "443d10ec", "voice": "athar", "batch": "B2", "text": "في مالك حقٌّ ليس لك", "pause_after_ms": 0, "pack_key": "443d10ec"}, {"unit": "9fb20167", "parent": "9fb20167", "voice": "narrator", "batch": "B2", "text": "وصلاة الجماعة أفضل من صلاة الفذّ بسبعٍ وعشرين درجة.", "pause_after_ms": 0, "pack_key": "9fb20167"}, {"unit": "816f12d6", "parent": "816f12d6", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: الخشوع حضور القلب وسكون الجوارح، وصلاة الجماعة أفضل من صلاة الفذّ بسبعٍ وعشرين درجة.", "pause_after_ms": 0, "pack_key": "816f12d6"}, {"unit": "3602091b", "parent": "3602091b", "voice": "narrator", "batch": "B2", "text": "ولدان: الأوّل ثوبه نظيف وشعره مرتّب، وفي قلبه حسدٌ لأصحابه. والثاني ثوبه بسيط، وقلبه سليمٌ يحبّ الخير للجميع.", "pause_after_ms": 0, "pack_key": "3602091b"}, {"unit": "2dad7b4", "parent": "2dad7b4", "voice": "narrator", "batch": "B2", "text": "الناس ترى ثوبه، والله يرى قلبه. وصلاح القلب فيه صلاح الظاهر والباطن.", "pause_after_ms": 0, "pack_key": "2dad7b4"}, {"unit": "465c7d9e", "parent": "465c7d9e", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: في الجسد مضغة إذا صلحت صلح الجسد كلّه، وإذا فسدت فسد الجسد كلّه، ألا وهي القلب.", "pause_after_ms": 0, "pack_key": "465c7d9e"}, {"unit": "2b7f0bd0", "parent": "2b7f0bd0", "voice": "athar", "batch": "B2", "text": "أربع كلماتٍ لا تليق بمؤمن", "pause_after_ms": 0, "pack_key": "2b7f0bd0"}, {"unit": "a37bd22a", "parent": "a37bd22a", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: ليس المؤمن بالطعّان ولا اللعّان ولا الفاحش ولا البذيء، وفيه النهي عن كل كلامٍ باطلٍ وقبيح.", "pause_after_ms": 0, "pack_key": "a37bd22a"}, {"unit": "eebdd6c5", "parent": "eebdd6c5", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: من حُسن إسلام المرء تركُه ما لا يعنيه، من أمور دين غيره ودنياه، وذلك من كمال الإسلام.", "pause_after_ms": 0, "pack_key": "eebdd6c5"}, {"unit": "cddbe360", "parent": "cddbe360", "voice": "narrator", "batch": "B2", "text": "قال لك صاحبك: أنا أحبّ لاعبًا مشهورًا أكثر من أيّ أحد.", "pause_after_ms": 0, "pack_key": "cddbe360"}, {"unit": "2e5ea749", "parent": "2e5ea749", "voice": "narrator", "batch": "B2", "text": "أربع كلماتٍ تقولها كثيرًا. المس كلًّا لتعرف معناها.", "pause_after_ms": 0, "pack_key": "2e5ea749"}, {"unit": "8f9f82aa", "parent": "8f9f82aa", "voice": "narrator", "batch": "B2", "text": "أعطاك الله عينين تريان. فكيف تشكره عليهما؟", "pause_after_ms": 0, "pack_key": "8f9f82aa"}, {"unit": "6e8b6aab", "parent": "6e8b6aab", "voice": "narrator", "batch": "B2", "text": "الشكر شطران: ثناءٌ باللسان، واستعمالُ النعمة فيما يرضيه لا بمعصيته.", "pause_after_ms": 0, "pack_key": "6e8b6aab"}, {"unit": "f3137c0d", "parent": "f3137c0d", "voice": "narrator", "batch": "B2", "text": "اذكر الليلة ثلاث نعمٍ عليك، واحمد الله على كلٍّ منها.", "pause_after_ms": 0, "pack_key": "f3137c0d"}, {"unit": "880d4f94", "parent": "880d4f94", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: الدعاء من أعظم الطاعات وأجلّ القربات، وقال النبي صلى الله عليه وسلم: الدعاء هو العبادة.", "pause_after_ms": 0, "pack_key": "880d4f94"}, {"unit": "88531a9b", "parent": "88531a9b", "voice": "athar", "batch": "B2", "text": "قصّةٌ حدثت في السوق", "pause_after_ms": 0, "pack_key": "88531a9b"}, {"unit": "3d874639", "parent": "3d874639", "voice": "narrator", "batch": "B2", "text": "قال: أفلا جعلتَه فوق الطعام كي يراه الناس؟ من غشّ فليس منّي.", "pause_after_ms": 0, "pack_key": "3d874639"}, {"unit": "33750cb5", "parent": "33750cb5", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: الغشّ ومنه إخفاء عيب السلعة، وقال النبي صلى الله عليه وسلم: من غشّ فليس منّي.", "pause_after_ms": 0, "pack_key": "33750cb5"}, {"unit": "c0aad2f6", "parent": "c0aad2f6", "voice": "narrator", "batch": "B2", "text": "رأيتَ ولدًا لا يستطيع المشي كما تمشي أنت، ونظر إليك.", "pause_after_ms": 0, "pack_key": "c0aad2f6"}, {"unit": "a2fb06d", "parent": "a2fb06d", "voice": "narrator", "batch": "B2", "text": "إن رأيتَ اليوم مبتلًى، فأحسِن إليه ولا تُشعره بشيء، واحمد الله في نفسك.", "pause_after_ms": 0, "pack_key": "a2fb06d"}, {"unit": "d063897b", "parent": "d063897b", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: إذا رأيتَ مبتلًى قلتَ الحمد لله الذي عافاني ممّا ابتلاك به وفضّلني على كثيرٍ ممّن خلق تفضيلًا، وتقولها في نفسك.", "pause_after_ms": 0, "pack_key": "d063897b"}, {"unit": "f914ebe4", "parent": "f914ebe4", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: معنى الصلاة عليه أن تدعو الله أن يُثني عليه في الملأ الأعلى، وصيغتها اللهم صلِّ على محمد وعلى آل محمد كما صلّيتَ على إبراهيم.", "pause_after_ms": 0, "pack_key": "f914ebe4"}, {"unit": "81c623f1", "parent": "81c623f1", "voice": "athar", "batch": "B2", "text": "يومٌ تُوزن فيه الأعمال", "pause_after_ms": 0, "pack_key": "81c623f1"}, {"unit": "49beb069", "parent": "49beb069", "voice": "narrator", "batch": "B2", "text": "أخبرك معلّمك بحديثٍ عن النبي صلى الله عليه وسلم، فقال صاحبك: هذا كلامٌ قديم، لا أُصدّقه.", "pause_after_ms": 0, "pack_key": "49beb069"}, {"unit": "373c732c", "parent": "373c732c", "voice": "narrator", "batch": "B2", "text": "خمسة أحكام. المس كلًّا لتعرف أثره.", "pause_after_ms": 0, "pack_key": "373c732c"}, {"unit": "f2fedd4f", "parent": "f2fedd4f", "voice": "narrator", "batch": "B2", "text": "صاحبك يتركُ صلاةَ الفجر أحيانًا ويقول: هي مستحبّة كقيام الليل.", "pause_after_ms": 0, "pack_key": "f2fedd4f"}, {"unit": "26894744", "parent": "26894744", "voice": "narrator", "batch": "B2", "text": "الصلوات الخمس واجبة يُعاقب تاركها. وقيام الليل مستحبّ لا يُعاقب تاركه. فرقٌ كبير.", "pause_after_ms": 0, "pack_key": "26894744"}, {"unit": "aded88af", "parent": "aded88af", "voice": "narrator", "batch": "B2", "text": "مرّ بك سؤالٌ في دينك لم تعرف جوابه، وأنت مشغولٌ بلعبةٍ تحبّها.", "pause_after_ms": 0, "pack_key": "aded88af"}, {"unit": "727ee390", "parent": "727ee390", "voice": "narrator", "batch": "B2", "text": "ومن يُرد الله به خيرًا يُفقّهه في الدين. فلا تؤجّل خيرًا أُريد بك.", "pause_after_ms": 0, "pack_key": "727ee390"}, {"unit": "3c6b27ef", "parent": "3c6b27ef", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: ثمرة التفقّه صحّة الأقوال والأعمال والاعتقادات، بما يُثمر السعادة في الدنيا والآخرة، ومن يُرد الله به خيرًا يُفقّهه في الدين.", "pause_after_ms": 0, "pack_key": "3c6b27ef"}, {"unit": "df32e516", "parent": "df32e516", "voice": "athar", "batch": "B2", "text": "في سنتك أوقاتٌ أفضل من غيرها", "pause_after_ms": 0, "pack_key": "df32e516"}, {"unit": "541a343e", "parent": "541a343e", "voice": "narrator", "batch": "B2", "text": "عيد الفطر وعيد الأضحى. قال النبي صلى الله عليه وسلم: إنّ الله قد أبدلكم بهما خيرًا منهما: يوم الأضحى ويوم الفطر.", "pause_after_ms": 0, "pack_key": "541a343e"}, {"unit": "72941761", "parent": "72941761", "voice": "narrator", "batch": "B2", "text": "الغشّ، ومنه: إخفاء عيب السلعة. قال النبي صلى الله عليه وسلم: من غشّ فليس منّي.", "pause_after_ms": 0, "pack_key": "72941761"}, {"unit": "647b4e61", "parent": "647b4e61", "voice": "narrator", "batch": "B2", "text": "قال لك صاحبك: أُعيرك عشرة ريالات، تردّها لي خمسة عشر بعد شهر.", "pause_after_ms": 0, "pack_key": "647b4e61"}, {"unit": "97af643a", "parent": "97af643a", "voice": "narrator", "batch": "B2", "text": "رأيتَ ولدًا يسجد وقد بسط ذراعيه كاملتين على الأرض.", "pause_after_ms": 0, "pack_key": "97af643a"}, {"unit": "8d2f4130", "parent": "8d2f4130", "voice": "narrator", "batch": "B2", "text": "وللسجود هيئة: يجافي عضديه عن جنبيه، ولا يبسط ذراعيه على الأرض.", "pause_after_ms": 0, "pack_key": "8d2f4130"}, {"unit": "a13da24f", "parent": "a13da24f", "voice": "athar", "batch": "B2", "text": "يومُك فيه ما يسرّ وما يسوء", "pause_after_ms": 0, "pack_key": "a13da24f"}, {"unit": "31c9c9ef", "parent": "31c9c9ef", "voice": "narrator", "batch": "B2", "text": "تقول: الحمد لله الذي بنعمته تتمّ الصالحات.", "pause_after_ms": 0, "pack_key": "31c9c9ef"}, {"unit": "2b36450", "parent": "2b36450", "voice": "narrator", "batch": "B2", "text": "والحمد في الحالين. ففي المكروه تقول: الحمد لله على كل حال.", "pause_after_ms": 0, "pack_key": "2b36450"}, {"unit": "930dde29", "parent": "930dde29", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: إذا سرّك أمر قلتَ الحمد لله الذي بنعمته تتمّ الصالحات، وإذا كرهتَ أمرًا قلتَ الحمد لله على كل حال، ولمن أحسن إليك: جزاك الله خيرًا.", "pause_after_ms": 0, "pack_key": "930dde29"}, {"unit": "9e515a38", "parent": "9e515a38", "voice": "athar", "batch": "B2", "text": "أماكنُ يغفل فيها الناس", "pause_after_ms": 0, "pack_key": "9e515a38"}, {"unit": "2c0a7c85", "parent": "2c0a7c85", "voice": "narrator", "batch": "B2", "text": "ثلاثة مواضع. المس لتعرف ذكر كلٍّ منها.", "pause_after_ms": 0, "pack_key": "2c0a7c85"}, {"unit": "79e091b9", "parent": "79e091b9", "voice": "narrator", "batch": "B2", "text": "تقول: لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، يحيي ويميت، وهو حيٌّ لا يموت، بيده الخير، وهو على كل شيء قدير.", "pause_after_ms": 0, "pack_key": "79e091b9"}, {"unit": "84a71f76", "parent": "84a71f76", "voice": "narrator", "batch": "B2", "text": "تقول: اللهم إنّي أسألك خيرها، وأعوذ بك من شرّها.", "pause_after_ms": 0, "pack_key": "84a71f76"}, {"unit": "f35c0103", "parent": "f35c0103", "voice": "narrator", "batch": "B2", "text": "دخلتَ سوقًا مزدحمًا مع أبيك، وكلّ من حولك مشغولٌ بالشراء.", "pause_after_ms": 0, "pack_key": "f35c0103"}, {"unit": "4fb89ff2", "parent": "4fb89ff2", "voice": "narrator", "batch": "B2", "text": "وفي السوق ذكرٌ علّمناه النبي صلى الله عليه وسلم، وهو موضع غفلة، فذكرُ الله فيه أعظم.", "pause_after_ms": 0, "pack_key": "4fb89ff2"}, {"unit": "330ae274", "parent": "330ae274", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: دعاء السوق لا إله إلا الله وحده لا شريك له، ودعاء الريح اللهم إنّي أسألك خيرها وأعوذ بك من شرّها، وإذا تعثّر المركوب تقول بسم الله.", "pause_after_ms": 0, "pack_key": "330ae274"}, {"unit": "502111d6", "parent": "502111d6", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: من قرأ حرفًا من كتاب الله فله به حسنة، والحسنة بعشر أمثالها، ولا يقال ألم حرف، بل ألف حرف ولام حرف وميم حرف.", "pause_after_ms": 0, "pack_key": "502111d6"}, {"unit": "4217a5b2", "parent": "4217a5b2", "voice": "athar", "batch": "B2", "text": "هذا ما وفّقك الله لفعله", "pause_after_ms": 0, "pack_key": "4217a5b2"}, {"unit": "919fc4f9", "parent": "919fc4f9", "voice": "athar", "batch": "B2", "text": "ليلةٌ تغيّرت فيها الدنيا", "pause_after_ms": 0, "pack_key": "919fc4f9"}, {"unit": "2e87da5d", "parent": "2e87da5d", "voice": "narrator", "batch": "B2", "text": "أوّل كلمةٍ نزلت من السماء على نبيّنا كانت: اقرأ.", "pause_after_ms": 0, "pack_key": "2e87da5d"}, {"unit": "3cc17c4e", "parent": "3cc17c4e", "voice": "athar", "batch": "B2", "text": "ثلاثةٌ يجذبونك كل يوم", "pause_after_ms": 0, "pack_key": "3cc17c4e"}, {"unit": "b3ee2bfb", "parent": "b3ee2bfb", "voice": "narrator", "batch": "B2", "text": "من الذي يجذبك الآن؟", "pause_after_ms": 0, "pack_key": "b3ee2bfb"}, {"unit": "cafdc673", "parent": "cafdc673", "voice": "narrator", "batch": "B2", "text": "دعاك أصحابك إلى شيءٍ تعرف أنّه لا يصحّ، وقالوا: الجميع يفعله.", "pause_after_ms": 0, "pack_key": "cafdc673"}, {"unit": "52f62e6e", "parent": "52f62e6e", "voice": "narrator", "batch": "B2", "text": "وأصحاب السوء عدوّ. والأخلّاء يومئذٍ بعضهم لبعضٍ عدوّ إلا المتّقين.", "pause_after_ms": 0, "pack_key": "52f62e6e"}, {"unit": "c0d653f8", "parent": "c0d653f8", "voice": "athar", "batch": "B2", "text": "دينُك كلّه في كلمتين", "pause_after_ms": 0, "pack_key": "c0d653f8"}, {"unit": "86a4c289", "parent": "86a4c289", "voice": "narrator", "batch": "B2", "text": "التقوى شطران: فعل الطاعات وترك المعاصي. فمن فعل ولم يترك، لم يتمّ.", "pause_after_ms": 0, "pack_key": "86a4c289"}, {"unit": "8b1d7d00", "parent": "8b1d7d00", "voice": "narrator", "batch": "B2", "text": "قراءة سورة الكهف. قال صلى الله عليه وسلم: من قرأ سورة الكهف يوم الجمعة، أضاء له من النور ما بين الجمعتين.", "pause_after_ms": 0, "pack_key": "8b1d7d00"}, {"unit": "6e43c915", "parent": "6e43c915", "voice": "narrator", "batch": "B2", "text": "استيقظتَ يوم الجمعة متأخّرًا، وأمامك وقتٌ يكفي للصلاة فقط.", "pause_after_ms": 0, "pack_key": "6e43c915"}, {"unit": "cad5f708", "parent": "cad5f708", "voice": "narrator", "batch": "B2", "text": "وللجمعة سنن: غُسلٌ وطيبٌ وأحسنُ ثياب وتبكير. فاجعل لها قدرها.", "pause_after_ms": 0, "pack_key": "cad5f708"}, {"unit": "b393a435", "parent": "b393a435", "voice": "narrator", "batch": "B2", "text": "قال صلى الله عليه وسلم: من ترك ثلاث جُمَعٍ تهاونًا بها، طبع الله على قلبه.", "pause_after_ms": 0, "pack_key": "b393a435"}, {"unit": "91dc7734", "parent": "91dc7734", "voice": "athar", "batch": "B2", "text": "كلامٌ خلف الظهر", "pause_after_ms": 0, "pack_key": "91dc7734"}, {"unit": "27700c20", "parent": "27700c20", "voice": "narrator", "batch": "B2", "text": "هي نقل الأحاديث بين الناس للإفساد بينهم. قال صلى الله عليه وسلم: لا يدخل الجنّة نمّام.", "pause_after_ms": 0, "pack_key": "27700c20"}, {"unit": "654151c4", "parent": "654151c4", "voice": "narrator", "batch": "B2", "text": "قال صاحبك عن غائب: إنّه بطيء الفهم. ثم قال لك: أنا صادق، هو فعلًا كذلك.", "pause_after_ms": 0, "pack_key": "654151c4"}, {"unit": "d861d30b", "parent": "d861d30b", "voice": "narrator", "batch": "B2", "text": "والغيبة أن تذكره بما يكره، صدَقتَ أو كذبت. فإن كذبتَ فهو البهتان.", "pause_after_ms": 0, "pack_key": "d861d30b"}, {"unit": "61938e6d", "parent": "61938e6d", "voice": "narrator", "batch": "B2", "text": "ولدٌ يلبس ثوبًا جميلًا ونعلًا حسنة، ويُسلّم على الجميع ويقبل النصيحة.", "pause_after_ms": 0, "pack_key": "61938e6d"}, {"unit": "41fc2c69", "parent": "41fc2c69", "voice": "narrator", "batch": "B2", "text": "إنّ الله جميلٌ يحبّ الجمال. والثوب الحسن والنعل الحسن ليس من الكِبر.", "pause_after_ms": 0, "pack_key": "41fc2c69"}, {"unit": "6a4aeb03", "parent": "6a4aeb03", "voice": "narrator", "batch": "B2", "text": "وقال النبي صلى الله عليه وسلم لمن استوصاه: لا تغضب. فاسكت واقعد أوّلًا.", "pause_after_ms": 0, "pack_key": "6a4aeb03"}, {"unit": "529a9781", "parent": "529a9781", "voice": "athar", "batch": "B2", "text": "ثقلٌ يشدّك عن الخير", "pause_after_ms": 0, "pack_key": "529a9781"}, {"unit": "30c86045", "parent": "30c86045", "voice": "narrator", "batch": "B2", "text": "والكسل تثاقلٌ عمّا يجب عليك. ووُصف به المنافقون: وإذا قاموا إلى الصلاة قاموا كسالى.", "pause_after_ms": 0, "pack_key": "30c86045"}, {"unit": "8e98c7f4", "parent": "8e98c7f4", "voice": "athar", "batch": "B2", "text": "لكلّ بيتٍ بابٌ لا يُفتح", "pause_after_ms": 0, "pack_key": "8e98c7f4"}, {"unit": "7a83dccb", "parent": "7a83dccb", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: مثل الذي يذكر ربّه والذي لا يذكر ربّه مثل الحيّ والميّت، ومن فوائده أنّه يُرضي الرحمن ويطرد الشيطان ويحصّن من الشرور، وأفضل الذكر لا إله إلا الله.", "pause_after_ms": 0, "pack_key": "7a83dccb"}, {"unit": "809a3d1", "parent": "809a3d1", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: إذا لبستَ ثوبك قلتَ الحمد لله الذي كساني هذا الثوب، وإذا خلعتَه قلتَ بسم الله، وإذا رأيتَ ثوبًا جديدًا على غيرك قلتَ تُبلِي ويُخلف الله.", "pause_after_ms": 0, "pack_key": "809a3d1"}, {"unit": "1441de85", "parent": "1441de85", "voice": "athar", "batch": "B2", "text": "نومُك موتةٌ صغرى", "pause_after_ms": 0, "pack_key": "1441de85"}, {"unit": "ae18cd27", "parent": "ae18cd27", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: عند الاستيقاظ الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور، ودعاء دخول الخلاء اللهم إنّي أعوذ بك من الخُبث والخبائث، ودعاء الخروج منه غفرانك.", "pause_after_ms": 0, "pack_key": "ae18cd27"}, {"unit": "f9dc75fc", "parent": "f9dc75fc", "voice": "athar", "batch": "B2", "text": "أكبرُ سؤالٍ في حياتك", "pause_after_ms": 0, "pack_key": "f9dc75fc"}, {"unit": "97afffa9", "parent": "97afffa9", "voice": "narrator", "batch": "B2", "text": "أحسنت: وما خلقتُ الجنّ والإنس إلا ليعبدون.", "pause_after_ms": 0, "pack_key": "97afffa9"}, {"unit": "8b34a241", "parent": "8b34a241", "voice": "athar", "batch": "B2", "text": "ذنبٌ واحد… لا يُغفر", "pause_after_ms": 0, "pack_key": "8b34a241"}, {"unit": "50ab0d8c", "parent": "50ab0d8c", "voice": "narrator", "batch": "B2", "text": "ما هذا؟", "pause_after_ms": 0, "pack_key": "50ab0d8c"}, {"unit": "808d643f", "parent": "808d643f", "voice": "narrator", "batch": "B2", "text": "ولدٌ يُصلّي عاديًّا، فلمّا دخل الناس أطال ركوعه وحسّن صلاته.", "pause_after_ms": 0, "pack_key": "808d643f"}, {"unit": "30421360", "parent": "30421360", "voice": "narrator", "batch": "B2", "text": "وهذا هو الرياء، وهو من الشرك الأصغر: أن يحسّن صلاته لما يرى من نظر الناس إليه.", "pause_after_ms": 0, "pack_key": "30421360"}, {"unit": "3f6754b6", "parent": "3f6754b6", "voice": "narrator", "batch": "B2", "text": "أحسنت، والعمل يُقبل إذا كان خالصًا لوجه الله.", "pause_after_ms": 0, "pack_key": "3f6754b6"}, {"unit": "a69cfbd3", "parent": "a69cfbd3", "voice": "narrator", "batch": "B2", "text": "ذنبٌ واحد لا يُغفر إن متَّ عليه، فكيف تنام وأنت لا تعرفه؟", "pause_after_ms": 0, "pack_key": "a69cfbd3"}, {"unit": "9598644d", "parent": "9598644d", "voice": "athar", "batch": "B2", "text": "من حملوا إليك هذا الدين", "pause_after_ms": 0, "pack_key": "9598644d"}, {"unit": "493d6a1c", "parent": "493d6a1c", "voice": "narrator", "batch": "B2", "text": "وقد رضي الله عنهم ورضوا عنه. ويجب أن نحبّهم ونقتديَ بهم.", "pause_after_ms": 0, "pack_key": "493d6a1c"}, {"unit": "96bbd420", "parent": "96bbd420", "voice": "athar", "batch": "B2", "text": "آخرُ رسولٍ أُرسل", "pause_after_ms": 0, "pack_key": "96bbd420"}, {"unit": "a2af9e08", "parent": "a2af9e08", "voice": "narrator", "batch": "B2", "text": "انشقاق القمر: اقتربت الساعة وانشقّ القمر.", "pause_after_ms": 0, "pack_key": "a2af9e08"}, {"unit": "9df3cf0b", "parent": "9df3cf0b", "voice": "narrator", "batch": "B2", "text": "شقّ البحر لموسى، وإغراق فرعون وجنوده.", "pause_after_ms": 0, "pack_key": "9df3cf0b"}, {"unit": "36dd4c77", "parent": "36dd4c77", "voice": "narrator", "batch": "B2", "text": "سمعتَ عن رجلٍ يقول إنّه نبيٌّ أُرسل بعد محمد صلى الله عليه وسلم.", "pause_after_ms": 0, "pack_key": "36dd4c77"}, {"unit": "b61c565d", "parent": "b61c565d", "voice": "narrator", "batch": "B2", "text": "وقد قال صلى الله عليه وسلم: وأنا خاتم النبيّين لا نبيَّ بعدي. فمن ادّعاها فهو كاذب.", "pause_after_ms": 0, "pack_key": "b61c565d"}, {"unit": "34408153", "parent": "34408153", "voice": "narrator", "batch": "B2", "text": "لا رسول يأتي بعده، فمن يُبلّغ الناس إذًا؟ أنت.", "pause_after_ms": 0, "pack_key": "34408153"}, {"unit": "440552d9", "parent": "440552d9", "voice": "narrator", "batch": "B2", "text": "قال ولدٌ: حال المسلمين ضعيف، ليت أحدًا كبيرًا يُصلح الأمر.", "pause_after_ms": 0, "pack_key": "440552d9"}, {"unit": "84a9da91", "parent": "84a9da91", "voice": "narrator", "batch": "B2", "text": "وإنّ الله لا يُغيّر ما بقومٍ حتى يُغيّروا ما بأنفسهم. فابدأ بنفسك.", "pause_after_ms": 0, "pack_key": "84a9da91"}, {"unit": "83073d9e", "parent": "83073d9e", "voice": "athar", "batch": "B2", "text": "يومٌ جديد… هيّا نذكر الله", "pause_after_ms": 0, "pack_key": "83073d9e"}, {"unit": "182fc28c", "parent": "182fc28c", "voice": "athar", "batch": "B2", "text": "الصباح جميل… هيّا نذكر الله", "pause_after_ms": 0, "pack_key": "182fc28c"}, {"unit": "cda07b73", "parent": "cda07b73", "voice": "narrator", "batch": "B2", "text": "تقول: لا إله إلا الله وحده لا شريك له، له الملك وله الحمد…", "pause_after_ms": 0, "pack_key": "cda07b73"}, {"unit": "38e4322", "parent": "38e4322", "voice": "athar", "batch": "B2", "text": "حان وقت النهوض… هيّا بنا", "pause_after_ms": 0, "pack_key": "38e4322"}, {"unit": "5202d9e1", "parent": "5202d9e1", "voice": "athar", "batch": "B2", "text": "الصبر جميل… نصبر ونحتسب", "pause_after_ms": 0, "pack_key": "5202d9e1"}, {"unit": "51a2cc0d", "parent": "51a2cc0d", "voice": "narrator", "batch": "B2", "text": "تعلّمتَ اليوم: ربّي هو الخالق والمالك والرازق والمدبّر، والدليل: الحمد لله ربّ العالمين.", "pause_after_ms": 0, "pack_key": "51a2cc0d"}]}</script>
+<script>
+/* pack_core.js — منطق التجميع المشترك بين «مولّد صوت الوادي» (المتصفح) واختبار Node/Playwright.
+   لا شبكة هنا ولا واجهة: نصوص ← أسطر ← mp3 مدموج بصمت ← حزم sp_<n>.bin + index.json.
+   الصيغة مطابقة لـPackProvider في الوادي:  index.json = {v:1, packs:[…], e:{hash:[packIdx, off, len]}}
+   hash = vHash(voice + "|" + نصّ السطر الكامل)  (voice = athar | narrator). */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.PackCore = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  /* ───── التجزئة: نسخة حرفية من vNorm/vHash في PackProvider ───── */
+  function vNorm(t) {
+    return String(t).replace(/[ً-ٰٟـ]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي")
+      .replace(/[!؟?.,،:؛]+/g, " ").replace(/\s+/g, " ").replace(/^ | $/g, "");
+  }
+  function vHash(t) {
+    var n = vNorm(t), x = 5381;
+    for (var i = 0; i < n.length; i++) x = (((x << 5) + x) ^ n.charCodeAt(i)) >>> 0;
+    return x.toString(16);
+  }
+  function packKey(voice, text) { return vHash((voice || "narrator") + "|" + text); }
+  /* تجزئة خام (بلا تطبيع) تُستعمل لتمييز مقطع التشكيل في الذاكرة المحلية فقط — ليست مفتاح الحزمة */
+  function rawHash(t) { var x = 5381; t = String(t); for (var i = 0; i < t.length; i++) x = (((x << 5) + x) ^ t.charCodeAt(i)) >>> 0; return x.toString(36); }
+
+  /* ───── الحارس: لا آيات ولا صوت شرعي ───── */
+  var AYAH_RE = /[﴾﴿ۖ-ۭٱ]/;   /* ﴾﴿ + علامات مصحفية + ألف وصل ٱ */
+  var ALLOWED_VOICES = { athar: 1, narrator: 1 };
+  function forbidReason(voice, text) {
+    if (!ALLOWED_VOICES[voice]) return "صوت غير مسموح (" + voice + ")";
+    if (/[﴾﴿]/.test(String(text))) return "فيه ﴿ ﴾ — نصّ قرآني";
+    if (AYAH_RE.test(String(text))) return "علامة مصحفية — نصّ قرآني محتمل";
+    if (!String(text).replace(/\s+/g, "")) return "نصّ فارغ";
+    return null;
+  }
+
+  /* ───── التشكيل الانتقائي: tts_text = النص الذي يُرسَل للخدمة؛ text = الأصل الذي يُبنى منه المفتاح ───── */
+  var DIA_ALL = /[\u064B-\u0670\u065F\u0640]/g;     /* كل الحركات + التطويل: لمقارنة الهيكل */
+  var DIA_ADD = /[\u064B-\u0652]/;                  /* ما يجوز إضافته: فتحة ضمة كسرة شدّة سكون تنوين */
+  function stripDia(t) { return String(t).replace(DIA_ALL, ""); }
+  /* يعيد {ok, why}: النص المشكَّل يجب أن يكون الأصل + حركات مضافة فقط، بلا آية ولا تغيير حرف */
+  function ttsValid(voice, text, tts) {
+    text = String(text); tts = String(tts);
+    var why = forbidReason(voice, tts); if (why) return { ok: false, why: why };
+    var i = 0, k;
+    for (k = 0; k < tts.length; k++) {
+      if (i < text.length && tts.charAt(k) === text.charAt(i)) i++;
+      else if (!DIA_ADD.test(tts.charAt(k))) return { ok: false, why: "حرف مضاف ليس حركة" };
+    }
+    if (i !== text.length) return { ok: false, why: "الأصل ليس مندرجًا في النص المشكَّل" };
+    if (stripDia(tts) !== stripDia(text)) return { ok: false, why: "اختلف الهيكل" };
+    return { ok: true };
+  }
+  /* ما يُرسَل فعلًا: tts إن فُعِّل التشكيل وكان صالحًا، وإلا النص الأصلي */
+  function sentText(u, useTts) { return (useTts !== false && u.tts) ? u.tts : u.text; }
+
+  /* ───── تطبيع الوحدات + تجميعها في أسطر ───── */
+  function batchOf(u) {
+    if (u.batch && /^B\d+$/.test(u.batch)) return u.batch;
+    var m = /^P(\d+)$/.exec(u.priority || ""); return m ? "B" + m[1] : "B1";
+  }
+  function normalizeUnits(raw) {
+    var arr = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.units) ? raw.units : []);
+    var units = [], rejected = [], aliases = 0, ttsBad = [];
+    arr.forEach(function (r, i) {
+      var voice = r.voice || r.voice_target || "narrator";
+      var text = String(r.text == null ? "" : r.text);
+      var id = String(r.unit || r.id || ("u" + i));
+      if (r.dup_of || !text.trim()) { aliases++; return; }
+      var why = forbidReason(voice, text);
+      if (why) { rejected.push({ unit: id, voice: voice, reason: why }); return; }
+      var tts = "";
+      if (r.tts_text && String(r.tts_text) !== text) {
+        var v = ttsValid(voice, text, r.tts_text);
+        if (v.ok) tts = String(r.tts_text); else ttsBad.push({ unit: id, reason: v.why });
+      }
+      units.push({ id: id, parent: String(r.parent || id), voice: voice, batch: batchOf(r), text: text, tts: tts,
+        pause: Math.max(0, Math.min(3000, +r.pause_after_ms || 0)), key: r.pack_key || r.key || null, seq: i });
+    });
+    return { units: units, rejected: rejected, aliases: aliases, ttsBad: ttsBad };
+  }
+  function buildLines(units) {
+    var byParent = new Map(), lines = [], seenKey = new Map(), shared = [];
+    units.forEach(function (u) { if (!byParent.has(u.parent)) byParent.set(u.parent, []); byParent.get(u.parent).push(u); });
+    byParent.forEach(function (us, parent) {
+      us.sort(function (a, b) { return a.seq - b.seq; });
+      var voice = us[0].voice, key = us[0].key, approx = false;
+      if (!key) { approx = true; key = packKey(voice, us.map(function (u) { return u.text; }).join(" ")); }
+      if (seenKey.has(key)) { shared.push({ parent: parent, sameAs: seenKey.get(key) }); return; }
+      seenKey.set(key, parent);
+      lines.push({ key: key, parent: parent, voice: voice, batch: us[0].batch, units: us, approx: approx,
+        chars: us.reduce(function (n, u) { return n + u.text.length; }, 0),
+        sentChars: us.reduce(function (n, u) { return n + sentText(u, true).length; }, 0) });
+    });
+    return { lines: lines, shared: shared };
+  }
+
+  /* ───── mp3 ───── */
+  var BR1 = [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0];
+  var BR2 = [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0];
+  var SR = { 3: [44100, 48000, 32000], 2: [22050, 24000, 16000], 0: [11025, 12000, 8000] };
+  function hdrAt(b, p) {
+    if (p + 4 > b.length || b[p] !== 0xFF || (b[p + 1] & 0xE0) !== 0xE0) return null;
+    var ver = (b[p + 1] >> 3) & 3, layer = (b[p + 1] >> 1) & 3;
+    if (ver === 1 || layer !== 1) return null;                    /* Layer III فقط */
+    var bri = (b[p + 2] >> 4) & 15, sri = (b[p + 2] >> 2) & 3, pad = (b[p + 2] >> 1) & 1;
+    if (bri === 0 || bri === 15 || sri === 3) return null;
+    var mpeg1 = ver === 3, br = (mpeg1 ? BR1 : BR2)[bri] * 1000, sr = SR[ver][sri];
+    var len = Math.floor((mpeg1 ? 144 : 72) * br / sr) + pad;
+    return { ver: ver, bri: bri, sri: sri, sr: sr, br: br, len: len, mono: ((b[p + 3] >> 6) & 3) === 3,
+      crc: (b[p + 1] & 1) === 0, samples: mpeg1 ? 1152 : 576, ch: b[p + 3] };
+  }
+  function parseMp3(b) {
+    var p = 0, n = b.length;
+    if (n > 10 && b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33)
+      p = 10 + (((b[6] & 127) << 21) | ((b[7] & 127) << 14) | ((b[8] & 127) << 7) | (b[9] & 127)) + ((b[5] & 0x10) ? 10 : 0);
+    var first = -1, h0 = null;
+    for (; p + 4 <= n; p++) {                                       /* أول مزامنة مؤكَّدة بإطار تالٍ */
+      var h = hdrAt(b, p); if (!h) continue;
+      var nx = p + h.len;
+      if (nx >= n || hdrAt(b, nx)) { first = p; h0 = h; break; }
+    }
+    if (first < 0) return { ok: false, err: "لا إطارات mp3" };
+    var start = first, frames = 0, ms = 0, q = first, end = first, hs = h0;
+    while (q + 4 <= n) {
+      var f = hdrAt(b, q); if (!f || f.sr !== h0.sr || f.mono !== h0.mono || q + f.len > n) break;
+      if (q === first) {                                            /* إطار Xing/Info/VBRI: ليس صوتًا */
+        var si = f.ver === 3 ? (f.mono ? 17 : 32) : (f.mono ? 9 : 17), o = q + 4 + si + (f.crc ? 2 : 0);
+        var tag = String.fromCharCode(b[o] || 0, b[o + 1] || 0, b[o + 2] || 0, b[o + 3] || 0);
+        var vb = String.fromCharCode(b[q + 36] || 0, b[q + 37] || 0, b[q + 38] || 0, b[q + 39] || 0);
+        if (tag === "Xing" || tag === "Info" || vb === "VBRI") { q += f.len; start = q; continue; }
+      }
+      if (!frames) hs = f;                                          /* ترويسة أول إطار صوتي (لا إطار Xing) */
+      frames++; ms += f.samples / f.sr * 1000; q += f.len; end = q;
+    }
+    if (!frames) return { ok: false, err: "لا إطارات صوتية" };
+    return { ok: true, data: b.subarray(start, end), frames: frames, ms: ms, hdr: hs };
+  }
+  /* إطار صمت: نفس ترويسة الإطار الأول (إصدار/معدّل/قنوات)، حمولة أصفار ⇒ صمت عند فكّ الترميز */
+  function silence(hdr, ms) {
+    if (!(ms > 0)) return new Uint8Array(0);
+    var frameMs = hdr.samples / hdr.sr * 1000, n = Math.max(1, Math.round(ms / frameMs));
+    var mpeg1 = hdr.ver === 3, len = Math.floor((mpeg1 ? 144 : 72) * hdr.br / hdr.sr);
+    var out = new Uint8Array(n * len);
+    for (var i = 0; i < n; i++) {
+      var o = i * len;
+      out[o] = 0xFF; out[o + 1] = 0xE0 | (hdr.ver << 3) | (1 << 1) | 1;   /* بلا CRC */
+      out[o + 2] = (hdr.bri << 4) | (hdr.sri << 2); out[o + 3] = hdr.ch & 0xC0;
+    }
+    return out;
+  }
+
+  /* ───── دمج مقاطع سطر واحد: مقطع + صمت + مقطع… (لا صمت بعد الأخير) ───── */
+  function assembleLine(line, getBytes) {
+    var chunks = [], hdr0 = null, ms = 0, parts = [];
+    for (var i = 0; i < line.units.length; i++) {
+      var u = line.units[i], raw = getBytes(u.id);
+      if (!raw) return { ok: false, err: "ينقص المقطع " + u.id };
+      var m = parseMp3(raw);
+      if (!m.ok) return { ok: false, err: u.id + ": " + m.err };
+      if (!hdr0) hdr0 = m.hdr;
+      else if (m.hdr.sr !== hdr0.sr || m.hdr.mono !== hdr0.mono || m.hdr.ver !== hdr0.ver)
+        return { ok: false, err: "صيغ مختلفة داخل السطر (" + u.id + ") — أعد توليده بصيغة واحدة" };
+      chunks.push(m.data); ms += m.ms; parts.push(Math.round(m.ms));
+      if (i < line.units.length - 1 && u.pause > 0) {
+        var s = silence(hdr0, u.pause); chunks.push(s); ms += Math.round(u.pause / (hdr0.samples / hdr0.sr * 1000)) * hdr0.samples / hdr0.sr * 1000;
+      }
+    }
+    var total = chunks.reduce(function (n, c) { return n + c.length; }, 0), out = new Uint8Array(total), o = 0;
+    chunks.forEach(function (c) { out.set(c, o); o += c.length; });
+    return { ok: true, bytes: out, ms: ms, partMs: parts };
+  }
+
+  /* ───── حزم + فهرس ───── */
+  function packName(batch) { return "sp_" + (Math.max(1, parseInt(String(batch).slice(1), 10) || 1) - 1) + ".bin"; }
+  function buildExport(lines, getBytes) {
+    var problems = [], groups = new Map(), n = 0;
+    lines.forEach(function (ln) {
+      var a = assembleLine(ln, getBytes);
+      if (!a.ok) { problems.push({ parent: ln.parent, err: a.err }); return; }
+      var nm = packName(ln.batch);
+      if (!groups.has(nm)) groups.set(nm, []);
+      groups.get(nm).push({ ln: ln, a: a });
+    });
+    var names = Array.from(groups.keys()).sort(function (x, y) { return parseInt(x.slice(3)) - parseInt(y.slice(3)); });
+    var index = { v: 1, packs: names, e: {} }, files = [], seen = {};
+    names.forEach(function (nm, pi) {
+      var items = groups.get(nm), tot = items.reduce(function (s, it) { return s + it.a.bytes.length; }, 0), buf = new Uint8Array(tot), off = 0;
+      items.forEach(function (it) {
+        var k = it.ln.key;
+        if (seen[k]) { problems.push({ parent: it.ln.parent, err: "تصادم مفتاح مع " + seen[k] }); return; }
+        seen[k] = it.ln.parent; buf.set(it.a.bytes, off); index.e[k] = [pi, off, it.a.bytes.length]; off += it.a.bytes.length; n++;
+      });
+      files.push({ name: "audio/" + nm, data: buf.subarray(0, off) });
+    });
+    files.push({ name: "audio/index.json", data: new TextEncoder().encode(JSON.stringify(index)) });
+    return { files: files, index: index, lines: n, problems: problems };
+  }
+
+  /* ───── zip (تخزين بلا ضغط) ───── */
+  var CT = (function () { var t = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(u) { var c = -1; for (var i = 0; i < u.length; i++) c = CT[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0; }
+  function zipStore(fs) {
+    var enc = new TextEncoder(), P = [], C = [], o = 0;
+    fs.forEach(function (f) {
+      var nm = enc.encode(f.name), c = crc32(f.data), n = f.data.length;
+      var h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 0x21, true);
+      h.setUint32(14, c, true); h.setUint32(18, n, true); h.setUint32(22, n, true); h.setUint16(26, nm.length, true);
+      P.push(new Uint8Array(h.buffer), nm, f.data);
+      var g = new DataView(new ArrayBuffer(46));
+      g.setUint32(0, 0x02014b50, true); g.setUint16(4, 20, true); g.setUint16(6, 20, true); g.setUint16(8, 0x0800, true); g.setUint16(14, 0x21, true);
+      g.setUint32(16, c, true); g.setUint32(20, n, true); g.setUint32(24, n, true); g.setUint16(28, nm.length, true); g.setUint32(42, o, true);
+      C.push(new Uint8Array(g.buffer), nm); o += 30 + nm.length + n;
+    });
+    var cs = C.reduce(function (a, b) { return a + b.length; }, 0), z = new DataView(new ArrayBuffer(22));
+    z.setUint32(0, 0x06054b50, true); z.setUint16(8, fs.length, true); z.setUint16(10, fs.length, true); z.setUint32(12, cs, true); z.setUint32(16, o, true);
+    return P.concat(C, [new Uint8Array(z.buffer)]);          /* مصفوفة أجزاء تصلح لـBlob أو للدمج */
+  }
+
+  /* ───── تقدير الرصيد (أرصدة لكل حرف — تسعير ElevenLabs المعلن، تقريبي) ───── */
+  var RATE = { eleven_flash_v2_5: 0.5, eleven_turbo_v2_5: 0.5, eleven_multilingual_v2: 1, eleven_v3: 1 };
+  function credits(chars, model) { return Math.ceil(chars * (RATE[model] != null ? RATE[model] : 1)); }
+
+  return { vNorm: vNorm, vHash: vHash, rawHash: rawHash, packKey: packKey, forbidReason: forbidReason, ttsValid: ttsValid, sentText: sentText, stripDia: stripDia, normalizeUnits: normalizeUnits, buildLines: buildLines,
+    parseMp3: parseMp3, silence: silence, assembleLine: assembleLine, buildExport: buildExport, packName: packName,
+    zipStore: zipStore, crc32: crc32, credits: credits, RATE: RATE };
+});
+
+</script>
+<script>
+(function(){
+"use strict";
+const PC=PackCore,$=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nf=n=>Number(n).toLocaleString("en-US");
+const SC=()=>window.__vgScale||1;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms*SC()));
+const API="https://api.elevenlabs.io",MODEL="eleven_flash_v2_5",FMT="mp3_22050_32",GAP=300,CONC=2,BATCHES=["B1","B2"];
+const SAMPLE="أهلًا! هذا وادينا. اِخْتَرْ أيَّ مكانٍ تُحِبّ.";
+const LSC="athar.valley.simple.cfg.v1",LSK="athar.valley.simple.key.v1",LSR="athar.valley.simple.run.v1";
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+const DEF={stab:.6,sim:.75,style:0,speed:.92,aid:"",nid:""};
+let cfg=Object.assign({},DEF);try{const s=JSON.parse(lsGet(LSC)||"null");if(s)Object.assign(cfg,s)}catch(e){}
+const saveCfg=()=>lsSet(LSC,JSON.stringify(cfg));
+const keyVal=()=>$("key").value.trim();
+const cleanId=s=>String(s).replace(/[^\w-]/g,"").slice(0,64);
+const effId=voice=>voice==="narrator"?(cfg.nid||cfg.aid):cfg.aid;
+
+/* الوحدات: B1 وB2 فقط، أثر والراوي فقط، والحارس يرفض أي نص قرآني */
+const raw=JSON.parse($("units-data").textContent);
+const NU=PC.normalizeUnits(raw.units),UNITS=NU.units.filter(u=>BATCHES.includes(u.batch)),LINES=PC.buildLines(UNITS).lines;
+const sent=u=>PC.sentText(u,true);
+const lineChars=l=>l.units.reduce((n,u)=>n+sent(u).length,0);
+
+/* IndexedDB: نفس بنية v2 (مفتاح المقطع = المعرّف + بصمة الأصل + بصمة المُرسَل) */
+const DB=new Promise((res,rej)=>{try{const q=indexedDB.open("athar-valley-voice-simple",1);q.onupgradeneeded=()=>q.result.createObjectStore("clips");q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}catch(e){rej(e)}});
+const idb=(mode,f)=>DB.then(d=>new Promise((res,rej)=>{const t=d.transaction("clips",mode),r=f(t.objectStore("clips"));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)}));
+const clipKey=u=>{const t=sent(u);return u.id+"#"+PC.vHash(u.voice+"|"+u.text)+(t!==u.text?"~"+PC.rawHash(t):"")};
+const DONE=new Map();
+async function loadDone(){try{const d=await DB;await new Promise((res,rej)=>{const q=d.transaction("clips").objectStore("clips").openCursor();q.onsuccess=()=>{const c=q.result;if(c){const v=c.value;DONE.set(c.key,{voiceId:v.voiceId,ms:v.ms});c.continue()}else res()};q.onerror=()=>rej(q.error)})}catch(e){$("er").textContent="تعذّر فتح التخزين المحلي — لن يُحفظ التقدّم (جرّب نافذة عادية لا خاصة)."}}
+function isDone(u){const r=DONE.get(clipKey(u));if(!r)return false;const v=effId(u.voice);return !v||r.voiceId===v}
+
+/* الاتصال */
+const S={running:false,stop:false,failed:new Map(),slot:0,optLang:true,optCtx:true,optSpeed:true,effConc:CONC,t0:0,doneAt0:0,lastErr:"",wake:null};
+class ApiErr extends Error{constructor(code,msg,fatal,retry){super(msg);this.code=code;this.fatal=!!fatal;this.retry=retry!==false}}
+const san=s=>{s=String(s==null?"":s);const k=keyVal();if(k)s=s.split(k).join("•••");return s.replace(/sk_[A-Za-z0-9]{8,}/g,"•••").slice(0,160)};
+async function callTTS(u,prev,next,textOverride){
+ const txt=textOverride!=null?textOverride:sent(u);
+ const why=PC.forbidReason(u.voice,txt);if(why)throw new ApiErr("guard","حارس النص القرآني: "+why,false,false);
+ const vid=effId(u.voice),body={text:txt,model_id:MODEL,voice_settings:{stability:cfg.stab,similarity_boost:cfg.sim,style:cfg.style}};
+ if(S.optSpeed&&cfg.speed)body.voice_settings.speed=cfg.speed;
+ if(S.optLang)body.language_code="ar";
+ if(S.optCtx){if(prev)body.previous_text=prev;if(next)body.next_text=next}
+ let r;
+ try{r=await fetch(API+"/v1/text-to-speech/"+encodeURIComponent(vid)+"?output_format="+FMT,{method:"POST",headers:{"xi-api-key":keyVal(),"Content-Type":"application/json","Accept":"audio/mpeg"},body:JSON.stringify(body)})}
+ catch(e){throw new ApiErr("net","تعذّر الاتصال بالإنترنت",false,true)}
+ if(r.ok){const bl=await r.blob(),m=PC.parseMp3(new Uint8Array(await bl.arrayBuffer()));if(!m.ok)throw new ApiErr("bad-audio","ردّ غير صوتي من الخدمة",false,true);return{blob:bl,ms:m.ms}}
+ let t="";try{t=await r.text()}catch(e){}
+ if((r.status===400||r.status===422)&&/language_code|previous_text|next_text|speed/.test(t)){
+  if(/language_code/.test(t))S.optLang=false;if(/previous_text|next_text/.test(t))S.optCtx=false;if(/speed/.test(t))S.optSpeed=false;
+  const e=new ApiErr(r.status,"خيار غير مدعوم",false,true);e.free=true;throw e}
+ if(r.status===401&&/quota/i.test(t))throw new ApiErr(401,"انتهى رصيد حسابك في ElevenLabs. اشحن الرصيد ثم افتح الصفحة واضغط «أكمل التوليد» — ما ولّدته محفوظ ولن يُعاد.",true);
+ if(r.status===402)throw new ApiErr(402,"الرصيد أو الاشتراك لا يسمح بالتوليد. راجع حسابك في ElevenLabs ثم أكمل — ما ولّدته محفوظ.",true);
+ if(r.status===401||r.status===403)throw new ApiErr(r.status,"المفتاح غير صحيح أو لا يملك الصلاحية. انسخه كاملًا من ElevenLabs وأعد المحاولة.",true);
+ if(r.status===404||/voice_not_found/.test(t))throw new ApiErr(404,"رقم "+(u.voice==="narrator"&&cfg.nid?"صوت الراوي":"صوت أثر")+" غير موجود في حسابك. تأكد من الرقم.",true);
+ if(r.status===429){const e=new ApiErr(429,"الخدمة مشغولة (حدّ الطلبات)",false,true);e.wait=(+r.headers.get("retry-after")||0)*1000;throw e}
+ throw new ApiErr(r.status,"خطأ من الخدمة ("+r.status+")",false,r.status>=500);
+}
+async function gate(){const now=Date.now(),t=Math.max(now,S.slot);S.slot=t+GAP*SC();if(t>now)await new Promise(r=>setTimeout(r,t-now))}
+
+async function genUnit(u,line){
+ const i=line.units.indexOf(u),prev=i>0?sent(line.units[i-1]):"",next=i<line.units.length-1?sent(line.units[i+1]):"";
+ let err=null;
+ for(let a=0;a<=4&&!S.stop;a++){
+  await gate();
+  try{
+   const o=await callTTS(u,prev,next),vid=effId(u.voice);
+   await idb("readwrite",s=>s.put({blob:o.blob,model:MODEL,fmt:FMT,voiceId:vid,ms:o.ms,t:Date.now()},clipKey(u)));
+   DONE.set(clipKey(u),{voiceId:vid,ms:o.ms});S.failed.delete(u.id);return true;
+  }catch(e){
+   err=e;if(e.free){a--;continue}if(e.fatal)throw e;
+   if(e.code===429){S.effConc=Math.max(1,S.effConc-1);S.slot=Math.max(S.slot,Date.now()+(e.wait||4000*SC()))}
+   if(!e.retry)break;
+   await sleep((e.code===429?3000:1200)*Math.pow(2,Math.min(a,3)));
+  }
+ }
+ if(err){S.failed.set(u.id,err.code);S.lastErr=err.message+(err.code?" ["+err.code+"]":"")}
+ return false;
+}
+
+/* النطاق والتقدير */
+function scope(){
+ const per={B1:{n:0,c:0},B2:{n:0,c:0}},todo=[];let total=0,chars=0;
+ LINES.forEach(l=>l.units.forEach(u=>{total++;if(!isDone(u)){todo.push({u,line:l});per[l.batch].n++;per[l.batch].c+=sent(u).length;chars+=sent(u).length}}));
+ return{todo,total,per,chars,credits:PC.credits(chars,MODEL)};
+}
+let rq=0;const refreshSoon=()=>{if(!rq)rq=requestAnimationFrame(()=>{rq=0;refresh()})};
+function refresh(){
+ const sc=scope(),done=sc.total-sc.todo.length;
+ $("est").innerHTML=sc.todo.length?`المتبقي: <b>${nf(sc.todo.length)}</b> مقطعًا (${nf(sc.per.B1.n)} في B1 و${nf(sc.per.B2.n)} في B2)<br>الأحرف: <b>${nf(sc.chars)}</b> حرفًا ← الرصيد المتوقع: <b>~${nf(sc.credits)}</b>`:`<span class="ok">اكتمل كل شيء — انتقل إلى الخطوة ٣.</span>`;
+ $("pb").style.width=(sc.total?done/sc.total*100:0)+"%";
+ let info=nf(done)+" من "+nf(sc.total)+" مقطعًا";
+ if(S.running&&S.phase)info+=" · الدفعة الحالية: "+S.phase;
+ if(S.running&&done>S.doneAt0){const eta=Math.round((Date.now()-S.t0)/(done-S.doneAt0)*sc.todo.length/60000);info+=" · المتبقي نحو "+nf(eta)+" دقيقة"}
+ if(!sc.todo.length&&sc.total)info+=' — <span class="ok">اكتمل 🎉 الآن نزّل الحزم</span>';
+ if(S.failed.size)info+=` · <span class="err">${nf(S.failed.size)} متعثّر</span>`;
+ $("st").innerHTML=info;
+ $("go").disabled=S.running||!sc.todo.length;
+ $("go").textContent=!sc.todo.length?"✅ اكتمل التوليد":(done>0?"⚡ أكمل التوليد":"⚡ ابدأ التوليد");
+ $("stop").disabled=!S.running;
+ const cl=LINES.filter(l=>l.units.every(u=>DONE.has(clipKey(u))));
+ $("outInfo").innerHTML=`جاهز للتنزيل: <b>${nf(cl.length)}</b> سطرًا من ${nf(LINES.length)}`+(cl.length<LINES.length?" <small>(الناقص لن يُضمَّن)</small>":"");
+ $("dl").disabled=!cl.length||S.running;
+}
+$("sub").textContent=nf(LINES.length)+" سطرًا (B1 وB2)، نحو "+nf(LINES.reduce((n,l)=>n+lineChars(l),0))+" حرفًا";
+
+async function checkQuota(){
+ const q=$("quota");if(!keyVal()){q.textContent="";return}
+ try{const r=await fetch(API+"/v1/user/subscription",{headers:{"xi-api-key":keyVal()}});
+  if(!r.ok){q.textContent="";return}
+  const j=await r.json(),left=j.character_limit-j.character_count,need=scope().credits;S.left=left;
+  q.innerHTML=`رصيد حسابك: <b>${nf(left)}</b> — `+(left>=need?'<span class="ok">يكفي</span>':`<span class="err">لا يكفي: ينقص ~${nf(need-left)}</span>`)}
+ catch(e){q.textContent=""}
+}
+
+/* التوليد: B1 ثم B2 */
+async function run(auto){
+ if(S.running)return;const er=$("er");er.textContent="";
+ if(!keyVal()){er.textContent="الصق مفتاح API في الخطوة ١ أولًا.";return}
+ if(!cfg.aid){er.textContent="اكتب رقم صوت «أثر» في الخطوة ١ أولًا.";return}
+ const sc0=scope();if(!sc0.todo.length){refresh();return}
+ S.running=true;S.stop=false;S.failed.clear();S.lastErr="";S.t0=Date.now();S.doneAt0=sc0.total-sc0.todo.length;S.optLang=true;S.optCtx=true;S.optSpeed=true;S.effConc=CONC;
+ lsSet(LSR,"1");try{if(navigator.wakeLock)S.wake=await navigator.wakeLock.request("screen")}catch(e){}
+ if(auto)$("st").textContent="استُؤنف التوليد تلقائيًا…";
+ await checkQuota();
+ let fatal=null,consec=0,busy=false;refresh();
+ for(const b of BATCHES){
+  if(S.stop||fatal||busy)break;
+  const q=scope().todo.filter(x=>x.line.batch===b);if(!q.length)continue;S.phase=b;refresh();
+  const worker=async idx=>{
+   while(!S.stop&&!fatal&&!busy){
+    if(idx>=S.effConc){await sleep(500);if(!q.length)return;continue}
+    const it=q.shift();if(!it)return;
+    try{const ok=await genUnit(it.u,it.line);if(ok)consec=0;else if(!S.stop&&++consec>=5)busy=true}
+    catch(e){fatal=e;S.stop=true}
+    refreshSoon();
+   }};
+  await Promise.all(Array.from({length:CONC},(_,i)=>worker(i)));
+ }
+ S.running=false;S.phase="";try{S.wake&&S.wake.release()}catch(e){}S.wake=null;
+ const left=scope().todo.length;
+ lsSet(LSR,null);
+ if(fatal)er.textContent="توقّف التوليد: "+fatal.message;
+ else if(busy)er.textContent="توقّف التوليد مؤقتًا: الخدمة لا تستجيب كما يجب ("+san(S.lastErr)+"). انتظر دقيقة ثم اضغط «أكمل التوليد».";
+ else if(S.stop){$("st").textContent="أُوقف مؤقتًا — اضغط «أكمل التوليد» للإكمال"}
+ else if(left)er.textContent="تعثّر "+nf(left)+" مقطعًا ("+san(S.lastErr)+"). اضغط «أكمل التوليد» لإعادة المحاولة.";
+ S.stop=false;refresh();
+}
+window.addEventListener("beforeunload",e=>{if(S.running){e.preventDefault();e.returnValue=""}});
+$("go").onclick=()=>run(false);
+$("stop").onclick=()=>{S.stop=true;$("stop").disabled=true};
+
+/* العيّنة */
+async function sample(k){
+ const msg=$("smpMsg");
+ if(!keyVal()||!cfg.aid){msg.innerHTML='<span class="err">ألصق المفتاح ورقم صوت أثر أولًا</span>';return}
+ const u={voice:k==="n"?"narrator":"athar",text:SAMPLE},b=$("smp_"+k);b.disabled=true;msg.textContent="جارٍ التوليد…";
+ try{S.optLang=true;S.optSpeed=true;let o;for(let a=0;a<3&&!o;a++){await gate();try{o=await callTTS(u,"","",SAMPLE)}catch(e){if(!e.free)throw e}}
+  if(!o)throw new Error("تعذّرت العيّنة");
+  const url=URL.createObjectURL(o.blob);$("ab").innerHTML='<b>'+(k==="n"?"الراوي":"أثر")+(k==="n"&&!cfg.nid?" (يستعمل صوت أثر)":"")+'</b><audio controls autoplay src="'+url+'"></audio>';
+  const a=$("ab").querySelector("audio");try{await a.play()}catch(e){}
+  msg.innerHTML='<span class="ok">العيّنة جاهزة — اضغط تشغيل إن لم تبدأ.</span>';
+ }catch(e){msg.innerHTML='<span class="err">'+esc(san(e.message))+"</span>"}
+ b.disabled=false;
+}
+$("smp_a").onclick=()=>sample("a");$("smp_n").onclick=()=>sample("n");
+
+/* التنزيل */
+function save(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+async function loadBytes(lines){const m=new Map(),d=await DB;
+ for(const l of lines)for(const u of l.units){const rec=await new Promise((res,rej)=>{const r=d.transaction("clips").objectStore("clips").get(clipKey(u));r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});if(rec)m.set(u.id,new Uint8Array(await rec.blob.arrayBuffer()))}
+ return m}
+$("dl").onclick=async()=>{
+ const msg=$("dlMsg");$("dl").disabled=true;msg.textContent="جارٍ التجهيز…";
+ try{
+  const cl=LINES.filter(l=>l.units.every(u=>DONE.has(clipKey(u)))),bytes=await loadBytes(cl),ex=PC.buildExport(cl,id=>bytes.get(id));
+  const mb=ex.files.reduce((s,f)=>s+f.data.length,0)/1e6,d=new Date(),p=n=>String(n).padStart(2,"0");
+  const tail=ex.problems.length?` · <span class="err">${ex.problems.length} مشكلة: ${esc(ex.problems.slice(0,2).map(x=>x.parent+" "+x.err).join(" | "))}</span>`:"";
+  try{save(new Blob(PC.zipStore(ex.files),{type:"application/zip"}),`athar-valley-audio-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}.zip`);
+   msg.innerHTML=`<span class="ok">تم: ${nf(ex.lines)} سطرًا · ${mb.toFixed(1)} م.ب (ملف zip)</span>`+tail}
+  catch(e){for(const f of ex.files){save(new Blob([f.data]),f.name.replace("audio/","audio-"));await new Promise(r=>setTimeout(r,500))}
+   msg.innerHTML=`<span class="ok">نُزّلت ${ex.files.length} ملفات متتابعة</span> <small>(ضعها في مجلد audio بأسمائها دون البادئة «audio-»)</small>`+tail}
+ }catch(e){msg.innerHTML='<span class="err">'+esc(e.message)+"</span>"}
+ refresh();
+};
+
+/* الحقول والمتقدّم */
+$("key").oninput=()=>{lsSet(LSK,keyVal()||null);refresh()};$("key").onchange=checkQuota;
+$("vid_a").oninput=e=>{cfg.aid=cleanId(e.target.value);saveCfg();refresh()};
+$("vid_n").oninput=e=>{cfg.nid=cleanId(e.target.value);saveCfg();refresh()};
+[["a_stab","stab"],["a_sim","sim"],["a_style","style"],["a_speed","speed"]].forEach(([id,f])=>$(id).onchange=()=>{const v=parseFloat($(id).value);if(!isNaN(v)){cfg[f]=v;saveCfg()}});
+function fillAdv(){$("a_stab").value=cfg.stab;$("a_sim").value=cfg.sim;$("a_style").value=cfg.style;$("a_speed").value=cfg.speed}
+$("a_reset").onclick=()=>{["stab","sim","style","speed"].forEach(f=>cfg[f]=DEF[f]);saveCfg();fillAdv();$("a_msg").textContent="أُعيدت القيم الافتراضية."};
+$("a_wipe").onclick=async()=>{if(!confirm("يمسح كل المقاطع المولَّدة المحفوظة في هذا المتصفح. متأكد؟"))return;await idb("readwrite",s=>s.clear());DONE.clear();S.failed.clear();lsSet(LSR,null);refresh();$("a_msg").textContent="تم المسح."};
+
+/* الإقلاع + الاستئناف التلقائي */
+(async function init(){
+ $("key").value=lsGet(LSK)||"";$("vid_a").value=cfg.aid||"";$("vid_n").value=cfg.nid||"";fillAdv();
+ await loadDone();refresh();
+ window.__vg={PC,UNITS,LINES,DONE,S,cfg,scope,run,rejected:NU.rejected,ttsBad:NU.ttsBad,clipKey,sent};
+ if(lsGet(LSR)==="1"&&keyVal()&&cfg.aid&&scope().todo.length)run(true);
+ else if(keyVal())checkQuota();
+})();
+})();
+</script></body></html>
