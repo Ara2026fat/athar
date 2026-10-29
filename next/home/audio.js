@@ -33,8 +33,9 @@ var base=(function(){var s=D.currentScript;return s&&s.src?s.src.replace(/audio\
 var H={on:ls("athar_home_snd")!=="0",unlocked:false,per:"day",idx:null,bin:null,voice:null,amb:null,ambKey:"",cache:{},lastLine:0};
 function mkAudio(src,loop,vol){var a=new Audio(src);a.loop=!!loop;a.volume=vol;a.preload="auto";return a}
 function loadVoice(){
- if(H.idx||H._ld)return;H._ld=1;
- fetch(base+"voice/home-index.json").then(function(r){return r.json()}).then(function(j){H.idx=j.e;return fetch(base+"voice/sp_home.bin")}).then(function(r){return r.arrayBuffer()}).then(function(b){H.bin=b}).catch(function(){H._ld=0});
+ if(H._p)return H._p;
+ H._p=fetch(base+"voice/home-index.json").then(function(r){return r.json()}).then(function(j){H.idx=j.e;return fetch(base+"voice/sp_home.bin")}).then(function(r){return r.arrayBuffer()}).then(function(b){H.bin=b}).catch(function(){H._p=null});
+ return H._p;
 }
 function clipUrl(name){
  if(H.cache[name])return H.cache[name];
@@ -42,20 +43,30 @@ function clipUrl(name){
  var e=H.idx[vHash(LINES[name])];if(!e)return null;
  var u=URL.createObjectURL(new Blob([H.bin.slice(e[1],e[1]+e[2])],{type:"audio/mpeg"}));H.cache[name]=u;return u;
 }
-H.say=function(name,done){
+H.say=function(name,done,low){ /* low = تحية/تشجيع: لا يقطع جملة جارية ولا ينتظرها */
  if(!H.on||!H.unlocked){done&&done();return false}
- var u=clipUrl(name);if(!u){done&&done();return false}
+ if(low&&H.speaking()){done&&done();return false}
  H.stopVoice();
+ var tok=H._tk=(H._tk||0)+1;
+ if(H.bin&&H.idx){return play(name,done,tok)}
+ H._q=tok;                                  /* الحزمة لم تُحمَّل بعد: انتظرها ثم انطق */
+ var p=loadVoice();if(!p){H._q=0;done&&done();return false}
+ p.then(function(){if(H._q===tok){H._q=0;play(name,done,tok)}else done&&done()});
+ return true;
+};
+function play(name,done,tok){
+ if(H._tk!==tok){done&&done();return false}
+ var u=clipUrl(name);if(!u){done&&done();return false}
  var a=mkAudio(u,false,1);H.voice=a;var fin=false;function f(){if(fin)return;fin=true;if(H.voice===a)H.voice=null;done&&done()}
  a.onended=f;a.onerror=f;a.play().catch(f);H.duck(true);a.addEventListener("ended",function(){H.duck(false)});a.addEventListener("error",function(){H.duck(false)});
  return true;
-};
-H.stopVoice=function(){if(H.voice){try{H.voice.pause()}catch(e){}H.voice=null}H.duck(false)};
-H.speaking=function(){return !!H.voice&&!H.voice.ended&&!H.voice.paused};
+}
+H.stopVoice=function(){H._q=0;if(H.voice){try{H.voice.pause()}catch(e){}H.voice=null}H.duck(false)};
+H.speaking=function(){return !!H._q||(!!H.voice&&!H.voice.ended&&!H.voice.paused)};
 H.after=function(cb,max){ /* ينتظر نهاية الجملة (بحدٍّ أقصى) ثم ينفّذ */
  if(!H.speaking()){cb();return}
- var done=false,t=setTimeout(function(){if(!done){done=true;cb()}},max||2200);
- H.voice.addEventListener("ended",function(){if(!done){done=true;clearTimeout(t);setTimeout(cb,120)}},{once:true});
+ var t0=Date.now(),lim=max||7000;
+ (function w(){if(!H.speaking()||Date.now()-t0>lim){setTimeout(cb,120);return}setTimeout(w,80)})();
 };
 H.duck=function(on){if(H.amb)try{H.amb.volume=on?.08:H.ambVol()}catch(e){}};
 H.ambVol=function(){return H.per==="night"?.5:.42};
@@ -74,12 +85,12 @@ H.startAmb=function(k){
 function fade(a,to,ms,end){var from=a.volume,t0=Date.now();(function s(){var f=Math.min(1,(Date.now()-t0)/ms);try{a.volume=Math.max(0,Math.min(1,from+(to-from)*f))}catch(e){}if(f<1)requestAnimationFrame(s);else end&&end()})()}
 H.sfx=function(n,vol){if(!H.on||!H.unlocked)return;try{var a=mkAudio(base+"snd/"+n+".mp3",false,vol==null?.55:vol);a.play().catch(function(){});return a}catch(e){}};
 H.steps=function(ms){var a=H.sfx("steps",.5);if(a&&ms)setTimeout(function(){fade(a,0,200,function(){try{a.pause()}catch(e){}})},ms)};
-H.motivate=function(){var n=MOTIV[Math.floor(Math.random()*MOTIV.length)];if(n===H.lastLine)n=MOTIV[(MOTIV.indexOf(n)+1)%MOTIV.length];H.lastLine=n;return H.say(n)};
+H.motivate=function(){var n=MOTIV[Math.floor(Math.random()*MOTIV.length)];if(n===H.lastLine)n=MOTIV[(MOTIV.indexOf(n)+1)%MOTIV.length];H.lastLine=n;return H.say(n,null,true)};
 H.greet=function(){var n=H.per==="night"?"night":H.per==="evening"?"evening":H.per==="morning"?"morning":null;
  var d=new Date().toDateString();if(ls("athar_home_greet")===d)return;lset("athar_home_greet",d);
- H.say(n||"hello")};
+ H.say(n||"hello",null,true)};
 H.hold=function(on){if(on){H.stopVoice();if(H.amb)try{H.amb.pause()}catch(e){}}else if(H.on&&H.unlocked){if(H.amb)try{H.amb.play().catch(function(){})}catch(e){}else H.startAmb(H.ambKey||"day")}};
-H.back=function(){var L=["well","next","mash","can"];H._b=((H._b||0)+1)%L.length;return H.say(L[H._b])};
+H.back=function(){var L=["well","next","mash","can"];H._b=((H._b||0)+1)%L.length;return H.say(L[H._b],null,true)};
 H.set=function(on){H.on=!!on;lset("athar_home_snd",on?"1":"0");if(!on){H.stopVoice();if(H.amb)try{H.amb.pause()}catch(e){}H.amb=null;H.ambKey=""}else{H.period(H.per)}};
 H.unlock=function(){
  if(H.unlocked)return;H.unlocked=true;loadVoice();
@@ -88,5 +99,5 @@ H.unlock=function(){
 };
 ["pointerdown","keydown","touchstart"].forEach(function(n){D.addEventListener(n,function f(){H.unlock();D.removeEventListener(n,f,true)},true)});
 D.addEventListener("visibilitychange",function(){if(!H.amb)return;if(D.hidden)try{H.amb.pause()}catch(e){}else if(H.on&&H.unlocked)try{H.amb.play().catch(function(){})}catch(e){}});
-W.HomeAudio=H;
+W.HomeAudio=H;loadVoice();
 })();
