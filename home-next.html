@@ -37,6 +37,8 @@
 .set-tabs button{flex:0 0 auto;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:700;font-size:14px;background:rgba(255,255,255,.78);color:#31405a;box-shadow:0 1px 4px rgba(14,32,64,.12);cursor:pointer}
 .set-tabs button.on{background:#0e2040;color:#fff}
 .grp-hide{display:none!important}
+.view:not(#view-home):not(#view-dashboard):not(#view-pin){zoom:var(--ts,1)}
+body.calm .view:not(#view-home) *,body.calm .view:not(#view-home) *::before{animation:none!important;transition:none!important}
 .set-card .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
 .set-card .chips{display:flex;gap:6px;flex-wrap:wrap}
 .set-card .chips button{border:1.5px solid #cfd6e4;background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;cursor:pointer}
@@ -1800,6 +1802,9 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       </div>
 
       <div class="section-card" id="extraSettings" data-grp="child"></div>
+      <div class="section-card" id="plusDisplay" data-grp="child"></div>
+      <div class="section-card" id="plusSound" data-grp="sound"></div>
+      <div class="section-card" id="plusData" data-grp="parent"></div>
       <div class="section-card" id="profilesCard" data-grp="parent"></div>
       <div class="section-card" id="voicesCard" data-grp="sound"></div>
       <div class="section-card" id="offlineCard" data-grp="device"></div>
@@ -1946,7 +1951,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     if(!s) s = {repeatCount:3, pin:"0000"};
     if(!s.pin) s.pin = "0000";
     if(!s.repeatCount) s.repeatCount = 3;
-    var D = {surahRepeat:1, gapMult:1, sessionMin:5, bedtime:false, sfx:true, wordHL:true, childLock:false, voiceRec:false, voicesOn:false, voice:"qari", autoDl:false, voices:[{id:"v1",name:"أمي"},{id:"v2",name:"أبي"}]};
+    var D = {speed:1, vol:1, textSize:1, calm:false, surahRepeat:1, gapMult:1, sessionMin:5, bedtime:false, sfx:true, wordHL:true, childLock:false, voiceRec:false, voicesOn:false, voice:"qari", autoDl:false, voices:[{id:"v1",name:"أمي"},{id:"v2",name:"أبي"}]};
     for(var k in D){ if(s[k] === undefined) s[k] = D[k]; }
     return s;
   }
@@ -2769,6 +2774,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var start = function(src){
       if(tok !== playTok) return;
       audioEl.src = src;
+      try{ audioEl.playbackRate = settings.speed || 1; audioEl.volume = settings.vol == null ? 1 : settings.vol; }catch(e){}
       var pr = audioEl.play();
       if(pr && pr.catch){
         pr.catch(function(){
@@ -2839,7 +2845,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var m = settings.gapMult;
     if(!(m > 0)) return 0;
     if(settings.bedtime) m *= 1.4;
-    var d = (audioEl.duration > 0 ? audioEl.duration : 3) * 1000;
+    var d = (audioEl.duration > 0 ? audioEl.duration : 3) * 1000 / (settings.speed || 1);
     return Math.round(Math.min(9000, Math.max(1500, d * m)));
   }
   function startTurn(ms, cb){
@@ -3067,7 +3073,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     b.addEventListener("click", function(){
       settings[key] = !settings[key];
       saveSettings(settings); applyFX();
-      renderExtraSettings(); renderVoicesCard(); renderOfflineCard();
+      renderExtraSettings(); renderVoicesCard(); renderOfflineCard(); renderPlusSettings();
     });
     r.appendChild(t); r.appendChild(b);
     return r;
@@ -3084,6 +3090,36 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     c.appendChild(switchRow("تظليل الكلمات مع التلاوة", "يتتبّع الكلمة المقروءة تقريبيًّا", "wordHL"));
     c.appendChild(switchRow("قفل الطفل", "الرجوع بضغطة مطوّلة، وإخفاء الإعدادات أثناء الحفظ", "childLock"));
     c.appendChild(switchRow("تسجيل صوت الطفل", "زرّ «صوتي»: يسمع الطفل صوته ثم القارئ. لا يُحفظ ولا يُرسَل (يتطلّب اتصالًا آمنًا https)", "voiceRec"));
+  }
+
+
+  /* ================= إعدادات إضافية: صوت/عرض/بيانات ================= */
+  function renderPlusSettings(){
+    var c = $("plusSound"); if(c){
+      c.innerHTML = "<h3>التلاوة</h3>";
+      c.appendChild(chipRow("سرعة التلاوة", [[0.85,"أبطأ"],[1,"عادية"],[1.15,"أسرع"]], settings.speed || 1,
+        function(v){ settings.speed = v; saveSettings(settings); applyFX(); renderPlusSettings(); }));
+      c.appendChild(chipRow("مستوى الصوت", [[0.4,"هادئ"],[0.7,"متوسط"],[1,"عالٍ"]], settings.vol == null ? 1 : settings.vol,
+        function(v){ settings.vol = v; saveSettings(settings); applyFX(); renderPlusSettings(); }));
+    }
+    var d = $("plusDisplay"); if(d){
+      d.innerHTML = "<h3>العرض</h3>";
+      d.appendChild(chipRow("حجم الخط", [[1,"عادي"],[1.12,"كبير"],[1.25,"كبير جدًّا"]], settings.textSize || 1,
+        function(v){ settings.textSize = v; saveSettings(settings); applyFX(); renderPlusSettings(); }));
+      d.appendChild(switchRow("حركة هادئة", "تقليل الحركات والانتقالات في الشاشات الداخلية", "calm"));
+    }
+    var z = $("plusData"); if(z){
+      z.innerHTML = "<h3>البيانات</h3><p class='muted' style='margin:0 0 10px'>يمسح تقدّم الملف الحالي فقط (علامات الحفظ). لا يمكن التراجع.</p>";
+      var b = document.createElement("button"); b.className = "save-btn danger"; b.style.width = "100%"; b.textContent = "تصفير تقدّم هذا الملف";
+      var ask = false;
+      b.addEventListener("click", function(){
+        if(!ask){ ask = true; b.textContent = "اضغط مرة أخرى للتأكيد"; setTimeout(function(){ ask = false; b.textContent = "تصفير تقدّم هذا الملف"; }, 4000); return; }
+        try{ localStorage.removeItem(progKey()); }catch(e){}
+        progress = {}; showToast("تمّ تصفير التقدّم"); ask = false; b.textContent = "تصفير تقدّم هذا الملف";
+        try{ if(typeof renderProgressList === "function") renderProgressList(); }catch(e){}
+      });
+      z.appendChild(b);
+    }
   }
 
   /* ================= ملفات الأبناء ================= */
@@ -11413,6 +11449,9 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function applyFX(){
     document.body.classList.toggle("bedtime", !!settings.bedtime);
     document.body.classList.toggle("child-lock", !!settings.childLock);
+    document.body.classList.toggle("calm", !!settings.calm);
+    document.documentElement.style.setProperty("--ts", String(settings.textSize || 1));
+    try{ if(audioEl){ audioEl.playbackRate = settings.speed || 1; audioEl.volume = settings.vol == null ? 1 : settings.vol; } }catch(e){}
     var rb = $("btnRec");
     if(rb) rb.style.display = settings.voiceRec ? "" : "none";
     updateVoiceBar();
@@ -11580,7 +11619,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function openDashboard(){
     haltPlayback("idle");
     renderRepeatOptions();
-    renderExtraSettings();
+    renderExtraSettings(); renderPlusSettings();
     renderProfilesCard();
     renderVoicesCard();
     renderOfflineCard();
@@ -11717,7 +11756,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 <script src="next/home/audio.js?v=1793269006" defer></script>
 <script src="next/home/world.js?v=1793269006" defer></script>
 <link rel="stylesheet" href="next/home/screens.css?v=1793216586">
-<script src="next/home/screens.js?v=1793216586" defer></script>
+<script src="next/home/screens.js?v=1793309864" defer></script>
 <script src="next/home/fx.js?v=1793216586" defer></script>
 <link rel="stylesheet" href="next/shared/reward.css">
 <script src="next/shared/reward.js" defer></script>

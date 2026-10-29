@@ -279,7 +279,7 @@
     var st = jget("athar_quran_settings_v1"), def = !st || !st.pin || st.pin === "0000";
     var p = document.createElement("p"); p.id = "scPinHint"; p.className = "sc-pinhint";
     p.textContent = def ? "الرمز الحالي هو الرمز الافتراضي «0000». غيّره الآن ليبقى سرًّا." : "تم تغيير الرمز السري. اكتب رمزًا جديدًا من 4 أرقام لتغييره.";
-    inp.parentNode.insertBefore(p, inp);
+    var row = inp.parentNode; row.parentNode.insertBefore(p, row);
   }
 
   /* ---------- مزامنة الشاشة ---------- */
