@@ -31,6 +31,16 @@
 @font-face{font-family:"Tajawal";font-style:normal;font-weight:700;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
 @font-face{font-family:"Tajawal";font-style:normal;font-weight:800;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
 @font-face{font-family:"Baloo Bhaijan 2";font-style:normal;font-weight:500 800;font-display:swap;src:url("next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD}
+
+.set-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;position:sticky;top:0;z-index:5;scrollbar-width:none}
+.set-tabs::-webkit-scrollbar{display:none}
+.set-tabs button{flex:0 0 auto;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:700;font-size:14px;background:rgba(255,255,255,.78);color:#31405a;box-shadow:0 1px 4px rgba(14,32,64,.12);cursor:pointer}
+.set-tabs button.on{background:#0e2040;color:#fff}
+.grp-hide{display:none!important}
+.set-card .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
+.set-card .chips{display:flex;gap:6px;flex-wrap:wrap}
+.set-card .chips button{border:1.5px solid #cfd6e4;background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;cursor:pointer}
+.set-card .chips button.on{background:#0e2040;color:#fff;border-color:#0e2040}
 </style>
 <style id="wBootCss">#wBoot{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,var(--b1,#62b6f6),var(--b2,#a6dbfb) 20%,var(--b3,#d2eed8) 38%,var(--b4,#6fbf8e));transition:opacity .4s}#wBoot.off{opacity:0;pointer-events:none}
 html.hw-pre #view-home>:not(#homeWorld){display:none!important}
@@ -1442,7 +1452,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       <div class="brand-mark"><img src="icons-athar/brand-96.png" alt="" width="30" height="30" style="border-radius:9px;display:block;position:relative;z-index:1"></div>
       <div class="brand-text">أثر <span>القرآن — جزء عمّ</span></div>
     </div>
-    <button class="gear-btn" id="btnParent" title="وضع ولي الأمر"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="#fff"><circle cx="12" cy="12" r="5.6" fill="none" stroke="#fff" stroke-width="2.6"/><rect x="10.6" y="1.6" width="2.8" height="4" rx="1"/><rect x="10.6" y="18.4" width="2.8" height="4" rx="1"/><rect x="1.6" y="10.6" width="4" height="2.8" rx="1"/><rect x="18.4" y="10.6" width="4" height="2.8" rx="1"/><rect x="10.6" y="1.6" width="2.8" height="4" rx="1" transform="rotate(45 12 12)"/><rect x="10.6" y="18.4" width="2.8" height="4" rx="1" transform="rotate(45 12 12)"/><rect x="1.6" y="10.6" width="4" height="2.8" rx="1" transform="rotate(45 12 12)"/><rect x="18.4" y="10.6" width="4" height="2.8" rx="1" transform="rotate(45 12 12)"/></g></svg></button>
+    <button class="gear-btn" id="btnParent" title="الإعدادات"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><circle cx="15" cy="7" r="2.6" fill="#fff" stroke="none"/><line x1="3" y1="17" x2="21" y2="17"/><circle cx="9" cy="17" r="2.6" fill="#fff" stroke="none"/></svg></button>
   </header>
 
   <main>
@@ -1727,7 +1737,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     <!-- شاشة PIN لولي الأمر -->
     <section class="view" id="view-pin">
       <div class="pin-wrap">
-        <h2>وضع ولي الأمر</h2>
+        <h2>الإعدادات — ولي الأمر</h2>
         <p>أدخل الرمز السري (4 أرقام)</p>
         <div class="pin-dots" id="pinDots"></div>
         <div class="pin-pad" id="pinPad"></div>
@@ -1749,10 +1759,14 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     <section class="view" id="view-dashboard">
       <div class="back-row">
         <button class="back-btn" id="btnDashBack">→</button>
-        <div class="surah-title">لوحة ولي الأمر</div>
+        <div class="surah-title">الإعدادات</div>
       </div>
+      <div class="set-tabs" id="setTabs" role="tablist">
+        <button data-g="child" class="on">الطفل</button><button data-g="sound">الصوت</button><button data-g="prog">التقدّم</button><button data-g="device">الجهاز</button><button data-g="parent">ولي الأمر</button>
+      </div>
+      <div class="section-card set-card" id="digitsCard" data-grp="child"></div>
 
-      <div class="section-card growth-card">
+      <div class="section-card growth-card" data-grp="prog">
         <h3>نموّ الحفظ</h3>
         <div class="growth-row">
           <div class="growth-svg-box">
@@ -1769,13 +1783,13 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </div>
       </div>
 
-      <div class="section-card glass-card" id="installCard">
+      <div class="section-card glass-card" id="installCard" data-grp="device">
         <h3>تثبيت التطبيق</h3>
         <p class="muted" id="installDesc" style="margin:0 0 12px;">ثبّت «أثر» على شاشة جوال الطفل الرئيسية ليفتح كأي تطبيق عادي، بضغطة واحدة وبلا متصفح.</p>
         <button class="pill-btn shine-sweep" id="btnInstallApp" style="width:100%;justify-content:center;">أضف إلى الشاشة الرئيسية</button>
       </div>
 
-      <div class="section-card">
+      <div data-grp="child" class="section-card">
         <h3>عدد مرات التكرار</h3>
         <div class="repeat-options" id="repeatOptions"></div>
         <div class="pin-change-row" style="margin-top:10px;">
@@ -1785,12 +1799,12 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <p class="muted" style="margin:8px 0 0;">اختر «∞ حتى الإيقاف» ليتكرّر الاستماع بلا حدّ حتى يضغط الطفل إيقافًا أو ينتقل للآية التالية بنفسه.</p>
       </div>
 
-      <div class="section-card" id="extraSettings"></div>
-      <div class="section-card" id="profilesCard"></div>
-      <div class="section-card" id="voicesCard"></div>
-      <div class="section-card" id="offlineCard"></div>
+      <div class="section-card" id="extraSettings" data-grp="child"></div>
+      <div class="section-card" id="profilesCard" data-grp="parent"></div>
+      <div class="section-card" id="voicesCard" data-grp="sound"></div>
+      <div class="section-card" id="offlineCard" data-grp="device"></div>
 
-      <div class="section-card">
+      <div data-grp="parent" class="section-card">
         <div class="row-between">
           <h3 style="margin:0;">تغيير الرمز السري</h3>
         </div>
@@ -1800,7 +1814,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </div>
       </div>
 
-      <div class="section-card">
+      <div data-grp="prog" class="section-card">
         <h3>متابعة تقدّم الحفظ</h3>
         <div id="progressList"></div>
         <div class="legend">
@@ -1821,7 +1835,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <div class="ayah-status-grid" id="ayahStatusGrid"></div>
       </div>
 
-      <div class="section-card" id="refCard">
+      <div class="section-card" id="refCard" data-grp="parent">
         <h3>مراجع الأحاديث للأهل</h3>
         <p class="muted" style="margin:0 0 10px;">كل آية وحديث في كتب المكتبة راجعناه في هذه المراجع. للبحث والتحقق، ولا تُفتح إلا من لوحة ولي الأمر.</p>
         <div class="ref-links">
@@ -1833,7 +1847,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </div>
       </div>
 
-      <div class="section-card about-card">
+      <div class="section-card about-card" data-grp="parent">
         <h3>عن التطبيق</h3>
         <p class="muted">أثر | القرآن — أول تطبيقات سلسلة «أثر»، لتحفيظ جزء عمّ للأطفال من عمر 3 سنوات فما فوق.</p>
         <p class="copyright">جميع الحقوق محفوظة © 2026 ARAFAT ALRAJHI</p>
@@ -11708,5 +11722,28 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 <link rel="stylesheet" href="next/shared/reward.css">
 <script src="next/shared/reward.js" defer></script>
 <script src="next/shared/nav.js" defer></script>
+<script>
+(function(){
+  var tabs=document.getElementById("setTabs"); if(!tabs) return; var cur;
+  var view=document.getElementById("view-dashboard");
+  function show(g){
+    try{localStorage.setItem("athar_set_tab",g)}catch(e){}
+    [].forEach.call(tabs.children,function(b){b.classList.toggle("on",b.dataset.g===g)});
+    cur=g;[].forEach.call(view.querySelectorAll(":scope > *:not(.back-row):not(.set-tabs)"),function(c){c.classList.toggle("grp-hide",(c.dataset.grp||"child")!==g)});
+    view.scrollTop=0;
+  }
+  tabs.addEventListener("click",function(e){var b=e.target.closest("button");if(b)show(b.dataset.g)});
+  var g="child"; try{g=localStorage.getItem("athar_set_tab")||"child"}catch(e){}
+  cur=g;show(g);
+  new MutationObserver(function(){show(cur)}).observe(view,{attributes:true,attributeFilter:["class"]});
+  function digits(){
+    var c=document.getElementById("digitsCard"),cur="ar";
+    try{cur=localStorage.getItem("athar_num_fmt")==="en"?"en":"ar"}catch(e){}
+    c.innerHTML='<h3>شكل الأرقام</h3><div class="set-row"><div class="chips"><button data-f="ar" class="'+(cur==="ar"?"on":"")+'">١ ٢ ٣ (عربية)</button><button data-f="en" class="'+(cur==="en"?"on":"")+'">1 2 3 (إنجليزية)</button></div></div><p class="muted" style="margin:6px 0 0">يظهر في شاشة الأرقام. يُطبَّق عند فتحها.</p>';
+    c.onclick=function(e){var b=e.target.closest("button");if(!b)return;try{localStorage.setItem("athar_num_fmt",b.dataset.f)}catch(x){}digits()};
+  }
+  digits();
+})();
+</script>
 </body>
 </html>
