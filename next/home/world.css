@@ -247,3 +247,6 @@ body.hw-home .leaf{display:none}
 #homeWorld .w-snd{left:12px;top:134px;width:38px;height:38px;font-size:18px}
 #homeWorld .ath-dot{opacity:0;animation:none}
 #homeWorld .wb .bd{font-style:normal;padding:0 14px 0 12px;overflow:visible;max-width:none;letter-spacing:0}
+
+.ath{transform-origin:50% 100%}
+#homeWorld .wb .bd{width:max-content;box-sizing:border-box}
