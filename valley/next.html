@@ -1053,9 +1053,11 @@ function DeviceProvider() {
         /* حارس: إن لم يبدأ النطق خلال مهلةٍ معقولة، لا نعلق صامتين */
         const guard = setTimeout(() => {
           if (++misses >= 3) dead = true;      // لا ينطق — لا نضيّع الوقت بعد اليوم
+          /* مهم: نُسقط الجملة المعلّقة في طابور النظام، وإلا نطقها الجهاز متأخرًا فوق السطر التالي (تداخل) */
+          if (!moved) { try { speechSynthesis.cancel(); } catch {} }
           next();
-        }, 900 + txt.length * 95);
-        u.onstart = () => { misses = 0; clearTimeout(guard); };
+        }, 1500 + txt.length * 95);
+        u.onstart = () => { if (moved) { try { speechSynthesis.cancel(); } catch {} return; } misses = 0; clearTimeout(guard); };
         try { speechSynthesis.speak(u); } catch { clearTimeout(guard); next(); }
       };
       step();
@@ -2840,7 +2842,10 @@ const World = {
     const a = this.el("athar").getBoundingClientRect();
     const r = this.root.getBoundingClientRect();
     this.say.querySelector(".b").textContent = e.text;
-    this.say.style.top = Math.max(60, a.top - r.top - 66) + "px";
+    /* الفقاعة في منطقة السماء العليا ما أمكن حتى لا تغطّي دوائر الأماكن أو الصور */
+    const bt = Math.max(110, Math.min(a.top - r.top - 66, window.innerHeight * 0.28));
+    this.say.style.top = bt + "px";
+    const tl = this.say.querySelector(".t"); if (tl) tl.style.display = (a.top - r.top - bt) > 170 ? "none" : "";
     const cx = a.left - r.left + a.width / 2;
     this.say.style.transform = `translateX(${Math.max(-92, Math.min(92, cx - r.width / 2))}px)`;
     this.say.classList.add("on");
@@ -4396,6 +4401,35 @@ window.addEventListener("load", () => {
     b.onclick = function () { try { render(); } catch (e) { console.error(e); return; } o.classList.add("on"); };
   }
   if (document.readyState === "loading") addEventListener("DOMContentLoaded", function () { setTimeout(boot, 0); }); else setTimeout(boot, 0);
+})();
+</script>
+<script>
+/* أثر يتمشّى أحيانًا في الخريطة حين لا يوجد درس أو كلام */
+(function () {
+  function boot() {
+    var W = window.World; if (!W || !W.el || W.__wander) return; W.__wander = 1;
+    var base = null;
+    function cur() { var a = W.el("athar"), t = a.getAttribute("transform") || "", m = /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(t), k = /scale\(([\d.]+)\)/.exec(t); return m ? [+m[1], +m[2], k ? +k[1] : .78] : null; }
+    var mt = W.moveTo.bind(W);
+    W.moveTo = function (place) { var r = mt(place); setTimeout(function () { base = cur(); }, 30); return r; };
+    function idle() {
+      var q = function (sel) { var e = document.querySelector(sel); return e && e.offsetParent !== null; };
+      if (document.hidden || q("#panel.up") || q("#nextup.on") || q("#fullmap.on") || q("#settings.on") || q("#parent.on") || q("#intro.on")) return false;
+      if (document.querySelector("#gate:not(.off)")) return false;
+      if (W.say && W.say.classList.contains("on")) return false;
+      return true;
+    }
+    function tick() {
+      setTimeout(tick, 11000 + Math.random() * 9000);
+      if (!idle()) return;
+      if (!base) base = cur(); if (!base) return;
+      var a = W.el("athar"), nx = base[0] + (Math.random() * 90 - 45), ny = base[1] + (Math.random() * 36 - 18);
+      a.style.transition = "transform 2.6s ease-in-out";
+      a.setAttribute("transform", "translate(" + nx.toFixed(1) + " " + ny.toFixed(1) + ") scale(" + base[2] + ")");
+    }
+    setTimeout(tick, 9000);
+  }
+  if (document.readyState === "loading") addEventListener("DOMContentLoaded", function () { setTimeout(boot, 800); }); else setTimeout(boot, 800);
 })();
 </script>
 <script src="../next/valley/valley.js"></script>
