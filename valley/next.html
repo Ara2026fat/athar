@@ -14,7 +14,7 @@
 @font-face{font-family:"Athar Salawat";font-style:normal;font-weight:400 700;font-display:swap;src:url("../next/assets/fonts/salawat-noto.woff2") format("woff2");unicode-range:U+FDFA-FDFB,U+FDFD,U+06D6-06ED}
 
 /* ── الخريطة الكاملة: كل الأماكن والدروس، للطفل وولي الأمر ── */
-#fmap{position:absolute;top:calc(10px + env(safe-area-inset-top));inset-inline-end:238px;z-index:9;width:60px;height:60px;border-radius:15px;border:2px solid rgba(255,255,255,.75);background:linear-gradient(155deg,#FFF0C2,#F2B340 55%,#B8741A);box-shadow:0 5px 0 rgba(0,0,0,.22),inset 0 2px 0 rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+#fmap{position:absolute;top:calc(84px + env(safe-area-inset-top));inset-inline-end:10px;z-index:9;width:60px;height:60px;border-radius:15px;border:2px solid rgba(255,255,255,.75);background:linear-gradient(155deg,#FFF0C2,#F2B340 55%,#B8741A);box-shadow:0 5px 0 rgba(0,0,0,.22),inset 0 2px 0 rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
 #fmap:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.22)}
 #app:has(#panel.up) #fmap,#app:has(#gate:not(.off)) #fmap{display:none}
 #fullmap{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;background:linear-gradient(#EAF4E6,#FFF8E6);color:#3A2E24}
