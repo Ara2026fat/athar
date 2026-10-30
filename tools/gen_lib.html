@@ -20,15 +20,24 @@ button:disabled{opacity:.5}
 <h1>توليد أصوات المكتبة (صوت أثر)</h1>
 <div class="card">
 <label>مفتاح ElevenLabs (لا يُحفظ)</label><input id="k" type="password" dir="ltr" autocomplete="off" placeholder="sk_…">
-<label>معرّف الصوت</label><input id="vid" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC">
+<label>الأصوات الأربعة (الصق معرّف كل صوت)</label>
+<div class="sm">١ أثر الأساسي · ٢ تعليمات عادي · ٣ أذكار وتوجيهات · ٤ شبيه صوت أوس</div>
+<input id="v1" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC" placeholder="١ أثر">
+<input id="v2" dir="ltr" placeholder="٢ تعليمات عادي" style="margin-top:6px">
+<input id="v3" dir="ltr" placeholder="٣ أذكار وتوجيهات" style="margin-top:6px">
+<input id="v4" dir="ltr" placeholder="٤ شبيه أوس" style="margin-top:6px">
 <label>النموذج</label><select id="mo"><option value="eleven_flash_v2_5">eleven_flash_v2_5 (٠٫٥ رصيد/حرف)</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5 (٠٫٥)</option><option value="eleven_multilingual_v2">eleven_multilingual_v2 (١)</option></select>
 <label>الثبات</label><input id="st" type="number" min="0" max="1" step="0.05" value="0.5">
 <div class="sm" id="est"></div>
+<button id="demo" class="s">جرّب عيّنة: ٣ جمل بكل صوت (لا تُحفظ)</button>
+<div id="demoOut"></div>
 </div>
+<div class="card"><b>الدفعات</b>
+<div class="sm">الصوت المقترح تلقائيًا: ٣ للأدعية والأذكار والنصوص التي تُقرأ كتوجيه، و١ لباقي القصص والأسئلة والشرح. يمكنك تغييره لكل دفعة.</div>
+<div id="batches"></div></div>
 <div class="card">
 <div class="big" id="big"></div><div class="bar"><i id="pb"></i></div>
 <div class="sm" id="eta"></div><div class="err" id="msg"></div>
-<button id="go">ابدأ / تابع التوليد</button>
 <button id="stop" class="s" disabled>إيقاف مؤقت (يُحفظ ما تم)</button>
 </div>
 <div class="card">
@@ -42,6 +51,15 @@ const $=id=>document.getElementById(id);
 function vNorm(t){return String(t).replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[!؟?.,،:؛]+/g," ").replace(/\s+/g," ").replace(/^ | $/g,"")}
 function vHash(t){const n=vNorm(t);let x=5381;for(let i=0;i<n.length;i++)x=(((x<<5)+x)^n.charCodeAt(i))>>>0;return x.toString(16)}
 UNITS.forEach(u=>u.h=vHash(u.t));
+const DUA=/اللهم|بسم الله|سبحان الله|الحمد لله|أستغفر|استغفر|ربّ|ربنا|رَبَّنَا|أعوذ|لا إله إلا|تقول|نقول|قل /;
+UNITS.forEach(u=>u.v=DUA.test(u.t)?3:1);
+const BATCH=400;let _c=0,_g=0;
+UNITS.sort((a,b)=>a.b<b.b?-1:a.b>b.b?1:0).forEach(u=>{if(_c>=BATCH&&u.b!==UNITS[_g]?.b){}});
+const BT=[];{let cur=[],last=null;UNITS.forEach(u=>{if(cur.length>=BATCH&&u.b!==last){BT.push(cur);cur=[]}cur.push(u);last=u.b});if(cur.length)BT.push(cur)}
+const SET=["v1","v2","v3","v4","st","mo"];
+(function(){try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");SET.forEach(k=>{if(o[k])$(k).value=o[k]})}catch(e){}})();
+SET.forEach(k=>$(k).addEventListener("input",()=>{try{const o={};SET.forEach(x=>o[x]=$(x).value);localStorage.setItem("gl-set",JSON.stringify(o))}catch(e){}}));
+const OVR={};
 const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 class Fatal extends Error{}
@@ -50,9 +68,9 @@ const DONE=new Map(); /* h -> Uint8Array */
 async function openDB(){DB=await new Promise((res,rej)=>{const r=indexedDB.open("athar-gen-lib",1);r.onupgradeneeded=()=>r.result.createObjectStore("c");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function loadAll(){const st=DB.transaction("c").objectStore("c");const ks=await pq(st.getAllKeys()),vs=await pq(st.getAll());ks.forEach((k,i)=>DONE.set(k,vs[i]))}
 async function put(h,u8){await pq(DB.transaction("c","readwrite").objectStore("c").put(u8,h));DONE.set(h,u8)}
-async function tts(text){
- const k=$("k").value.trim(),v=$("vid").value.trim();
- if(!k||!v)throw new Fatal("الصق المفتاح أولًا");
+async function tts(text,slot){
+ const k=$("k").value.trim(),v=$("v"+slot).value.trim();
+ if(!k)throw new Fatal("الصق المفتاح أولًا");if(!v)throw new Fatal("معرّف الصوت "+slot+" فارغ");
  const body={text,model_id:$("mo").value,voice_settings:{stability:+$("st").value,similarity_boost:.8,style:0,use_speaker_boost:true}};
  for(let a=0;a<6;a++){
   let r;
@@ -76,20 +94,43 @@ function est(){
  $("pb").style.width=(100*done/total)+"%";
 }
 let run=false,t0=0,n0=0;
-async function worker(q){
+async function worker(q){const slotOf=u=>OVR[u.g]||u.v;
  while(run&&q.length){const u=q.shift();
-  try{const b=await tts(u.t);await put(u.h,b);est();
+  try{const b=await tts(u.t,slotOf(u));await put(u.h,b);est();
    const el=(Date.now()-t0)/1000,dn=DONE.size-n0;if(dn>5){const rem=UNITS.length-DONE.size;$("eta").textContent="المتبقي نحو "+nAr(Math.round(rem*el/dn/60/3))+" دقيقة"}
   }catch(e){if(e instanceof Fatal){$("msg").textContent=e.message;run=false;return}
    u.fail=(u.fail||0)+1;if(u.fail<3)q.push(u);else $("msg").textContent="تعذّر سطر: "+u.t.slice(0,40)+" — "+e.message}}
 }
-$("go").onclick=async()=>{
+async function runBatch(gi){
  if(run)return;$("msg").textContent="";run=true;t0=Date.now();n0=DONE.size;
- $("go").disabled=true;$("stop").disabled=false;
- const q=UNITS.filter(u=>!DONE.has(u.h));
+ $("stop").disabled=false;
+ const q=BT[gi].filter(u=>!DONE.has(u.h));
  await Promise.all([worker(q),worker(q),worker(q)]);
- run=false;$("go").disabled=false;$("stop").disabled=true;est();buildParts();
- if(UNITS.every(u=>DONE.has(u.h)))$("msg").textContent="اكتمل التوليد ✔ نزّل الأجزاء.";
+ run=false;$("stop").disabled=true;est();buildParts();drawBatches();
+ if(BT[gi].every(u=>DONE.has(u.h)))$("msg").textContent="اكتملت الدفعة "+nAr(gi+1)+" ✔";
+}
+function drawBatches(){
+ const box=$("batches");box.innerHTML="";
+ BT.forEach((g,gi)=>{g.forEach(u=>u.g=gi);
+  const done=g.filter(u=>DONE.has(u.h)).length,ch=g.reduce((a,u)=>a+u.t.length,0);
+  const d=document.createElement("div");d.style.cssText="border-top:1px solid var(--line);padding:8px 0";
+  const n3=g.filter(u=>u.v===3).length;
+  d.innerHTML="<b>دفعة "+nAr(gi+1)+"</b> <span class='sm'>— "+nAr(g.length)+" جملة · "+nAr(ch)+" حرف · تم "+nAr(done)+" · مقترح ٣: "+nAr(n3)+"، ١: "+nAr(g.length-n3)+"</span>";
+  const sel=document.createElement("select");sel.style.marginTop="6px";
+  [["","الصوت: تلقائي (حسب المقترح)"],["1","الكل بالصوت ١ أثر"],["2","الكل بالصوت ٢ تعليمات"],["3","الكل بالصوت ٣ أذكار"],["4","الكل بالصوت ٤ شبيه أوس"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;sel.appendChild(o)});
+  sel.value=OVR[gi]?String(OVR[gi]):"";sel.onchange=()=>{OVR[gi]=sel.value?+sel.value:0};
+  const b=document.createElement("button");b.textContent=done>=g.length?"مكتملة ✔":"ولّد هذه الدفعة";b.disabled=done>=g.length;b.onclick=()=>runBatch(gi);
+  d.appendChild(sel);d.appendChild(b);box.appendChild(d)});
+}
+$("demo").onclick=async()=>{
+ const out=$("demoOut");out.innerHTML="";$("msg").textContent="";
+ const pick=[UNITS.find(u=>u.v===1&&u.t.length<70&&!DONE.has(u.h)),UNITS.find(u=>u.v===3&&u.t.length<70&&!DONE.has(u.h)),UNITS.find(u=>/\?|؟|ما |ماذا|لماذا/.test(u.t)&&u.t.length<60)].filter(Boolean);
+ try{for(const u of pick)for(const sl of [1,2,3,4]){
+  if(!$("v"+sl).value.trim())continue;
+  const b=await tts(u.t,sl);const r=document.createElement("div");r.className="sm";r.style.margin="8px 0";
+  const a=document.createElement("audio");a.controls=true;a.src=URL.createObjectURL(new Blob([b],{type:"audio/mpeg"}));
+  r.textContent="صوت "+nAr(sl)+": "+u.t;r.appendChild(document.createElement("br"));r.appendChild(a);out.appendChild(r)}}
+ catch(e){$("msg").textContent=e.message}
 };
 $("stop").onclick=()=>{run=false};
 const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
@@ -128,5 +169,5 @@ function buildParts(){
  });
 }
 $("mkparts").onclick=buildParts;
-(async()=>{await openDB();await loadAll();est();buildParts()})();
+(async()=>{await openDB();await loadAll();est();buildParts();drawBatches()})();
 </script></body></html>
