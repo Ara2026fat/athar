@@ -37,8 +37,8 @@ details summary{cursor:pointer;color:var(--m)}
 <div class="card">
 <label for="k">مفتاح ElevenLabs</label>
 <input id="k" type="password" dir="ltr" autocomplete="off" placeholder="sk_…">
-<details><summary>إعدادات الصوت (الافتراضي هو صوت القاعدة النورانية)</summary>
-<label for="vid">معرّف الصوت</label><input id="vid" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC">
+<details open><summary>إعدادات الصوت (الافتراضي هو صوت القاعدة النورانية)</summary>
+<label>الأصوات الأربعة (الصق المعرّفات؛ تُحفظ)</label><input id="v1" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC" placeholder="١ أثر الأساسي"><input id="v2" dir="ltr" placeholder="٢ تعليمات عادي" style="margin-top:6px"><input id="v3" dir="ltr" value="jm4RJLsdWxM2mdn2d50g" placeholder="٣ أذكار وتوجيهات" style="margin-top:6px"><input id="v4" dir="ltr" placeholder="٤ شبيه أوس" style="margin-top:6px"><label for="vslot">الصوت الافتراضي لكل الجمل</label><select id="vslot" data-d="1"><option value="1">١ أثر الأساسي</option><option value="2">٢ تعليمات عادي</option><option value="3">٣ أذكار وتوجيهات</option><option value="4">٤ شبيه أوس</option></select>
 <label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3</option><option value="eleven_multilingual_v2">eleven_multilingual_v2</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option></select>
 <label for="st">الثبات</label><select id="st"><option value="1">١٫٠ ثابت (موصى به)</option><option value="0.5">٠٫٥ طبيعي</option><option value="0">٠٫٠ حر</option></select>
 <label for="al">لفظ الجلالة</label><select id="al"><option value="1">ألف خنجرية (موصى به)</option><option value="0">الأصل</option><option value="2">فتحة صريحة</option><option value="3">كلمة قبلها</option><option value="4">ألف وصل</option></select>
@@ -77,9 +77,9 @@ const defOf=i=>allahVar(applyRules(DRAFT[i]),alOf(i));
 const sentOf=i=>L[i].custom!=null?L[i].custom:defOf(i);
 class Fatal extends Error{}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-async function tts(text){
- const k=$("k").value.trim(),v=$("vid").value.trim();
- if(!k||!v)throw new Fatal("الصق المفتاح أولًا");
+async function tts(text,slot){
+ const k=$("k").value.trim(),v=$("v"+(slot||$("vslot").value)).value.trim();
+ if(!k)throw new Fatal("الصق المفتاح أولًا");if(!v)throw new Fatal("معرّف هذا الصوت فارغ");
  const body={text,model_id:$("mo").value,voice_settings:{stability:+$("st").value,similarity_boost:.8,style:0,use_speaker_boost:true}};
  for(let a=0;a<6;a++){
   let r;
@@ -102,7 +102,7 @@ async function openDB(){try{DB=await new Promise((res,rej)=>{const r=indexedDB.o
 async function save(i){if(!DB)return;const l=L[i];try{await pq(DB.transaction("lines","readwrite").objectStore("lines").put({text:l.text,blob:l.blob,sent:l.sent,mark:l.mark,custom:l.custom,al:l.al,note:l.note||""},i))}catch(e){window.__saveErr=String(e)}}
 async function load(){if(!DB)return;try{const st=DB.transaction("lines").objectStore("lines");const ks=await pq(st.getAllKeys()),vs=await pq(st.getAll());
  for(let n=0;n<ks.length;n++){const i=ks[n],v=vs[n];if(L[i]&&v&&v.text===L[i].text&&v.blob){L[i].blob=v.blob;L[i].sent=v.sent;L[i].mark=v.mark;L[i].custom=v.custom;L[i].al=v.al;L[i].note=v.note||"";L[i].bytes=new Uint8Array(await v.blob.arrayBuffer())}}}catch(e){window.__loadErr=String(e)}}
-const SET=["vid","mo","st","al","rules"];
+const SET=["v1","v2","v3","v4","vslot","mo","st","al","rules"];
 function saveSet(){try{const o={};SET.forEach(k=>o[k]=$(k).value);localStorage.setItem("athar-gen-usul-rest-set",JSON.stringify(o))}catch(e){}}
 function loadSet(){try{const o=JSON.parse(localStorage.getItem("athar-gen-usul-rest-set")||"null");if(o)SET.forEach(k=>{if(o[k]!=null)$(k).value=o[k]})}catch(e){}}
 const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
@@ -146,6 +146,9 @@ function row(i){
   mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est()});
   mk("✗ خطأ","badb",()=>{l.mark="bad";save(i);row(i);est()});
  }
+ const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
+ [["","الصوت: الافتراضي"],["1","١ أثر"],["2","٢ تعليمات"],["3","٣ أذكار"],["4","٤ شبيه أوس"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;vsel.appendChild(o)});
+ vsel.value=l.vs||"";vsel.onchange=()=>{l.vs=vsel.value||null;save(i)};bt.appendChild(vsel);
  mk("إزالة التشكيل","s",()=>{ta.value=ta.value.replace(/[ً-ٰٟ]/g,"");ta.dispatchEvent(new Event("input"))});
  mk("المسودة","s",()=>{l.custom=null;l.al=null;ta.value=defOf(i);ta.dispatchEvent(new Event("input"));row(i)});
  const sel=document.createElement("select");sel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
@@ -157,7 +160,7 @@ function row(i){
 async function one(i,autoplay){
  const l=L[i];$("msg").textContent="";
  try{
-  const sent=sentOf(i),blob=await tts(sent);
+  const sent=sentOf(i),blob=await tts(sent,l.vs);l.vsUsed=l.vs||$("vslot").value;
   l.blob=blob;l.sent=sent;l.bytes=new Uint8Array(await blob.arrayBuffer());l.mark=null;
   await save(i);
   if(autoplay)play(i);
@@ -201,7 +204,7 @@ $("cp").onclick=async()=>{
 };
 $("all").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>!L[i].blob));
 $("redo").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>L[i].mark==="bad"));
-["vid","mo","st","al","rules"].forEach(k=>{$(k).addEventListener("change",()=>{saveSet();est()});});
+["v1","v2","v3","v4","vslot","mo","st","al","rules"].forEach(k=>{$(k).addEventListener("change",()=>{saveSet();est()});});
 $("rules").addEventListener("input",()=>{saveSet();est()});
 const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
 const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
@@ -218,10 +221,12 @@ $("dl").onclick=()=>{
  const okL=L.filter(l=>l.mark==="ok"&&l.bytes);if(!okL.length)return;const chunks=[],e={},texts={};let off=0;
  okL.forEach(l=>{const h=vHash(l.text);if(e[h])return;e[h]=[0,off,l.bytes.length];texts[h]=l.text;chunks.push(l.bytes);off+=l.bytes.length});
  const bin=new Uint8Array(off);let p=0;chunks.forEach(c=>{bin.set(c,p);p+=c.length});
- const meta={schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("vid").value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts,count:okL.length,total:L.length};
+ const meta={schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("v"+$("vslot").value).value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts,count:okL.length,total:L.length};
  const z=zipBuild([{name:"sp_usul.bin",data:bin},{name:"usul-index.json",data:new TextEncoder().encode(JSON.stringify(meta))}]);
  const a=document.createElement("a");a.href=URL.createObjectURL(z);a.download="athar-usul-voice-rest-"+okL.length+"of"+L.length+".zip";document.body.appendChild(a);a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
 };
+$("vslot").value=$("vslot").dataset.d;
+(function(){try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");["v1","v2","v3","v4"].forEach(k=>{if(o[k]&&!$(k).value)$(k).value=o[k]})}catch(e){}})();
 (async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));est()})();
 </script></body></html>
