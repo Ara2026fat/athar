@@ -103,7 +103,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .cat.full{grid-column:1/-1;min-height:0;flex-direction:row;justify-content:center;padding:12px}.cat.full .ic{font-size:30px}
 .cat.fin{border-color:var(--brand);background:var(--brand-soft)}
 .homeacts{max-width:640px;margin:14px auto 0;display:flex;gap:8px;justify-content:center}
-#bHome,#kfilters,#home,#tinfo,.cardmeta .uid,.cardmeta .chip:nth-child(3),.hint{display:none!important}</style>
+#bHome,#kfilters,#home,#tinfo,.cardmeta .uid,.cardmeta .chip:nth-child(3),.hint{display:none!important}.line{line-height:1.75!important;margin:4px 0!important}.controls .btn{min-height:46px!important;font-size:15px!important}.rec{width:58px!important;height:58px!important;border-width:4px!important}.rec svg{width:22px!important;height:22px!important}.row2{grid-template-columns:1fr 1fr 1fr!important;gap:6px!important;margin-top:6px!important}.row2 .btn{min-height:40px!important;font-size:13px!important;padding:4px 6px!important}.dock{padding:4px 0!important}.timer{font-size:13px!important}</style>
 </head>
 <body>
 <div class="wrap">
@@ -446,8 +446,8 @@ async function playTake() {
   audioEl.onended = done; audioEl.onerror = () => { done(); toast("تعذّر تشغيل هذا التسجيل في المتصفح"); };
   audioEl.play().catch(() => done());
 }
-const FS = [32, 40, 48, 56, 64];
-function setFs(l) { S.fs = Math.max(0, Math.min(4, l)); document.documentElement.style.setProperty("--fs", FS[S.fs] + "px"); try { localStorage.setItem("athar.rec.fs", String(S.fs)); } catch (e) {}
+const FS = [18, 22, 26, 30, 36];
+function setFs(l) { S.fs = Math.max(0, Math.min(4, l)); document.documentElement.style.setProperty("--fs", FS[S.fs] + "px"); try { localStorage.setItem("athar.rec.fs2", String(S.fs)); } catch (e) {}
   $("bFm").disabled = S.fs === 0; $("bFp").disabled = S.fs === 4; const sc = $("scroll"); if (sc) sc.scrollTop = 0; }
 function go(d) { if (S.recording) return; if (audioEl) { audioEl.pause(); audioEl = null; $("bPlay").textContent = "▶ استمع"; } S.idx = Math.max(0, Math.min(view().length - 1, S.idx + d)); saveMeta(); render(); }
 function jump(i) { S.idx = i; saveMeta(); render(); }
@@ -671,7 +671,7 @@ function pickCat(k) {
   await loadTakes();
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
   bind();
-  let fl = 1; try { const v = parseInt(localStorage.getItem("athar.rec.fs"), 10); if (v >= 0 && v <= 4) fl = v; } catch (e) {}
+  let fl = 1; try { const v = parseInt(localStorage.getItem("athar.rec.fs2"), 10); if (v >= 0 && v <= 4) fl = v; } catch (e) {}
   setFs(fl);
   if (S.idx >= view().length) S.idx = 0;
   if (window.__syncK) window.__syncK();
