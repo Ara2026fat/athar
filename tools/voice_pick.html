@@ -25,7 +25,7 @@ textarea{width:100%;font:inherit;padding:10px;border-radius:12px;border:1px soli
 <input id="v2" dir="ltr" placeholder="٢ تعليمات عادي">
 <input id="v3" dir="ltr" placeholder="٣ أذكار وتوجيهات">
 <input id="v4" dir="ltr" placeholder="٤ شبيه أوس">
-<div class="sm">المعرّفات محفوظة من الصفحة السابقة إن فتحتها من نفس المتصفح. كل جملة تُولَّد بالضغط عليها فقط (نموذج Flash).</div>
+<div class="sm">كل جملة قابلة للتعديل (أضف التشكيل كما تريد) قبل التوليد. المعرّفات محفوظة من الصفحة السابقة إن فتحتها من نفس المتصفح. كل جملة تُولَّد بالضغط عليها فقط (نموذج Flash).</div>
 <div class="err" id="msg"></div>
 </div>
 <div id="out"></div>
@@ -58,11 +58,12 @@ CATS.forEach(([id,title,lines])=>{
  const c=document.createElement("div");c.className="card";c.innerHTML="<h2>"+title+"</h2>";
  lines.forEach((t,i)=>{
   const s=document.createElement("div");s.className="s";
-  const p=document.createElement("div");p.textContent=nAr(i+1)+". "+t;s.appendChild(p);
+  const p=document.createElement("textarea");p.rows=2;p.dir="rtl";p.value=t;p.style.marginTop="4px";s.appendChild(p);
+  const rm=document.createElement("button");rm.textContent="إزالة التشكيل";rm.style.cssText="background:#fff;color:var(--g);border:1px solid var(--g)";rm.onclick=()=>{p.value=p.value.replace(/[\u064B-\u065F\u0670]/g,"")};s.appendChild(rm);
   const b=document.createElement("button");b.textContent="ولّد الأربعة";s.appendChild(b);
   const box=document.createElement("div");s.appendChild(box);
   b.onclick=async()=>{b.disabled=true;$("msg").textContent="";box.innerHTML="";
-   try{for(const sl of [1,2,3,4]){const u=await tts(t,sl);if(!u)continue;
+   try{for(const sl of [1,2,3,4]){const u=await tts(p.value.trim(),sl);if(!u)continue;
      const r=document.createElement("div");r.className="v";r.innerHTML="<b>"+NAMES[sl]+"</b>";
      const a=document.createElement("audio");a.controls=true;a.src=u;r.appendChild(a);box.appendChild(r)}}
    catch(e){$("msg").textContent=e.message}b.disabled=false};
