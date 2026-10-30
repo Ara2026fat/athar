@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أثر — اختيار الصوت</title>
+<style>
+:root{--g:#2A8067;--p:#FDF7E8;--ink:#1d2b26;--m:#6b7a73;--r:#b3382c;--line:#e3d9bd}
+*{box-sizing:border-box}
+body{margin:0;background:var(--p);color:var(--ink);font:18px/1.7 "Noto Naskh Arabic","Amiri",system-ui,sans-serif;padding:16px;max-width:720px;margin-inline:auto}
+h1{color:var(--g);font-size:25px;margin:.2em 0}h2{color:var(--g);font-size:21px;margin:.2em 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+input,button{font:inherit;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);width:100%;margin-top:6px}
+button{background:var(--g);color:#fff;border:0;font-weight:700;cursor:pointer;min-height:46px}
+button:disabled{opacity:.5}
+.sm{font-size:15px;color:var(--m)}.err{color:var(--r);font-weight:700}
+.s{border-top:1px solid var(--line);padding:10px 0}
+.v{display:flex;align-items:center;gap:8px;margin:6px 0}.v b{min-width:78px}.v audio{flex:1;min-width:0;height:36px}
+.pick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pick label{flex:1 1 70px;border:1.5px solid var(--line);border-radius:12px;padding:8px;text-align:center;cursor:pointer;font-weight:700}
+.pick input{display:none}.pick label:has(input:checked){background:var(--g);color:#fff;border-color:var(--g)}
+textarea{width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line)}
+</style></head><body>
+<h1>اختيار الصوت لكل نوع</h1>
+<div class="card">
+<input id="k" type="password" dir="ltr" placeholder="مفتاح ElevenLabs (لا يُحفظ)" autocomplete="off">
+<input id="v1" dir="ltr" placeholder="١ أثر الأساسي" value="ctC3wK5bnR7WwqxOKFlC">
+<input id="v2" dir="ltr" placeholder="٢ تعليمات عادي">
+<input id="v3" dir="ltr" placeholder="٣ أذكار وتوجيهات">
+<input id="v4" dir="ltr" placeholder="٤ شبيه أوس">
+<div class="sm">المعرّفات محفوظة من الصفحة السابقة إن فتحتها من نفس المتصفح. كل جملة تُولَّد بالضغط عليها فقط (نموذج Flash).</div>
+<div class="err" id="msg"></div>
+</div>
+<div id="out"></div>
+<div class="card"><h2>قرارك</h2><div class="sm">اختر صوتًا لكل نوع ثم انسخ النتيجة وأرسلها لي.</div><div id="dec"></div>
+<button id="cp">انسخ النتيجة</button><textarea id="res" rows="4" readonly></textarea></div>
+<script>
+const $=id=>document.getElementById(id);
+const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const NAMES={1:"١ أثر",2:"٢ تعليمات",3:"٣ أذكار",4:"٤ شبيه أوس"};
+const CATS=[
+ ["adhkar","الأذكار والتوجيهات",["نقول: اللهم صلّ على محمد.","الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور.","نقول: بسم الله عند دخول البيت."]],
+ ["ins","التعليمات",["اضغط على النهار والليل","هيا نبني أركان الإسلام الخمسة","اضغط على الجواب الصحيح"]],
+ ["story","القصص",["فجاء النبي صلى الله عليه وسلم وأبو بكر رضي الله عنه لزيارته ماشيين.","حين يذهب الحُجّاج إلى بيت الله الحرام، يرفعون أصواتهم بالتلبية.","صنعت أسماء رضي الله عنها سفرة النبي صلى الله عليه وسلم حين أراد أن يهاجر إلى المدينة"]]
+];
+["v1","v2","v3","v4"].forEach(id=>{try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");if(o[id])$(id).value=o[id]}catch(e){}
+ $(id).addEventListener("input",()=>{try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");o[id]=$(id).value;localStorage.setItem("gl-set",JSON.stringify(o))}catch(e){}})});
+async function tts(text,slot){
+ const k=$("k").value.trim(),v=$("v"+slot).value.trim();
+ if(!k)throw new Error("الصق المفتاح أولًا");if(!v)return null;
+ for(let a=0;a<4;a++){
+  const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text,model_id:"eleven_flash_v2_5",voice_settings:{stability:.5,similarity_boost:.8,style:0,use_speaker_boost:true}})});
+  if(r.ok)return URL.createObjectURL(await r.blob());
+  if(r.status===429){await new Promise(x=>setTimeout(x,2000*(a+1)));continue}
+  throw new Error("صوت "+slot+": "+r.status+" "+(await r.text()).slice(0,120));
+ }
+ throw new Error("ازدحام");
+}
+const out=$("out"),dec=$("dec");
+CATS.forEach(([id,title,lines])=>{
+ const c=document.createElement("div");c.className="card";c.innerHTML="<h2>"+title+"</h2>";
+ lines.forEach((t,i)=>{
+  const s=document.createElement("div");s.className="s";
+  const p=document.createElement("div");p.textContent=nAr(i+1)+". "+t;s.appendChild(p);
+  const b=document.createElement("button");b.textContent="ولّد الأربعة";s.appendChild(b);
+  const box=document.createElement("div");s.appendChild(box);
+  b.onclick=async()=>{b.disabled=true;$("msg").textContent="";box.innerHTML="";
+   try{for(const sl of [1,2,3,4]){const u=await tts(t,sl);if(!u)continue;
+     const r=document.createElement("div");r.className="v";r.innerHTML="<b>"+NAMES[sl]+"</b>";
+     const a=document.createElement("audio");a.controls=true;a.src=u;r.appendChild(a);box.appendChild(r)}}
+   catch(e){$("msg").textContent=e.message}b.disabled=false};
+  c.appendChild(s)});
+ out.appendChild(c);
+ const d=document.createElement("div");d.innerHTML="<b>"+title+"</b>";
+ const pk=document.createElement("div");pk.className="pick";
+ [1,2,3,4].forEach(n=>{const l=document.createElement("label");l.innerHTML='<input type="radio" name="d_'+id+'" value="'+n+'">'+NAMES[n];pk.appendChild(l)});
+ d.appendChild(pk);dec.appendChild(d)});
+function res(){const r=CATS.map(([id,t])=>{const x=document.querySelector('input[name="d_'+id+'"]:checked');return t+": "+(x?NAMES[x.value]:"لم يُحدَّد")});$("res").value=r.join("\n")}
+dec.addEventListener("change",res);res();
+$("cp").onclick=()=>{res();$("res").select();try{navigator.clipboard.writeText($("res").value)}catch(e){document.execCommand("copy")}};
+</script></body></html>
