@@ -135,7 +135,29 @@ function row(i){
   const w=document.getElementById("w"+i);if(w)w.textContent=l.blob?"تغيّر النص — اضغط ↻ لإعادة التوليد":"";
   save(i);
  });
- r.appendChild(ta);
+ const wp=document.createElement("div");wp.style.cssText="display:none;background:#fff;border:2px solid #2d7f68;border-radius:14px;padding:10px;margin:6px 0";
+ const MK=["","َ","ُ","ِ","ْ","ّ","َّ","ُّ","ِّ","ً","ٌ","ٍ"];
+ const showWP=()=>{
+  const v=ta.value,p=ta.selectionStart;if(p==null)return;const isW=c=>c&&/[ء-ٰٟ]/.test(c);
+  let s=p,e=p;while(s>0&&isW(v[s-1]))s--;while(e<v.length&&isW(v[e]))e++;
+  if(e<=s){wp.style.display="none";return}
+  const word=v.slice(s,e),U=[];
+  for(const c of word){if(/[ً-ٰٟ]/.test(c)&&U.length)U[U.length-1].m+=c;else U.push({c,m:""})}
+  const draw=()=>{
+   wp.innerHTML="";const h=document.createElement("div");h.className="sm";h.textContent="اضغط على أي حرف ليتبدّل تشكيله (فتحة، ضمة، كسرة، سكون، شدّة…)";wp.appendChild(h);
+   const row2=document.createElement("div");row2.style.cssText="display:flex;flex-wrap:wrap;gap:6px;direction:rtl;margin:8px 0";
+   U.forEach(u=>{const b=document.createElement("button");b.className="s";b.textContent=u.c+u.m;b.style.cssText="font-size:30px;min-width:54px;min-height:64px;padding:2px 8px";
+    b.onclick=()=>{let k=MK.indexOf(u.m);u.m=MK[(k+1)%MK.length];draw()};row2.appendChild(b)});
+   wp.appendChild(row2);
+   const ac=document.createElement("div");ac.style.cssText="display:flex;gap:8px;flex-wrap:wrap";
+   const mkb=(t,cls,fn)=>{const b=document.createElement("button");b.textContent=t;if(cls)b.className=cls;b.style.minHeight="48px";b.onclick=fn;ac.appendChild(b)};
+   mkb("طبّق","good",()=>{const nw=U.map(u=>u.c+u.m).join("");ta.value=v.slice(0,s)+nw+v.slice(e);ta.dispatchEvent(new Event("input"));wp.style.display="none"});
+   mkb("بدون تشكيل","s",()=>{U.forEach(u=>u.m="");draw()});
+   mkb("إغلاق","s",()=>{wp.style.display="none"});
+   wp.appendChild(ac)};
+  draw();wp.style.display="block"};
+ ta.addEventListener("click",()=>setTimeout(showWP,0));
+ r.appendChild(ta);r.appendChild(wp);
  const w=document.createElement("div");w.id="w"+i;w.className="sm";r.appendChild(w);
  if(l.mark==="bad"){const nt=document.createElement("input");nt.type="text";nt.dir="rtl";nt.placeholder="ما الخطأ؟ مثال: اللام في الله خفيفة";nt.value=l.note||"";nt.style.marginTop="6px";nt.addEventListener("input",()=>{l.note=nt.value;save(i)});r.appendChild(nt)}
  const bt=document.createElement("div");bt.className="bt";r.appendChild(bt);
