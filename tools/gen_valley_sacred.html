@@ -127,7 +127,7 @@ function row(i){
  r.hidden=(l.mark==="ok"&&!showAll);
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
- const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
+ const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text.replace(/ﷺ/g,"صلى الله عليه وسلم")+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
  const ta=document.createElement("textarea");ta.rows=2;ta.dir="rtl";ta.value=sentOf(i);ta.id="ta"+i;
  ta.addEventListener("input",()=>{
   const v=ta.value;l.custom=(v===defOf(i))?null:v;
