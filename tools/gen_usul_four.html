@@ -128,7 +128,7 @@ function row(i){
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
  const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
- const ta=document.createElement("textarea");ta.rows=Math.max(5,Math.ceil(sentOf(i).length/28));ta.dir="rtl";ta.value=sentOf(i);ta.id="ta"+i;
+ const ta=document.createElement("textarea");ta.rows=8;ta.dir="rtl";ta.style.cssText="width:100%;min-height:220px;line-height:2;font-size:21px;padding:14px;border-radius:12px;border:2px solid #2d7f68;box-sizing:border-box;resize:vertical;margin:8px 0";ta.value=sentOf(i);ta.id="ta"+i;
  ta.addEventListener("input",()=>{
   const v=ta.value;l.custom=(v===defOf(i))?null:v;
   if(l.blob&&l.mark){l.mark=null;r.className="ln";setTx();est()}
