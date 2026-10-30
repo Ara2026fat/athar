@@ -103,7 +103,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .cat.full{grid-column:1/-1;min-height:0;flex-direction:row;justify-content:center;padding:12px}.cat.full .ic{font-size:30px}
 .cat.fin{border-color:var(--brand);background:var(--brand-soft)}
 .homeacts{max-width:640px;margin:14px auto 0;display:flex;gap:8px;justify-content:center}
-</style>
+#bHome,#kfilters,#home{display:none!important}</style>
 </head>
 <body>
 <div class="wrap">
@@ -661,7 +661,7 @@ function buildHome() {
   box.innerHTML = h;
   $("homeWho").textContent = (S.speaker ? "المتحدث: " + S.speaker + " — " : "") + "اضغط الأيقونة لتبدأ. يمكنك الرجوع من زر «الأقسام» في الأعلى.";
 }
-function showHome() { if (S.recording) return; buildHome(); $("home").classList.add("on"); $("home").scrollTop = 0; }
+function showHome() { return; if (S.recording) return; buildHome(); $("home").classList.add("on"); $("home").scrollTop = 0; }
 function pickCat(k) {
   S.kf = k; const V = view(); let i = V.findIndex(u => !S.takes.has(u.u)); S.idx = i < 0 ? 0 : i;
   if (window.__syncK) window.__syncK(); saveMeta(); $("home").classList.remove("on"); render();
@@ -679,7 +679,7 @@ function pickCat(k) {
   if (window.__syncK) window.__syncK();
   $("cats").onclick = ev => { const b = ev.target.closest(".cat"); if (b) pickCat(b.dataset.k); };
   $("bHome").onclick = showHome; $("hSet").onclick = () => { $("home").classList.remove("on"); openSettings(); };
-  render(); showHome();
+  render();
   if (rec) toast("استُعيد " + num(rec) + " تسجيلًا انقطع قبل اكتماله", 4500);
   window.__rec = { S, ALL, ENTRIES, view, cur, exportSummary, DB, key, jump, get lastZip() { return lastZip; } };
 })();
