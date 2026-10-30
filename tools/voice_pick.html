@@ -25,6 +25,8 @@ textarea{width:100%;font:inherit;padding:10px;border-radius:12px;border:1px soli
 <input id="v2" dir="ltr" placeholder="٢ تعليمات عادي">
 <input id="v3" dir="ltr" placeholder="٣ أذكار وتوجيهات">
 <input id="v4" dir="ltr" placeholder="٤ شبيه أوس">
+<label class="sm">السرعة (٠٫٧ بطيء — ١ عادي — ١٫٢ سريع)</label><input id="sp" type="number" min="0.7" max="1.2" step="0.05" value="1">
+<label class="sm">الثبات (أعلى = أهدأ وأقل تنويعًا)</label><input id="stb" type="number" min="0" max="1" step="0.05" value="0.5">
 <div class="sm">كل جملة قابلة للتعديل (أضف التشكيل كما تريد) قبل التوليد. المعرّفات محفوظة من الصفحة السابقة إن فتحتها من نفس المتصفح. كل جملة تُولَّد بالضغط عليها فقط (نموذج Flash).</div>
 <div class="err" id="msg"></div>
 </div>
@@ -46,7 +48,7 @@ async function tts(text,slot){
  const k=$("k").value.trim(),v=$("v"+slot).value.trim();
  if(!k)throw new Error("الصق المفتاح أولًا");if(!v)return null;
  for(let a=0;a<4;a++){
-  const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text,model_id:"eleven_flash_v2_5",voice_settings:{stability:.5,similarity_boost:.8,style:0,use_speaker_boost:true}})});
+  const r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify({text,model_id:"eleven_flash_v2_5",voice_settings:{stability:+$("stb").value,similarity_boost:.8,style:0,use_speaker_boost:true,speed:+$("sp").value}})});
   if(r.ok)return URL.createObjectURL(await r.blob());
   if(r.status===429){await new Promise(x=>setTimeout(x,2000*(a+1)));continue}
   throw new Error("صوت "+slot+": "+r.status+" "+(await r.text()).slice(0,120));
