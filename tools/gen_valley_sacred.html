@@ -23,7 +23,7 @@ button:disabled{opacity:.5}
 .ln button{width:auto;flex:1 1 70px;min-height:42px;padding:6px 10px}
 .ln.ok{background:#f0f8f3}.ln.bad{background:#fdeeee}
 .good{background:var(--g)}.badb{background:var(--r)}
-.ed{margin-top:8px}.ed textarea{width:100%;font:inherit;font-size:17px;padding:10px;border-radius:12px;border:1px solid var(--line)}
+.ed{margin-top:8px}.ed textarea{width:100%;min-height:170px;line-height:1.9;font:inherit;font-size:20px;padding:14px;border-radius:12px;border:1px solid var(--line)}
 .ed select{margin:6px 0}
 details summary{cursor:pointer;color:var(--m)}
 </style></head><body>
@@ -128,7 +128,7 @@ function row(i){
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
  const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text.replace(/ﷺ/g,"صلى الله عليه وسلم")+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
- const ta=document.createElement("textarea");ta.rows=2;ta.dir="rtl";ta.value=sentOf(i);ta.id="ta"+i;
+ const ta=document.createElement("textarea");ta.rows=Math.max(5,Math.ceil(sentOf(i).length/28));ta.dir="rtl";ta.value=sentOf(i);ta.id="ta"+i;
  ta.addEventListener("input",()=>{
   const v=ta.value;l.custom=(v===defOf(i))?null:v;
   if(l.blob&&l.mark){l.mark=null;r.className="ln";setTx();est()}
