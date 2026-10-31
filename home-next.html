@@ -3532,7 +3532,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   // الحزم معرَّفة في ملف packs.json المنفصل عن التطبيق؛ إن تعذّر قراءته نستعمل الحزمة الأساسية المضمَّنة
   function packsManifest(){
     if(packsMan) return Promise.resolve(packsMan);
-    return fetch("packs.json", {cache:"no-cache"}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    return fetch("packs-next.json", {cache:"no-cache"}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
       .then(function(m){ if(!m || !m.packs || !m.packs.length) throw 0; packsMan = m; return m; })
       .catch(function(){ packsMan = PACKS_BUILTIN; return packsMan; });
   }
