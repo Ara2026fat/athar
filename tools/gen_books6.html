@@ -168,7 +168,7 @@ function row(i){
  mk(l.blob?"↻ أعد التوليد":"ولّد","",async()=>{l.custom=(ta.value===defOf(i))?null:ta.value;try{await one(i,true)}catch(e){}});
  if(l.blob){
   mk("▶ استمع","s",()=>play(i));
-  mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est()});
+  mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est();goNext(i)});
   mk("✗ خطأ","badb",()=>{l.mark="bad";save(i);row(i);est()});
  }
  const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
@@ -191,6 +191,13 @@ async function one(i,autoplay){
   if(autoplay)play(i);
  }catch(e){$("msg").textContent=e.message;throw e}
  finally{row(i);est()}
+}
+async function goNext(i){
+ let j=-1;for(let k=i+1;k<L.length;k++){if(inB(k)&&L[k].mark!=="ok"){j=k;break}}
+ if(j<0)for(let k=0;k<i;k++){if(inB(k)&&L[k].mark!=="ok"&&!L[k].blob){j=k;break}}
+ if(j<0){$("msg").textContent="";return}
+ const r=$("r"+j);if(r)r.scrollIntoView({block:"start",behavior:"smooth"});
+ if(L[j].blob){if(L[j].mark!=="bad")play(j)}else{try{await one(j,true)}catch(e){}}
 }
 let busy=false;
 async function runMany(idx){
