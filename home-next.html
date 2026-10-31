@@ -1344,6 +1344,27 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   .us-verse{margin:6px 2px 4px;border-radius:16px;background:#FFF8DD;border:2px dashed #E7B24A;padding:8px 10px;text-align:center;}
   .us-wrap .dots-prog{margin:12px 0 8px;} .us-wrap .ps-nav{margin-top:4px;} .us-wrap .ps-exit{color:#fff;}
   .us-wrap .pill-btn:disabled{opacity:.45;}
+
+  /* شاشة واحدة بلا تمرير: الكتب */
+  #app:has(#view-library.active){height:100dvh;min-height:0;padding-bottom:0;overflow:hidden;display:flex;flex-direction:column;}
+  #app:has(#view-library.active) footer.sig{display:none;}
+  #app:has(#view-library.active) > main{flex:1;min-height:0;display:flex;flex-direction:column;}
+  #view-library.active{flex:1;min-height:0;display:flex;flex-direction:column;}
+  #view-library .browse-head{flex:none;margin-bottom:6px;}
+  #libBody{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;}
+  #libBody > .us-wrap{flex:1;min-height:0;display:flex;flex-direction:column;margin-bottom:8px;}
+  #libBody .us-top{flex:none;margin-bottom:6px;}
+  #libBody .us-card{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
+  #libBody .us-card > *{flex:none;}
+  #libBody .us-card > .us-banner,#libBody .us-card > .us-scene{flex:1 1 0;min-height:70px;height:auto;max-height:260px;}
+  #libBody .us-text{font-size:clamp(16px,2.9vh,21px);line-height:1.6;padding:6px 4px 2px;}
+  #libBody .us-verse{padding:5px 8px;margin:4px 0 2px;} #libBody .us-verse > :first-child{font-size:clamp(18px,3.2vh,24px)!important;line-height:1.7!important;}
+  #libBody .us-story-t{font-size:clamp(16px,2.9vh,20px);line-height:1.8;padding:4px 6px;}
+  #libBody .us-wrap{padding:10px 10px 8px;} #libBody .us-top{margin-bottom:6px;} #libBody .us-wrap .ps-nav .lq-say,#libBody .us-wrap .ps-nav .pill-btn{min-height:44px;padding-top:4px;padding-bottom:4px;}
+  #libBody .us-wrap .ps-nav{gap:6px;} #libBody .us-wrap .ps-exit{padding:2px;font-size:13px;}
+  #libBody .us-wrap .dots-prog{flex:none;margin:8px 0 6px;}
+  #libBody .us-wrap .ps-nav{flex:none;}
+  #libBody .us-wrap .ps-exit{flex:none;}
   /* لعبة علامات الله */
   .us-signs .us-day,.us-signs .us-nite{position:absolute;left:0;right:0;top:0;bottom:0;transition:opacity .8s;} .us-signs .us-nite{opacity:0;} .us-signs.night .us-nite{opacity:1;} .us-signs.night .us-day{opacity:0;}
   .us-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px 2px;}
@@ -11327,7 +11348,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         if(first){ seen[D.id] = 1; nSeen++; b.classList.add("seen"); burst(["⭐"], 4); }
         var allDone = (nSeen === 4);
         var after = null;
-        if(first && allDone){ tx.textContent = "أحسنت! كلّها علامات على الله."; after = function(){ sfx("done"); burst(["⭐", "✨"], 10); next.disabled = false; next.style.opacity = "1"; speak("أحسنت! كلّها علامات على الله."); }; }
+        if(first && allDone){ tx.textContent = "أحسنت! كلّها علامات تدلّنا على الله."; after = function(){ sfx("done"); burst(["⭐", "✨"], 10); next.disabled = false; next.style.opacity = "1"; speak("أحسنت! كلّها علامات تدلّنا على الله."); }; }
         else if(first && seen.day && seen.night && !seen.sun && !seen.moon){ after = function(){ tx.textContent = "الآن اضغط على الشمس والقمر"; speak("الآن اضغط على الشمس والقمر"); }; }
         else if(first && seen.sun && seen.moon && !(seen.day && seen.night)){ after = function(){ tx.textContent = "الآن اضغط على النهار والليل"; speak("الآن اضغط على النهار والليل"); }; }
         if(after) speak(D.s, function(){ setTimeout(after, 250); }); else speak(D.s);
