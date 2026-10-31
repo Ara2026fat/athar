@@ -3654,6 +3654,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   /* شريط الشاشة الرئيسية: يذكّر بتنزيل الحزمة الأساسية حتى تكتمل */
   function renderPackBanner(){
     var bn = $("packBanner"); if(!bn) return;
+    bn.hidden = true; return; /* لا نعلن عن العمل دون إنترنت */
     if(!window.caches){ bn.hidden = true; return; }
     packsReady().then(function(ok){
       bn.hidden = false; bn.innerHTML = "";
@@ -3686,6 +3687,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function openPacks(){ showView("view-packs"); window.scrollTo(0, 0); renderOfflineCard(); }
 
   function renderOfflineCard(){
+    return; /* لا نعرض بطاقة العمل دون إنترنت */
     ["offlineCard", "packsCard"].forEach(function(id){ var n = $(id); if(n) renderOfflineInto(n); });
   }
   function renderOfflineInto(c){
@@ -11798,7 +11800,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 
 })();
 </script>
-<link rel="stylesheet" href="next/home/world.css?v=1793470593">
+<link rel="stylesheet" href="next/home/world.css?v=1793471564">
 <link rel="stylesheet" href="next/home/sky.css?v=1793216586">
 <script src="next/home/sky.js?v=1793216586" defer></script>
 <script src="next/home/audio.js?v=1793269006" defer></script>

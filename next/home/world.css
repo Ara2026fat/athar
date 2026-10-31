@@ -185,6 +185,7 @@ body.hw-home .leaf{display:none}
 @keyframes wsp{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
 .w-pb{position:absolute;width:12px;height:7px;margin-left:-6px;border-radius:50%;background:#fff3b0;box-shadow:0 0 9px 3px rgba(255,220,120,.85);opacity:0;pointer-events:none;z-index:1;animation:wpb 2.2s ease-out both}
 @keyframes wpb{0%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1)}70%{opacity:.8}100%{opacity:0}}
+#offlineCard:empty,#packsCard:empty{display:none}
 #wLanterns{transform-origin:50% 0}#wLanterns.rp{animation:wrp .8s ease-out}
 @keyframes wrp{25%{transform:rotate(1.3deg)}60%{transform:rotate(-.9deg)}}
 #wLanterns .al-sw.rg{transform-box:fill-box;transform-origin:50% 0;animation:wrg 1.3s ease-out}
