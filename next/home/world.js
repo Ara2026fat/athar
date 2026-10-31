@@ -137,7 +137,7 @@ function door3d(k){
   el.replaceChild(w,old);el.classList.add("d3on")};
  im.onerror=function(){};
  im.src="next/home/img/doors/"+k+".webp"}
-B.forEach(function(b){if(b.k==="hifz")bEl.hifz.classList.add("ghost");else door3d(b.k)});
+B.forEach(function(b){door3d(b.k)});
 var pb=$("profileBar"),pk=$("packBanner");
 if(pb)$("wProf").appendChild(pb);
 var pkT=+ls("athar_pk_t")||0,dis=pkT>0&&Date.now()-pkT<6048e5,pkM=false;

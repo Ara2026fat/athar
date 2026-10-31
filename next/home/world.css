@@ -260,11 +260,16 @@ body.hw-home .leaf{display:none}
 
 .wb::before{content:"";position:absolute;left:-18px;right:-18px;top:-14px;bottom:-10px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,246,220,.5),rgba(255,246,220,0) 74%);z-index:-1;pointer-events:none}
 
-/* ===== تنظيم الشاشة الرئيسية: ميداليات موحّدة تفصل الأيقونات عن المنظر ===== */
+/* ===== تنظيم الشاشة الرئيسية: صحون موحّدة تفصل الأيقونات عن المنظر ===== */
 .wb .art3{overflow:visible}
-.wb .art3::before{content:"";position:absolute;left:50%;top:48%;width:76px;height:76px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.8),rgba(255,247,222,.55) 52%,rgba(72,52,110,.3));border:2.5px solid rgba(255,255,255,.9);box-shadow:0 5px 14px rgba(30,20,60,.4),inset 0 -6px 12px rgba(72,52,110,.2);pointer-events:none;z-index:-1}
-.w-night .wb .art3::before{background:radial-gradient(circle at 34% 28%,rgba(190,205,255,.6),rgba(60,70,140,.5) 55%,rgba(14,18,48,.6));border-color:rgba(200,210,255,.75)}
+.wb .art3 .d3{padding:7%;box-sizing:border-box}
+.wb .art3::before{content:"";position:absolute;left:50%;top:48%;width:88px;height:88px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 36% 28%,#fffdf4,#fff3d2 62%,#f1dcab);border:4px solid var(--rg,#fff);box-shadow:0 6px 14px rgba(30,20,60,.45),0 0 0 2px rgba(255,255,255,.85),inset 0 -7px 12px rgba(120,80,30,.16);pointer-events:none;z-index:-1}
+#wb-hifz{--rg:#2fa36b}#wb-noor{--rg:#f08a2c}#wb-lib{--rg:#8b5cf6}#wb-adhkar{--rg:#14b8a6}#wb-math{--rg:#f2a91d}#wb-quiz{--rg:#ec4899}
+.w-night .wb .art3::before{background:radial-gradient(circle at 36% 28%,#e8ecff,#c9d1f5 62%,#9aa6df);border-color:var(--rg,#c3ccff)}
 /* فوانيس الأسبوع: اسم اليوم الحالي فقط، والبقية تظهر عند لمسها */
 #wLanterns .al-ln:not(.today) .al-tx{opacity:0;transition:opacity .2s}
 #wLanterns .al-ln:not(.today):active .al-tx,#wLanterns .al-ln:not(.today):hover .al-tx{opacity:1}
 #wLanterns .al-ln.today .al-tx{font-size:15px}
+
+/* خلفية المنظر أهدأ قليلًا حتى تبرز الأبواب */
+#wMap .mi{filter:saturate(.88) brightness(.94)}
