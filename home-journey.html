@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>أثر — شاشة «هيا نكمل» (تصوّر)</title>
+<style>
+:root{--g:#2f7a55;--gd:#1d4f37;--gold:#f2b632;--ink:#23312a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Tajawal","Baloo Bhaijan 2",system-ui,sans-serif;color:var(--ink);background:#0d1a14}
+#app{position:fixed;inset:0;max-width:480px;margin:0 auto;background:url(next/home/img/map/day1.webp) center/cover;overflow:hidden}
+#app::before{content:"";position:absolute;inset:0;background:linear-gradient(#0000 35%,#0b2a1c99 100%)}
+.top{position:absolute;top:10px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:3}
+.brand{display:flex;align-items:center;gap:8px;background:#fff9;backdrop-filter:blur(6px);border-radius:99px;padding:4px 14px 4px 8px;font:700 32px "Baloo Bhaijan 2","Tajawal";color:var(--gd)}
+.brand img{width:64px;height:64px;border-radius:50%}
+.star{background:#fffbe6;border-radius:16px;padding:6px 14px;font-weight:800;font-size:20px;box-shadow:0 3px 8px #0003}
+.stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 18px 22px;z-index:2}
+.ath{width:30%;max-width:140px;margin-bottom:-12px;filter:drop-shadow(0 8px 10px #0005);animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.bubble{background:#fffdf3;border-radius:22px;padding:10px 18px;font-size:19px;font-weight:700;text-align:center;box-shadow:0 4px 12px #0003;margin-bottom:12px;position:relative}
+.bubble::after{content:"";position:absolute;bottom:-10px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fffdf3;border-bottom:0}
+.gate{width:min(72vw,280px);aspect-ratio:1;border-radius:50%;border:8px solid var(--gold);background:radial-gradient(#fff8dc,#f6e3a1);box-shadow:0 0 0 10px #f2b63244,0 14px 30px #0006;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;animation:pulse 2.6s ease-in-out infinite;position:relative;margin-top:2px}
+@keyframes pulse{50%{box-shadow:0 0 0 20px #f2b63222,0 14px 30px #0006}}
+.gate img{width:44%}.gate b{font-size:34px;color:var(--gd);line-height:1}.gate small{font-size:17px;color:#6b5a1f;font-weight:700}
+.gate:active{transform:scale(.97)}
+.trail{display:flex;align-items:center;gap:7px;margin:16px 0 8px;direction:rtl}
+.dot{width:18px;height:18px;border-radius:50%;background:#ffffff66;border:2px solid #fff}
+.dot.d{background:var(--gold);border-color:var(--gold)}.dot.c{width:26px;height:26px;background:#fff;border-color:var(--gold);box-shadow:0 0 0 5px #f2b63266}
+.line{width:18px;height:3px;background:#fff8;border-radius:2px}
+.cap{color:#fff;font-size:15px;font-weight:700;text-shadow:0 1px 4px #000a}
+.explore{margin-top:12px;background:#ffffffcc;border:0;border-radius:99px;padding:8px 22px;font:700 17px inherit;font-family:inherit;color:var(--gd);cursor:pointer}
+.tray{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:26px 26px 0 0;padding:16px 14px 22px;z-index:6;transform:translateY(105%);transition:.35s;box-shadow:0 -8px 24px #0005}
+.tray.open{transform:none}.tray h3{margin:0 0 10px;text-align:center;color:var(--gd)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.it{text-align:center;font-weight:700;font-size:15px}.it span{display:flex;width:74px;height:74px;margin:0 auto 4px;border-radius:50%;background:#f6efd8;border:3px solid #e6d79c;align-items:center;justify-content:center}.it img{width:62%}
+.veil{position:absolute;inset:0;background:#0007;z-index:5;opacity:0;pointer-events:none;transition:.3s}.veil.open{opacity:1;pointer-events:auto}
+.end{position:absolute;inset:0;z-index:8;background:linear-gradient(#10281c,#1f4d36);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:30px}
+.end.on{display:flex}.end img{width:46%;max-width:200px}.end h2{margin:0;font-size:30px}.end p{margin:0;font-size:19px;opacity:.9}
+.end button{margin-top:10px;background:var(--gold);border:0;border-radius:99px;padding:10px 26px;font:800 18px inherit;font-family:inherit;color:#3a2c00;cursor:pointer}
+.demo{position:fixed;top:92px;right:calc(50% - 232px);z-index:20}
+.demo{display:none}
+.note{position:absolute;z-index:9;top:84px;left:12px;right:12px;font-size:12.5px;color:#fff;background:#0008;border-radius:12px;padding:6px 10px;text-align:center}
+</style></head><body>
+<div id="app">
+ <div class="note">تصوّر فقط — اضغط الدائرة الكبيرة، ثم جرّب «أستكشف»</div>
+ <div class="top"><div class="star">⭐ ١٢</div><div class="brand"><img src="icons-athar/brand-96.png" alt=""><span>أثر</span></div></div>
+ <div class="stage">
+  <img class="ath" src="next/home/img/hello.webp" alt="">
+  <div class="bubble" id="bub">يا هلا! هيا نكمل رحلتنا</div>
+  <div class="gate" id="gate" role="button" tabindex="0"><img src="next/home/img/doors/hifz.webp" alt=""><b>هيا نكمل</b><small>سورة الناس</small></div>
+  <div class="trail" id="trail"></div>
+  <div class="cap" id="cap">خطوتك الرابعة في الرحلة</div>
+  <button class="explore" id="ex">🧭 أستكشف</button>
+ </div>
+ <div class="veil" id="veil"></div>
+ <div class="tray" id="tray"><h3>أين نذهب؟</h3><div class="grid">
+  <div class="it"><span><img src="next/home/img/doors/valley_win.webp" alt=""></span>الوادي</div>
+  <div class="it"><span><img src="next/home/img/doors/noor.webp" alt=""></span>القاعدة النورانية</div>
+  <div class="it"><span><img src="next/home/img/doors/lib.webp" alt=""></span>مكتبتي</div>
+  <div class="it"><span><img src="next/home/img/doors/adhkar.webp" alt=""></span>أذكاري</div>
+  <div class="it"><span><img src="next/home/img/doors/quiz.webp" alt=""></span>المسابقات</div>
+  <div class="it"><span><img src="next/home/img/doors/math.webp" alt=""></span>عالم الأرقام</div></div></div>
+ <div class="end" id="end"><img src="next/home/img/joy.webp" alt=""><h2>أحسنت!</h2><p>انتهينا اليوم، وأثر سعيد بك.<br>نلتقي غدًا بإذن الله</p><button id="bk">رجوع</button></div>
+</div>
+<script>
+var T=document.getElementById("trail"),n=7,cur=3;
+for(var i=0;i<n;i++){var d=document.createElement("div");d.className="dot"+(i<cur?" d":i==cur?" c":"");T.appendChild(d);if(i<n-1){var l=document.createElement("div");l.className="line";T.appendChild(l)}}
+var tray=document.getElementById("tray"),veil=document.getElementById("veil");
+function op(o){tray.classList.toggle("open",o);veil.classList.toggle("open",o)}
+document.getElementById("ex").onclick=function(){op(true)};veil.onclick=function(){op(false)};
+document.getElementById("gate").onclick=function(){document.getElementById("end").classList.add("on")};
+document.getElementById("bk").onclick=function(){document.getElementById("end").classList.remove("on")};
+</script></body></html>
