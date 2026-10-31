@@ -256,3 +256,5 @@ body.hw-home .leaf{display:none}
 #homeWorld.w-mapon.w-evening .wb:not(.ghost),#homeWorld.w-mapon.w-night .wb:not(.ghost){filter:drop-shadow(0 0 1.2px #ffe9a8) drop-shadow(0 0 9px rgba(255,214,120,.8)) drop-shadow(0 5px 6px rgba(0,0,0,.5))}
 #homeWorld.w-mapon .wb:not(.ghost)::after{content:"";position:absolute;left:8%;right:8%;bottom:-2px;height:12px;border-radius:50%;background:radial-gradient(ellipse,rgba(20,20,40,.38),rgba(20,20,40,0) 70%);pointer-events:none;z-index:-1}
 #homeWorld.w-mapon .wb#wb-valley::before{opacity:.55;transform:scale(1.05);background:radial-gradient(circle,rgba(255,240,180,.95),rgba(255,240,180,0) 68%)}
+
+.wb::before{content:"";position:absolute;left:-18px;right:-18px;top:-14px;bottom:-10px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,246,220,.5),rgba(255,246,220,0) 74%);z-index:-1;pointer-events:none}

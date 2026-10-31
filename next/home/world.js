@@ -75,6 +75,19 @@ var B=[
 {k:"quiz",d:"doorQuiz",x:286,y:440,w:100,h:80,l:"المسابقات",ax:300,ay:560},
 {k:"adhkar",d:"doorAdhkar",x:150,y:410,w:100,h:80,l:"أذكاري",ax:225,ay:560}
 ];
+/* مواضع الأبواب فوق اللوحات الثلاث: إحداثيات (بكسل الصورة الأصلية ٨٠٠×١٤١٧) لمركز كل باب، تُحوَّل إلى إحداثيات العالم */
+var LAYS={
+1:{valley:[400,690],hifz:[665,770],noor:[180,800],adhkar:[375,1020],lib:[150,1050],quiz:[700,1110],math:[135,1290]},
+2:{valley:[425,720],hifz:[670,790],noor:[140,880],adhkar:[385,1020],lib:[150,1050],quiz:[700,1090],math:[135,1290]},
+3:{valley:[400,580],hifz:[635,760],noor:[136,715],adhkar:[355,945],lib:[150,1050],quiz:[700,1070],math:[135,1290]}
+};
+function applyLay(n){
+var L=LAYS[n];if(!L)return;var k=390*1.05/800;
+B.forEach(function(b){var c=L[b.k];if(!c)return;
+var cx=c[0]*k-9.75,cy=704-(1417-c[1])*k;
+b.x=Math.round(cx-b.w/2);b.y=Math.round(cy-b.h/2);b.ax=Math.round(cx);b.ay=Math.min(690,Math.round(cy+b.h/2+30));
+var el=D.getElementById("wb-"+b.k);if(el){el.style.left=b.x+"px";el.style.top=b.y+"px"}});
+}
 var HOME={ax:195,ay:702},AH=152;
 var POSE={idle:[.27,.6],hello:[.22,.6],think:[.25,.6],joy:[.2,.85]};
 var CN=['ذهبي','أزرق','أخضر','وردي','بنفسجي'];
@@ -144,7 +157,7 @@ function mapVar(){var n=+ls("athar_map_n")||0;if(!W.__mapCounted){W.__mapCounted
 function setMap(){
 var mp=$("wMap");if(!mp)return;
 var kind=per==="night"?"night":per==="evening"?"sun":"day",key=kind+mapVar();
-if(key===mapK)return;mapK=key;
+if(key===mapK)return;mapK=key;applyLay(mapVar());
 var im=mp.querySelectorAll(".mi"),nx=im[mapN?0:1],cu=im[mapN?1:0];mapN=mapN?0:1;
 var src="next/home/img/map/"+key+".webp";
 function sw(){nx.classList.add("on");cu.classList.remove("on");world.classList.add("w-mapon")}
