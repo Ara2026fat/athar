@@ -61,7 +61,7 @@
    "id": "voices-lib",
    "title": "أصوات المكتبة والقصص",
    "desc": "أصوات كتب المكتبة والأسئلة والقصص، لتعمل دون إنترنت",
-   "size": "نحو 86 ميغا، يُفضَّل واي فاي",
+   "size": "نحو 95 ميغا، يُفضَّل واي فاي",
    "required": false,
    "bases": [
     "https://ara2026fat.github.io/athar/"
@@ -200,7 +200,8 @@
     "sp_book_wudu.bin",
     "sp_book_asma.bin",
     "sp_books5.bin",
-    "sp_isra.bin"
+    "sp_isra.bin",
+    "sp_books6.bin"
    ]
   }
  ]
