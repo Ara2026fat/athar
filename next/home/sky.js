@@ -57,6 +57,7 @@ root.setAttribute('role', 'group');
 var xs=[];
 for (i = 0; i < 7; i++) xs.push(LW - 28 - i * ((LW - 56) / 6));
 var ol = '#4A3226';
+var DAYC=[['#FF8A3D','#FFE0C2','#EFCFB4','#FBEBDD'],['#F2B705','#FFF1B8','#EBD9A0','#FBF1CF'],['#35C48B','#D6FBEA','#BFE0D2','#E8F7F0'],['#22B8F0','#D3F3FF','#B8DAE8','#E6F5FB'],['#6D7BEF','#DDE1FF','#C5C9E8','#ECEEFB'],['#A972F2','#EBDCFF','#D2C3E6','#F3EBFA'],['#EF5DA8','#FFD9EC','#E8BFD3','#FAE8F1']];
 var body=function (b,g,go,cap) {
 return '<path d="M0 0V8" stroke="' + ol + '" stroke-width="1.4" fill="none"/><circle cy="9.5" r="2.2" fill="none" stroke="' + ol + '" stroke-width="1.4"/>' +
 '<path d="M-8 16Q-8 11.5-4 11H4Q8 11.5 8 16Z" fill="' + cap + '" stroke="' + ol + '" stroke-width="1.6" stroke-linejoin="round"/>' +
@@ -68,8 +69,7 @@ return '<path d="M0 0V8" stroke="' + ol + '" stroke-width="1.4" fill="none"/><ci
 };
 var h = '<svg viewBox="0 0 390 110" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs>' +
 '<radialGradient id="' + id + 'g"><stop offset="0" stop-color="#FFE3A0" stop-opacity=".9"/><stop offset=".5" stop-color="#FFB347" stop-opacity=".3"/><stop offset="1" stop-color="#FFB347" stop-opacity="0"/></radialGradient>' +
-'<g id="' + id + 'on">' + body('#FFC857', '#FFF1C2', '.95', '#7A5236') + '</g>' +
-'<g id="' + id + 'off">' + body('#EBC688', '#FBE7B8', '.5', '#B58A5A') + '</g></defs>' +
+DAYC.map(function (c, k) { return '<g id="' + id + 'on' + k + '">' + body(c[0], c[1], '.95', '#7A5236') + '</g><g id="' + id + 'off' + k + '">' + body(c[2], c[3], '.5', '#B58A5A') + '</g>'; }).join('') + '</defs>' +
 '<path class="al-rs" d="' + ropeD(SAG0) + '"/><path class="al-rope" d="' + ropeD(SAG0) + '"/>';
 for (i = 0; i < 7; i++) h += '<g class="al-ln"><circle class="al-halo" r="36" cy="30" fill="url(#' + id + 'g)"/><g class="al-sw"><use/></g><text class="al-tx" y="72" text-anchor="middle"></text></g>';
 root.innerHTML = h + '</svg>';
@@ -91,7 +91,7 @@ var l=L[n],dayIdx=6-n,w=wk[dayIdx];
 if (w.lit) nl++;
 var tx = l.g.querySelector('.al-tx'); tx.textContent = w.name;
 l.g.classList.toggle('on', w.lit); l.g.classList.toggle('today', w.today);
-l.use.setAttribute('href', '#' + id + (w.lit ? 'on' : 'off'));
+l.use.setAttribute('href', '#' + id + (w.lit ? 'on' : 'off') + dayIdx);
 if (ignite && w.lit && l.lit === false) { l.g.classList.remove('ign'); void l.g.getBoundingClientRect(); l.g.classList.add('ign'); }
 l.lit=w.lit; l.date=w.date; l.name=w.name; l.today=w.today;
 }
