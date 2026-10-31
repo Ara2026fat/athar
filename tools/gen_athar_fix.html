@@ -184,4 +184,5 @@ $("clr").onclick=async()=>{if(!confirm("مسح كل المحفوظ؟"))return;if
   const ls=await all("lines");for(const id in ls)if(L[id])Object.assign(L[id],ls[id])}catch(e){DB=null;msg("تعذّر الحفظ التلقائي في هذا المتصفح.")}
  if(!had&&await importFromGen())msg("نُقلت صيغة لفظ الجلالة وقواعد الاستبدال من gen.html.");
  renderAll();sbar();window.__ready=true})();
+(function(){try{const k=document.getElementById("k");if(!k)return;const v=localStorage.getItem("athar-el-key");if(v&&!k.value)k.value=v;k.addEventListener("input",()=>{try{localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}});if(k.value&&!v)localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}})();
 </script></body></html>

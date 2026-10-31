@@ -171,4 +171,5 @@ function buildParts(){
 }
 $("mkparts").onclick=buildParts;
 (async()=>{await openDB();await loadAll();est();buildParts();drawBatches()})();
+(function(){try{const k=document.getElementById("k");if(!k)return;const v=localStorage.getItem("athar-el-key");if(v&&!k.value)k.value=v;k.addEventListener("input",()=>{try{localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}});if(k.value&&!v)localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}})();
 </script></body></html>
