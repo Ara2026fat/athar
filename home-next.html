@@ -3911,7 +3911,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   }
   function vLoadIndex(){
     try{
-      fetch("story-index.json").then(function(r){ return r.ok ? r.json() : null; })
+      fetch("story-index.json?v=" + Math.floor(Date.now() / 600000)).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return fetch("story-index.json").then(function(r){ return r.ok ? r.json() : null; }); })
         .then(function(j){ if(j && j.e) VST = j; }).catch(function(){});
     }catch(e){}
   }
