@@ -1,0 +1,16 @@
+#wScene{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#wScene .ray{position:absolute;top:-60px;left:78%;width:90px;height:420px;margin-left:-75px;background:linear-gradient(180deg,rgba(255,244,190,.32),rgba(255,244,190,0));transform-origin:50% 0;animation:fxray 9s ease-in-out infinite alternate;filter:blur(10px)}
+@keyframes fxray{from{opacity:.25;transform:rotate(var(--r,-20deg))}to{opacity:.55;transform:rotate(calc(var(--r,-20deg) + 7deg))}}
+#wScene .cl{position:absolute;height:34px;border-radius:30px;background:rgba(255,255,255,.55);filter:blur(7px);animation:fxcl linear infinite}
+@keyframes fxcl{from{transform:translateX(-200px)}to{transform:translateX(620px)}}
+#wScene .gl{position:absolute;width:26px;height:3px;border-radius:3px;background:rgba(255,255,255,.85);box-shadow:0 0 6px rgba(255,255,255,.9);animation:fxgl 3.4s ease-in-out infinite}
+@keyframes fxgl{0%,100%{opacity:0;transform:scaleX(.3)}50%{opacity:.9;transform:scaleX(1)}}
+#wScene .ff{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff3a0;box-shadow:0 0 10px 4px rgba(255,226,120,.8);animation:fxff var(--d,9s) ease-in-out infinite}
+@keyframes fxff{0%,100%{opacity:0;transform:translate(0,0)}20%,80%{opacity:1}50%{transform:translate(var(--x,20px),var(--y,-30px))}}
+#wScene .vg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 55%,rgba(40,20,70,.28) 100%)}
+#homeWorld .wb{animation:fxfl 4.6s ease-in-out infinite;animation-delay:calc(var(--i,0)*-.7s)}
+@keyframes fxfl{0%,100%{translate:0 0}50%{translate:0 -4px}}
+#homeWorld .wb::after{content:"";position:absolute;left:50%;top:38%;width:130%;height:100%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,236,160,.5),rgba(255,236,160,0) 62%);z-index:-1;pointer-events:none;animation:fxgw 3.4s ease-in-out infinite}
+@keyframes fxgw{0%,100%{opacity:.45}50%{opacity:1}}
+.w-map{will-change:transform;transition:transform .25s ease-out}
+@media (prefers-reduced-motion:reduce){#wScene *,#homeWorld .wb,#homeWorld .wb::after{animation:none!important}}
