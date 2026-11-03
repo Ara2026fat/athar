@@ -273,3 +273,11 @@ body.hw-home .leaf{display:none}
 
 /* خلفية المنظر أهدأ قليلًا حتى تبرز الأبواب */
 #wMap .mi{filter:saturate(.88) brightness(.94)}
+
+/* فانوس واحد لليوم (يتغيّر لونه كل يوم) مع تاريخ اليوم */
+#wLanterns{left:-158px}
+#wLanterns .al-rope,#wLanterns .al-rs{display:none}
+#wLanterns .al-ln:not(.today){display:none}
+#wLanterns .al-ln.today .al-tx{font-size:16px}
+#wLanterns .al-ln.today .al-dt{font-size:13px;font-weight:700}
+#homeWorld .w-snd{left:auto;right:14px;top:96px}

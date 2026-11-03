@@ -89,7 +89,11 @@ var wk=st.week,nl=0;
 for (var n = 0; n < 7; n++) {
 var l=L[n],dayIdx=6-n,w=wk[dayIdx];
 if (w.lit) nl++;
-var tx = l.g.querySelector('.al-tx'); tx.textContent = w.name;
+var tx = l.g.querySelector('.al-tx');
+if (w.today) { var dt=''; try { dt=new Date().toLocaleDateString('ar-SA-u-ca-gregory',{day:'numeric',month:'long'}); } catch(e){}
+tx.textContent=''; var t1=document.createElementNS('http://www.w3.org/2000/svg','tspan'); t1.setAttribute('x','0'); t1.textContent=w.name; tx.appendChild(t1);
+var t2=document.createElementNS('http://www.w3.org/2000/svg','tspan'); t2.setAttribute('x','0'); t2.setAttribute('dy','17'); t2.setAttribute('class','al-dt'); t2.textContent=dt; tx.appendChild(t2); }
+else tx.textContent = w.name;
 l.g.classList.toggle('on', w.lit); l.g.classList.toggle('today', w.today);
 l.use.setAttribute('href', '#' + id + (w.lit ? 'on' : 'off') + dayIdx);
 if (ignite && w.lit && l.lit === false) { l.g.classList.remove('ign'); void l.g.getBoundingClientRect(); l.g.classList.add('ign'); }
