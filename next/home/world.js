@@ -245,7 +245,7 @@ else put(HOME.ax,HOME.ay,0,true);
 }
 var zb=0,pending=null,guard=0,PV=/home-next/.test(location.pathname)||qs.get("preview")==="1";
 function go(b){
-if(zb)return;
+if(zb)return;if(W.AtharLand&&qs.get("nl")!=="1"&&!b._ok){W.AtharLand.open(b.k,function(){b._ok=1;go(b);b._ok=0});return}
 var el=$(b.d);
 var s=jget(KEY());s.seen=1;s.last=b.k;s.t=Date.now();lset(KEY(),JSON.stringify(s));
 pending=null;world.classList.remove("w-busy");ath.classList.remove("walk");
