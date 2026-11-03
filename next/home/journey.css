@@ -1,0 +1,34 @@
+/* الرئيسية الجديدة «هيا نكمل» — الوادي بالأعلى ولوحة الأبواب بالأسفل + صفحة تعريف لكل باب */
+#homeWorld.jr{position:relative;height:100dvh;min-height:640px;width:100%;overflow:hidden;background:#8cc4ee;direction:rtl;font-family:'Baloo Bhaijan 2','Tajawal',sans-serif;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.jr .jr-bg{position:absolute;inset:0;background:#8cc4ee center top/cover no-repeat}
+.jr .jr-tint{position:absolute;inset:0;pointer-events:none;background:linear-gradient(#0b1b4a00,#0b1b4a00)}
+.jr.jr-night .jr-tint{background:linear-gradient(#0b1b4acc,#10224f99)}
+.jr.jr-evening .jr-tint{background:linear-gradient(#ff8a4a33,#7a3a8a33)}
+.jr .jr-ath{position:absolute;left:10px;bottom:calc(var(--dock,330px) - 34px);width:96px;z-index:3;filter:drop-shadow(0 6px 6px #0006);animation:jrb 3.4s ease-in-out infinite;pointer-events:none}
+@keyframes jrb{50%{transform:translateY(-5px)}}
+.jr .jr-bub{position:absolute;left:92px;bottom:calc(var(--dock,330px) + 38px);z-index:3;background:#fffdf3;border-radius:18px;padding:5px 14px;font:800 17px/1.3 inherit;font-family:inherit;color:#1d4f37;box-shadow:0 4px 12px #0004}
+.jr .jr-bub::after{content:"";position:absolute;bottom:-8px;left:18px;border:8px solid transparent;border-top-color:#fffdf3;border-bottom:0}
+.jr .jr-dock{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:14px 14px 26px;border-radius:30px 30px 0 0;background:linear-gradient(#fff8e6f2,#f6ecd0f7);box-shadow:0 -10px 28px #0004;display:flex;flex-direction:column;gap:12px}
+.jr .jr-go{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:24px;padding:10px 14px;cursor:pointer;background:linear-gradient(#ffd75e,#f2b632);box-shadow:0 5px 0 #c98f12,0 10px 18px #0003;font-family:inherit;text-align:right;animation:jrp 2.4s ease-in-out infinite}
+@keyframes jrp{50%{transform:scale(1.02)}}
+.jr .jr-go img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 3px 3px #0004);background:#fffbe8;border-radius:50%;padding:7px;border:3px solid #fff}
+.jr .jr-go b{display:block;font-size:26px;color:#3a2c00;line-height:1.1}.jr .jr-go small{display:block;font-size:16px;color:#6b5210;font-weight:700}
+.jr .jr-go i{margin-right:auto;font-style:normal;font-size:30px;color:#3a2c00}
+.jr .jr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jr .jr-it{border:0;border-radius:22px;background:#fffdf4;box-shadow:0 4px 0 var(--c),0 8px 14px #0002;padding:10px 4px 8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;border:3px solid var(--c);transition:transform .15s}
+.jr .jr-it:active{transform:scale(.95)}
+.jr .jr-it img{width:62px;height:62px;object-fit:contain}
+.jr .jr-it span{font-size:15px;font-weight:800;color:#23312a;line-height:1.15;text-align:center}
+/* صفحة تعريف الباب */
+.jr-land{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px 24px;text-align:center;color:#fff;direction:rtl;font-family:'Baloo Bhaijan 2','Tajawal',sans-serif;background:linear-gradient(165deg,var(--a),var(--b))}
+.jr-land.on{display:flex;animation:jrin .35s ease both}
+@keyframes jrin{from{opacity:0;transform:scale(1.04)}}
+.jr-land .jl-ring{width:min(62vw,250px);aspect-ratio:1;border-radius:50%;background:radial-gradient(#fffdf0,#f6ecd0);border:8px solid #fff;box-shadow:0 0 0 14px #ffffff33,0 18px 34px #0005;display:flex;align-items:center;justify-content:center;animation:jrb 3s ease-in-out infinite}
+.jr-land .jl-ring img{width:66%}
+.jr-land h2{margin:6px 0 0;font-size:38px;text-shadow:0 3px 8px #0005}
+.jr-land p{margin:0;font-size:20px;line-height:1.6;max-width:320px;text-shadow:0 2px 6px #0004;font-family:'Tajawal',sans-serif;font-weight:700}
+.jr-land .jl-in{margin-top:10px;border:0;border-radius:99px;background:#ffd75e;color:#3a2c00;font:800 26px inherit;font-family:inherit;padding:12px 46px;box-shadow:0 6px 0 #c98f12,0 12px 20px #0004;cursor:pointer}
+.jr-land .jl-bk{background:transparent;border:0;color:#fff;font:700 18px inherit;font-family:inherit;opacity:.9;cursor:pointer;padding:8px 18px}
+html.hw-pre-j #app header{position:absolute;top:0;left:0;right:0;background:transparent;padding:12px 16px 2px;z-index:9}
+html.hw-pre-j #app .brand-mark{width:72px;height:72px}html.hw-pre-j #app .brand-mark img{width:100%!important;height:100%!important}html.hw-pre-j #app .brand-text{font-size:36px}html.hw-pre-j #app .brand-text span{font-size:12.5px;font-weight:700}
+html.hw-pre-j #app .gear-btn{width:48px;height:48px}html.hw-pre-j #app .brand{padding:3px 18px 3px 8px}html.hw-pre-j #app .sig{position:absolute;left:0;right:0;bottom:3px;margin:0;padding:0;z-index:7;pointer-events:none;opacity:.75;line-height:1.2}html.hw-pre-j #app main{padding:0}</style>
