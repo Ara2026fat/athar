@@ -280,7 +280,7 @@ body.hw-home .leaf{display:none}
 #wLanterns .al-ln:not(.today){display:none}
 #wLanterns .al-ln.today .al-tx{font-size:16px}
 #wLanterns .al-ln.today .al-dt{font-size:13px;font-weight:700}
-#homeWorld .w-snd{left:auto;right:14px;top:96px}
+#homeWorld .w-snd{left:14px;right:auto;top:96px}
 /* خيط يعلّق فانوس اليوم من أعلى الشاشة + حلقة صغيرة، حتى لا يبدو معلّقًا في الهواء */
 #wLanterns::before{content:"";position:absolute;left:352px;top:-6px;width:3px;height:70px;border-radius:2px;background:linear-gradient(#6b4a2b,#a47a4a);box-shadow:0 0 0 1px #0002;z-index:-1}
 #wLanterns::after{content:"";position:absolute;left:346px;top:-10px;width:15px;height:15px;border-radius:50%;background:radial-gradient(#ffd75e,#c8962b);border:2px solid #7a5420;z-index:-1}
