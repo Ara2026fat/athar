@@ -19,8 +19,8 @@ promote.py: يرقّي معاينتي «أثر» (home-next.html و valley/next.
 """
 import argparse, os, re, shutil, sys, hashlib, difflib
 
-HOME_ASSETS_JS = ["world.js", "sky.js", "screens.js", "fx.js"]
-HOME_ASSETS_CSS = ["world.css", "sky.css", "screens.css"]
+HOME_ASSETS_JS = ["world.js", "sky.js", "screens.js", "fx.js", "audio.js", "journey.js", "scene.js", "pathline.js"]
+HOME_ASSETS_CSS = ["world.css", "sky.css", "screens.css", "journey.css", "scene.css", "pathlan.css"]
 HOME_IMGS = ["idle.webp", "hello.webp", "joy.webp", "think.webp"]
 ROOT_FONTS = ["baloo-bhaijaan2-var.woff2", "tajawal-400.woff2", "tajawal-500.woff2", "tajawal-700.woff2",
               "tajawal-800.woff2", "amiri-quran.woff2", "salawat-noto.woff2"]
@@ -47,6 +47,7 @@ def once(s, old, new, what):
 def build_index(repo):
     s = rd(os.path.join(repo, "home-next.html"))
     s = once(s, "/* home-next: SW disabled in preview */", "setupServiceWorker();  /* " + MARK + " */", "تفعيل SW")
+    s = s.replace("manifest-next.json", "manifest.json").replace("packs-next.json", "packs.json")
     if "SW disabled" in s or "disabled in preview" in s:
         raise Fail("ما زال في index.html أثر لتعطيل المعاينة")
     return s
@@ -105,6 +106,8 @@ def build_root_sw(repo):
              ["./next/home/" + f for f in HOME_ASSETS_JS] +
              ["./next/home/img/" + f for f in HOME_IMGS] +
              ["./next/home/img/doors/" + f for f in sorted(os.listdir(os.path.join(repo, "next/home/img/doors")))
+              if f.endswith(".webp")] +
+             ["./next/home/img/map/" + f for f in sorted(os.listdir(os.path.join(repo, "next/home/img/map")))
               if f.endswith(".webp")] +
              ["./next/shared/reward.css", "./next/shared/reward.js", "./next/shared/nav.js"] +
              ["./next/assets/fonts/" + f for f in ROOT_FONTS])
@@ -194,6 +197,8 @@ def main():
         }
         out["sw.js"], root_items = build_root_sw(repo)
         out["valley/sw.js"] = build_valley_sw(repo)
+        out["manifest.json"] = rd(os.path.join(repo, "manifest-next.json")).replace("./home-next.html", "./index.html")
+        out["packs.json"] = rd(os.path.join(repo, "packs-next.json"))
     except Fail as e:
         sys.exit("فشل: %s" % e)
 

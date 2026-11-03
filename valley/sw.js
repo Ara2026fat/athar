@@ -9,15 +9,36 @@
    - audio/index.json يُخزَّن بحذر (فشله لا يُفشل التثبيت)، وحزم sp_*.bin
      لا يعترضها العامل: تخزّنها الصفحة في athar-packs-v1.
    ═══════════════════════════════════════════════════════════════ */
-const CACHE = "athar-shell-v10-r17";
+const CACHE = "athar-shell-v12-r8";
 const KIDC = "athar-kid-v1";   /* أصوات أثر الجديدة: تُخزَّن عند أول طلب (الدرس) لا دفعة واحدة، ولا تُحذف عند تحديث الصدفة */
 const SHELL = ["./", "./index.html"];
-const OPTIONAL = ["./audio/index.json", "./sequence.json"];   /* قد لا توجد: لا تُفشل التثبيت */
+const OPTIONAL = ["./audio/index.json", "./sequence.json", "./img/map/map_day.webp", "./img/map/map_sun.webp", "./img/map/map_night.webp"];   /* قد لا توجد: لا تُفشل التثبيت */
+/* [أصول] ذاكرة مستقلة عن رقم الصدفة: تبقى عند تحديث الصدفة، ويرفع رقمها فقط من يغيّر ملفًا داخل img/ أو fonts/ */
+const ASSETS = "athar-assets-v2";
+const PRECACHE = [
+  "../next/assets/fonts/rubik-ar-lat-var.woff2", "../next/assets/fonts/salawat-noto.woff2",
+  "../next/shared/reward.css", "../next/shared/reward.js", "../next/shared/nav.js",   /* نجوم أثر: وحدة مشتركة */
+  "./img/athar/idle.webp", "./img/athar/hello.webp", "./img/athar/joy.webp", "./img/athar/think.webp",
+  "./img/athar/read.webp", "./img/athar/listen.webp", "./img/athar/cheer.webp",
+  "./img/friends/aws_wave.webp", "./img/friends/baraa_wave.webp", "./img/friends/rayyan_wave.webp",
+  "./img/friends/tamim_wave.webp", "./img/friends/ziyad_wave.webp",
+  "./img/bg/home.webp",                                   /* خلفية البوابة/الخريطة نهارًا */
+  "./img/bg/hill.webp",
+  "./img/medal/home_day.webp", "./img/medal/masjid_day.webp", "./img/medal/spring_day.webp", "./img/medal/hill_day.webp", "./img/medal/road_day.webp",
+  /* علامات الوادي المجسّمة (r12) */
+  "./img/marks/mBalance.webp", "./img/marks/mBanner.webp", "./img/marks/mBlossom.webp", "./img/marks/mCart.webp", "./img/marks/mCompass.webp", "./img/marks/mCrown.webp", "./img/marks/mCurtain.webp", "./img/marks/mDoor.webp", "./img/marks/mEmber.webp", "./img/marks/mFeather.webp", "./img/marks/mFinalSeal.webp", "./img/marks/mGreenDome.webp", "./img/marks/mHarvest.webp", "./img/marks/mHeart.webp", "./img/marks/mHouse2.webp", "./img/marks/mKey.webp", "./img/marks/mLeaf.webp", "./img/marks/mLeafPair.webp", "./img/marks/mLowBranch.webp", "./img/marks/mNest.webp", "./img/marks/mPerfume.webp", "./img/marks/mShelter.webp", "./img/marks/mSpring2.webp", "./img/marks/mStill.webp"
+];
+const WARM = ["masjid_day","hill","road","spring","home_sun","masjid_sun","hill_sun","road_sun","spring_sun",
+              "home_night","masjid_night","hill_night","road_night","spring_night"].map(n => "./img/bg/" + n + ".webp").concat(["home","masjid","spring","hill","road"].reduce((a, k) => a.concat(["sun", "night"].map(v => "./img/medal/" + k + "_" + v + ".webp")), []));
 
 self.addEventListener("install", e => {
   e.waitUntil((async () => {
     const c = await caches.open(CACHE);
-    await Promise.all(SHELL.map(u => c.add(u).catch(() => {})));
+    await Promise.all(SHELL.map(u => c.add(new Request(u, { cache: "reload" })).catch(() => {})));   /* تجاوز كاش HTTP (GitHub Pages: max-age=600) */
+    const a = await caches.open(ASSETS);
+    await Promise.all(PRECACHE.map(u => a.add(u).catch(() => {})));
+    /* خلفيات كل الأماكن (نهار/غروب/ليل): تُخزَّن عند التثبيت حتى تعمل الدروس دون اتصال من أول مرة */
+    for (let i = 0; i < WARM.length; i += 4) await Promise.all(WARM.slice(i, i + 4).map(async u => { try { if (!(await a.match(u))) await a.add(u); } catch {} }));
     await Promise.all(OPTIONAL.map(async u => {
       try { const r = await fetch(u, { cache: "no-cache" }); if (r && r.ok) await c.put(u, r); } catch {}
     }));
@@ -28,13 +49,17 @@ self.addEventListener("install", e => {
 self.addEventListener("activate", e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k.startsWith("athar-shell-") && k !== CACHE).map(k => caches.delete(k)));
+    await Promise.all(keys.filter(k => (k.startsWith("athar-shell-") && k !== CACHE) || (k.startsWith("athar-assets-") && k !== ASSETS)).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
 
 self.addEventListener("message", e => {
   if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting();
+  if (e.data && e.data.type === "WARM") e.waitUntil((async () => {      /* تسخين الخلفيات الباقية بصمت: واحدة تلو الأخرى */
+    const a = await caches.open(ASSETS);
+    for (const u of WARM) { try { if (!(await a.match(u))) await a.add(u); } catch {} }
+  })());
 });
 
 self.addEventListener("fetch", e => {
@@ -44,6 +69,7 @@ self.addEventListener("fetch", e => {
   if (url.origin !== self.location.origin) return;                 /* لا اعتراض خارج الأصل */
   if (/\/audio\/athar_kid\/[^/]+\.mp3$/.test(url.pathname)) { e.respondWith(kidAudio(req, url)); return; }
   if (req.headers.has("range")) return;                            /* الصوت/الحزم تُخدَم مباشرة */
+  if (/\/(img|fonts)\/(?:[^/]+\/)?[^/]+\.(?:webp|woff2)$/.test(url.pathname)) { e.respondWith(assetFirst(req)); return; }
   if (/\/audio\/sp_[^/]+\.bin$/.test(url.pathname)) return;
 
   const isShell = req.mode === "navigate" || /\/(index\.html|sequence\.json|audio\/index\.json)$/.test(url.pathname)
@@ -65,6 +91,18 @@ self.addEventListener("fetch", e => {
     }
   })());
 });
+
+/* صور وخطوط الوادي: الذاكرة أولًا (تعمل دون اتصال)، وما لم يُخزَّن يُجلب ويُخزَّن عند أول طلب */
+async function assetFirst(req) {
+  const c = await caches.open(ASSETS);
+  const hit = await c.match(req.url);
+  if (hit) return hit;
+  try {
+    const net = await fetch(req);
+    if (net && net.ok) { try { await c.put(req.url, net.clone()); } catch {} }
+    return net;
+  } catch { return new Response("", { status: 504, statusText: "offline" }); }
+}
 
 /* ملفات أصوات أثر: أول طلب كامل يُخزَّن، وطلبات Range (المشغّل) تُخدَم منه بـ 206 */
 async function kidAudio(req, url) {

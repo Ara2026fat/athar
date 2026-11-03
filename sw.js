@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v83';
+const CACHE_VERSION = 'v84';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -443,7 +443,52 @@ const CORE_ASSETS = [
   './t090.mp3',
   './t092.mp3',
   './t094.mp3',
-  './t096.mp3'
+  './t096.mp3',
+  // [الرئيسية الجديدة r8] وحدات وصور أثر وخطوط محلية
+  './next/home/world.css',
+  './next/home/sky.css',
+  './next/home/screens.css',
+  './next/home/journey.css',
+  './next/home/scene.css',
+  './next/home/pathlan.css',
+  './next/home/world.js',
+  './next/home/sky.js',
+  './next/home/screens.js',
+  './next/home/fx.js',
+  './next/home/audio.js',
+  './next/home/journey.js',
+  './next/home/scene.js',
+  './next/home/pathline.js',
+  './next/home/img/idle.webp',
+  './next/home/img/hello.webp',
+  './next/home/img/joy.webp',
+  './next/home/img/think.webp',
+  './next/home/img/doors/adhkar.webp',
+  './next/home/img/doors/hifz.webp',
+  './next/home/img/doors/lib.webp',
+  './next/home/img/doors/math.webp',
+  './next/home/img/doors/noor.webp',
+  './next/home/img/doors/quiz.webp',
+  './next/home/img/doors/valley_win.webp',
+  './next/home/img/map/day1.webp',
+  './next/home/img/map/day2.webp',
+  './next/home/img/map/day3.webp',
+  './next/home/img/map/night1.webp',
+  './next/home/img/map/night2.webp',
+  './next/home/img/map/night3.webp',
+  './next/home/img/map/sun1.webp',
+  './next/home/img/map/sun2.webp',
+  './next/home/img/map/sun3.webp',
+  './next/shared/reward.css',
+  './next/shared/reward.js',
+  './next/shared/nav.js',
+  './next/assets/fonts/baloo-bhaijaan2-var.woff2',
+  './next/assets/fonts/tajawal-400.woff2',
+  './next/assets/fonts/tajawal-500.woff2',
+  './next/assets/fonts/tajawal-700.woff2',
+  './next/assets/fonts/tajawal-800.woff2',
+  './next/assets/fonts/amiri-quran.woff2',
+  './next/assets/fonts/salawat-noto.woff2'
 ];
 
 self.addEventListener('install', function(event){
@@ -451,7 +496,7 @@ self.addEventListener('install', function(event){
     // كلّ ملفٍّ على حدة: غيابُ ملفٍّ واحد لا يُفشل تثبيت العامل كلّه
     caches.open(CACHE_NAME).then(function(cache){
       return Promise.all(CORE_ASSETS.map(function(u){
-        return cache.add(u).catch(function(){});
+        return cache.add(new Request(u, {cache: 'reload'})).catch(function(){});
       }));
     })
   );
