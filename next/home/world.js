@@ -67,19 +67,19 @@ return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidde
 '<ellipse cx="60" cy="86" rx="30" ry="6" fill="#14b8a6"'+S2+'/>'+lantern(40,24,1.1,"#14b8a6",[3.4,7,0])+lantern(66,30,1.3,"#0fa090",[4.1,6,1.3])+lantern(92,22,1.0,"#14b8a6",[3.7,8,2.1])+'</svg>'}
 };
 var B=[
-{k:"valley",d:"doorValley",x:149,y:236,w:118,h:90,l:"الوادي",ax:195,ay:318},
-{k:"hifz",d:"doorHifz",x:290,y:296,w:100,h:110,l:"أحفظ القرآن",ax:300,ay:480},
-{k:"noor",d:"doorLang",x:38,y:274,w:88,h:70,l:"القاعدة النورانية",ax:140,ay:470},
-{k:"math",d:"doorMath",x:20,y:520,w:100,h:80,l:"عالم الأرقام",ax:140,ay:610},
-{k:"lib",d:"doorLib",x:16,y:372,w:100,h:80,l:"مكتبتي",ax:130,ay:530},
-{k:"quiz",d:"doorQuiz",x:286,y:440,w:100,h:80,l:"المسابقات",ax:300,ay:560},
-{k:"adhkar",d:"doorAdhkar",x:150,y:410,w:100,h:80,l:"أذكاري",ax:225,ay:560}
+{k:"valley",d:"doorValley",x:149,y:236,w:126,h:100,l:"الوادي",ax:195,ay:318},
+{k:"hifz",d:"doorHifz",x:290,y:296,w:112,h:90,l:"أحفظ القرآن",ax:300,ay:480},
+{k:"noor",d:"doorLang",x:38,y:274,w:112,h:90,l:"القاعدة النورانية",ax:140,ay:470},
+{k:"math",d:"doorMath",x:20,y:520,w:112,h:90,l:"عالم الأرقام",ax:140,ay:610},
+{k:"lib",d:"doorLib",x:16,y:372,w:112,h:90,l:"مكتبتي",ax:130,ay:530},
+{k:"quiz",d:"doorQuiz",x:286,y:440,w:112,h:90,l:"المسابقات",ax:300,ay:560},
+{k:"adhkar",d:"doorAdhkar",x:150,y:410,w:112,h:90,l:"أذكاري",ax:225,ay:560}
 ];
 /* مواضع الأبواب فوق اللوحات الثلاث: إحداثيات (بكسل الصورة الأصلية ٨٠٠×١٤١٧) لمركز كل باب، تُحوَّل إلى إحداثيات العالم */
 var LAYS={
-1:{valley:[400,661],noor:[199,798],hifz:[601,798],lib:[199,989],adhkar:[601,989],math:[199,1181],quiz:[601,1181]},
-2:{valley:[400,661],noor:[199,798],hifz:[601,798],lib:[199,989],adhkar:[601,989],math:[199,1181],quiz:[601,1181]},
-3:{valley:[400,661],noor:[199,798],hifz:[601,798],lib:[199,989],adhkar:[601,989],math:[199,1181],quiz:[601,1181]}
+1:{valley:[400,686],noor:[160,686],hifz:[641,686],lib:[160,925],adhkar:[400,925],quiz:[641,925],math:[160,1159]},
+2:{valley:[400,686],noor:[160,686],hifz:[641,686],lib:[160,925],adhkar:[400,925],quiz:[641,925],math:[160,1159]},
+3:{valley:[400,686],noor:[160,686],hifz:[641,686],lib:[160,925],adhkar:[400,925],quiz:[641,925],math:[160,1159]}
 };
 function applyLay(n){
 var L=LAYS[n];if(!L)return;var k=390*1.05/800;
@@ -88,7 +88,7 @@ var cx=c[0]*k-9.75,cy=704-(1417-c[1])*k;
 b.x=Math.round(cx-b.w/2);b.y=Math.round(cy-b.h/2);b.ax=Math.round(cx);b.ay=Math.min(690,Math.round(cy+b.h/2+30));
 var el=D.getElementById("wb-"+b.k);if(el){el.style.left=b.x+"px";el.style.top=b.y+"px"}});
 }
-var HOME={ax:195,ay:702},AH=152;
+var HOME={ax:292,ay:722},AH=152;
 var POSE={idle:[.27,.6],hello:[.22,.6],think:[.25,.6],joy:[.2,.85]};
 var CN=['ذهبي','أزرق','أخضر','وردي','بنفسجي'];
 var COLS=[['255,206,100','255,230,150'],['70,200,240','170,236,255'],['90,210,130','190,246,200'],['255,120,180','255,200,225'],['170,125,250','215,195,255']];
@@ -256,7 +256,7 @@ W.__atharQuietTap=Date.now()+600;if(el)el.click();
 }
 function steps(x0,y0,x1,y1,d){for(var i=1;i<7;i++){var s=D.createElement("i"),f=i/6;s.className="w-pb";s.style.cssText="left:"+(x0+(x1-x0)*f+(i%2?-8:8))+"px;top:"+(y0+(y1-y0)*f-4)+"px;animation-delay:"+(d*f).toFixed(2)+"s";lower.appendChild(s);setTimeout(function(s){s.remove()}.bind(0,s),(d*f+2.4)*1e3)}}
 function walkTo(b){
-if(zb)return;
+if(zb)return;if(qs.get("walk")!=="1"){var e0=bEl[b.k];e0.classList.remove("jel");void e0.offsetWidth;e0.classList.add("jel");if(W.HomeAudio)try{W.HomeAudio.say(b.k)}catch(x){}clearTimeout(T.look);setTimeout(function(){go(b)},200);return}
 if(pending){var p=pending;clearTimeout(p.t);if(p.b===b){go(b);return}bEl.valley.classList.remove("opn");pending=null;ath.classList.remove("walk")}   /* آخر نقرة تفوز */
 var el=bEl[b.k];el.classList.remove("jel");void el.offsetWidth;el.classList.add("jel");
 clearTimeout(T.look);

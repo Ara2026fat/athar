@@ -284,3 +284,8 @@ body.hw-home .leaf{display:none}
 /* خيط يعلّق فانوس اليوم من أعلى الشاشة + حلقة صغيرة، حتى لا يبدو معلّقًا في الهواء */
 #wLanterns::before{content:"";position:absolute;left:352px;top:-6px;width:3px;height:70px;border-radius:2px;background:linear-gradient(#6b4a2b,#a47a4a);box-shadow:0 0 0 1px #0002;z-index:-1}
 #wLanterns::after{content:"";position:absolute;left:346px;top:-10px;width:15px;height:15px;border-radius:50%;background:radial-gradient(#ffd75e,#c8962b);border:2px solid #7a5420;z-index:-1}
+
+/* أيقونات مجسّمة حقيقية بلا دوائر: أكبر وأوضح */
+.wb .art3::before{display:none!important}
+.wb .art3 .d3{padding:0!important;filter:drop-shadow(0 6px 5px rgba(30,40,20,.35))}
+.wb .lb{bottom:-8px!important;font-size:14px}
