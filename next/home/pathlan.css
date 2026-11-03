@@ -1,0 +1,10 @@
+/* فوانيس الأسبوع كاملة + فانوس اليوم بالهجري والميلادي (home-path فقط) */
+#wLanterns{left:0!important}
+#wLanterns .al-rope,#wLanterns .al-rs{display:inline!important}
+#wLanterns .al-ln:not(.today){display:inline!important}
+#wLanterns::before,#wLanterns::after{display:none!important}
+#wLanterns .al-ln.today .al-tx{font-size:14px}
+#wLanterns .al-ln.today .al-dt{font-size:12px;font-weight:700}
+.ath .ath-j,.ath .ath-b{transform:scaleX(var(--fl,1))}
+#homeWorld .wb{scale:.82}#homeWorld #wb-valley{scale:.95}
+#wLanterns .al-ln.today .al-tx{transform:translateX(-46px)}
