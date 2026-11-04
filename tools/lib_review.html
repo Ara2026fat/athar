@@ -31,8 +31,11 @@ button:disabled{opacity:.45}
 <h1>مراجعة نطق الكتب</h1>
 <div class="card" id="cfg">
 <label>مفتاح ElevenLabs (يبقى في متصفحك)</label><input id="k" type="password" dir="ltr" autocomplete="off" placeholder="sk_…">
-<div class="row"><div style="flex:1;min-width:150px"><label>صوت ١ (أثر)</label><input id="v1" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC"></div>
-<div style="flex:1;min-width:150px"><label>صوت ٣ (أذكار)</label><input id="v3" dir="ltr" value="jm4RJLsdWxM2mdn2d50g"></div></div>
+<div class="sm">الأصوات الأربعة (معرّف كل صوت): ١ أثر الأساسي · ٢ تعليمات عادي · ٣ أذكار وتوجيهات · ٤ شبيه صوت أوس</div>
+<div class="row"><div style="flex:1;min-width:150px"><label>١ أثر</label><input id="v1" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC"></div>
+<div style="flex:1;min-width:150px"><label>٢ تعليمات</label><input id="v2" dir="ltr"></div></div>
+<div class="row"><div style="flex:1;min-width:150px"><label>٣ أذكار</label><input id="v3" dir="ltr" value="jm4RJLsdWxM2mdn2d50g"></div>
+<div style="flex:1;min-width:150px"><label>٤ شبيه أوس</label><input id="v4" dir="ltr"></div></div>
 <div class="row"><div style="flex:1;min-width:150px"><label>النموذج</label><select id="mo"><option value="eleven_flash_v2_5">flash v2.5 (٠٫٥ رصيد/حرف)</option><option value="eleven_multilingual_v2">multilingual v2 (١ رصيد/حرف)</option></select></div>
 <div style="flex:1;min-width:100px"><label>السرعة</label><input id="sp" type="number" min="0.7" max="1.2" step="0.05" value="1"></div>
 <div style="flex:1;min-width:100px"><label>الثبات</label><input id="st" type="number" min="0" max="1" step="0.05" value="0.5"></div></div>
@@ -52,8 +55,8 @@ const DUA=/اللهم|بسم الله|سبحان الله|الحمد لله|أس
 UNITS.forEach(u=>{u.h=vHash(u.t);u.v=DUA.test(u.t)?3:1});
 const BOOKS={};UNITS.forEach(u=>(BOOKS[u.b]=BOOKS[u.b]||[]).push(u));
 /* ---- إعدادات محفوظة ---- */
-const SET=["v1","v3","mo","sp","st"];
-try{const o=JSON.parse(localStorage.getItem("lr-set")||"{}");SET.forEach(k=>{if(o[k])$(k).value=o[k]});const kk=localStorage.getItem("athar-el-key");if(kk)$("k").value=kk}catch(e){}
+const SET=["v1","v2","v3","v4","mo","sp","st"];
+try{try{const g=JSON.parse(localStorage.getItem("gl-set")||"{}");["v1","v2","v3","v4","mo","sp","st"].forEach(k=>{if(g[k])$(k).value=g[k]})}catch(e){}const o=JSON.parse(localStorage.getItem("lr-set")||"{}");SET.forEach(k=>{if(o[k])$(k).value=o[k]});const kk=localStorage.getItem("athar-el-key");if(kk)$("k").value=kk}catch(e){}
 SET.forEach(k=>$(k).addEventListener("input",()=>{try{const o={};SET.forEach(x=>o[x]=$(x).value);localStorage.setItem("lr-set",JSON.stringify(o))}catch(e){}}));
 $("k").addEventListener("input",()=>{try{localStorage.setItem("athar-el-key",$("k").value.trim())}catch(e){}});
 /* ---- حالة المراجعة: تشكيل معدّل وقرار لكل جملة ---- */
@@ -152,9 +155,9 @@ function openReview(keys){$("home").hidden=true;const R=$("rev");R.hidden=false;
   await Promise.all([worker(),worker(),worker()]);run=false;$("genAll").textContent="ولّد كل المعلَّم";upd();
   document.querySelectorAll("#rev .u").forEach(e=>e.__refresh&&e.__refresh())};
  window.__upd=upd}
-async function genOne(u){const b=await tts(ttsText(u),u.v);await putNew(u.h,b);const s=stOf(u);s.s="";saveST()}
+async function genOne(u){const b=await tts(ttsText(u),stOf(u).v||u.v);await putNew(u.h,b);const s=stOf(u);s.s="";saveST()}
 function unitEl(u,upd){const d=document.createElement("div");d.className="u";
- d.innerHTML='<div>'+u.t+'</div><textarea dir="rtl"></textarea><div class="row"><button class="s" data-a="cur">▶ الحالي</button><button class="s" data-a="new">▶ الجديد</button><button data-a="gen">ولّد هذه</button><button class="k" data-a="ok">✔ اقبل</button><button class="r" data-a="rej">✖ ارفض</button><label class="sm" style="margin:0"><input type="checkbox" data-a="g" style="width:auto"> ضمن التوليد</label></div><div class="err sm" data-a="e"></div>';
+ d.innerHTML='<div>'+u.t+'</div><textarea dir="rtl"></textarea><div class="row"><button class="s" data-a="cur">▶ الحالي</button><button class="s" data-a="new">▶ الجديد</button><button data-a="gen">ولّد هذه</button><button class="k" data-a="ok">✔ اقبل</button><button class="r" data-a="rej">✖ ارفض</button><label class="sm" style="margin:0"><input type="checkbox" data-a="g" style="width:auto"> ضمن التوليد</label></div><div class="row"><label class="sm" style="margin:0">الصوت:</label><select data-a="vs" style="width:auto"><option value="0">تلقائي</option><option value="1">١ أثر</option><option value="2">٢ تعليمات</option><option value="3">٣ أذكار</option><option value="4">٤ شبيه أوس</option></select><button class="s" data-a="cmp">قارن الأصوات الأربعة</button></div><div data-a="cmpOut"></div><div class="err sm" data-a="e"></div>';
  const ta=d.querySelector("textarea"),$$=a=>d.querySelector('[data-a="'+a+'"]');
  ta.value=ttsText(u);ta.oninput=()=>{stOf(u).x=ta.value;saveST()};
  $$("g").checked=wantGen(u);$$("g").onchange=e=>{stOf(u).g=e.target.checked;saveST();upd()};
@@ -163,6 +166,16 @@ function unitEl(u,upd){const d=document.createElement("div");d.className="u";
  $$("cur").onclick=async()=>{try{const a=await curAudio(u);if(a)play(a);else $$("e").textContent="لا يوجد صوت حالي لهذه الجملة"}catch(e){$$("e").textContent=e.message}};
  $$("new").onclick=()=>NEW.has(u.h)&&play(NEW.get(u.h));
  $$("gen").onclick=async()=>{$$("gen").disabled=true;$$("e").textContent="";try{await genOne(u);stOf(u).g=true;saveST();refresh();upd();play(NEW.get(u.h))}catch(e){$$("e").textContent=e.message}$$("gen").disabled=false};
+ $$("vs").value=String(stOf(u).v||0);$$("vs").onchange=e=>{stOf(u).v=+e.target.value||0;saveST()};
+ $$("cmp").onclick=async()=>{const out=$$("cmpOut");out.innerHTML="";$$("e").textContent="";$$("cmp").disabled=true;
+  for(const sl of [1,2,3,4]){if(!$("v"+sl).value.trim())continue;
+   try{const b=await tts(ttsText(u),sl);const r=document.createElement("div");r.className="row";r.style.margin="6px 0";
+    r.innerHTML='<b>صوت '+nAr(sl)+'</b>';
+    const pb=document.createElement("button");pb.className="s";pb.textContent="▶ استمع";pb.onclick=()=>play(b);
+    const ub=document.createElement("button");ub.className="k";ub.textContent="✔ اعتمد هذا الصوت";ub.onclick=async()=>{stOf(u).v=sl;stOf(u).g=true;saveST();await putNew(u.h,b);$$("vs").value=String(sl);refresh();upd();out.innerHTML="";};
+    r.appendChild(pb);r.appendChild(ub);out.appendChild(r)}
+   catch(e){$$("e").textContent=e.message;break}}
+  $$("cmp").disabled=false};
  $$("ok").onclick=()=>{stOf(u).s="ok";saveST();refresh()};
  $$("rej").onclick=async()=>{stOf(u).s="rej";stOf(u).g=true;saveST();await delNew(u.h);refresh();upd();$$("e").textContent="رُفض: عدّل التشكيل ثم اضغط «ولّد هذه»"};
  return d}
