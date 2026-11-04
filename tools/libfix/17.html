@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أثر — مراجعة الكتب 17</title>
+<style>
+:root{--g:#2A8067;--p:#FDF7E8;--ink:#1d2b26;--m:#6b7a73;--r:#b3382c;--line:#e3d9bd}
+*{box-sizing:border-box}
+body{margin:0;background:var(--p);color:var(--ink);font:18px/1.7 "Noto Naskh Arabic","Amiri",system-ui,sans-serif;padding:16px;max-width:720px;margin-inline:auto}
+h1{color:var(--g);font-size:25px;margin:.2em 0 .4em}
+ol{padding-inline-start:22px;margin:0 0 12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input,select,button{font:inherit;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);width:100%}
+button{background:var(--g);color:#fff;border:0;font-weight:700;cursor:pointer;min-height:48px}
+button.s{background:#fff;color:var(--g);border:1px solid var(--g)}
+button:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 150px}
+.bar{height:10px;background:#eee4c8;border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--g)}
+.sm{font-size:15px;color:var(--m)}.err{color:var(--r);font-weight:700}
+.ln{border-top:1px solid var(--line);padding:10px 0}
+.ln .tx{font-size:17px;margin-bottom:6px}
+.ln .bt{display:flex;gap:6px;flex-wrap:wrap}
+.ln button{width:auto;flex:1 1 70px;min-height:42px;padding:6px 10px}
+.ln.ok{background:#f0f8f3}.ln.bad{background:#fdeeee}
+.good{background:var(--g)}.badb{background:var(--r)}
+.ed{margin-top:8px}.ed textarea{width:100%;min-height:170px;line-height:1.9;font:inherit;font-size:20px;padding:14px;border-radius:12px;border:1px solid var(--line)}
+.ed select{margin:6px 0}
+details summary{cursor:pointer;color:var(--m)}
+</style></head><body>
+<h1>مراجعة الكتب ١٧ (٢٤٤ جملة)</h1><div class="sm">الأمل والفرج، قوم سبأ، سورة الفاتحة، أركان الإسلام: الزكاة والصيام والحج، السلام والاستئذان</div>
+<ol>
+<li>الصق المفتاح واختر الكتاب من الأزرار، ثم اضغط «ولّد غير المولَّد» (٢٤٤ جملة).</li>
+<li>استمع ▶ ثم اضغط <b>✓ صح</b> أو <b>✗ خطأ</b>.</li>
+<li>عند ✗ اكتب السبب في خانة «ما الخطأ؟»، ثم اضغط «انسخ تقرير الأخطاء» والصقه لي.</li>
+<li>حين تصير كلها صح اضغط «نزّل المعتمد» وأرسل لي الملف.</li>
+</ol>
+<div class="card">
+<label for="k">مفتاح ElevenLabs</label>
+<input id="k" type="password" dir="ltr" autocomplete="off" placeholder="sk_…">
+<details open><summary>إعدادات الصوت (الافتراضي هو صوت القاعدة النورانية)</summary>
+<label>الأصوات الأربعة (الصق المعرّفات؛ تُحفظ)</label><input id="v1" dir="ltr" value="ctC3wK5bnR7WwqxOKFlC" placeholder="١ أثر الأساسي"><input id="v2" dir="ltr" placeholder="٢ تعليمات عادي" style="margin-top:6px"><input id="v3" dir="ltr" value="jm4RJLsdWxM2mdn2d50g" placeholder="٣ أذكار وتوجيهات" style="margin-top:6px"><input id="v4" dir="ltr" placeholder="٤ شبيه أوس" style="margin-top:6px"><label for="vslot">الصوت الافتراضي لكل الجمل</label><select id="vslot" data-d="3"><option value="1">١ أثر الأساسي</option><option value="2">٢ تعليمات عادي</option><option value="3">٣ أذكار وتوجيهات</option><option value="4">٤ شبيه أوس</option></select>
+<label for="mo">النموذج</label><select id="mo"><option value="eleven_v3">eleven_v3</option><option value="eleven_multilingual_v2">eleven_multilingual_v2</option><option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option></select>
+<label for="st">الثبات</label><select id="st"><option value="1">١٫٠ ثابت (موصى به)</option><option value="0.5">٠٫٥ طبيعي</option><option value="0">٠٫٠ حر</option></select>
+<label for="al">لفظ الجلالة</label><select id="al"><option value="1">ألف خنجرية (موصى به)</option><option value="0">الأصل</option><option value="2">فتحة صريحة</option><option value="3">كلمة قبلها</option><option value="4">ألف وصل</option></select>
+<label for="rules">قواعد استبدال (سطر لكل قاعدة: كلمة=&gt;بديل)</label><textarea id="rules" rows="3" dir="rtl" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line)"></textarea>
+</details>
+<div class="sm" id="est"></div>
+</div>
+<div class="row"><button id="all">ولّد غير المولَّد</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
+<div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button></div>
+<div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
+<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
+<div class="sm">الجمل المتبقية · المعتمد ✓ محفوظ في هذا المتصفح. نزّل نسخة احتياطية، فإن ضاع شيء اضغط «استرجع من ملف نزّلته».</div>
+<div id="tabs" class="row" style="margin:8px 0"></div><div id="list" class="card"></div>
+<script>
+const LINES=["ماذا قال يعقوب لبنيه؟", "استمر في الأمل رغم الحزن.", "من الذي ييأس من رحمة الله؟", "المؤمن يرجو الله دائمًا.", "ماذا قال الله لعباده المسرفين على أنفسهم؟", "ماذا يفعل الله بالذنوب؟", "إنه هو الغفور الرحيم.", "بعد الشدة فرج.", "وكرّر الله هذا الوعد، فماذا قال؟", "وعد مؤكد.", "ماذا يجعل الله لمن يتقيه؟", "التقوى طريق الفرج.", "وكيف يرزقه؟", "رزق الله يأتي من حيث لا نتوقع.", "من توكل على الله فالله…", "يكفيه الله.", "هل يكلّف الله نفسًا فوق طاقتها؟", "لنصبر.", "ومن نبشّر؟", "بشرى للصابرين.", "ماذا يفعل الله بما يصيب المسلم من همّ وحزن وأذى؟", "أين نادى يونس عليه السلام ربّه؟", "نادى يونس ربّه في الظلمات فاستجاب الله له.", "ماذا قال يونس في دعائه؟", "دعا يونس بقوله: لا إله إلا أنت سبحانك إني كنت من الظالمين.", "ماذا فعل الله ليونس بعد دعائه؟", "الله يستجيب لمن دعاه وينجّيه من الغمّ.", "بماذا وصف أيوب عليه السلام ربّه في دعائه؟", "دعا أيوب ربّه متوسّلًا برحمته سبحانه.", "ماذا قال المؤمنون فزادهم إيمانًا؟", "من قال حسبنا الله ونعم الوكيل توكّل على الله حقًّا.", "ماذا قال الله عن نفسه حين سأل عباده عنه؟", "الله قريب من عباده يسمعهم ويجيبهم.", "ماذا يفعل الله إذا دعاه الداعي؟", "نسأل الله وهو يجيب دعاءنا بحكمته.", "كيف نصر الله؟", "مهما اشتدّ البلاء فنصر الله قريب.", "الله معنا يحفظنا ويرعانا فلا نحزن.", "من صبر كان الله معه.", "﴿فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا﴾", "فإن مع العسر يسرا", "عرفتَ أن بعد العسر يسرًا", "ماذا كان في مسكن قوم سبأ؟", "نعمة ظاهرة.", "ماذا قيل لهم؟", "الأكل مع الشكر.", "كيف وُصف بلدهم وربهم؟", "نعمة ومغفرة.", "ماذا فعلوا بعد النعمة؟", "فجاءهم العقاب.", "دمّر الجنتين.", "بماذا بدّلهم؟", "فقدوا نعمتهم.", "ماذا قال الله عن هذا الجزاء؟", "جزاء كفرهم.", "ماذا قالوا في طلبهم؟", "ظلموا أنفسهم.", "ماذا جعلهم الله؟", "صاروا عبرة.", "لمن في ذلك آيات؟", "الصبر والشكر.", "كم قليل من عباد الله الشكور؟", "فلنكن من الشاكرين.", "ماذا جعل الله بين قوم سبأ والقرى المباركة؟", "كانت القرى قريبة ظاهرة فيسهل عليهم السفر.", "ماذا قدّر الله في تلك القرى؟", "جعل الله السفر بين القرى منظّمًا ميسّرًا.", "متى قيل لهم سيروا فيها؟", "كانوا يسيرون في أي وقت.", "كيف كانوا يسيرون في تلك الطرق؟", "الأمن من أعظم النعم.", "ماذا كان عن يمين وشمال في مسكنهم؟", "كانت بساتينهم جميلة تدلّ على فضل الله.", "من شكر الله زاده من فضله.", "وماذا قال الله عن عذابه لمن كفر؟", "نشكر النعمة ولا نكفرها.", "لمن يكون نفع الشكر؟", "الله غني عن شكرنا ونحن المنتفعون.", "ماذا قال الله لنا مع الشكر؟", "نذكر الله ونشكره دائمًا.", "ماذا قال الله عن جزاء الكافرين بالنعمة؟", "سبأ لما جحدوا النعمة زالت عنهم.", "﴿وَٱشْكُرُوا۟ لَهُۥ ۚ بَلْدَةٌ طَيِّبَةٌ وَرَبٌّ غَفُورٌ﴾", "بلدة طيبة ورب غفور", "عرفتَ قصة قوم سبأ", "بماذا نبدأ؟", "نبدأ باسم الله.", "لمن الحمد؟", "نشكر الله ونثني عليه.", "ما اسمان من أسماء الله فيها؟", "رحمته واسعة.", "من هو مالك يوم الدين؟", "يوم الحساب لله وحده.", "من نعبد؟", "ومن نستعين؟", "نطلب العون منه.", "ما أهم دعاء نطلبه؟", "الهداية أعظم نعمة.", "صراط من نطلب؟", "طريق أهل الخير.", "ماذا قال الله عن الصلاة؟", "ولعبدي ما سأل.", "إذا قال العبد: الحمد لله رب العالمين؟", "الله يسمعنا.", "وإذا قال: الرحمن الرحيم؟", "ثناء على الله.", "وإذا قال: مالك يوم الدين؟", "تمجيد لله.", "ماذا تُسمّى الفاتحة في قوله تعالى: «سَبۡعٗا مِّنَ ٱلۡمَثَانِي»؟", "الفاتحة سبع آيات تُكرَّر في الصلاة.", "ما السورة التي سمّاها النبي صلى الله عليه وسلم «السبع المثاني»؟", "هي الفاتحة، وهي القرآن العظيم.", "ما السورة التي لا تصح الصلاة بدون قراءتها؟", "نقرأ الفاتحة في كل ركعة من الصلاة.", "ما النوران اللذان أُعطيهما النبي صلى الله عليه وسلم، ومنهما الفاتحة؟", "أبشره الملَك بنورين لم يُعطَهما نبي قبله.", "ماذا نقول بعد الفاتحة؟", "نقول آمين مع الإمام عند انتهاء الفاتحة.", "الله خالق كل شيء ومربّيه.", "ما معنى «ٱهۡدِنَا ٱلصِّرَٰطَ ٱلۡمُسۡتَقِيمَ»؟", "نسأل الله أن يدلّنا على الحق ويثبّتنا.", "ما سعة رحمة الله؟", "رحمة الله واسعة تشمل كل شيء.", "لمن الأمر يوم الدين؟", "في ذلك اليوم الأمر كله لله وحده.", "ماذا قال الله إذا قال العبد: «إياك نعبد وإياك نستعين»؟", "وللعبد ما سأل، فالله يجيب دعاء عبده.", "﴿إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ﴾", "عرفتَ سورة الفاتحة", "ماذا تفعل الصدقة بنا؟", "الصدقة تطهّر القلب من البخل وتزكّي النفس.", "لمن تُعطى الزكاة؟", "حدّد الله من تُعطى لهم الزكاة، وهي فريضة منه.", "متى ننال البرّ؟", "نعطي من أحبّ ما عندنا لله.", "كيف يضاعف الله من ينفق؟", "في كل سنبلة مئة حبّة، والله يضاعف لمن يشاء.", "هل تُنقص الصدقة المال؟", "الله يبارك في مال المتصدّق.", "حتى لو لم نجد إلا شيئًا قليلًا؟", "لا نحتقر القليل من الخير.", "ما الغاية من الصيام؟", "فرض الله الصيام على المؤمنين كما فرضه على من قبلهم.", "بماذا وصف النبي صلى الله عليه وسلم الصيام؟", "الصيام وقاية لصاحبه من الذنوب، فيصوم الصائم عن الكلام السيّئ والجهل.", "ماذا ينتظر الصائم من الله؟", "الصائم يفرح حين يفطر، ويفرح بصيامه حين يلقى ربه.", "ما اسم باب الصائمين في الجنة؟", "يدخل منه الصائمون وحدهم يوم القيامة.", "ماذا قال النبي صلى الله عليه وسلم عمّن لا يدع قول الزور؟", "الصيام الحقيقي يشمل ترك الكذب والأذى.", "ماذا يفعل المريض والمسافر؟", "الله يريد بنا اليسر.", "ما الذي نزل في رمضان؟", "أنزل الله القرآن في رمضان هدى للناس.", "ما ليلة القدر؟", "ليلة عظيمة في رمضان نزل فيها القرآن.", "من ينزل في ليلة القدر؟", "وهي سلام حتى مطلع الفجر.", "ماذا يفعل من قام ليلة القدر إيمانًا واحتسابًا؟", "قيام الليلة بإيمان وإخلاص لله.", "ماذا يحدث عند مجيء رمضان؟", "وتُصفَّد الشياطين.", "لماذا نتسحّر؟", "نأكل قبل الفجر فنقوى على الصيام.", "على ماذا كان النبي صلى الله عليه وسلم يفطر؟", "نقتدي به في الإفطار.", "على من يجب الحجّ؟", "الحج مرة في العمر لمن يقدر عليه.", "من أمره الله أن يؤذّن في الناس بالحجّ؟", "فيأتي الناس من كل مكان.", "ما أول بيت وُضع للناس؟", "الكعبة أول بيت وُضع لعبادة الله.", "ما خير الزاد؟", "نتزود بالتقوى في الحج وفي الحياة.", "ما جزاء الحجّ المبرور؟", "الحج المبرور: الذي لا معصية فيه.", "كيف يرجع من حجّ ولم يرفث ولم يفسق؟", "يرجع نقيًّا من الذنوب بإذن الله.", "ماذا قال الله عن الصدقة إذا أخفيناها وأعطيناها الفقراء؟", "الإخفاء أقرب للإخلاص.", "ماذا أمرنا الله أن نتمّ لله؟", "نؤدّي الحجّ والعمرة خالصَين لله.", "ما موضعا السعي من شعائر الله؟", "يسعى الحاجّ بين الصفا والمروة.", "ماذا يفعل الحجّاج بالبيت العتيق؟", "الطواف بالكعبة من أعمال الحجّ.", "على كم خصلة بُني الإسلام؟", "هي أركان الإسلام الخمسة.", "﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾", "فإن خير الزاد التقوى", "عرفتَ أركان الإسلام العملية", "كيف نردّ إذا حيّانا أحد بتحية؟", "إذا قال: السلام عليكم، نقول: وعليكم السلام ورحمة الله.", "ماذا نقول إذا دخلنا بيوتنا؟", "تحية مباركة طيبة.", "السلام على الجميع.", "ماذا نفعل حتى نتحاب؟", "لا تدخلوا الجنة حتى تؤمنوا ولا تؤمنوا حتى تحابّوا.", "من يسلّم على من؟", "آداب بسيطة للسلام.", "ماذا نفعل قبل دخول بيت غير بيتنا؟", "ذلك خير لنا.", "ماذا نفعل إذا لم نجد أحدًا في البيت؟", "وإن قيل لنا ارجعوا فنرجع.", "كم مرة نستأذن؟", "الاستئذان من الأدب.", "ماذا نفعل إذا قيل لنا: تفسّحوا في المجالس؟", "نتوسّع لإخواننا.", "هل نُقيم أحدًا من مجلسه لنجلس مكانه؟", "نهى النبي صلى الله عليه وسلم عن ذلك.", "هل ننادي إخواننا بألقاب سيئة؟", "بئس الاسم الفسوق بعد الإيمان.", "والمارّ على القاعد.", "من يسلّم على من في الطريق؟", "والماشي على القاعد.", "ماذا فعل النبي صلى الله عليه وسلم حين مرّ على صبيان؟", "نسلّم على الصغار أيضًا.", "ماذا قال ضيف إبراهيم عليه السلام حين دخلوا عليه؟", "فردّ عليهم بسلام.", "ماذا نقول للذين يؤمنون بآيات الله؟", "نبدأهم بالسلام.", "من يستأذن في أوقات الراحة؟", "نستأذن قبل دخول غرف الأهل.", "ماذا يفعل الأطفال إذا كبروا؟", "الاستئذان أدب دائم.", "ماذا نفعل إذا قيل لنا ارجعوا؟", "هو أزكى لنا.", "لماذا جُعل الاستئذان؟", "حتى لا ننظر إلى ما لا يحل.", "فإن لم يؤذن لنا رجعنا.", "كم حقًّا للمسلم على المسلم في هذا الحديث؟", "من هذه الحقوق: رد السلام، وعيادة المريض، واتباع الجنائز، وإجابة الدعوة، وتشميت العاطس.", "ماذا يقول عباد الرحمن إذا خاطبهم الجاهلون؟", "يقابل عباد الرحمن الإساءة بقول طيب هادئ.", "ما تحية أهل الجنة فيها؟", "تحية أهل الجنة سلام، فما أجمل السلام!", "كيف وصف الله تحية السلام؟", "السلام تحية من عند الله مباركة طيبة.", "إذا كنا ثلاثة، فماذا لا يفعل اثنان منا؟", "حتى لا يحزن الثالث، فلا نهمس دونه.", "﴿فَحَيُّوا بِأَحْسَنَ مِنْهَا﴾", "فحيوا بأحسن منها", "تعلّمتَ آداب السلام"];
+const BOOKS=[["الأمل والفرج", 0, 42], ["قوم سبأ", 42, 85], ["سورة الفاتحة", 85, 129], ["أركان الإسلام: الزكاة والصيام والحج", 129, 192], ["السلام والاستئذان", 192, 244]];let curB=0;const inB=i=>i>=BOOKS[curB][1]&&i<BOOKS[curB][2];
+const DRAFT=["ماذا قال يعقوب لبنيه؟", "استمر في الأمل رغم الحزن.", "من الذي ييأس من رَحْمَةٌ الله؟", "المؤمن يرجو الله دائمًا.", "ماذا قال الله لعباده المسرفين على أنفسهم؟", "ماذا يفعل الله بالذنوب؟", "إنه هو الغفور الرحيم.", "بعد الشدة فرج.", "وكرّر الله هذا الوعد، فماذا قال؟", "وعد مؤكد.", "ماذا يجعل الله لمن يتقيه؟", "التقوى طريق الفرج.", "وكيف يرزقه؟", "رزق الله يأتي من حيث لا نتوقع.", "من توكل على الله فالله…", "يكفيه الله.", "هل يكلّف الله نفسًا فوق طاقتها؟", "لنصبر.", "ومن نبشّر؟", "بشرى للصابرين.", "ماذا يفعل الله بما يصيب المسلم من همّ وحزن وأذى؟", "أين نادى يونس عَلَيْهِ السَّلَامُ ربّه؟", "نادى يونس ربّه في الظلمات فاستجاب الله له.", "ماذا قال يونس في دعائه؟", "دَعَا يونس بقوله: لا إله إلا أنت سبحانك إني كنت من الظالمين.", "ماذا فعل الله ليونس بعد دعائه؟", "الله يستجيب لمن دعاه وينجّيه من الغمّ.", "بماذا وَصَفَ أيوب عَلَيْهِ السَّلَامُ ربّه في دعائه؟", "دَعَا أيوب ربّه متوسّلًا برحمته سبحانه.", "ماذا قال المؤمنون فزادهم إيمانًا؟", "من قال حسبنا الله ونعم الوكيل توكّل على الله حقًّا.", "ماذا قال الله عن نفسه حين سأل عباده عنه؟", "الله قريب من عباده يسمعهم ويجيبهم.", "ماذا يفعل الله إذا دعاه الداعي؟", "نسأل الله وهو يجيب دعاءنا بحكمته.", "كيف نصر الله؟", "مهما اشتدّ البلاء فنصر الله قريب.", "الله معنا يحفظنا ويرعانا فلا نحزن.", "من صبر كان الله معه.", "﴿فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا﴾", "فإن مع العسر يسرا", "عرفتَ أن بعد العسر يسرًا", "ماذا كان في مسكن قوم سبأ؟", "نِعْمَةٌ ظاهرة.", "ماذا قيل لهم؟", "الأكل مع الشكر.", "كيف وُصف بلدهم وربهم؟", "نِعْمَةٌ ومغفرة.", "ماذا فعلوا بعد النعمة؟", "فجاءهم العقاب.", "دمّر الجنتين.", "بماذا بدّلهم؟", "فقدوا نعمتهم.", "ماذا قال الله عن هذا الجزاء؟", "جزاء كفرهم.", "ماذا قالوا في طلبهم؟", "ظلموا أنفسهم.", "ماذا جعلهم الله؟", "صاروا عبرة.", "لمن في ذلك آيات؟", "الصبر والشكر.", "كم قليل من عباد الله الشكور؟", "فلنكن من الشاكرين.", "ماذا جَعَلَ الله بين قوم سبأ والقرى المباركة؟", "كانت القرى قريبة ظاهرة فيسهل عليهم السفر.", "ماذا قدّر الله في تلك القرى؟", "جَعَلَ الله السفر بين القرى منظّمًا ميسّرًا.", "متى قيل لهم سيروا فيها؟", "كانوا يسيرون في أي وقت.", "كيف كانوا يسيرون في تلك الطرق؟", "الأمن من أعظم النعم.", "ماذا كان عن يمين وشمال في مسكنهم؟", "كانت بساتينهم جميلة تدلّ على فضل الله.", "من شكر الله زاده من فضله.", "وماذا قال الله عن عذابه لمن كفر؟", "نشكر النعمة ولا نكفرها.", "لمن يكون نفع الشكر؟", "الله غني عن شكرنا ونحن المنتفعون.", "ماذا قال الله لنا مع الشكر؟", "نذكر الله ونشكره دائمًا.", "ماذا قال الله عن جزاء الكافرين بالنعمة؟", "سبأ لما جحدوا النعمة زالت عنهم.", "﴿وَٱشْكُرُوا۟ لَهُۥ ۚ بَلْدَةٌ طَيِّبَةٌ وَرَبٌّ غَفُورٌ﴾", "بلدة طيبة ورب غفور", "عرفتَ قِصَّةُ قوم سبأ", "بماذا نبدأ؟", "نبدأ باسم الله.", "لمن الحمد؟", "نشكر الله ونثني عليه.", "ما اسمان من أسماء الله فيها؟", "رحمته واسعة.", "من هو مالك يوم الدين؟", "يوم الحساب لله وحده.", "من نعبد؟", "ومن نستعين؟", "نطلب العون منه.", "ما أهم دعاء نطلبه؟", "الهداية أعظم نِعْمَةٌ.", "صراط من نطلب؟", "طريق أهل الخير.", "ماذا قال الله عن الصلاة؟", "ولعبدي ما سأل.", "إذا قال العبد: الحمد لله رب العالمين؟", "الله يسمعنا.", "وإذا قال: الرحمن الرحيم؟", "ثناء على الله.", "وإذا قال: مالك يوم الدين؟", "تمجيد لله.", "ماذا تُسمّى الفاتحة في قوله تعالى: «سَبۡعٗا مِّنَ ٱلۡمَثَانِي»؟", "الفاتحة سبع آيات تُكرَّر في الصلاة.", "ما السورة التي سمّاها النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ «السبع المثاني»؟", "هي الفاتحة، وهي القرآن العظيم.", "ما السورة التي لا تصح الصلاة بدون قراءتها؟", "نقرأ الفاتحة في كل ركعة من الصلاة.", "ما النوران اللذان أُعطيهما النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ، ومنهما الفاتحة؟", "أبشره الملَك بنورين لم يُعطَهما نبي قبله.", "ماذا نقول بعد الفاتحة؟", "نقول آمين مع الإمام عند انتهاء الفاتحة.", "الله خالق كل شيء ومربّيه.", "ما معنى «ٱهۡدِنَا ٱلصِّرَٰطَ ٱلۡمُسۡتَقِيمَ»؟", "نسأل الله أن يدلّنا على الحق ويثبّتنا.", "ما سعة رَحْمَةٌ الله؟", "رَحْمَةٌ الله واسعة تشمل كل شيء.", "لمن الأمر يوم الدين؟", "في ذلك اليوم الأمر كله لله وحده.", "ماذا قال الله إذا قال العبد: «إياك نعبد وإياك نستعين»؟", "وللعبد ما سأل، فالله يجيب دعاء عبده.", "﴿إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ﴾", "عرفتَ سورة الفاتحة", "ماذا تفعل الصدقة بنا؟", "الصدقة تطهّر القلب من البخل وتزكّي النفس.", "لمن تُعطى الزكاة؟", "حدّد الله من تُعطى لهم الزكاة، وهي فريضة منه.", "متى ننال البرّ؟", "نعطي من أحبّ ما عندنا لله.", "كيف يضاعف الله من ينفق؟", "في كل سنبلة مئة حبّة، والله يضاعف لمن يشاء.", "هل تُنقص الصدقة المال؟", "الله يبارك في مال المتصدّق.", "حتى لو لم نجد إلا شيئًا قليلًا؟", "لا نحتقر القليل من الخير.", "ما الغاية من الصيام؟", "فرض الله الصيام على المؤمنين كما فرضه على من قبلهم.", "بماذا وَصَفَ النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ الصيام؟", "الصيام وقاية لصاحبه من الذنوب، فيصوم الصائم عن الكلام السيّئ والجهل.", "ماذا ينتظر الصائم من الله؟", "الصائم يفرح حين يفطر، ويفرح بصيامه حين يلقى ربه.", "ما اسم باب الصائمين في الجنة؟", "يدخل منه الصائمون وحدهم يوم القيامة.", "ماذا قال النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ عمّن لا يدع قول الزور؟", "الصيام الحقيقي يشمل ترك الكذب والأذى.", "ماذا يفعل المريض والمسافر؟", "الله يريد بنا اليسر.", "ما الذي نزل في رمضان؟", "أنزل الله القرآن في رمضان هدى للناس.", "ما ليلة القدر؟", "ليلة عظيمة في رمضان نزل فيها القرآن.", "من ينزل في ليلة القدر؟", "وهي سلام حتى مطلع الفجر.", "ماذا يفعل من قام ليلة القدر إيمانًا واحتسابًا؟", "قيام الليلة بإيمان وإخلاص لله.", "ماذا يحدث عند مجيء رمضان؟", "وتُصفَّد الشياطين.", "لماذا نتسحّر؟", "نأكل قبل الفجر فنقوى على الصيام.", "على ماذا كان النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ يفطر؟", "نقتدي به في الإفطار.", "على من يجب الحجّ؟", "الحج مرة في العمر لمن يقدر عليه.", "من أمره الله أن يؤذّن في الناس بالحجّ؟", "فيأتي الناس من كل مكان.", "ما أول بيت وُضع للناس؟", "الكعبة أول بيت وُضع لعبادة الله.", "ما خير الزاد؟", "نتزود بالتقوى في الحج وفي الحياة.", "ما جزاء الحجّ المبرور؟", "الحج المبرور: الذي لا معصية فيه.", "كيف يرجع من حجّ ولم يرفث ولم يفسق؟", "يرجع نقيًّا من الذنوب بإذن الله.", "ماذا قال الله عن الصدقة إذا أخفيناها وأعطيناها الفقراء؟", "الإخفاء أقرب للإخلاص.", "ماذا أَمَرَنَا الله أن نتمّ لله؟", "نؤدّي الحجّ والعمرة خالصَين لله.", "ما موضعا السعي من شعائر الله؟", "يسعى الحاجّ بين الصفا والمروة.", "ماذا يفعل الحجّاج بالبيت العتيق؟", "الطواف بالكعبة من أعمال الحجّ.", "على كم خصلة بُني الإسلام؟", "هي أركان الإسلام الخمسة.", "﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾", "فإن خير الزاد التقوى", "عرفتَ أركان الإسلام العملية", "كيف نردّ إذا حيّانا أحد بتحية؟", "إذا قال: السلام عليكم، نقول: وعليكم السلام ورحمة الله.", "ماذا نقول إذا دخلنا بيوتنا؟", "تحية مباركة طيبة.", "السلام على الجميع.", "ماذا نفعل حتى نتحاب؟", "لا تدخلوا الجنة حتى تؤمنوا ولا تؤمنوا حتى تحابّوا.", "من يسلّم على من؟", "آداب بسيطة للسلام.", "ماذا نفعل قبل دخول بيت غير بيتنا؟", "ذلك خير لنا.", "ماذا نفعل إذا لم نجد أحدًا في البيت؟", "وإن قيل لنا ارجعوا فنرجع.", "كم مرة نستأذن؟", "الاستئذان من الأدب.", "ماذا نفعل إذا قيل لنا: تفسّحوا في المجالس؟", "نتوسّع لإخواننا.", "هل نُقيم أحدًا من مجلسه لنجلس مكانه؟", "نهى النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ عن ذلك.", "هل ننادي إخواننا بألقاب سيئة؟", "بئس الاسم الفسوق بعد الإيمان.", "والمارّ على القاعد.", "من يسلّم على من في الطريق؟", "والماشي على القاعد.", "ماذا فعل النبي صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ حين مرّ على صبيان؟", "نسلّم على الصغار أيضًا.", "ماذا قال ضيف إبراهيم عَلَيْهِ السَّلَامُ حين دخلوا عليه؟", "فردّ عليهم بسلام.", "ماذا نقول للذين يؤمنون بآيات الله؟", "نبدأهم بالسلام.", "من يستأذن في أوقات الراحة؟", "نستأذن قبل دخول غرف الأهل.", "ماذا يفعل الأطفال إذا كبروا؟", "الاستئذان أدب دائم.", "ماذا نفعل إذا قيل لنا ارجعوا؟", "هو أزكى لنا.", "لماذا جُعل الاستئذان؟", "حتى لا ننظر إلى ما لا يحل.", "فإن لم يؤذن لنا رجعنا.", "كم حقًّا للمسلم على المسلم في هذا الحديث؟", "من هذه الحقوق: رد السلام، وعيادة المريض، واتباع الجنائز، وإجابة الدعوة، وتشميت العاطس.", "ماذا يقول عباد الرحمن إذا خاطبهم الجاهلون؟", "يقابل عباد الرحمن الإساءة بقول طيب هادئ.", "ما تحية أهل الجنة فيها؟", "تحية أهل الجنة سلام، فما أجمل السلام!", "كيف وَصَفَ الله تحية السلام؟", "السلام تحية من عند الله مباركة طيبة.", "إذا كنا ثلاثة، فماذا لا يفعل اثنان منا؟", "حتى لا يحزن الثالث، فلا نهمس دونه.", "﴿فَحَيُّوا بِأَحْسَنَ مِنْهَا﴾", "فحيوا بأحسن منها", "تعلّمتَ آداب السلام"];
+const $=id=>document.getElementById(id);
+const L=LINES.map(t=>({text:t,blob:null,sent:null,bytes:null,mark:null,custom:null,al:null,note:""}));
+function vNorm(t){return String(t).replace(/[ً-ٰٟـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[!؟?.,،:؛]+/g," ").replace(/\s+/g," ").replace(/^ | $/g,"")}
+function vHash(t){const n=vNorm(t);let x=5381;for(let i=0;i<n.length;i++)x=(((x<<5)+x)^n.charCodeAt(i))>>>0;return x.toString(16)}
+const D="[\\u064B-\\u065F\\u0670]*",LET="\\u0621-\\u064A\\u0671";
+const ALLAH=new RegExp("(^|[^"+LET+"\\u064B-\\u065F\\u0670])([وفبت]"+D+")?((?:ا|ٱ)"+D+")?(ل"+D+")(ل"+D+")(ه)("+D+")(م"+D+")?(?![" + LET + "])","g");
+function allahVar(t,v){v=+v;if(!v)return t;return t.replace(ALLAH,(m,pre,px,al,l1,l2,h,hd,mim)=>{
+ px=px||"";al=al||"";mim=mim||"";const bare=x=>x.replace(new RegExp(D,"g"),"");
+ const hm=(hd||"").replace(/[ّٰ]/g,"")||"ُ";
+ const core=(a,L1)=>a+L1+"لَّٰ"+"ه"+hm+mim;
+ const A=bare(al),L=al?bare(l1):l1;
+ if(v===1)return pre+px+core(A,L);
+ if(v===2)return pre+px+core(!px&&al?"اَ":A,L);
+ if(v===3)return pre+(!px&&al&&pre===""?"قَالَ ":"")+px+core(A,L);
+ if(v===4)return pre+px+core(!px&&al?"ٱ":A,L);
+ return m})}
+function applyRules(t){for(const ln of $("rules").value.split(/\r?\n/)){const i=ln.indexOf("=>");if(i<1)continue;const a=ln.slice(0,i).trim(),b=ln.slice(i+2).trim();if(a&&b)t=t.split(a).join(b)}return t}
+const alOf=i=>L[i].al==null?$("al").value:L[i].al;
+const defOf=i=>allahVar(applyRules(DRAFT[i]),alOf(i));
+const sentOf=i=>L[i].custom!=null?L[i].custom:defOf(i);
+class Fatal extends Error{}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function tts(text,slot){
+ const k=$("k").value.trim(),v=$("v"+(slot||$("vslot").value)).value.trim();
+ if(!k)throw new Fatal("الصق المفتاح أولًا");if(!v)throw new Fatal("معرّف هذا الصوت فارغ");
+ const body={text,model_id:$("mo").value,voice_settings:{stability:+$("st").value,similarity_boost:.8,style:0,use_speaker_boost:true}};
+ for(let a=0;a<6;a++){
+  let r;
+  try{r=await fetch("https://api.elevenlabs.io/v1/text-to-speech/"+v+"?output_format=mp3_44100_128",{method:"POST",headers:{"xi-api-key":k,"Content-Type":"application/json",Accept:"audio/mpeg"},body:JSON.stringify(body)})}
+  catch(e){if(a<3){await sleep(1500*(a+1));continue}throw e}
+  if(r.ok)return r.blob();
+  const tx=(await r.text()).slice(0,300);
+  if(/quota/i.test(tx))throw new Fatal("نفد الرصيد. ما تم توليده محفوظ؛ زد الرصيد ثم تابع.");
+  if(r.status===401)throw new Fatal("المفتاح غير صالح.");
+  if(r.status===429){await sleep(Math.min(30000,1500*2**a));continue}
+  if(r.status>=500&&a<3){await sleep(2000);continue}
+  throw new Error(r.status+" "+tx.slice(0,100));
+ }
+ throw new Error("ازدحام متكرر؛ أعد المحاولة بعد قليل");
+}
+/* حفظ دائم في المتصفح (لا يشمل المفتاح) */
+let DB=null;
+const pq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function openDB(){try{DB=await new Promise((res,rej)=>{const r=indexedDB.open("athar-gen-libfix17",1);r.onupgradeneeded=()=>r.result.createObjectStore("lines");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}catch(e){DB=null}}
+async function save(i){if(!DB)return;const l=L[i];try{await pq(DB.transaction("lines","readwrite").objectStore("lines").put({text:l.text,blob:l.blob,sent:l.sent,mark:l.mark,custom:l.custom,al:l.al,note:l.note||""},i))}catch(e){window.__saveErr=String(e)}}
+async function load(){if(!DB)return;try{const st=DB.transaction("lines").objectStore("lines");const ks=await pq(st.getAllKeys()),vs=await pq(st.getAll());
+ for(let n=0;n<ks.length;n++){const i=ks[n],v=vs[n];if(L[i]&&v&&v.text===L[i].text&&v.blob){L[i].blob=v.blob;L[i].sent=v.sent;L[i].mark=v.mark;L[i].custom=v.custom;L[i].al=v.al;L[i].note=v.note||"";L[i].bytes=new Uint8Array(await v.blob.arrayBuffer())}}}catch(e){window.__loadErr=String(e)}}
+const SET=["v1","v2","v3","v4","vslot","mo","st","al","rules"];
+function saveSet(){try{const o={};SET.forEach(k=>o[k]=$(k).value);localStorage.setItem("athar-gen-libfix-set",JSON.stringify(o))}catch(e){}}
+function loadSet(){try{const o=JSON.parse(localStorage.getItem("athar-gen-libfix-set")||localStorage.getItem("athar-gen-books6-set")||"null");if(o)SET.forEach(k=>{if(o[k]!=null)$(k).value=o[k]})}catch(e){}}
+const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+function renderTabs(){const t=$("tabs");if(!t)return;t.innerHTML="";BOOKS.forEach((b,k)=>{const n=L.slice(b[1],b[2]).filter(l=>l.mark==="ok").length,x=document.createElement("button");x.textContent=b[0]+" "+nAr(n)+"/"+nAr(b[2]-b[1]);x.className=k===curB?"":"s";x.style.flex="1 1 140px";x.onclick=()=>{curB=k;LINES.forEach((_,i)=>row(i));est();window.scrollTo(0,0)};t.appendChild(x)})}
+function est(){
+ const R=L.map((l,i)=>[l,i]).filter(([l,i])=>inB(i)).map(x=>x[0]),RI=L.map((_,i)=>i).filter(inB);const gen=R.filter(l=>l.blob).length,ok=R.filter(l=>l.mark==="ok").length,bad=R.filter(l=>l.mark==="bad").length;const okAll=L.filter(l=>l.mark==="ok").length;
+ const tot=RI.reduce((a,i)=>a+sentOf(i).length,0);
+ renderTabs();
+ $("est").textContent="الكتاب: "+BOOKS[curB][0]+" · الجمل: "+nAr(R.length)+" · الحروف: نحو "+nAr(tot);
+ $("big").textContent="مولَّدة "+nAr(gen)+" · صح "+nAr(ok)+" · خطأ "+nAr(bad)+" · من "+nAr(R.length);
+ $("pb").style.width=(100*ok/R.length)+"%";
+ $("dl").disabled=okAll<1;
+ $("dl").textContent=okAll<L.length?"نزّل كل المعتمد من الكتب الخمسة ("+nAr(okAll)+" من "+nAr(L.length)+")":"نزّل الكتب الخمسة كاملة ("+nAr(okAll)+")";
+ $("redo").disabled=!bad;
+ $("cp").disabled=!bad;
+ $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";
+}
+let cur=null,showAll=false;
+function play(i){try{if(cur){cur.pause()}}catch(e){}cur=new Audio(URL.createObjectURL(L[i].blob));cur.play().catch(()=>{})}
+function row(i){
+ let r=$("r"+i);
+ if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
+ const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
+ r.hidden=(l.mark==="ok"&&!showAll)||!inB(i);
+ r.innerHTML="";
+ const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
+ const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
+ const ta=document.createElement("textarea");ta.rows=8;ta.dir="rtl";ta.style.cssText="width:100%;min-height:220px;line-height:2;font-size:21px;padding:14px;border-radius:12px;border:2px solid #2d7f68;box-sizing:border-box;resize:vertical;margin:8px 0";ta.value=sentOf(i);ta.id="ta"+i;
+ ta.addEventListener("input",()=>{
+  const v=ta.value;l.custom=(v===defOf(i))?null:v;
+  if(l.blob&&l.mark){l.mark=null;r.className="ln";setTx();est()}
+  const w=document.getElementById("w"+i);if(w)w.textContent=l.blob?"تغيّر النص — اضغط ↻ لإعادة التوليد":"";
+  save(i);
+ });
+ const wp=document.createElement("div");wp.style.cssText="display:none;background:#fff;border:2px solid #2d7f68;border-radius:14px;padding:10px;margin:6px 0";
+ const MK=["","َ","ُ","ِ","ْ","ّ","َّ","ُّ","ِّ","ً","ٌ","ٍ"];
+ const showWP=()=>{
+  const v=ta.value,p=ta.selectionStart;if(p==null)return;const isW=c=>c&&/[ء-ٰٟ]/.test(c);
+  let s=p,e=p;while(s>0&&isW(v[s-1]))s--;while(e<v.length&&isW(v[e]))e++;
+  if(e<=s){wp.style.display="none";return}
+  const word=v.slice(s,e),U=[];
+  for(const c of word){if(/[ً-ٰٟ]/.test(c)&&U.length)U[U.length-1].m+=c;else U.push({c,m:""})}
+  const draw=()=>{
+   wp.innerHTML="";const h=document.createElement("div");h.className="sm";h.textContent="اضغط على أي حرف ليتبدّل تشكيله (فتحة، ضمة، كسرة، سكون، شدّة…)";wp.appendChild(h);
+   const row2=document.createElement("div");row2.style.cssText="display:flex;flex-wrap:wrap;gap:6px;direction:rtl;margin:8px 0";
+   U.forEach(u=>{const b=document.createElement("button");b.className="s";b.textContent=u.c+u.m;b.style.cssText="font-size:30px;min-width:54px;min-height:64px;padding:2px 8px";
+    b.onclick=()=>{let k=MK.indexOf(u.m);u.m=MK[(k+1)%MK.length];draw()};row2.appendChild(b)});
+   wp.appendChild(row2);
+   const ac=document.createElement("div");ac.style.cssText="display:flex;gap:8px;flex-wrap:wrap";
+   const mkb=(t,cls,fn)=>{const b=document.createElement("button");b.textContent=t;if(cls)b.className=cls;b.style.minHeight="48px";b.onclick=fn;ac.appendChild(b)};
+   mkb("طبّق","good",()=>{const nw=U.map(u=>u.c+u.m).join("");ta.value=v.slice(0,s)+nw+v.slice(e);ta.dispatchEvent(new Event("input"));wp.style.display="none"});
+   mkb("بدون تشكيل","s",()=>{U.forEach(u=>u.m="");draw()});
+   mkb("إغلاق","s",()=>{wp.style.display="none"});
+   wp.appendChild(ac)};
+  draw();wp.style.display="block"};
+ ta.addEventListener("click",()=>setTimeout(showWP,0));
+ r.appendChild(ta);r.appendChild(wp);
+ const w=document.createElement("div");w.id="w"+i;w.className="sm";r.appendChild(w);
+ if(l.mark==="bad"){const nt=document.createElement("input");nt.type="text";nt.dir="rtl";nt.placeholder="ما الخطأ؟ مثال: اللام في الله خفيفة";nt.value=l.note||"";nt.style.marginTop="6px";nt.addEventListener("input",()=>{l.note=nt.value;save(i)});r.appendChild(nt)}
+ const bt=document.createElement("div");bt.className="bt";r.appendChild(bt);
+ const mk=(txt,cls,fn)=>{const b=document.createElement("button");b.textContent=txt;if(cls)b.className=cls;b.onclick=fn;bt.appendChild(b);return b};
+ mk(l.blob?"↻ أعد التوليد":"ولّد","",async()=>{l.custom=(ta.value===defOf(i))?null:ta.value;try{await one(i,true)}catch(e){}});
+ if(l.blob){
+  mk("▶ استمع","s",()=>play(i));
+  mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est();goNext(i)});
+  mk("✗ خطأ","badb",()=>{l.mark="bad";save(i);row(i);est()});
+ }
+ const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
+ [["","الصوت: الافتراضي"],["1","١ أثر"],["2","٢ تعليمات"],["3","٣ أذكار"],["4","٤ شبيه أوس"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;vsel.appendChild(o)});
+ vsel.value=l.vs||"";vsel.onchange=()=>{l.vs=vsel.value||null;save(i)};bt.appendChild(vsel);
+ mk("إزالة التشكيل","s",()=>{ta.value=ta.value.replace(/[ً-ٰٟ]/g,"");ta.dispatchEvent(new Event("input"))});
+ mk("المسودة","s",()=>{l.custom=null;l.al=null;ta.value=defOf(i);ta.dispatchEvent(new Event("input"));row(i)});
+ const sel=document.createElement("select");sel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
+ [["","لفظ الجلالة: عام"],["0","الأصل"],["1","ألف خنجرية"],["2","فتحة صريحة"],["3","كلمة قبلها"],["4","ألف وصل"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;sel.appendChild(o)});
+ sel.value=l.al==null?"":String(l.al);
+ sel.onchange=()=>{l.al=sel.value===""?null:+sel.value;l.custom=null;ta.value=defOf(i);ta.dispatchEvent(new Event("input"))};
+ bt.appendChild(sel);
+}
+async function one(i,autoplay){
+ const l=L[i];$("msg").textContent="";
+ try{
+  const sent=sentOf(i),blob=await tts(sent,l.vs);l.vsUsed=l.vs||$("vslot").value;
+  l.blob=blob;l.sent=sent;l.bytes=new Uint8Array(await blob.arrayBuffer());l.mark=null;
+  await save(i);
+  if(autoplay)play(i);
+ }catch(e){$("msg").textContent=e.message;throw e}
+ finally{row(i);est()}
+}
+async function goNext(i){
+ let j=-1;for(let k=i+1;k<L.length;k++){if(inB(k)&&L[k].mark!=="ok"){j=k;break}}
+ if(j<0)for(let k=0;k<i;k++){if(inB(k)&&L[k].mark!=="ok"&&!L[k].blob){j=k;break}}
+ if(j<0){$("msg").textContent="";return}
+ const r=$("r"+j);if(r)r.scrollIntoView({block:"start",behavior:"smooth"});
+ if(L[j].blob){if(L[j].mark!=="bad")play(j)}else{try{await one(j,true)}catch(e){}}
+}
+let busy=false;
+async function runMany(idx){
+ if(busy)return;busy=true;$("all").disabled=$("redo").disabled=true;
+ try{for(const i of idx){await one(i,false)}}catch(e){}
+ busy=false;$("all").disabled=false;est();
+}
+$("imp").onclick=()=>$("impf").click();
+$("impf").onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const buf=new Uint8Array(await file.arrayBuffer()),dv=new DataView(buf.buffer),files={};let o=0;
+  while(o+30<=buf.length&&dv.getUint32(o,true)===0x04034b50){
+   const sz=dv.getUint32(o+18,true),nl=dv.getUint16(o+26,true),xl=dv.getUint16(o+28,true);
+   const name=new TextDecoder().decode(buf.subarray(o+30,o+30+nl));
+   files[name]=buf.subarray(o+30+nl+xl,o+30+nl+xl+sz);o+=30+nl+xl+sz;
+  }
+  if(!files["usul-index.json"]||!files["sp_usul.bin"])throw new Error("الملف ليس نسخة من هذه الصفحة");
+  const meta=JSON.parse(new TextDecoder().decode(files["usul-index.json"])),bin=files["sp_usul.bin"];
+  let n=0;
+  for(let i=0;i<L.length;i++){
+   const ent=meta.e[vHash(L[i].text)];if(!ent||L[i].mark==="ok")continue;
+   const by=bin.slice(ent[1],ent[1]+ent[2]);
+   L[i].bytes=by;L[i].blob=new Blob([by],{type:"audio/mpeg"});L[i].sent=meta.texts[vHash(L[i].text)]||"";L[i].mark="ok";L[i].custom=null;L[i].note="";
+   await save(i);n++;
+  }
+  alert("تم استرجاع "+n+" جملة معتمدة.");
+ }catch(err){alert("تعذّر الاسترجاع: "+err.message)}
+ e.target.value="";LINES.forEach((_,i)=>row(i));est();
+};
+$("tg").onclick=()=>{showAll=!showAll;LINES.forEach((_,i)=>row(i));est()};
+$("cp").onclick=async()=>{
+ const bad=L.map((l,i)=>[l,i]).filter(([l,i])=>l.mark==="bad"&&inB(i));
+ const txt="تقرير أخطاء كتاب "+BOOKS[curB][0]+" ("+bad.length+" جملة)\n\n"+bad.map(([l,i])=>"["+(i+1)+"] الأصل: "+l.text+"\nالمرسل: "+sentOf(i)+"\nالخطأ: "+(l.note||"(لم يُكتب)")).join("\n\n");
+ try{await navigator.clipboard.writeText(txt);$("msg").textContent="";alert("تم النسخ. الصقه لي في المحادثة.")}catch(e){const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");alert("تم النسخ. الصقه لي في المحادثة.")}catch(x){prompt("انسخ هذا النص:",txt)}ta.remove()}
+};
+$("all").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>inB(i)&&!L[i].blob));
+$("redo").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>inB(i)&&L[i].mark==="bad"));
+["v1","v2","v3","v4","vslot","mo","st","al","rules"].forEach(k=>{$(k).addEventListener("change",()=>{saveSet();est()});});
+$("rules").addEventListener("input",()=>{saveSet();est()});
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC_T[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
+function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off=0;const d=new Date(),dt=((d.getFullYear()-1980)<<9|(d.getMonth()+1)<<5|d.getDate())&0xFFFF,tm=(d.getHours()<<11|d.getMinutes()<<5|(d.getSeconds()>>1))&0xFFFF;
+ for(const f of files){const nm=enc.encode(f.name),crc=crc32(f.data),sz=f.data.length,lh=new DataView(new ArrayBuffer(30));
+  lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(10,tm,true);lh.setUint16(12,dt,true);lh.setUint32(14,crc,true);lh.setUint32(18,sz,true);lh.setUint32(22,sz,true);lh.setUint16(26,nm.length,true);
+  parts.push(lh.buffer,nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(12,tm,true);ch.setUint16(14,dt,true);ch.setUint32(16,crc,true);ch.setUint32(20,sz,true);ch.setUint32(24,sz,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);
+  central.push(ch.buffer,nm);off+=30+nm.length+sz}
+ let csz=0;central.forEach(c=>csz+=c.byteLength!==undefined?c.byteLength:c.length);const e=new DataView(new ArrayBuffer(22));
+ e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,csz,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
+$("dl").onclick=()=>{
+ const okL=L.filter(l=>l.mark==="ok"&&l.bytes);if(!okL.length)return;const chunks=[],e={},texts={};let off=0;
+ okL.forEach(l=>{const h=vHash(l.text);if(e[h])return;e[h]=[0,off,l.bytes.length];texts[h]=l.text;chunks.push(l.bytes);off+=l.bytes.length});
+ const bin=new Uint8Array(off);let p=0;chunks.forEach(c=>{bin.set(c,p);p+=c.length});
+ const meta={schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("v"+$("vslot").value).value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts,count:okL.length,total:L.length};
+ const z=zipBuild([{name:"sp_usul.bin",data:bin},{name:"usul-index.json",data:new TextEncoder().encode(JSON.stringify(meta))}]);
+ const a=document.createElement("a");a.href=URL.createObjectURL(z);a.download="athar-libfix17-voice-"+okL.length+"of"+L.length+".zip";document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+};
+$("vslot").value=$("vslot").dataset.d;
+(function(){try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");["v1","v2","v3","v4"].forEach(k=>{if(o[k]&&!$(k).value)$(k).value=o[k]})}catch(e){}})();
+(async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));est()})();
+(function(){try{const k=document.getElementById("k");if(!k)return;const v=localStorage.getItem("athar-el-key");if(v&&!k.value)k.value=v;k.addEventListener("input",()=>{try{localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}});if(k.value&&!v)localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}})();
+</script></body></html>
