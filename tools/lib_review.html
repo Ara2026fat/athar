@@ -133,7 +133,7 @@ function drawHome(){const h=$("home");let html='<div class="card"><b>اختر ا
 /* ---- شاشة المراجعة ---- */
 function openReview(keys){$("home").hidden=true;const R=$("rev");R.hidden=false;R.innerHTML="";
  const top=document.createElement("div");top.className="top card";
- top.innerHTML='<div class="row"><button class="s" id="back">← الكتب</button><button id="genAll">ولّد كل المعلَّم</button><button class="s" id="zip">نزّل zip</button></div><div class="sm" id="info"></div><div class="bar"><i id="pb"></i></div><div class="err" id="msg"></div>';
+ top.innerHTML='<div class="row"><button class="s" id="back">← الكتب</button><button id="genAll">ولّد كل المعلَّم</button><button class="s" id="zip">نزّل zip</button><button class="s" id="notes">نزّل الملاحظات</button></div><div class="sm" id="info"></div><div class="bar"><i id="pb"></i></div><div class="err" id="msg"></div>';
  R.appendChild(top);
  const cards={};
  keys.forEach(k=>{const det=document.createElement("details");det.className="card";det.open=keys.length===1;
@@ -147,6 +147,9 @@ function openReview(keys){$("home").hidden=true;const R=$("rev");R.hidden=false;
   $("info").textContent="معلَّم للتوليد: "+nAr(tot)+" · تم "+nAr(gen)+" · متبقٍّ نحو "+nAr(ch)+" حرف (≈ "+nAr(Math.round(ch*($("mo").value.includes("flash")?.5:1)))+" رصيد)";$("pb").style.width=(tot?100*gen/tot:0)+"%"}
  upd();
  $("back").onclick=()=>{$("rev").hidden=true;$("home").hidden=false;drawHome()};
+ $("notes").onclick=()=>{const L=[];keys.forEach(k=>BOOKS[k].forEach(u=>{const s=stOf(u);if(s.n||s.s==="rej")L.push("["+(TITLES[k]||k)+"] "+(s.s==="rej"?"مرفوض":s.s==="ok"?"مقبول":"")+"\nالنص: "+u.t+"\nالتشكيل: "+ttsText(u)+(s.v?"\nالصوت: "+s.v:"")+(s.n?"\nالخطأ: "+s.n:"")+"\n")}));
+  if(!L.length){alert("لا توجد ملاحظات أو مرفوضات بعد");return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([L.join("\n")],{type:"text/plain;charset=utf-8"}));a.download="athar-lib-notes.txt";a.click()};
  $("zip").onclick=()=>dlZip(keys,"athar-libfix-"+keys.join("-").slice(0,40));
  let run=false;
  $("genAll").onclick=async()=>{if(run){run=false;return}run=true;$("genAll").textContent="إيقاف";$("msg").textContent="";
@@ -157,7 +160,7 @@ function openReview(keys){$("home").hidden=true;const R=$("rev");R.hidden=false;
  window.__upd=upd}
 async function genOne(u){const b=await tts(ttsText(u),stOf(u).v||u.v);await putNew(u.h,b);const s=stOf(u);s.s="";saveST()}
 function unitEl(u,upd){const d=document.createElement("div");d.className="u";
- d.innerHTML='<div>'+u.t+'</div><textarea dir="rtl"></textarea><div class="row"><button class="s" data-a="cur">▶ الحالي</button><button class="s" data-a="new">▶ الجديد</button><button data-a="gen">ولّد هذه</button><button class="k" data-a="ok">✔ اقبل</button><button class="r" data-a="rej">✖ ارفض</button><label class="sm" style="margin:0"><input type="checkbox" data-a="g" style="width:auto"> ضمن التوليد</label></div><div class="row"><label class="sm" style="margin:0">الصوت:</label><select data-a="vs" style="width:auto"><option value="0">تلقائي</option><option value="1">١ أثر</option><option value="2">٢ تعليمات</option><option value="3">٣ أذكار</option><option value="4">٤ شبيه أوس</option></select><button class="s" data-a="cmp">قارن الأصوات الأربعة</button></div><div data-a="cmpOut"></div><div class="err sm" data-a="e"></div>';
+ d.innerHTML='<div>'+u.t+'</div><textarea dir="rtl"></textarea><div class="row"><button class="s" data-a="cur">▶ الحالي</button><button class="s" data-a="new">٢) استمع للجديد</button><button data-a="gen">١) ولّد</button><button class="k" data-a="ok">٣) ✔ اقبل</button><button class="r" data-a="rej">٣) ✖ ارفض</button><label class="sm" style="margin:0"><input type="checkbox" data-a="g" style="width:auto"> ضمن التوليد</label></div><div class="row"><label class="sm" style="margin:0">الصوت:</label><select data-a="vs" style="width:auto"><option value="0">تلقائي</option><option value="1">١ أثر</option><option value="2">٢ تعليمات</option><option value="3">٣ أذكار</option><option value="4">٤ شبيه أوس</option></select><button class="s" data-a="cmp">قارن الأصوات الأربعة</button></div><div data-a="cmpOut"></div><input data-a="note" placeholder="ملاحظتك: ما الخطأ في النطق؟ (اختياري، تُحفظ وتُرسل لي)" style="margin-top:6px"><div class="err sm" data-a="e"></div>';
  const ta=d.querySelector("textarea"),$$=a=>d.querySelector('[data-a="'+a+'"]');
  ta.value=ttsText(u);ta.oninput=()=>{stOf(u).x=ta.value;saveST()};
  $$("g").checked=wantGen(u);$$("g").onchange=e=>{stOf(u).g=e.target.checked;saveST();upd()};
@@ -166,6 +169,7 @@ function unitEl(u,upd){const d=document.createElement("div");d.className="u";
  $$("cur").onclick=async()=>{try{const a=await curAudio(u);if(a)play(a);else $$("e").textContent="لا يوجد صوت حالي لهذه الجملة"}catch(e){$$("e").textContent=e.message}};
  $$("new").onclick=()=>NEW.has(u.h)&&play(NEW.get(u.h));
  $$("gen").onclick=async()=>{$$("gen").disabled=true;$$("e").textContent="";try{await genOne(u);stOf(u).g=true;saveST();refresh();upd();play(NEW.get(u.h))}catch(e){$$("e").textContent=e.message}$$("gen").disabled=false};
+ $$("note").value=stOf(u).n||"";$$("note").oninput=e=>{stOf(u).n=e.target.value;saveST()};
  $$("vs").value=String(stOf(u).v||0);$$("vs").onchange=e=>{stOf(u).v=+e.target.value||0;saveST()};
  $$("cmp").onclick=async()=>{const out=$$("cmpOut");out.innerHTML="";$$("e").textContent="";$$("cmp").disabled=true;
   for(const sl of [1,2,3,4]){if(!$("v"+sl).value.trim())continue;
@@ -177,7 +181,7 @@ function unitEl(u,upd){const d=document.createElement("div");d.className="u";
    catch(e){$$("e").textContent=e.message;break}}
   $$("cmp").disabled=false};
  $$("ok").onclick=()=>{stOf(u).s="ok";saveST();refresh()};
- $$("rej").onclick=async()=>{stOf(u).s="rej";stOf(u).g=true;saveST();await delNew(u.h);refresh();upd();$$("e").textContent="رُفض: عدّل التشكيل ثم اضغط «ولّد هذه»"};
+ $$("rej").onclick=async()=>{stOf(u).s="rej";stOf(u).g=true;saveST();await delNew(u.h);refresh();upd();$$("e").textContent="رُفض: اكتب الخطأ في الملاحظة، وعدّل التشكيل ثم اضغط «١) ولّد»"};
  return d}
 (async()=>{await openDB();drawHome()})();
 </script></body></html>
