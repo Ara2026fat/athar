@@ -49,7 +49,7 @@ details summary{cursor:pointer;color:var(--m)}
 <div class="row"><button id="all">ولّد غير المولَّد</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
 <div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button></div>
 <div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
-<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="dl1" class="s" disabled>نزّل هذا الكتاب وحده</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
+<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="dl1" class="s" disabled>نزّل الجمل المعتمدة فقط</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
 <div class="sm">الجمل المتبقية · المعتمد ✓ محفوظ في هذا المتصفح. نزّل نسخة احتياطية، فإن ضاع شيء اضغط «استرجع من ملف نزّلته».</div>
 <div id="tabs" class="row" style="margin:8px 0"></div><div id="list" class="card"></div>
 <script>
@@ -116,7 +116,7 @@ function est(){
  $("big").textContent="مولَّدة "+nAr(gen)+" · صح "+nAr(ok)+" · خطأ "+nAr(bad)+" · من "+nAr(R.length);
  $("pb").style.width=(100*ok/R.length)+"%";
  $("dl").disabled=okAll<1;$("dl1").disabled=ok<1;
- $("dl").textContent=okAll<L.length?"نزّل كل المعتمد من الكتب الخمسة ("+nAr(okAll)+" من "+nAr(L.length)+")":"نزّل الكتب الخمسة كاملة ("+nAr(okAll)+")";
+ $("dl").textContent=okAll<L.length?"نزّل الجمل المعتمدة ("+nAr(okAll)+" من "+nAr(L.length)+")":"نزّل الجمل الأربع المعتمدة ("+nAr(okAll)+")";
  $("redo").disabled=!bad;
  $("cp").disabled=!bad;
  $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";
