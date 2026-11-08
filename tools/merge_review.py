@@ -5,7 +5,7 @@ root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ip = os.path.join(root, "story-index.json")
 d = json.load(open(ip, encoding="utf-8"))
 for z in sys.argv[1:]:
-    nm = re.search(r"athar-(libfix\d+)-voice", os.path.basename(z))
+    nm = re.search(r"athar-(libfix\w+?)-voice", os.path.basename(z))
     tag = nm.group(1) if nm else re.sub(r"\W", "", os.path.basename(z))[:20]
     zf = zipfile.ZipFile(z); meta = json.loads(zf.read("usul-index.json")); pn = "sp_%s.bin" % tag
     raw = zf.read("sp_usul.bin"); out = bytearray(); ne = {}

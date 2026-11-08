@@ -49,7 +49,7 @@ details summary{cursor:pointer;color:var(--m)}
 <div class="row"><button id="all">ولّد غير المولَّد</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
 <div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button></div>
 <div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
-<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
+<div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="dl1" class="s" disabled>نزّل هذا الكتاب وحده</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
 <div class="sm">الجمل المتبقية · المعتمد ✓ محفوظ في هذا المتصفح. نزّل نسخة احتياطية، فإن ضاع شيء اضغط «استرجع من ملف نزّلته».</div>
 <div id="tabs" class="row" style="margin:8px 0"></div><div id="list" class="card"></div>
 <script>
@@ -115,7 +115,7 @@ function est(){
  $("est").textContent="الكتاب: "+BOOKS[curB][0]+" · الجمل: "+nAr(R.length)+" · الحروف: نحو "+nAr(tot);
  $("big").textContent="مولَّدة "+nAr(gen)+" · صح "+nAr(ok)+" · خطأ "+nAr(bad)+" · من "+nAr(R.length);
  $("pb").style.width=(100*ok/R.length)+"%";
- $("dl").disabled=okAll<1;
+ $("dl").disabled=okAll<1;$("dl1").disabled=ok<1;
  $("dl").textContent=okAll<L.length?"نزّل كل المعتمد من الكتب الخمسة ("+nAr(okAll)+" من "+nAr(L.length)+")":"نزّل الكتب الخمسة كاملة ("+nAr(okAll)+")";
  $("redo").disabled=!bad;
  $("cp").disabled=!bad;
@@ -249,15 +249,16 @@ function zipBuild(files){const enc=new TextEncoder(),parts=[],central=[];let off
  let csz=0;central.forEach(c=>csz+=c.byteLength!==undefined?c.byteLength:c.length);const e=new DataView(new ArrayBuffer(22));
  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,csz,true);e.setUint32(16,off,true);
  return new Blob([...parts,...central,e.buffer],{type:"application/zip"})}
-$("dl").onclick=()=>{
- const okL=L.filter(l=>l.mark==="ok"&&l.bytes);if(!okL.length)return;const chunks=[],e={},texts={};let off=0;
+function dlz(only){
+ const okL=L.filter((l,i)=>l.mark==="ok"&&l.bytes&&(!only||inB(i)));if(!okL.length)return;const chunks=[],e={},texts={};let off=0;
  okL.forEach(l=>{const h=vHash(l.text);if(e[h])return;e[h]=[0,off,l.bytes.length];texts[h]=l.text;chunks.push(l.bytes);off+=l.bytes.length});
  const bin=new Uint8Array(off);let p=0;chunks.forEach(c=>{bin.set(c,p);p+=c.length});
  const meta={schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("v"+$("vslot").value).value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts,count:okL.length,total:L.length};
  const z=zipBuild([{name:"sp_usul.bin",data:bin},{name:"usul-index.json",data:new TextEncoder().encode(JSON.stringify(meta))}]);
- const a=document.createElement("a");a.href=URL.createObjectURL(z);a.download="athar-libfix91-voice-"+okL.length+"of"+L.length+".zip";document.body.appendChild(a);a.click();
+ const a=document.createElement("a");a.href=URL.createObjectURL(z);a.download=(only?"athar-libfix91"+"b"+(curB+1):"athar-libfix91")+"-voice-"+okL.length+"of"+(only?BOOKS[curB][2]-BOOKS[curB][1]:L.length)+".zip";document.body.appendChild(a);a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
-};
+}
+$("dl").onclick=()=>dlz(false);$("dl1").onclick=()=>dlz(true);
 $("vslot").value=$("vslot").dataset.d;
 (function(){try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");["v1","v2","v3","v4"].forEach(k=>{if(o[k]&&!$(k).value)$(k).value=o[k]})}catch(e){}})();
 (async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));est()})();
