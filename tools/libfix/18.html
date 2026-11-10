@@ -103,11 +103,14 @@ async function openDB(){try{DB=await new Promise((res,rej)=>{const r=indexedDB.o
 async function save(i){if(!DB)return;const l=L[i];try{await pq(DB.transaction("lines","readwrite").objectStore("lines").put({text:l.text,blob:l.blob,sent:l.sent,mark:l.mark,custom:l.custom,al:l.al,note:l.note||""},i))}catch(e){window.__saveErr=String(e)}}
 async function load(){if(!DB)return;try{const st=DB.transaction("lines").objectStore("lines");const ks=await pq(st.getAllKeys()),vs=await pq(st.getAll());
  for(let n=0;n<ks.length;n++){const i=ks[n],v=vs[n];if(L[i]&&v&&v.text===L[i].text&&v.blob){L[i].blob=v.blob;L[i].sent=v.sent;L[i].mark=v.mark;L[i].custom=v.custom;L[i].al=v.al;L[i].note=v.note||"";L[i].bytes=new Uint8Array(await v.blob.arrayBuffer())}}}catch(e){window.__loadErr=String(e)}}
+
+/* يتذكر آخر كتاب فتحته، وإلا يفتح أول كتاب فيه جمل غير معتمدة */
+const _load1=load;load=async function(){await _load1();try{const key="athar-tab-"+location.pathname;let s=+localStorage.getItem(key);if(!(s>=0&&s<BOOKS.length)){s=BOOKS.findIndex(b=>L.slice(b[1],b[2]).some(l=>l.mark!=="ok"));if(s<0)s=0}curB=s}catch(e){}};
 const SET=["v1","v2","v3","v4","vslot","mo","st","al","rules"];
 function saveSet(){try{const o={};SET.forEach(k=>o[k]=$(k).value);localStorage.setItem("athar-gen-libfix-set",JSON.stringify(o))}catch(e){}}
 function loadSet(){try{const o=JSON.parse(localStorage.getItem("athar-gen-libfix-set")||localStorage.getItem("athar-gen-books6-set")||"null");if(o)SET.forEach(k=>{if(o[k]!=null)$(k).value=o[k]})}catch(e){}}
 const nAr=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
-function renderTabs(){const t=$("tabs");if(!t)return;t.innerHTML="";BOOKS.forEach((b,k)=>{const n=L.slice(b[1],b[2]).filter(l=>l.mark==="ok").length,x=document.createElement("button");x.textContent=b[0]+" "+nAr(n)+"/"+nAr(b[2]-b[1]);x.className=k===curB?"":"s";x.style.flex="1 1 140px";x.onclick=()=>{curB=k;LINES.forEach((_,i)=>row(i));est();window.scrollTo(0,0)};t.appendChild(x)})}
+function renderTabs(){const t=$("tabs");if(!t)return;t.innerHTML="";BOOKS.forEach((b,k)=>{const n=L.slice(b[1],b[2]).filter(l=>l.mark==="ok").length,x=document.createElement("button");x.textContent=b[0]+" "+nAr(n)+"/"+nAr(b[2]-b[1]);x.className=k===curB?"":"s";x.style.flex="1 1 140px";x.onclick=()=>{curB=k;try{localStorage.setItem("athar-tab-"+location.pathname,k)}catch(e){}LINES.forEach((_,i)=>row(i));est();window.scrollTo(0,0)};t.appendChild(x)})}
 function est(){
  const R=L.map((l,i)=>[l,i]).filter(([l,i])=>inB(i)).map(x=>x[0]),RI=L.map((_,i)=>i).filter(inB);const gen=R.filter(l=>l.blob).length,ok=R.filter(l=>l.mark==="ok").length,bad=R.filter(l=>l.mark==="bad").length;const okAll=L.filter(l=>l.mark==="ok").length;
  const tot=RI.reduce((a,i)=>a+sentOf(i).length,0);
