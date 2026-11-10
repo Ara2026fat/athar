@@ -182,6 +182,7 @@ function row(i){
  sel.onchange=()=>{l.al=sel.value===""?null:+sel.value;l.custom=null;ta.value=defOf(i);ta.dispatchEvent(new Event("input"))};
  bt.appendChild(sel);
 }
+function toastErr(m){let t=document.getElementById("toastErr");if(!t){t=document.createElement("div");t.id="toastErr";t.style.cssText="position:fixed;left:12px;right:12px;bottom:14px;z-index:99999;background:#b3342a;color:#fff;padding:14px 16px;border-radius:14px;font:600 15px/1.6 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35);direction:rtl;text-align:center";t.onclick=()=>t.remove();document.body.appendChild(t)}t.textContent="تعذّر التوليد: "+m+" (اضغط لإخفاء الرسالة)";clearTimeout(t._h);t._h=setTimeout(()=>t.remove(),12000)}
 async function one(i,autoplay){
  const l=L[i];$("msg").textContent="";
  try{
@@ -189,7 +190,7 @@ async function one(i,autoplay){
   l.blob=blob;l.sent=sent;l.bytes=new Uint8Array(await blob.arrayBuffer());l.mark=null;
   await save(i);
   if(autoplay)play(i);
- }catch(e){$("msg").textContent=e.message;throw e}
+ }catch(e){$("msg").textContent=e.message;toastErr(e.message);throw e}
  finally{row(i);est()}
 }
 async function goNext(i){
