@@ -103,6 +103,10 @@ async function openDB(){try{DB=await new Promise((res,rej)=>{const r=indexedDB.o
 async function save(i){if(!DB)return;const l=L[i];try{await pq(DB.transaction("lines","readwrite").objectStore("lines").put({text:l.text,blob:l.blob,sent:l.sent,mark:l.mark,custom:l.custom,al:l.al,note:l.note||""},i))}catch(e){window.__saveErr=String(e)}}
 async function load(){if(!DB)return;try{const st=DB.transaction("lines").objectStore("lines");const ks=await pq(st.getAllKeys()),vs=await pq(st.getAll());
  for(let n=0;n<ks.length;n++){const i=ks[n],v=vs[n];if(L[i]&&v&&v.text===L[i].text&&v.blob){L[i].blob=v.blob;L[i].sent=v.sent;L[i].mark=v.mark;L[i].custom=v.custom;L[i].al=v.al;L[i].note=v.note||"";L[i].bytes=new Uint8Array(await v.blob.arrayBuffer())}}}catch(e){window.__loadErr=String(e)}}
+
+/* جمل مدموجة سابقًا (libfix93): تُعدّ معتمدة ولا تدخل في ملف التنزيل */
+const DONE_MERGED=[226, 236, 240];
+const _load0=load;load=async function(){await _load0();DONE_MERGED.forEach(i=>{if(L[i]&&L[i].mark!=="ok"){L[i].mark="ok";L[i].merged=true}})};
 const SET=["v1","v2","v3","v4","vslot","mo","st","al","rules"];
 function saveSet(){try{const o={};SET.forEach(k=>o[k]=$(k).value);localStorage.setItem("athar-gen-libfix-set",JSON.stringify(o))}catch(e){}}
 function loadSet(){try{const o=JSON.parse(localStorage.getItem("athar-gen-libfix-set")||localStorage.getItem("athar-gen-books6-set")||"null");if(o)SET.forEach(k=>{if(o[k]!=null)$(k).value=o[k]})}catch(e){}}
