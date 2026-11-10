@@ -88,7 +88,7 @@ async function tts(text,slot){
   catch(e){if(a<3){await sleep(1500*(a+1));continue}throw e}
   if(r.ok)return r.blob();
   const tx=(await r.text()).slice(0,300);
-  if(/quota/i.test(tx))throw new Fatal("نفد الرصيد. ما تم توليده محفوظ؛ زد الرصيد ثم تابع.");
+  if(/quota/i.test(tx))throw new Fatal("نفد الرصيد. ما تم توليده محفوظ؛ زد الرصيد ثم تابع. [رد ElevenLabs: "+tx.replace(/\s+/g," ").slice(0,220)+"]");
   if(r.status===401)throw new Fatal("المفتاح غير صالح.");
   if(r.status===429){await sleep(Math.min(30000,1500*2**a));continue}
   if(r.status>=500&&a<3){await sleep(2000);continue}
