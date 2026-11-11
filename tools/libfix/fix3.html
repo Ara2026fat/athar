@@ -47,7 +47,7 @@ details summary{cursor:pointer;color:var(--m)}
 <div class="sm" id="est"></div>
 </div>
 <div class="row"><button id="all">ولّد غير المولَّد</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
-<div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button></div>
+<div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button><button id="tgb" class="s">اعرض الخاطئة</button></div>
 <div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
 <div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="dl1" class="s" disabled>نزّل الجمل المعتمدة فقط</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
 <div class="sm">الجمل المتبقية · المعتمد ✓ محفوظ في هذا المتصفح. نزّل نسخة احتياطية، فإن ضاع شيء اضغط «استرجع من ملف نزّلته».</div>
@@ -127,15 +127,15 @@ function est(){
  $("dl").textContent=okAll<L.length?"نزّل الجمل المعتمدة ("+nAr(okAll)+" من "+nAr(L.length)+")":"نزّل الجمل المعتمدة ("+nAr(okAll)+")";
  $("redo").disabled=!bad;
  $("cp").disabled=!bad;
- $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";
+ $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";$("tgb").textContent=showBad?"أخفِ الخاطئة":"اعرض الخاطئة ("+nAr(bad)+")";
 }
-let cur=null,showAll=false;
+let cur=null,showAll=false,showBad=false;const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
 function play(i){try{if(cur){cur.pause()}}catch(e){}cur=new Audio(URL.createObjectURL(L[i].blob));cur.play().catch(()=>{})}
 function row(i){
  let r=$("r"+i);
  if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
  const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
- r.hidden=(l.mark==="ok"&&!showAll)||!inB(i);
+ r.hidden=(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
  const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
@@ -170,14 +170,14 @@ function row(i){
  ta.addEventListener("click",()=>setTimeout(showWP,0));
  r.appendChild(ta);r.appendChild(wp);
  const w=document.createElement("div");w.id="w"+i;w.className="sm";r.appendChild(w);
- if(l.mark==="bad"){const nt=document.createElement("input");nt.type="text";nt.dir="rtl";nt.placeholder="ما الخطأ؟ مثال: اللام في الله خفيفة";nt.value=l.note||"";nt.style.marginTop="6px";nt.addEventListener("input",()=>{l.note=nt.value;save(i)});r.appendChild(nt)}
+ if(l.mark==="bad"){const nt=document.createElement("input");nt.type="text";nt.id="nt"+i;nt.addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();finishBad(i)}});nt.dir="rtl";nt.placeholder="ما الخطأ؟ مثال: اللام في الله خفيفة";nt.value=l.note||"";nt.style.marginTop="6px";nt.addEventListener("input",()=>{l.note=nt.value;save(i)});r.appendChild(nt);if(editing.has(i)){const dn=document.createElement("button");dn.textContent="تم ← إلى الخاطئة وانتقل للتالي";dn.className="s";dn.style.cssText="margin-top:6px;min-height:48px;width:100%";dn.onclick=()=>finishBad(i);r.appendChild(dn)}}
  const bt=document.createElement("div");bt.className="bt";r.appendChild(bt);
  const mk=(txt,cls,fn)=>{const b=document.createElement("button");b.textContent=txt;if(cls)b.className=cls;b.onclick=fn;bt.appendChild(b);return b};
  mk(l.blob?"↻ أعد التوليد":"ولّد","",async()=>{l.custom=(ta.value===defOf(i))?null:ta.value;try{await one(i,true)}catch(e){}});
  if(l.blob){
   mk("▶ استمع","s",()=>play(i));
   mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est();goNext(i)});
-  mk("✗ خطأ","badb",()=>{l.mark="bad";save(i);row(i);est()});
+  mk("✗ خطأ","badb",()=>{l.mark="bad";editing.add(i);save(i);row(i);est();setTimeout(()=>{const t=$("nt"+i);if(t){t.focus();t.scrollIntoView({block:"center"})}},50)});
  }
  const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
  [["","الصوت: الافتراضي"],["1","١ أثر"],["2","٢ تعليمات"],["3","٣ أذكار"],["4","٤ شبيه أوس"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;vsel.appendChild(o)});
@@ -202,8 +202,8 @@ async function one(i,autoplay){
  finally{row(i);est()}
 }
 async function goNext(i){
- let j=-1;for(let k=i+1;k<L.length;k++){if(inB(k)&&L[k].mark!=="ok"){j=k;break}}
- if(j<0)for(let k=0;k<i;k++){if(inB(k)&&L[k].mark!=="ok"&&!L[k].blob){j=k;break}}
+ let j=-1;for(let k=i+1;k<L.length;k++){if(inB(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad"){j=k;break}}
+ if(j<0)for(let k=0;k<i;k++){if(inB(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad"&&!L[k].blob){j=k;break}}
  if(j<0){$("msg").textContent="";return}
  const r=$("r"+j);if(r)r.scrollIntoView({block:"start",behavior:"smooth"});
  if(L[j].blob){if(L[j].mark!=="bad")play(j)}else{try{await one(j,true)}catch(e){}}
@@ -237,7 +237,7 @@ $("impf").onchange=async e=>{
  }catch(err){alert("تعذّر الاسترجاع: "+err.message)}
  e.target.value="";LINES.forEach((_,i)=>row(i));est();
 };
-$("tg").onclick=()=>{showAll=!showAll;LINES.forEach((_,i)=>row(i));est()};
+$("tg").onclick=()=>{showAll=!showAll;LINES.forEach((_,i)=>row(i));est()};$("tgb").onclick=()=>{showBad=!showBad;LINES.forEach((_,i)=>row(i));est()};
 $("cp").onclick=async()=>{
  const bad=L.map((l,i)=>[l,i]).filter(([l,i])=>l.mark==="bad"&&inB(i));
  const txt="تقرير أخطاء كتاب "+BOOKS[curB][0]+" ("+bad.length+" جملة)\n\n"+bad.map(([l,i])=>"["+(i+1)+"] الأصل: "+l.text+"\nالمرسل: "+sentOf(i)+"\nالخطأ: "+(l.note||"(لم يُكتب)")).join("\n\n");
