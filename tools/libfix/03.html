@@ -133,16 +133,16 @@ function est(){
  $("cp").disabled=!bad;
  $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";$("tgb").textContent=showBad?"أخفِ الخاطئة":"اعرض الخاطئة ("+nAr(bad)+")";
 }
-let cur=null,showAll=false,showBad=false;const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
+let cur=null,showAll=false,showBad=false;let SK=[];try{SK=JSON.parse(localStorage.getItem("athar-skip-"+location.pathname)||"[]")}catch(e){}const saveSK=()=>{try{localStorage.setItem("athar-skip-"+location.pathname,JSON.stringify(SK))}catch(e){}};const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
 function play(i){try{if(cur){cur.pause()}}catch(e){}cur=new Audio(URL.createObjectURL(L[i].blob));cur.play().catch(()=>{})}
 function row(i){
  let r=$("r"+i);
  if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
  const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
- r.hidden=(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);
+ r.hidden=(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);if(SK.includes(i)){if(l.mark==="ok"||l.mark==="bad"){SK=SK.filter(x=>x!==i);saveSK()}else{$("list").appendChild(r)}}
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
- const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")};setTx();
+ const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")+(SK.includes(i)&&!l.mark?"  ⏭ مؤجّلة":"")};setTx();
  const ta=document.createElement("textarea");ta.rows=8;ta.dir="rtl";ta.style.cssText="width:100%;min-height:220px;line-height:2;font-size:21px;padding:14px;border-radius:12px;border:2px solid #2d7f68;box-sizing:border-box;resize:vertical;margin:8px 0";ta.value=sentOf(i);ta.id="ta"+i;
  ta.addEventListener("input",()=>{
   const v=ta.value;l.custom=(v===defOf(i))?null:v;
@@ -183,6 +183,7 @@ function row(i){
   mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est();goNext(i)});
   mk("✗ خطأ","badb",()=>{l.mark="bad";editing.add(i);save(i);row(i);est();setTimeout(()=>{const t=$("nt"+i);if(t){t.focus();t.scrollIntoView({block:"center"})}},50)});
  }
+ if(l.mark!=="ok"&&l.mark!=="bad")mk("⏭ تخطَّ","s",()=>{if(!SK.includes(i))SK.push(i);saveSK();row(i);est();goNext(i)});
  const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
  [["","الصوت: الافتراضي"],["1","١ أثر"],["2","٢ تعليمات"],["3","٣ أذكار"],["4","٤ شبيه أوس"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;vsel.appendChild(o)});
  vsel.value=l.vs||"";vsel.onchange=()=>{l.vs=vsel.value||null;save(i)};bt.appendChild(vsel);
@@ -206,8 +207,11 @@ async function one(i,autoplay){
  finally{row(i);est()}
 }
 async function goNext(i){
- let j=-1;for(let k=i+1;k<L.length;k++){if(inB(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad"){j=k;break}}
- if(j<0)for(let k=0;k<i;k++){if(inB(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad"&&!L[k].blob){j=k;break}}
+ const ord=[...L.keys()].filter(k=>!SK.includes(k)).concat(SK.filter(k=>L[k]));
+ const pend=k=>inB(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad";
+ const st=SK.includes(i)?[...L.keys()].filter(k=>k<i&&!SK.includes(k)).length:ord.indexOf(i)+1;
+ let j=-1;for(let n=st;n<ord.length;n++){if(pend(ord[n])){j=ord[n];break}}
+ if(j<0)for(let n=0;n<st;n++){const k=ord[n];if(pend(k)&&!L[k].blob){j=k;break}}
  if(j<0){$("msg").textContent="";return}
  const r=$("r"+j);if(r)r.scrollIntoView({block:"start",behavior:"smooth"});
  if(L[j].blob){if(L[j].mark!=="bad")play(j)}else{try{await one(j,true)}catch(e){}}
@@ -274,6 +278,6 @@ function dlz(only){try{_bk0=L.filter(l=>l.mark==="ok"&&l.bytes).length;localStor
 $("dl").onclick=()=>dlz(false);$("dl1").onclick=()=>dlz(true);
 $("vslot").value=$("vslot").dataset.d;
 (function(){try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");["v1","v2","v3","v4"].forEach(k=>{if(o[k]&&!$(k).value)$(k).value=o[k]})}catch(e){}})();
-(async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));est()})();
+(async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));SK.forEach(i=>{const r=$("r"+i);if(r&&L[i]&&L[i].mark!=="ok"&&L[i].mark!=="bad")$("list").appendChild(r)});est()})();
 (function(){try{const k=document.getElementById("k");if(!k)return;const v=localStorage.getItem("athar-el-key");if(v&&!k.value)k.value=v;k.addEventListener("input",()=>{try{localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}});if(k.value&&!v)localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}})();
 </script></body></html>
