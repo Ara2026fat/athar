@@ -6,9 +6,14 @@
 <title>المصحف — مستخرَجٌ من زاحِم لاستخدام «أثر القرآن»</title>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="shortcut icon" href="favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* خطوط محلية (بدل Google Fonts: لا طلب خارجي ولا تسريب IP للطفل) — المسار نسبيّ لمجلد الصفحة */
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:400;font-display:swap;src:url('next/assets/fonts/tajawal-400.woff2') format('woff2');}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:500;font-display:swap;src:url('next/assets/fonts/tajawal-500.woff2') format('woff2');}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:700 900;font-display:swap;src:url('next/assets/fonts/tajawal-700.woff2') format('woff2');}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:800;font-display:swap;src:url('next/assets/fonts/tajawal-800.woff2') format('woff2');}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:400 700;font-display:swap;src:url('next/assets/fonts/amiri-quran.woff2') format('woff2');}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:400 800;font-display:swap;src:url('next/assets/fonts/salawat-noto.woff2') format('woff2');unicode-range:U+FDFA-FDFB,U+FDFD}
 /* ═══════════════════════════════════════════════════════════════
    هذا قارئُ المصحف في زاحِم كاملًا — مستخرَجٌ حرفيًّا (الشكل والمنطق
    وحساب حجم الخطّ وحفظ الموضع والعلامات ونغمة الورق وقفلَ الشاشة)،
@@ -377,8 +382,9 @@ function showToast(msg){
    المصحف — مصحف المدينة النبوية، الإصدار الرابع ١٤٤١هـ
    البياناتُ من نسخةٍ عندنا (MIT)، والخطُّ يُستدعى من مصدره ولا يُستضاف.
    ═══════════════════════════════════════════════════════════ */
-var MUS_DATA     = 'https://cdn.jsdelivr.net/gh/Ara2026fat/quran-qcf4@main/pages';
-var MUS_DATA_ALT = 'https://raw.githubusercontent.com/Ara2026fat/quran-qcf4/main/pages';
+/* مثبَّت على commit ثابت (لا @main) — لتحديث البيانات غيّر الـSHA هنا وفي packs.json */
+var MUS_DATA     = 'https://cdn.jsdelivr.net/gh/Ara2026fat/quran-qcf4@962926573c06aae7ee24284041bb5a1e1445cd0d/pages';
+var MUS_DATA_ALT = 'https://raw.githubusercontent.com/Ara2026fat/quran-qcf4/962926573c06aae7ee24284041bb5a1e1445cd0d/pages';
 /* وضع «سورة واحدة»: ?surah=114 → تُقرأ البياناتُ من ملفٍّ مستقلّ لكلّ سورة
    (114.json) فلا يظهر من الصفحة إلا سطورُ هذه السورة وحدها. */
 var _musSurah = 0, _musLo = 0, _musHi = 0, _musSurahP = null;
@@ -408,6 +414,7 @@ function musFetchJSON(n){
   }
   return go();
 }
+/* TODO(خصوصية): خطوط QCF4 من مستودع طرف ثالث (MohamadHajjRabee) على @main؛ لم تُثبَّت لأن مفتاح الكاش يجب أن يطابق FONT_BASE/packs.json في index.html. ثبّتها هناك وهنا معًا على SHA. */
 var MUS_CDN  = 'https://cdn.jsdelivr.net/gh/MohamadHajjRabee/quran-qcf4@main/fonts-woff2';
 var MUS_KEY  = 'athar_mushaf_page';
 var MUS_CK   = 'athar_mushaf_pages';

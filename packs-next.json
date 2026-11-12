@@ -46,9 +46,9 @@
    "size": "نحو ٢٠ ميغا، يُفضَّل واي فاي",
    "required": false,
    "bases": [
-    "https://cdn.jsdelivr.net/gh/Ara2026fat/quran-qcf4@main/pages/",
-    "https://fastly.jsdelivr.net/gh/Ara2026fat/quran-qcf4@main/pages/",
-    "https://raw.githubusercontent.com/Ara2026fat/quran-qcf4/main/pages/"
+    "https://cdn.jsdelivr.net/gh/Ara2026fat/quran-qcf4@962926573c06aae7ee24284041bb5a1e1445cd0d/pages/",
+    "https://fastly.jsdelivr.net/gh/Ara2026fat/quran-qcf4@962926573c06aae7ee24284041bb5a1e1445cd0d/pages/",
+    "https://raw.githubusercontent.com/Ara2026fat/quran-qcf4/962926573c06aae7ee24284041bb5a1e1445cd0d/pages/"
    ],
    "range": {
     "pattern": "{n}.json",
@@ -61,7 +61,7 @@
    "id": "voices-lib",
    "title": "أصوات المكتبة والقصص",
    "desc": "أصوات كتب المكتبة والأسئلة والقصص، لتعمل دون إنترنت",
-   "size": "نحو 95 ميغا، يُفضَّل واي فاي",
+   "size": "نحو ١٠١ ميغا، يُفضَّل واي فاي",
    "required": false,
    "bases": [
     "https://ara2026fat.github.io/athar/"
@@ -75,16 +75,9 @@
     "sp_lb_shukr.bin",
     "sp_lb_sidq.bin",
     "sp_lb_sihha.bin",
-    "sp_lb_sira.bin",
-    "sp_lb_sqan.bin",
-    "sp_lb_sqbr.bin",
     "sp_lb_sqi2.bin",
-    "sp_lb_sqib.bin",
     "sp_lb_sqnb.bin",
-    "sp_lb_sqrh.bin",
-    "sp_lb_sqs2.bin",
     "sp_lb_sqsa.bin",
-    "sp_lb_sqsb.bin",
     "sp_lb_yatim.bin",
     "sp_lb_yunus.bin",
     "sp_lb_yusr.bin",
@@ -108,8 +101,6 @@
     "sp_lb_dayf.bin",
     "sp_lb_dhikr.bin",
     "sp_lb_dhulqarnayn.bin",
-    "sp_lb_dua.bin",
-    "sp_lb_fadail.bin",
     "sp_lb_fatiha.bin",
     "sp_lb_fil.bin",
     "sp_lb_firawn.bin",
@@ -117,9 +108,6 @@
     "sp_lb_ghar.bin",
     "sp_lb_harun.bin",
     "sp_lb_haya.bin",
-    "sp_lb_sqsd.bin",
-    "sp_lb_sqsg.bin",
-    "sp_lb_sqsh.bin",
     "sp_lb_suhba.bin",
     "sp_lb_sulayman.bin",
     "sp_lb_surikh.bin",
@@ -201,7 +189,13 @@
     "sp_book_asma.bin",
     "sp_books5.bin",
     "sp_isra.bin",
-    "sp_books6.bin"
+    "sp_books6.bin",
+    "sp_libfix01.bin",
+    "sp_libfix02.bin",
+    "sp_libfix03b1.bin",
+    "sp_libfix91.bin",
+    "sp_libfix92.bin",
+    "sp_libfix93.bin"
    ]
   }
  ]

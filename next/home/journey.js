@@ -30,7 +30,8 @@ var app=$("app");if(app)app.classList.add("hw-on");D.body.classList.add("hw-home
 var bg=$("jrBg"),im=new Image();
 im.onload=function(){bg.style.backgroundImage="url("+im.src+")"};
 im.onerror=function(){bg.style.backgroundImage="url(next/home/img/map/"+(T==="night"?"night1":"day1")+".webp)";bg.style.backgroundPosition="center top";bg.style.backgroundSize="cover";bg.style.backgroundColor=T==="night"?"#0e1236":"#8cc4ee"};
-im.src="next/home/img/bg/valley-a.webp";
+/* img/bg/valley-a.webp غير موجودة بعد: لا نطلبها (اجعل HAS_BG_A=true عند إضافتها) */
+var HAS_BG_A=false;if(HAS_BG_A)im.src="next/home/img/bg/valley-a.webp";else im.onerror();
 function dockH(){var d=$("jrDock");if(d)w.style.setProperty("--dock",d.offsetHeight+"px")}
 setTimeout(dockH,50);addEventListener("resize",dockH);
 })()}

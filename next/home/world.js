@@ -126,6 +126,7 @@ quiz:{ov:[["٣",.2,.86],["١",.5,.7],["٢",.8,.82]],fs:.18,col:"#fff"},
 hifz:{},lib:{},adhkar:{},valley:{}
 };
 function door3d(k){
+ if(k==="valley")return;/* doors/valley.webp غير موجودة (الصورة الفعلية valley_win.webp) — لا نطلبها */
  var el=bEl[k],cfg=D3[k];if(!el||!cfg)return;
  var im=new Image();im.decoding="async";
  im.onload=function(){

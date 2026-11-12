@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v91';
+const CACHE_VERSION = 'v92';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -25,6 +25,10 @@ const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
 const AUDIO_CACHE = 'athar-audio-v1';
 // خطوط المصحف تُخزَّن هنا بعد أول تحميل (أو من «مركز التحميل») ولا تُمسح بالتحديثات
 const PACK_CACHE = 'athar-packs-v1';
+// حزم الأصوات sp_*.bin (نفس الأصل) تُخزَّن في PACK_CACHE فقط (لا تُمسح عند التحديث ولا تُخزَّن مرتين)
+const PACK_BASE = 'https://ara2026fat.github.io/athar/';   // = bases[0] في packs.json (المفتاح الذي تحفظ به الصفحة التنزيلات)
+const SCOPE_BASE = self.registration.scope;
+const PRECACHE_PACKS = ['sp_mq.bin', 'sp_nm.bin'];
 
 // الملفات الأساسية للتطبيق نفسه فقط (صغيرة، من نفس المستودع)
 const CORE_ASSETS = [
@@ -32,8 +36,6 @@ const CORE_ASSETS = [
   './mushaf.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png',
-  './apple-touch-icon.png',
   './favicon.ico',
   './packs.json',
   './078.json',
@@ -74,8 +76,6 @@ const CORE_ASSETS = [
   './113.json',
   './114.json',
   './story-index.json',
-  './sp_mq.bin',
-  './sp_nm.bin',
   './nr/001.mp3',
   './nr/002.mp3',
   './nr/003.mp3',
@@ -498,6 +498,16 @@ self.addEventListener('install', function(event){
       return Promise.all(CORE_ASSETS.map(function(u){
         return cache.add(new Request(u, {cache: 'reload'})).catch(function(){});
       }));
+    }).then(function(){
+      // الحزمتان الصغيرتان تُحفظان في الذاكرة الدائمة لا في ذاكرة النسخة
+      return caches.open(PACK_CACHE).then(function(pc){
+        return Promise.all(PRECACHE_PACKS.map(function(n){
+          var key = SCOPE_BASE + n;
+          return pc.match(key).then(function(h){
+            if(!h) return fetch(new Request(key, {cache: 'reload'})).then(function(r){ if(r && r.ok) return pc.put(key, r); });
+          }).catch(function(){});
+        }));
+      });
     })
   );
 });
@@ -505,10 +515,11 @@ self.addEventListener('install', function(event){
 self.addEventListener('activate', function(event){
   event.waitUntil(
     caches.keys().then(function(keys){
-      return Promise.all(
-        keys.filter(function(k){ return k !== CACHE_NAME && k.indexOf('athar-quran-u-') === 0; /*ATHAR-HOME*/ })
-            .map(function(k){ return caches.delete(k); })
-      );
+      var old = keys.filter(function(k){ return k !== CACHE_NAME && k.indexOf('athar-quran-u-') === 0; /*ATHAR-HOME*/ });
+      // ترحيل حزم sp_*.bin التي خُزّنت سابقًا في ذاكرة نسخة قديمة إلى الذاكرة الدائمة قبل حذفها
+      return Promise.all(old.map(migratePacks)).then(function(){
+        return Promise.all(old.map(function(k){ return caches.delete(k); }));
+      });
     }).then(function(){ return self.clients.claim(); })
   );
 });
@@ -535,12 +546,27 @@ self.addEventListener('fetch', function(event){
   }
   if(url.origin !== self.location.origin) return; // اتركه للشبكة كما هو
 
+  var file = url.pathname.slice(url.pathname.lastIndexOf('/') + 1);
+  // حزم الصوت الاختيارية: PACK_CACHE أولًا، ولا تُكتب في CACHE_NAME أبدًا
+  if(/^sp_[^/]+\.bin$/.test(file) && url.pathname === new URL(SCOPE_BASE).pathname + file){
+    event.respondWith(voicePack(req, file));
+    return;
+  }
+  // iOS Safari يرفض الصوت إن أجبنا طلب Range بـ 200: نقصّ 206 من الكاش
+  if(req.headers.has('range') && /\/(?:nr\/\d+|[ct]\d+)\.mp3$/.test(url.pathname)){
+    event.respondWith(rangedFromCache(req, url));
+    return;
+  }
+  // story-index.json?v=<رقم متغيّر>: مفتاح كاش واحد بلا استعلام (لا نموّ غير محدود)
+  var key = req;
+  if(file === 'story-index.json' && url.search) key = new Request(url.origin + url.pathname);
+
   event.respondWith(
-    caches.match(req).then(function(cached){
+    caches.match(key).then(function(cached){
       var network = fetch(req).then(function(res){
         if(res && res.status === 200){
           var copy = res.clone();
-          caches.open(CACHE_NAME).then(function(cache){ cache.put(req, copy); });
+          caches.open(CACHE_NAME).then(function(cache){ cache.put(key, copy); });
         }
         return res;
       }).catch(function(){ return cached; });
@@ -555,28 +581,80 @@ self.addEventListener('message', function(event){
   if(event.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
+// يقصّ استجابة مخزّنة كاملة إلى 206 حسب ترويسة Range
+function partialResponse(hit, range){
+  return hit.arrayBuffer().then(function(buf){
+    var len = buf.byteLength;
+    var m = /bytes=(\d*)-(\d*)/.exec(range);
+    if(!m || (m[1] === '' && m[2] === '')) return new Response(buf, {status:200, headers:{'Content-Type': hit.headers.get('Content-Type') || 'audio/mpeg', 'Content-Length': String(len), 'Accept-Ranges': 'bytes'}});
+    var start, end;
+    if(m[1] === ''){ start = Math.max(0, len - parseInt(m[2], 10)); end = len - 1; }   // bytes=-N
+    else { start = parseInt(m[1], 10); end = m[2] ? parseInt(m[2], 10) : len - 1; }
+    end = Math.min(end, len - 1);
+    if(start > end) return new Response('', {status:416, headers:{'Content-Range': 'bytes */' + len}});
+    return new Response(buf.slice(start, end + 1), {
+      status: 206, statusText: 'Partial Content',
+      headers: {
+        'Content-Type': hit.headers.get('Content-Type') || 'audio/mpeg',
+        'Content-Range': 'bytes ' + start + '-' + end + '/' + len,
+        'Content-Length': String(end - start + 1),
+        'Accept-Ranges': 'bytes'
+      }
+    });
+  });
+}
+
+function rangedFromCache(req, url){
+  return caches.match(url.href).then(function(hit){
+    if(!hit || hit.type === 'opaque' || hit.status !== 200) return fetch(req);
+    return partialResponse(hit, req.headers.get('range'));
+  }).catch(function(){ return fetch(req); });
+}
+
+// حزم الصوت: PACK_CACHE (مفتاح الصفحة = العنوان الكامل) ثم ذاكرة النسخة (قراءة فقط) ثم الشبكة وتُحفظ في PACK_CACHE
+function voicePack(req, file){
+  var key = SCOPE_BASE + file;
+  var range = req.headers.get('range');
+  return caches.open(PACK_CACHE).then(function(pc){
+    return pc.match(key).then(function(hit){ return hit || pc.match(PACK_BASE + file); }).then(function(hit){
+      if(!hit) return caches.match(key);   // نسخة قديمة/ذاكرة النسخة: قراءة فقط
+      return hit;
+    }).then(function(hit){
+      if(hit && hit.status === 200 && hit.type !== 'opaque') return range ? partialResponse(hit, range) : hit;
+      if(range) return fetch(req);        // لا نخزّن استجابة جزئية
+      return fetch(req).then(function(res){
+        if(res && res.status === 200){ pc.put(key, res.clone()).catch(function(){}); }
+        return res;
+      }).catch(function(){ if(hit) return hit; throw 0; });
+    });
+  }).catch(function(){ return fetch(req); });
+}
+
+function migratePacks(cacheName){
+  return Promise.all([caches.open(cacheName), caches.open(PACK_CACHE)]).then(function(cs){
+    return cs[0].keys().then(function(reqs){
+      return reqs.reduce(function(chain, r){
+        var u = new URL(r.url);
+        if(u.origin !== self.location.origin || !/\/sp_[^/]+\.bin$/.test(u.pathname)) return chain;
+        return chain.then(function(){
+          var key = SCOPE_BASE + u.pathname.slice(u.pathname.lastIndexOf('/') + 1);
+          return cs[1].match(key).then(function(h){
+            if(h) return;
+            return cs[0].match(r).then(function(res){ if(res && res.status === 200) return cs[1].put(key, res); });
+          });
+        }).catch(function(){});
+      }, Promise.resolve());
+    });
+  }).catch(function(){});
+}
+
 function audioFromCache(req){
   return caches.open(AUDIO_CACHE).then(function(cache){
     return cache.match(req.url).then(function(hit){
       if(!hit) return fetch(req);
       var range = req.headers.get('range');
       if(!range || hit.type === 'opaque') return hit;
-      return hit.arrayBuffer().then(function(buf){
-        var m = /bytes=(\d+)-(\d*)/.exec(range);
-        if(!m) return new Response(buf, {status:200, headers:{'Content-Type':'audio/mpeg'}});
-        var start = parseInt(m[1], 10);
-        var end = m[2] ? parseInt(m[2], 10) : buf.byteLength - 1;
-        end = Math.min(end, buf.byteLength - 1);
-        return new Response(buf.slice(start, end + 1), {
-          status: 206, statusText: 'Partial Content',
-          headers: {
-            'Content-Type': hit.headers.get('Content-Type') || 'audio/mpeg',
-            'Content-Range': 'bytes ' + start + '-' + end + '/' + buf.byteLength,
-            'Content-Length': String(end - start + 1),
-            'Accept-Ranges': 'bytes'
-          }
-        });
-      });
+      return partialResponse(hit, range);
     });
   }).catch(function(){ return fetch(req); });
 }
@@ -596,9 +674,15 @@ function packFromCache(req, key){
   return caches.open(PACK_CACHE).then(function(cache){
     return cache.match(key).then(function(hit){
       if(hit) return hit;
-      return fetch(req).then(function(res){
-        if(res && res.ok){ cache.put(key, res.clone()); }
-        return res;
+      // توافق: حزمة صفحات نُزّلت سابقًا تحت @main قبل التثبيت على SHA
+      var legacy = key.replace('/quran-qcf4@962926573c06aae7ee24284041bb5a1e1445cd0d/', '/quran-qcf4@main/');
+      var p = legacy !== key ? cache.match(legacy) : Promise.resolve(null);
+      return p.then(function(old){
+        if(old) return old;
+        return fetch(req).then(function(res){
+          if(res && res.ok){ cache.put(key, res.clone()); }
+          return res;
+        });
       });
     });
   }).catch(function(){ return fetch(req); });

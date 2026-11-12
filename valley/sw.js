@@ -9,12 +9,12 @@
    - audio/index.json يُخزَّن بحذر (فشله لا يُفشل التثبيت)، وحزم sp_*.bin
      لا يعترضها العامل: تخزّنها الصفحة في athar-packs-v1.
    ═══════════════════════════════════════════════════════════════ */
-const CACHE = "athar-shell-v12-r8";
+const CACHE = "athar-shell-v13-r9";
 const KIDC = "athar-kid-v1";   /* أصوات أثر الجديدة: تُخزَّن عند أول طلب (الدرس) لا دفعة واحدة، ولا تُحذف عند تحديث الصدفة */
 const SHELL = ["./", "./index.html"];
-const OPTIONAL = ["./audio/index.json", "./sequence.json", "./img/map/map_day.webp", "./img/map/map_sun.webp", "./img/map/map_night.webp"];   /* قد لا توجد: لا تُفشل التثبيت */
+const OPTIONAL = ["./audio/index.json"];   /* قد لا يوجد: لا يُفشل التثبيت */
 /* [أصول] ذاكرة مستقلة عن رقم الصدفة: تبقى عند تحديث الصدفة، ويرفع رقمها فقط من يغيّر ملفًا داخل img/ أو fonts/ */
-const ASSETS = "athar-assets-v2";
+const ASSETS = "athar-assets-v3";
 const PRECACHE = [
   "../next/assets/fonts/rubik-ar-lat-var.woff2", "../next/assets/fonts/salawat-noto.woff2",
   "../next/shared/reward.css", "../next/shared/reward.js", "../next/shared/nav.js",   /* نجوم أثر: وحدة مشتركة */
@@ -69,6 +69,8 @@ self.addEventListener("fetch", e => {
   if (url.origin !== self.location.origin) return;                 /* لا اعتراض خارج الأصل */
   if (/\/audio\/athar_kid\/[^/]+\.mp3$/.test(url.pathname)) { e.respondWith(kidAudio(req, url)); return; }
   if (req.headers.has("range")) return;                            /* الصوت/الحزم تُخدَم مباشرة */
+  /* وحدات الرئيسية/المشتركة المخزَّنة مسبقًا (reward.js/css، nav.js، الخطوط): الذاكرة أولًا ثم الشبكة */
+  if (/\/next\/(?:shared|home)\//.test(url.pathname) && /\.(?:js|css|woff2|webp)$/.test(url.pathname)) { e.respondWith(assetFirst(req)); return; }
   if (/\/(img|fonts)\/(?:[^/]+\/)?[^/]+\.(?:webp|woff2)$/.test(url.pathname)) { e.respondWith(assetFirst(req)); return; }
   if (/\/audio\/sp_[^/]+\.bin$/.test(url.pathname)) return;
 
