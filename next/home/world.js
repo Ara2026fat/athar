@@ -99,7 +99,7 @@ var h='<div class="w-sky"></div><div class="w-glow"></div>'+
 '<div class="w-hill h1"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 70C50 20 110 30 170 60S300 20 400 55V200H0Z"/></svg></div>'+
 '<div class="w-hill h2"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 50C70 20 120 70 200 45S330 10 400 50V200H0Z"/></svg></div>'+
 '<div class="w-hill h3"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 40C80 10 150 50 220 30S340 25 400 38V200H0Z"/></svg></div>'+
-'<div class="w-stage" id="wStage"><button type="button" class="w-snd" id="wSnd" aria-label="الصوت"></button><div class="w-map" id="wMap"><img class="mi on" alt="" draggable="false"><img class="mi" alt="" draggable="false"><i class="mv"></i></div><div id="wSky"></div>';
+'<div class="w-stage" id="wStage"><button type="button" class="w-snd" id="wSnd" aria-label="الصوت"></button><div class="w-map" id="wMap"><img class="mi on" width="800" height="1417" alt="" draggable="false"><img class="mi" width="800" height="1417" alt="" draggable="false"><i class="mv"></i></div><div id="wSky"></div>';
 var CL=[[120,120,-5,96],[150,150,-60,128],[176,92,-30,150],[204,110,-80,112]];
 CL.forEach(function(c,i){h+='<div class="w-cl" style="top:'+c[0]+'px;width:'+c[1]+'px;animation-duration:'+c[3]+'s;animation-delay:'+c[2]+'s"><span class="w-cu" data-i="'+i+'">'+CLOUD+'</span></div>'});
 h+='<div id="wFall" aria-hidden="true"></div><div id="wLanterns"></div><div class="w-lower" id="wLower"><svg class="w-path" viewBox="0 0 390 704" height="704" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="g" stroke-width="15" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/><path class="d" stroke-width="4" stroke-dasharray="1 13" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/></g></svg>';
@@ -107,7 +107,7 @@ B.forEach(function(b){
 var big=b.k==="valley";
 h+='<button type="button" class="wb" id="wb-'+b.k+'" data-k="'+b.k+'" aria-label="'+b.l+'" style="left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px">'+ART[b.k]()+'<i class="bd" hidden></i><span class="lb">'+b.l+'</span></button>'});
 h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span class="ath-sh"></span><span class="ath-nl"></span><span class="ath-j"><span class="ath-b"><span class="ath-br"><span class="ath-halo"></span>'+
-['idle','hello','joy','think'].map(function(n){return '<img class="p" data-p="'+n+'" src="next/home/img/'+n+'.webp" alt="" draggable="false">'}).join('')+
+['idle','hello','joy','think'].map(function(n){return '<img class="p" data-p="'+n+'" src="next/home/img/'+n+'.webp" width="348" height="640" alt="" draggable="false">'}).join('')+
 '<span class="ath-hint"></span><span class="ath-core"></span></span></span></span><i class="ath-dot"></i></button>'+
 '<div class="w-pop w-peek" id="wPeek" role="status" aria-live="polite" hidden><b></b><span></span><button type="button" class="go">افتح</button></div>'+
 '<div class="w-pop w-bub" id="wBub" role="status" aria-live="polite" hidden><span>نتابع؟</span><small></small><button type="button" class="go" aria-label="نعم، نتابع">نعم</button></div>'+
@@ -186,7 +186,7 @@ sc=Math.min(w/390,Hs/704);if(ls)sc=Math.max(sc,.56);world.style.overflowY=ls?"au
 ex=Math.max(0,Hs/sc-704);
 stage.style.top=stTop+"px";
 stage.style.height=(704+ex)+"px";
-stage.style.transform="translate("+((w-390*sc)/2)+"px,0) scale("+sc+")";
+stage.style.transform="translate("+((w-390*sc)/2)+"px,0) scale("+sc+")";stage.style.setProperty("--isc",(1/sc).toFixed(3));
 var mp=$("wMap"),mt=stTop/sc;mp.style.top=(-mt)+"px";mp.style.height=(704+ex+mt)+"px";mp.style.left="-"+Math.max(0,((w/sc)-390)/2)+"px";mp.style.width=Math.max(390,w/sc)+"px";
 lower.style.top=ex+"px";
 $("wSky").style.height=(180+ex*.85)+"px";
@@ -465,7 +465,7 @@ if(active)return;active=true;if(W.HomeAudio){W.HomeAudio.hold(false);if(wasAway)
 app.classList.add("hw-on");D.documentElement.classList.remove("hw-pre");D.body.classList.add("hw-home");world.classList.remove("w-paused");svgs(1);if(skyApi)try{skyApi.resume()}catch(e){}
 period();layout();badges();requestAnimationFrame(layout);setTimeout(layout,400);if(skyApi)try{skyApi.refresh()}catch(e){}
 if(first){world.classList.add("w-first");dusk.classList.remove("off");put(HOME.ax,HOME.ay,0,true);setPose("think");
-B.forEach(function(b){bEl[b.k].classList.remove("on")});placeHalo();dusk.removeAttribute("aria-hidden");dusk.tabIndex=0;later("nudge",function(){if(first&&!seq)world.classList.add("w-nudge")},6000)}
+B.forEach(function(b){bEl[b.k].classList.remove("on")});placeHalo();dusk.removeAttribute("aria-hidden");dusk.tabIndex=0;later("nudge",function(){if(first&&!seq)world.classList.add("w-nudge")},2000)}
 else{world.classList.remove("w-first");placeLast();armLook(8000)}
 var gb=$("btnParent");if(gb&&!gb.getAttribute("aria-label"))gb.setAttribute("aria-label","وضع ولي الأمر");
 mountSky();
