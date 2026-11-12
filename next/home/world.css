@@ -68,11 +68,11 @@
 .ath.lk .ath-b{animation:wlook 2.7s ease-in-out}
 .ath-hint{position:absolute;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,236,170,.9);opacity:0;pointer-events:none}
 .w-first .ath-hint{animation:whint 2.2s ease-out infinite}
-#wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,80%),rgba(8,10,35,0) 0,rgba(8,10,35,.35) 70px,rgba(8,10,35,.9) 230px)}
+#wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,80%),rgba(8,10,35,0) 0,rgba(8,10,35,.3) 70px,rgba(8,10,35,.7) 230px)}
 .w-first #wDusk{pointer-events:auto}
 #wDusk.off{opacity:0}
 #homeWorld:not(.w-first) #wDusk{display:none}
-.w-first .wb:not(.on){opacity:.15;pointer-events:none}
+.w-first .wb:not(.on){opacity:.45;pointer-events:none}
 .wb{transition:opacity .6s}
 .wb.on.flash{z-index:4}
 #wProf{position:absolute;left:8px;right:8px;top:6px;z-index:30}
@@ -97,7 +97,7 @@
 @keyframes whint{0%{opacity:.9;transform:scale(.5)}100%{opacity:0;transform:scale(1.6)}}
 @media (prefers-reduced-motion:reduce){#homeWorld *,#homeWorld *::before{animation:none!important;transition:none!important}.w-cl{animation:none!important;transform:translateX(60px)}}
 body.bedtime #homeWorld *{animation:none!important}
-#app.hw-on .sig{position:absolute;left:0;right:0;bottom:3px;margin:0;padding:0;z-index:7;pointer-events:none;opacity:.75;line-height:1.2}
+#app.hw-on .sig{position:absolute;left:0;right:0;bottom:3px;margin:0;padding:0;z-index:7;pointer-events:none;opacity:.95;line-height:1.2;font-size:12px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7)}
 #app.hw-pk .sig{display:none}
 #wb-valley .bd{left:auto;right:0;top:44px;white-space:nowrap}
 #app.hw-on header{position:absolute;top:0;left:0;right:0;background:transparent;padding:12px 16px 2px;z-index:9;pointer-events:none}
@@ -164,9 +164,9 @@ body.hw-home .leaf{display:none}
 #wPkX::after{inset:-8px}
 #wProf .prof-chip{min-height:48px;min-width:48px}
 #wDusk:focus-visible{outline:4px solid #ffe28a;outline-offset:-8px}
-.w-nudge .ath-halo{animation:wnudge 1.8s ease-in-out infinite}
-.w-nudge .ath-hint{animation-duration:1.4s;border-width:4px}
-@keyframes wnudge{0%,100%{transform:scale(calc(var(--hs)*1.2));opacity:.8}50%{transform:scale(calc(var(--hs)*2.3));opacity:1}}
+.w-nudge .ath-halo{animation:wnudge 2.4s ease-in-out infinite}
+.w-nudge .ath-hint{animation-duration:2s;border-width:4px;box-shadow:0 0 16px 5px rgba(255,226,140,.55),inset 0 0 12px rgba(255,236,170,.5)}
+@keyframes wnudge{0%,100%{transform:scale(calc(var(--hs)*1.15));opacity:.7}50%{transform:scale(calc(var(--hs)*1.8));opacity:1}}
 #wFall{position:absolute;left:0;top:0;width:390px;height:300px;overflow:hidden;pointer-events:none;z-index:4}
 .w-fl{position:absolute;top:-12px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle,#fffdf0 0,rgba(255,224,130,.95) 40%,rgba(255,200,90,0) 72%);animation:wfall 2.4s ease-in forwards}
 @keyframes wfall{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(270px) scale(1.2);opacity:0}}
@@ -242,7 +242,7 @@ body.hw-home .leaf{display:none}
 .w-snd{top:134px}
 
 /* ── تنظيم بصري: تسميات تحت الأبواب، شارة فوق الوادي، زر الصوت في الصف العلوي ── */
-#homeWorld .wb .lb{bottom:auto;top:100%;margin-top:-4px;font-size:12px;padding:2px 9px 3px;max-width:130px;z-index:2}
+#homeWorld .wb .lb{bottom:auto;top:100%;margin-top:-4px;font-size:min(16px,calc(14px*var(--isc,1)));text-shadow:0 1px 2px rgba(20,12,40,.4);padding:2px 9px 3px;max-width:130px;z-index:2}
 #homeWorld .wb#wb-valley .lb{margin-top:-8px}
 #homeWorld .wb .bd{left:50%;top:-16px;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;height:20px;line-height:16px}
 #homeWorld .w-snd{left:12px;top:134px;width:38px;height:38px;font-size:18px}
@@ -280,7 +280,7 @@ body.hw-home .leaf{display:none}
 #wLanterns .al-ln:not(.today){display:none}
 #wLanterns .al-ln.today .al-tx{font-size:16px}
 #wLanterns .al-ln.today .al-dt{font-size:13px;font-weight:700}
-#homeWorld .w-snd{left:14px;right:auto;top:96px}
+#homeWorld .w-snd{left:14px;right:auto;top:96px;width:calc(44px*var(--isc,1));height:calc(44px*var(--isc,1));min-width:calc(44px*var(--isc,1));min-height:calc(44px*var(--isc,1));font-size:calc(18px*var(--isc,1))}
 /* خيط يعلّق فانوس اليوم من أعلى الشاشة + حلقة صغيرة، حتى لا يبدو معلّقًا في الهواء */
 #wLanterns::before{content:"";position:absolute;left:352px;top:-6px;width:3px;height:70px;border-radius:2px;background:linear-gradient(#6b4a2b,#a47a4a);box-shadow:0 0 0 1px #0002;z-index:-1}
 #wLanterns::after{content:"";position:absolute;left:346px;top:-10px;width:15px;height:15px;border-radius:50%;background:radial-gradient(#ffd75e,#c8962b);border:2px solid #7a5420;z-index:-1}
