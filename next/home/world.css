@@ -64,7 +64,7 @@
 .ath-nl{position:absolute;left:50%;top:60%;width:1500px;height:1500px;margin:-750px 0 0 -750px;border-radius:50%;background:radial-gradient(circle,rgba(6,10,40,0) 0,rgba(6,10,40,0) 70px,rgba(6,10,40,.42) 360px,rgba(6,10,40,.5) 750px);opacity:var(--nlo);pointer-events:none;display:none}
 .w-night .ath-nl{display:block}
 .ath.jump .ath-j{animation:wjump .62s cubic-bezier(.3,.7,.4,1)}
-.ath.walk .ath-b{animation:wbob .28s ease-in-out infinite alternate}
+.ath.walk .ath-b{animation:wbob .46s ease-in-out infinite alternate}
 .ath.lk .ath-b{animation:wlook 2.7s ease-in-out}
 .ath-hint{position:absolute;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,236,170,.9);opacity:0;pointer-events:none}
 .w-first .ath-hint{animation:whint 2.2s ease-out infinite}
