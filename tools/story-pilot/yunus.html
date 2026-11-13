@@ -1,0 +1,85 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>قصة يونس — نموذج</title>
+<style>
+:root{--bg:#0f1230;--card:#fff;--ink:#1d2147;--acc:#6366F1}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;color:var(--ink);overflow:hidden}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:auto;padding:max(10px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}
+#top{display:flex;align-items:center;gap:8px;color:#fff;padding:4px 2px 10px}
+#prog{flex:1;display:flex;gap:4px;direction:ltr}
+#prog i{flex:1;height:6px;border-radius:4px;background:#ffffff33}
+#prog i.on{background:#fff}#prog i.cur{background:#FFD76A}
+#ttl{font-weight:800;font-size:16px}
+#sc{flex:1 1 46%;min-height:0;border-radius:22px;overflow:hidden;position:relative;box-shadow:0 10px 30px #0006}
+#sc svg{width:100%;height:100%;display:block}
+#card{background:var(--card);border-radius:22px;margin-top:10px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:10px}
+#tx{font-size:21px;line-height:1.9;font-weight:700;text-align:center}
+#vs{background:#f1f2ff;border-radius:14px;padding:8px 12px;text-align:center;font-family:"Amiri","Scheherazade New",serif;font-size:19px;line-height:1.9;color:#2b2f6b}
+#vs small{display:block;font:600 12px system-ui;color:#6b6f9a}
+#row{display:flex;gap:8px}
+[hidden]{display:none!important}
+button{font:800 17px system-ui;border:0;border-radius:16px;min-height:50px;cursor:pointer}
+#nx{flex:1;background:var(--acc);color:#fff}#pl{width:64px;background:#e7e8ff;color:var(--acc)}
+.opt{width:100%;background:#eef0ff;color:var(--ink);margin-top:6px;padding:10px}
+.opt.ok{background:#18B87A;color:#fff}.opt.no{background:#f4a5a5}
+#end{text-align:center}
+.pill{display:inline-block;background:#FFF3C4;color:#7a5a00;border-radius:12px;padding:4px 10px;font:700 13px system-ui}
+</style></head><body><div id="app">
+<div id="top"><div id="prog"></div><div id="ttl">يونس عليه السلام</div></div>
+<div id="sc"></div>
+<div id="card"><div id="tx"></div><div id="vs" hidden></div><div id="row"><button id="pl" aria-label="استمع">🔊</button><button id="nx">التالي</button></div></div>
+</div>
+<script>
+const D={"S": [["land", "كَانَ يُونُسُ نَبِيًّا كَرِيمًا، أَرْسَلَهُ اللهُ إِلَى قَوْمِهِ لِيَدْعُوَهُمْ إِلَى عِبَادَةِ اللهِ وَحْدَهُ.", "وَإِنَّ يُونُسَ لَمِنَ ٱلْمُرْسَلِينَ", "سورة الصافات، الآية ١٣٩"], ["land", "دَعَاهُمْ يُونُسُ كَثِيرًا، لَكِنَّهُمْ لَمْ يَسْتَجِيبُوا، فَغَضِبَ وَمَضَى بَعِيدًا.", "وَذَا ٱلنُّونِ إِذ ذَّهَبَ مُغَـٰضِبًا", "سورة الأنبياء، الآية ٨٧"], ["sea", "وَرَكِبَ سَفِينَةً مَمْلُوءَةً بِالنَّاسِ، وَسَارَتْ بِهِمْ فِي الْبَحْرِ.", "إِذْ أَبَقَ إِلَى ٱلْفُلْكِ ٱلْمَشْحُونِ", "سورة الصافات، الآية ١٤٠"], ["storm", "فَاشْتَدَّتِ الْأَمْوَاجُ، فَعَمِلُوا قُرْعَةً، فَكَانَ يُونُسُ مِنَ الْمَغْلُوبِينَ.", "فَسَاهَمَ فَكَانَ مِنَ ٱلْمُدْحَضِينَ", "سورة الصافات، الآية ١٤١"], ["deep", "فَابْتَلَعَهُ الْحُوتُ، وَصَارَ يُونُسُ فِي ظُلُمَاتٍ.", "فَٱلْتَقَمَهُ ٱلْحُوتُ وَهُوَ مُلِيمٌ", "سورة الصافات، الآية ١٤٢"], ["deep", "فَسَبَّحَ اللهَ وَدَعَاهُ، وَقَالَ: «لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ، إِنِّي كُنْتُ مِنَ الظَّالِمِينَ».", "فَنَادَىٰ فِى ٱلظُّلُمَـٰتِ أَن لَّآ إِلَـٰهَ إِلَّآ أَنتَ سُبْحَـٰنَكَ إِنِّى كُنتُ مِنَ ٱلظَّـٰلِمِينَ", "سورة الأنبياء، الآية ٨٧"], ["dawn", "فَاسْتَجَابَ اللهُ لَهُ، وَنَجَّاهُ مِنَ الْغَمِّ.", "فَٱسْتَجَبْنَا لَهُۥ وَنَجَّيْنَـٰهُ مِنَ ٱلْغَمِّ ۚ وَكَذَٰلِكَ نُـۨجِى ٱلْمُؤْمِنِينَ", "سورة الأنبياء، الآية ٨٨"], ["shore", "وَأَخْرَجَهُ اللهُ إِلَى الشَّاطِئِ وَهُوَ مُتْعَبٌ، وَأَنْبَتَ عَلَيْهِ شَجَرَةً مِنْ يَقْطِينٍ لِتُظِلَّهُ.", "فَنَبَذْنَـٰهُ بِٱلْعَرَآءِ وَهُوَ سَقِيمٌ ۝ وَأَنۢبَتْنَا عَلَيْهِ شَجَرَةً مِّن يَقْطِينٍ", "سورة الصافات، الآيتان ١٤٥–١٤٦"], ["town", "ثُمَّ أَرْسَلَهُ اللهُ إِلَى مِئَةِ أَلْفٍ أَوْ أَكْثَرَ، فَآمَنُوا، فَرَحِمَهُمُ اللهُ.", "وَأَرْسَلْنَـٰهُ إِلَىٰ مِا۟ئَةِ أَلْفٍ أَوْ يَزِيدُونَ ۝ فَـَٔامَنُوا۟ فَمَتَّعْنَـٰهُمْ إِلَىٰ حِينٍ", "سورة الصافات، الآيتان ١٤٧–١٤٨"]], "LESSON": "إِذَا دَعَوْنَا اللهَ وَسَبَّحْنَاهُ فِي الشِّدَّةِ، اسْتَجَابَ لَنَا.", "Q": "مَاذَا نَقُولُ إِذَا ضَاقَ صَدْرُنَا؟", "OPT": [["لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ", 1], ["لَا أَسْتَطِيعُ", 0], ["لَا شَيْءَ", 0]]};
+const $=id=>document.getElementById(id);
+const SC={
+land:'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6b26b"/><stop offset="1" stop-color="#ffe9b0"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="300" cy="90" r="34" fill="#fff5c2"/><path d="M0 230 Q100 170 200 215 T400 200 V300 H0Z" fill="#c98b4e"/><path d="M0 260 Q120 220 240 255 T400 245 V300 H0Z" fill="#a8703a"/><g fill="#8a5a2c"><rect x="70" y="200" width="46" height="34"/><rect x="130" y="212" width="36" height="26"/><rect x="250" y="206" width="50" height="34"/></g>',
+sea:'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc7ff"/><stop offset="1" stop-color="#d9f0ff"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="90" cy="70" r="28" fill="#fff6c9"/><rect y="170" width="400" height="130" fill="#1e78c8"/><path d="M0 190 q25-14 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0V300H0Z" fill="#2a8ddb"/><path d="M120 165 h160 l-22 36 h-116Z" fill="#7b4a22"/><rect x="198" y="95" width="5" height="72" fill="#5a3416"/><path d="M203 100 L260 150 H203Z" fill="#fff"/>',
+storm:'<rect width="400" height="300" fill="#2d3a5c"/><g fill="#46557d"><ellipse cx="90" cy="60" rx="80" ry="28"/><ellipse cx="260" cy="45" rx="95" ry="30"/><ellipse cx="350" cy="85" rx="60" ry="22"/></g><path d="M230 70 l-18 40 h18 l-12 38 34-52 h-20 l14-26Z" fill="#ffe27a"/><rect y="170" width="400" height="130" fill="#143c6e"/><path d="M0 185 q20-30 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0V300H0Z" fill="#1d5a9e"/><g transform="rotate(-12 200 190)"><path d="M140 170 h120 l-18 30 h-84Z" fill="#6b3f1c"/><rect x="198" y="110" width="4" height="62" fill="#4a2a12"/><path d="M202 115 L240 150 H202Z" fill="#e8e8e8"/></g>',
+deep:'<defs><radialGradient id="r" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#16225a"/><stop offset="1" stop-color="#03040f"/></radialGradient></defs><rect width="400" height="300" fill="url(#r)"/><g fill="#9fb4ff" opacity=".75"><circle cx="70" cy="80" r="3"/><circle cx="330" cy="60" r="2.5"/><circle cx="250" cy="130" r="2"/><circle cx="120" cy="190" r="2.5"/><circle cx="310" cy="220" r="3"/><circle cx="190" cy="50" r="2"/><circle cx="60" cy="250" r="2"/></g><g fill="none" stroke="#6f86ff" opacity=".5"><circle cx="150" cy="120" r="10"/><circle cx="175" cy="95" r="6"/><circle cx="270" cy="170" r="12"/><circle cx="290" cy="140" r="6"/></g><circle cx="200" cy="165" r="36" fill="#ffe9a0" opacity=".18"/><circle cx="200" cy="165" r="14" fill="#ffe9a0" opacity=".5"/>',
+dawn:'<defs><linearGradient id="g" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffd27a"/><stop offset=".5" stop-color="#ff9d6c"/><stop offset="1" stop-color="#7a6ad8"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><g stroke="#fff3c0" stroke-width="5" opacity=".5"><path d="M200 210 L60 40"/><path d="M200 210 L200 20"/><path d="M200 210 L340 40"/><path d="M200 210 L10 120"/><path d="M200 210 L390 120"/></g><circle cx="200" cy="215" r="46" fill="#fff0b8"/><rect y="215" width="400" height="85" fill="#3b7fc4"/><path d="M0 235 q25-10 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0V300H0Z" fill="#5b9bd8"/>',
+shore:'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3ff"/><stop offset="1" stop-color="#e9f8ff"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="330" cy="60" r="26" fill="#fff4b8"/><rect y="200" width="400" height="100" fill="#f0d79b"/><path d="M0 215 q25-10 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0V160H0Z" fill="#43a0e0" opacity=".0"/><rect y="150" width="400" height="55" fill="#2a8ddb"/><path d="M0 205 q25-12 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" stroke="#fff" stroke-width="4" fill="none"/><path d="M200 230 C190 170 150 140 120 120" stroke="#2f8f3a" stroke-width="7" fill="none"/><path d="M200 230 C210 170 250 140 280 120" stroke="#2f8f3a" stroke-width="7" fill="none"/><g fill="#3dae4c"><ellipse cx="120" cy="118" rx="55" ry="26" transform="rotate(-20 120 118)"/><ellipse cx="280" cy="118" rx="55" ry="26" transform="rotate(20 280 118)"/><ellipse cx="200" cy="100" rx="60" ry="28"/></g><g fill="#c9e86a"><ellipse cx="170" cy="165" rx="12" ry="18"/><ellipse cx="235" cy="170" rx="12" ry="18"/></g>',
+town:'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#74c4ff"/><stop offset="1" stop-color="#ffe7a6"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="320" cy="62" r="30" fill="#fff4b8"/><rect y="215" width="400" height="85" fill="#7ac36a"/><g><rect x="30" y="170" width="70" height="55" fill="#f2c98a"/><path d="M24 172 L65 140 L106 172Z" fill="#c4553a"/><rect x="130" y="150" width="60" height="75" fill="#e9b97a"/><path d="M124 152 L160 122 L196 152Z" fill="#b0452e"/><rect x="215" y="165" width="70" height="60" fill="#f2c98a"/><path d="M209 167 L250 137 L291 167Z" fill="#c4553a"/><rect x="310" y="175" width="60" height="50" fill="#e9b97a"/><path d="M304 177 L340 150 L376 177Z" fill="#b0452e"/></g><g fill="#fff6d0"><rect x="52" y="190" width="14" height="18"/><rect x="152" y="175" width="14" height="20"/><rect x="238" y="185" width="14" height="18"/><rect x="332" y="190" width="12" height="16"/></g>'
+};
+let n=0,tok=0,VST=null,au=null,started=false;
+const N=D.S.length;
+function vNorm(t){return String(t).replace(/ﷺ/g,"صلى الله عليه وسلم").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[!؟?.,،:؛]+/g," ").replace(/\s+/g," ").replace(/^ | $/g,"")}
+function vHash(t){const s=vNorm(t);let x=5381;for(let i=0;i<s.length;i++)x=(((x<<5)+x)^s.charCodeAt(i))>>>0;return x.toString(16)}
+const packs={};
+async function clip(text){
+  if(!VST){try{VST=await (await fetch("../../story-index.json?"+Date.now())).json()}catch(e){VST={e:{}}}}
+  const ref=VST.e[vHash(text)];if(!ref)return null;
+  const name=VST.packs[ref[0]];
+  if(!packs[name])packs[name]=fetch("../../"+name).then(r=>r.arrayBuffer());
+  const buf=await packs[name];return new Blob([buf.slice(ref[1],ref[1]+ref[2])],{type:"audio/mpeg"});
+}
+async function say(text){
+  const my=++tok;try{if(au){au.pause();au=null}speechSynthesis&&speechSynthesis.cancel()}catch(e){}
+  let b=null;try{b=await clip(text)}catch(e){}
+  if(my!==tok)return;
+  if(b){au=new Audio(URL.createObjectURL(b));au.play().catch(()=>{});return}
+  try{const u=new SpeechSynthesisUtterance(text);u.lang="ar-SA";u.rate=.75;speechSynthesis.speak(u)}catch(e){}
+}
+function prog(){$("prog").innerHTML=Array.from({length:N+1},(_,k)=>'<i class="'+(k<n?"on":k===n?"cur":"")+'"></i>').join("")}
+function show(){
+  prog();
+  if(n<N){
+    const s=D.S[n];
+    $("sc").innerHTML='<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">'+SC[s[0]]+'</svg>';
+    $("tx").textContent=s[1];
+    $("vs").hidden=!s[2];$("vs").innerHTML=s[2]+"<small>"+s[3]+"</small>";
+    $("nx").textContent=n<N-1?"التالي":"أنهينا القصة";
+    if(started)say(s[1]);
+  }else{
+    $("sc").innerHTML='<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">'+SC.dawn+'</svg>';
+    $("vs").hidden=true;$("row").hidden=true;
+    $("tx").innerHTML='<div id="end"><span class="pill">ماذا تعلّمنا؟</span><div style="margin:6px 0 2px">'+D.LESSON+'</div><div style="font-size:18px;color:#4a4f86;margin-top:8px">'+D.Q+'</div>'+D.OPT.map((o,i)=>'<button class="opt" data-ok="'+o[1]+'">'+o[0]+'</button>').join("")+'<button class="opt" id="again" style="background:#6366F1;color:#fff;margin-top:10px">أعد القصة</button></div>';
+    if(started)say(D.LESSON);
+    document.querySelectorAll(".opt[data-ok]").forEach(b=>b.onclick=()=>{b.classList.add(b.dataset.ok==="1"?"ok":"no");if(b.dataset.ok==="1")say("أحسنت")});
+    $("again").onclick=()=>{n=0;$("row").hidden=false;show()};
+  }
+}
+$("nx").onclick=()=>{started=true;if(n<N){n++}show()};
+$("pl").onclick=()=>{started=true;if(n<N)say(D.S[n][1])};
+show();
+</script></body></html>
