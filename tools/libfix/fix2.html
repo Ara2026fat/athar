@@ -47,7 +47,7 @@ details summary{cursor:pointer;color:var(--m)}
 <div class="sm" id="est"></div>
 </div>
 <div class="row"><button id="all">ولّد غير المولَّد</button><button id="redo" class="s">أعد توليد الخاطئة</button></div>
-<div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button><button id="tgb" class="s">اعرض الخاطئة</button></div>
+<div class="row" style="margin-top:8px"><button id="cp" class="s">انسخ تقرير الأخطاء لأرسله لك</button><button id="tg" class="s">اعرض المعتمد</button><button id="tgb" class="s">اعرض الخاطئة</button><button id="tgs" class="s">اعرض المؤجّلة</button></div>
 <div class="card"><div class="bar"><i id="pb"></i></div><div id="big" class="sm" style="margin-top:6px"></div><div id="msg" class="err"></div></div>
 <div class="row"><button id="dl" class="s" disabled>نزّل المعتمد فقط</button><button id="dl1" class="s" disabled>نزّل الجمل المعتمدة فقط</button><button id="imp" class="s">استرجع من ملف نزّلته</button><input id="impf" type="file" accept=".zip" hidden></div>
 <div class="sm">الجمل المتبقية · المعتمد ✓ محفوظ في هذا المتصفح. نزّل نسخة احتياطية، فإن ضاع شيء اضغط «استرجع من ملف نزّلته».</div>
@@ -127,15 +127,15 @@ function est(){
  $("dl").textContent=okAll<L.length?"نزّل الجمل المعتمدة ("+nAr(okAll)+" من "+nAr(L.length)+")":"نزّل الجمل الأربع المعتمدة ("+nAr(okAll)+")";
  $("redo").disabled=!bad;
  $("cp").disabled=!bad;
- $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";$("tgb").textContent=showBad?"أخفِ الخاطئة":"اعرض الخاطئة ("+nAr(bad)+")";
+ $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";$("tgb").textContent=showBad?"أخفِ الخاطئة":"اعرض الخاطئة ("+nAr(bad)+")";$("tgs").textContent=showSk?"أخفِ المؤجّلة":"اعرض المؤجّلة ("+nAr(SK.filter(i=>L[i]&&L[i].mark!=="ok"&&L[i].mark!=="bad"&&inB(i)).length)+")";
 }
-let cur=null,showAll=false,showBad=false;let SK=[];try{SK=JSON.parse(localStorage.getItem("athar-skip-"+location.pathname)||"[]")}catch(e){}const saveSK=()=>{try{localStorage.setItem("athar-skip-"+location.pathname,JSON.stringify(SK))}catch(e){}};const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
+let cur=null,showAll=false,showBad=false;let SK=[];try{SK=JSON.parse(localStorage.getItem("athar-skip-"+location.pathname)||"[]")}catch(e){}let showSk=false;const saveSK=()=>{try{localStorage.setItem("athar-skip-"+location.pathname,JSON.stringify(SK))}catch(e){}};const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
 function play(i){try{if(cur){cur.pause()}}catch(e){}cur=new Audio(URL.createObjectURL(L[i].blob));cur.play().catch(()=>{})}
 function row(i){
  let r=$("r"+i);
  if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
  const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
- r.hidden=(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);if(SK.includes(i)){if(l.mark==="ok"||l.mark==="bad"){SK=SK.filter(x=>x!==i);saveSK()}else{$("list").appendChild(r)}}
+ r.hidden=(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);if(SK.includes(i)){if(l.mark==="ok"||l.mark==="bad"){SK=SK.filter(x=>x!==i);saveSK()}else{$("list").appendChild(r);if(!showSk)r.hidden=true}}
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
  const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")+(SK.includes(i)&&!l.mark?"  ⏭ مؤجّلة":"")};setTx();
@@ -179,7 +179,7 @@ function row(i){
   mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est();goNext(i)});
   mk("✗ خطأ","badb",()=>{l.mark="bad";editing.add(i);save(i);row(i);est();setTimeout(()=>{const t=$("nt"+i);if(t){t.focus();t.scrollIntoView({block:"center"})}},50)});
  }
- if(l.mark!=="ok"&&l.mark!=="bad")mk("⏭ تخطَّ","s",()=>{if(!SK.includes(i))SK.push(i);saveSK();row(i);est();goNext(i)});
+ if(l.mark!=="ok"&&l.mark!=="bad"){if(SK.includes(i))mk("↩ أعدها للمراجعة","s",()=>{SK=SK.filter(x=>x!==i);saveSK();row(i);est()});else mk("⏭ أشكّلها لاحقًا","s",()=>{SK.push(i);saveSK();row(i);est();goNext(i)})}
  const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
  [["","الصوت: الافتراضي"],["1","١ أثر"],["2","٢ تعليمات"],["3","٣ أذكار"],["4","٤ شبيه أوس"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;vsel.appendChild(o)});
  vsel.value=l.vs||"";vsel.onchange=()=>{l.vs=vsel.value||null;save(i)};bt.appendChild(vsel);
@@ -203,11 +203,9 @@ async function one(i,autoplay){
  finally{row(i);est()}
 }
 async function goNext(i){
- const ord=[...L.keys()].filter(k=>!SK.includes(k)).concat(SK.filter(k=>L[k]));
- const pend=k=>inB(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad";
- const st=SK.includes(i)?[...L.keys()].filter(k=>k<i&&!SK.includes(k)).length:ord.indexOf(i)+1;
- let j=-1;for(let n=st;n<ord.length;n++){if(pend(ord[n])){j=ord[n];break}}
- if(j<0)for(let n=0;n<st;n++){const k=ord[n];if(pend(k)&&!L[k].blob){j=k;break}}
+ const pend=k=>inB(k)&&!SK.includes(k)&&L[k].mark!=="ok"&&L[k].mark!=="bad";
+ let j=-1;for(let k=i+1;k<L.length;k++){if(pend(k)){j=k;break}}
+ if(j<0)for(let k=0;k<i;k++){if(pend(k)&&!L[k].blob){j=k;break}}
  if(j<0){$("msg").textContent="";return}
  const r=$("r"+j);if(r)r.scrollIntoView({block:"start",behavior:"smooth"});
  if(L[j].blob){if(L[j].mark!=="bad")play(j)}else{try{await one(j,true)}catch(e){}}
@@ -241,13 +239,13 @@ $("impf").onchange=async e=>{
  }catch(err){alert("تعذّر الاسترجاع: "+err.message)}
  e.target.value="";LINES.forEach((_,i)=>row(i));est();
 };
-$("tg").onclick=()=>{showAll=!showAll;LINES.forEach((_,i)=>row(i));est()};$("tgb").onclick=()=>{showBad=!showBad;LINES.forEach((_,i)=>row(i));est()};
+$("tg").onclick=()=>{showAll=!showAll;LINES.forEach((_,i)=>row(i));est()};$("tgb").onclick=()=>{showBad=!showBad;LINES.forEach((_,i)=>row(i));est()};$("tgs").onclick=()=>{showSk=!showSk;LINES.forEach((_,i)=>row(i));est()};
 $("cp").onclick=async()=>{
  const bad=L.map((l,i)=>[l,i]).filter(([l,i])=>l.mark==="bad"&&inB(i));
  const txt="تقرير أخطاء كتاب "+BOOKS[curB][0]+" ("+bad.length+" جملة)\n\n"+bad.map(([l,i])=>"["+(i+1)+"] الأصل: "+l.text+"\nالمرسل: "+sentOf(i)+"\nالخطأ: "+(l.note||"(لم يُكتب)")).join("\n\n");
  try{await navigator.clipboard.writeText(txt);$("msg").textContent="";alert("تم النسخ. الصقه لي في المحادثة.")}catch(e){const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");alert("تم النسخ. الصقه لي في المحادثة.")}catch(x){prompt("انسخ هذا النص:",txt)}ta.remove()}
 };
-$("all").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>inB(i)&&!L[i].blob));
+$("all").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>inB(i)&&!L[i].blob&&!SK.includes(i)));
 $("redo").onclick=()=>runMany(L.map((_,i)=>i).filter(i=>inB(i)&&L[i].mark==="bad"));
 ["v1","v2","v3","v4","vslot","mo","st","al","rules"].forEach(k=>{$(k).addEventListener("change",()=>{saveSet();est()});});
 $("rules").addEventListener("input",()=>{saveSet();est()});
