@@ -1,8 +1,8 @@
 /* معاينة مسار أثر: أثر يمشي على الطريق المتعرج بين الأبواب (home-path.html فقط) */
 (function(){var D=document,NS="http://www.w3.org/2000/svg";
 var OFF=0; /* فرق إحداثيات العالم عن الشاشة */
-var W_=[[195,684,null],[148,650,"math"],[244,614,"quiz"],[148,564,"lib"],[244,526,"adhkar"],[148,476,"noor"],[244,438,"hifz"],[195,394,"valley"]];
-var DOOR={math:[70,634],quiz:[320,618],lib:[70,544],adhkar:[320,528],noor:[70,454],hifz:[320,438],valley:[195,338]};
+var W_=[[195,690,null],[148,647,"math"],[244,632,"quiz"],[148,531,"lib"],[244,516,"adhkar"],[148,415,"noor"],[244,400,"hifz"],[195,345,"valley"]];
+var DOOR={math:[72,631],quiz:[318,616],lib:[72,515],adhkar:[318,500],noor:[72,399],hifz:[318,384],valley:[195,285]};
 var w,ath,path,len,stops={},busy=false,cur=0,AH=152;
 function dsc(y){return Math.max(.4,Math.min(1,.4+.6*((y-250)/452)))}
 function build(){

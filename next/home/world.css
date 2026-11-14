@@ -289,3 +289,7 @@ body.hw-home .leaf{display:none}
 .wb .art3::before{display:none!important}
 .wb .art3 .d3{padding:0!important;filter:drop-shadow(0 6px 5px rgba(30,40,20,.35))}
 .wb .lb{bottom:-8px!important;font-size:14px}
+
+/* r15: تسميات أكبر 20% وأيقونات أوسع تباعدًا */
+#homeWorld .wb .lb{font-size:14.5px!important;max-width:160px;padding:2px 10px 3px}
+#homeWorld .wb#wb-valley .lb{font-size:14.5px!important}
