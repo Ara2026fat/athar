@@ -139,6 +139,7 @@ function row(i){
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
  const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")+(SK.includes(i)&&!l.mark?"  ⏭ مؤجّلة":"")};setTx();
+ {const cx=document.createElement("div"),e=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])),g=k=>nAr(k+1)+". "+e(L[k].text);cx.style.cssText="background:#f4f1e6;border-radius:10px;padding:8px 12px;margin-top:6px;font-size:15px;line-height:1.8;color:#555";const P=[i-2,i-1].filter(k=>k>=0&&inB(k)).map(g),N=[i+1,i+2].filter(k=>k<L.length&&inB(k)).map(g);cx.innerHTML="<b>قبلها:</b> "+(P.join("<br>")||"— أول الكتاب —")+"<br><b>بعدها:</b> "+(N.join("<br>")||"— آخر الكتاب —");r.appendChild(cx)}
  const ta=document.createElement("textarea");ta.rows=8;ta.dir="rtl";ta.style.cssText="width:100%;min-height:220px;line-height:2;font-size:21px;padding:14px;border-radius:12px;border:2px solid #2d7f68;box-sizing:border-box;resize:vertical;margin:8px 0";ta.value=sentOf(i);ta.id="ta"+i;
  ta.addEventListener("input",()=>{
   const v=ta.value;l.custom=(v===defOf(i))?null:v;
