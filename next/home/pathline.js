@@ -20,11 +20,15 @@ function at(l){var q=path.getPointAtLength(Math.max(0,Math.min(len,l)));return q
 function setA(l,dir){var q=at(l),sc=dsc(q.y);ath.classList.add("nm");ath.style.transform="translate("+(q.x-50)+"px,"+(q.y-AH)+"px) scale("+sc.toFixed(3)+")";
  var j=ath.querySelector(".ath-j,.ath-b");}
 function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+function wpose(cat,flip){var ps=ath.querySelectorAll(".p"),i,t="wk"+cat;for(i=0;i<ps.length;i++){var on=ps[i].getAttribute("data-p")===t;ps[i].classList.toggle("on",on);ps[i].classList.toggle("fl",on&&flip)}}
+var vcat=null;
 function walk(k,done){var to=stops[k],from=cur,dist=Math.abs(to-from);if(dist<4){done();return}
+ var prev=ath.querySelector(".p.on"),prevK=prev&&prev.getAttribute("data-p");vcat=null;
  var dur=Math.min(5.2,Math.max(2,dist/90))*1000,t0=performance.now();busy=true;ath.classList.add("walk");
  var HA=window.HomeAudio;try{if(HA){HA.say(k);HA.steps(dur)}}catch(e){}
  (function f(now){var t=Math.min(1,(now-t0)/dur);cur=from+(to-from)*ease(t);setA(cur);
-  if(t<1)requestAnimationFrame(f);else{ath.classList.remove("walk");busy=false;done()}})(t0)}
+  try{var q1=at(cur),q2=at(cur+(to>from?4:-4)),dx=q2.x-q1.x,dy=q2.y-q1.y,ax=Math.abs(dx),ay=Math.abs(dy),vert=ay>ax*(vcat==="b"||vcat==="f"?0.8:1.25),c=vert?(dy<0?"b":"f"):"s";vcat=c;wpose(c,c==="s"&&dx<0)}catch(e){}
+  if(t<1)requestAnimationFrame(f);else{ath.classList.remove("walk");try{var ps=ath.querySelectorAll(".p"),i;for(i=0;i<ps.length;i++){ps[i].classList.remove("fl");ps[i].classList.toggle("on",ps[i].getAttribute("data-p")===(prevK||"idle"))}}catch(e){}busy=false;done()}})(t0)}
 function hook(){D.querySelectorAll("#homeWorld .wb").forEach(function(el){
  el.addEventListener("click",function(e){if(el.__go)return;var k=el.id.replace("wb-","");if(!(k in stops))return;e.stopImmediatePropagation();e.preventDefault();if(busy)return;
   walk(k,function(){el.__go=1;el.click();setTimeout(function(){el.__go=0},400)})},true)})}

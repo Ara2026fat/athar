@@ -108,6 +108,7 @@ var big=b.k==="valley";
 h+='<button type="button" class="wb" id="wb-'+b.k+'" data-k="'+b.k+'" aria-label="'+b.l+'" style="left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px">'+ART[b.k]()+'<i class="bd" hidden></i><span class="lb">'+b.l+'</span></button>'});
 h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span class="ath-sh"></span><span class="ath-nl"></span><span class="ath-j"><span class="ath-b"><span class="ath-br"><span class="ath-halo"></span>'+
 ['idle','hello','joy','think'].map(function(n){return '<img class="p" data-p="'+n+'" src="next/home/img/'+n+'.webp" width="348" height="640" alt="" draggable="false">'}).join('')+
+[['wkb','walk-back'],['wks','walk-side'],['wkf','walk-front']].map(function(n){return '<img class="p" data-p="'+n[0]+'" src="next/home/img/'+n[1]+'.webp" width="348" height="640" alt="" draggable="false" loading="lazy">'}).join('')+
 '<span class="ath-hint"></span><span class="ath-core"></span></span></span></span><i class="ath-dot"></i></button>'+
 '<div class="w-pop w-peek" id="wPeek" role="status" aria-live="polite" hidden><b></b><span></span><button type="button" class="go">افتح</button></div>'+
 '<div class="w-pop w-bub" id="wBub" role="status" aria-live="polite" hidden><span>نتابع؟</span><small></small><button type="button" class="go" aria-label="نعم، نتابع">نعم</button></div>'+
