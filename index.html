@@ -1780,7 +1780,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     <section class="view" id="view-packs">
       <div class="back-row">
         <button class="back-btn" id="btnPacksBack">→</button>
-        <div class="surah-title">التنزيل والعمل دون إنترنت</div>
+        <div class="surah-title">ملفات التنزيل</div>
       </div>
       <div class="section-card" id="packsCard"></div>
     </section>
@@ -3660,14 +3660,14 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       bn.hidden = false; bn.innerHTML = "";
       if(ok){
         bn.className = "pack-banner ok";
-        bn.innerHTML = '<span>✓ التطبيق جاهز للعمل دون إنترنت</span>';
+        bn.innerHTML = '<span>✓ ملفات التطبيق محمَّلة</span>';
         var d = document.createElement("button"); d.className = "pack-link"; d.textContent = "التفاصيل";
         d.addEventListener("click", openPacks); bn.appendChild(d);
         return;
       }
       bn.className = "pack-banner";
       var tx = document.createElement("div"); tx.className = "pb-txt";
-      tx.innerHTML = "<b>📥 حزمة العمل دون إنترنت</b><span>حمّلها مرّة واحدة (نحو ٣ ميغا) ليظهر المصحف والآيات دائمًا، حتى لو انقطع الإنترنت.</span>";
+      tx.innerHTML = "<b>📥 ملفات التنزيل</b><span>حمّلها مرّة واحدة (نحو ٣ ميغا) ليظهر المصحف والآيات أسرع. الإنترنت مطلوب لاستخدام التطبيق.</span>";
       var st = document.createElement("div"); st.className = "pb-st"; tx.appendChild(st);
       var row = document.createElement("div"); row.className = "pb-row";
       var go = document.createElement("button"); go.className = "pill-btn"; go.textContent = "تنزيل الآن";
@@ -3675,7 +3675,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         if(!navigator.onLine){ showToast("لا يوجد اتصال بالإنترنت الآن"); return; }
         go.disabled = true; go.textContent = "جارٍ التنزيل…";
         window.atharDownloadFonts(function(d, t){ st.textContent = "جارٍ التنزيل: " + arNum(d) + " من " + arNum(t); })
-          .then(function(r){ showToast(r ? "تمّ التنزيل، التطبيق جاهز دون إنترنت" : "تعذّر التنزيل، جرّب لاحقًا أو من «التفاصيل»"); renderPackBanner(); renderOfflineCard(); });
+          .then(function(r){ showToast(r ? "تمّ التنزيل" : "تعذّر التنزيل، جرّب لاحقًا أو من «التفاصيل»"); renderPackBanner(); renderOfflineCard(); });
       });
       var dt = document.createElement("button"); dt.className = "pack-link"; dt.textContent = "كل الحزم";
       dt.addEventListener("click", openPacks);
@@ -3691,7 +3691,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     ["offlineCard", "packsCard"].forEach(function(id){ var n = $(id); if(n) renderOfflineInto(n); });
   }
   function renderOfflineInto(c){
-    c.innerHTML = "<h3>📥 حزمة العمل دون إنترنت</h3><p class=\"muted\" style=\"margin:0 0 6px;\">هنا كل ما يلزم تنزيله ليعمل التطبيق كاملًا. لا يُحمَّل شيءٌ إلا بطلبك، وبعد التنزيل تعمل هذه الأجزاء حتى لو انقطع الإنترنت.</p>";
+    c.innerHTML = "<h3>📥 ملفات التنزيل</h3><p class=\"muted\" style=\"margin:0 0 6px;\">ملفات يمكن تنزيلها لتسريع التطبيق وتوفير استهلاك الإنترنت. لا يُحمَّل شيءٌ إلا بطلبك، ويبقى الإنترنت مطلوبًا لاستخدام التطبيق.</p>";
     var sum = document.createElement("div"); sum.className = "pack-summary"; sum.textContent = "…"; c.appendChild(sum);
     var stor = document.createElement("div"); stor.className = "muted"; stor.style.margin = "4px 0 8px";
     c.appendChild(stor);
@@ -3706,7 +3706,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     }
     packsReady().then(function(ok){
       sum.className = "pack-summary" + (ok ? " ok" : "");
-      sum.textContent = ok ? "✓ الحزمة الأساسية محمَّلة: المصحف وجزء عمّ يعملان دون إنترنت." : "الحزمة الأساسية غير مكتملة: نزّل «خطوط جزء عمّ» أدناه.";
+      sum.textContent = ok ? "✓ الملفات الأساسية محمَّلة: المصحف وجزء عمّ." : "الحزمة الأساسية غير مكتملة: نزّل «خطوط جزء عمّ» أدناه.";
     });
 
     // الحزم الملفّية من packs.json
@@ -5102,7 +5102,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function ayqNeedFonts(retry){
     var body = $("ayqBody"); body.innerHTML = "";
     var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<p class="muted" style="text-align:center;line-height:1.9">تحتاج هذه اللعبة إلى خطوط الآيات. حمّلها مرّة واحدة وستعمل دون إنترنت.</p>';
+    w.innerHTML = '<p class="muted" style="text-align:center;line-height:1.9">تحتاج هذه اللعبة إلى خطوط الآيات. حمّلها مرّة واحدة لتظهر بسرعة.</p>';
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto"; b.textContent = "تحميل الخطوط (٣ ميجا تقريبًا)";
     var st = document.createElement("p"); st.className = "muted"; st.style.textAlign = "center";
     b.addEventListener("click", function(){
