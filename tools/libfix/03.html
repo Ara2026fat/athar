@@ -278,4 +278,5 @@ $("vslot").value=$("vslot").dataset.d;
 (function(){try{const o=JSON.parse(localStorage.getItem("gl-set")||"{}");["v1","v2","v3","v4"].forEach(k=>{if(o[k]&&!$(k).value)$(k).value=o[k]})}catch(e){}})();
 (async()=>{loadSet();await openDB();await load();LINES.forEach((_,i)=>row(i));SK.forEach(i=>{const r=$("r"+i);if(r&&L[i]&&L[i].mark!=="ok"&&L[i].mark!=="bad")$("list").appendChild(r)});est()})();
 (function(){try{const k=document.getElementById("k");if(!k)return;const v=localStorage.getItem("athar-el-key");if(v&&!k.value)k.value=v;k.addEventListener("input",()=>{try{localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}});if(k.value&&!v)localStorage.setItem("athar-el-key",k.value.trim())}catch(e){}})();
+(function(){try{const m=/[#&]k=([^&]+)/.exec(location.hash);if(!m)return;const v=decodeURIComponent(m[1]).trim();localStorage.setItem("athar-el-key",v);const k=document.getElementById("k");if(k)k.value=v;history.replaceState(null,"",location.pathname+location.search)}catch(e){}})();
 </script></body></html>
