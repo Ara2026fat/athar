@@ -165,7 +165,7 @@ nx.onload=sw;nx.onerror=function(){};nx.src=src;if(nx.complete&&nx.naturalWidth)
 }
 function period(){
 var t=qs.get("t"),hr=qs.get("h");hr=hr!=null?+hr:new Date().getHours();
-per=t||(hr>=5&&hr<11?"morning":hr>=11&&hr<15?"day":hr>=15&&hr<19?"evening":"night");
+per=t||"day";
 late=per==="night"&&(hr>=21||hr<5);
 world.className=world.className.replace(/\bw-(morning|day|evening|night)\b/g,"").trim()+" w-"+per;
 world.classList.toggle("w-late",late);

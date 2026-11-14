@@ -16,7 +16,7 @@ function dstr(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' +
 function jget(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
 function clamp(v,a,b) { return v<a?a:v>b?b:v; }
 function rng(s) { return function () { s |=0; s=s+0x6D2B79F5 | 0; var t=Math.imul(s ^ s>>>15,1 | s); t=t+Math.imul(t ^ t>>>7,61 | t) ^ t; return ((t ^ t>>>14)>>>0) / 4294967296; }; }
-function autoTime(now) { var h = (now || new Date()).getHours(); return h >= 19 || h < 5 ? 'night' : h >= 15 ? 'dusk' : 'day'; }
+function autoTime(now) { var h = (now || new Date()).getHours(); return 'day'; }
 /* ---- حالة التقدم: نفس مفاتيح index.html (athar_days_v1_<pid> ، athar_mis_v1_<pid>.total) ---- */
 function readState(o) {
 var pid = o.pid || (jget('athar_profiles_v1') || {}).active || 'p1';

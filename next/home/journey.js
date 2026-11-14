@@ -17,7 +17,7 @@ var DOORS=[
 function ic(d){return "next/home/img/doors/"+d.img+".webp"}
 var by={};DOORS.forEach(function(d){by[d.k]=d});
 if(DOCK){(function(){
-var NEXT=qs.get("next")||"hifz",hr=new Date().getHours(),T=qs.get("t")||(hr>=5&&hr<15?"day":hr<19?"evening":"night");
+var NEXT=qs.get("next")||"hifz",hr=new Date().getHours(),T=qs.get("t")||"day";
 var w=D.createElement("div");w.id="homeWorld";w.className="jr jr-"+T;
 var nx=by[NEXT]||DOORS[1],rest=DOORS.filter(function(d){return d!==nx});
 w.innerHTML='<div class="jr-bg" id="jrBg"></div><div class="jr-tint"></div>'+
