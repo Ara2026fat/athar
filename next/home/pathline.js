@@ -1,8 +1,8 @@
 /* معاينة مسار أثر: أثر يمشي على الطريق المتعرج بين الأبواب (home-path.html فقط) */
 (function(){var D=document,NS="http://www.w3.org/2000/svg";
 var OFF=0; /* فرق إحداثيات العالم عن الشاشة */
-var W_=[[195,690,null],[148,647,"math"],[244,632,"quiz"],[148,531,"lib"],[244,516,"adhkar"],[148,415,"noor"],[244,400,"hifz"],[195,345,"valley"]];
-var DOOR={math:[72,631],quiz:[318,616],lib:[72,515],adhkar:[318,500],noor:[72,399],hifz:[318,384],valley:[195,285]};
+var W_=[[195,705,null],[207,630,["math","quiz"]],[185,570,null],[207,505,["lib","adhkar"]],[185,445,null],[205,385,["noor","hifz"]],[195,322,"valley"]];
+var DOOR={math:[76,628],quiz:[314,618],lib:[76,508],adhkar:[314,498],noor:[76,388],hifz:[314,378],valley:[195,262]};
 var w,ath,path,len,stops={},busy=false,cur=0,AH=152;
 function dsc(y){return Math.max(.4,Math.min(1,.4+.6*((y-250)/452)))}
 function build(){
@@ -11,9 +11,9 @@ function build(){
   d+=" C"+(p1[0]+(p2[0]-p0[0])/6)+" "+(p1[1]+(p2[1]-p0[1])/6)+" "+(p2[0]-(p3[0]-p1[0])/6)+" "+(p2[1]-(p3[1]-p1[1])/6)+" "+p2[0]+" "+p2[1]}
  var s=D.createElementNS(NS,"svg");s.id="wPath";s.setAttribute("viewBox","0 0 390 780");
  s.setAttribute("style","position:absolute;left:0;top:0;width:390px;height:780px;z-index:2;pointer-events:none");
- s.innerHTML='<path id="wPathP" d="'+d+'" fill="none" stroke="rgba(110,72,30,.40)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="rgba(255,232,170,.6)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="3" stroke-dasharray="2 11" stroke-linecap="round"/>';
+ s.innerHTML='<path id="wPathP" d="'+d+'" fill="none" stroke="rgba(110,72,30,.40)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="rgba(255,232,170,.6)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="3" stroke-dasharray="2 11" stroke-linecap="round"/>';
  var wb=w.querySelector(".wb");wb.parentNode.insertBefore(s,wb);path=D.getElementById("wPathP");len=path.getTotalLength();
- W_.forEach(function(p){if(!p[2])return;var best=0,bd=1e9;for(var l=0;l<=len;l+=2){var q=path.getPointAtLength(l),dd=Math.abs(q.x-p[0])+Math.abs(q.y-p[1]);if(dd<bd){bd=dd;best=l}}stops[p[2]]=best})}
+ W_.forEach(function(p){if(!p[2])return;var nm=Array.isArray(p[2])?p[2]:[p[2]];var best=0,bd=1e9;for(var l=0;l<=len;l+=2){var q=path.getPointAtLength(l),dd=Math.abs(q.x-p[0])+Math.abs(q.y-p[1]);if(dd<bd){bd=dd;best=l}}nm.forEach(function(n){stops[n]=best})})}
 function place(){Object.keys(DOOR).forEach(function(k){var el=D.getElementById("wb-"+k);if(!el)return;var c=DOOR[k],ew=el.offsetWidth||112,eh=el.offsetHeight||90;el.style.left=Math.round(c[0]-ew/2)+"px";el.style.top=Math.round(c[1]-eh/2+OFF)+"px"})}
 function at(l){var q=path.getPointAtLength(Math.max(0,Math.min(len,l)));return q}
 function setA(l,dir){var q=at(l),sc=dsc(q.y);ath.classList.add("nm");ath.style.transform="translate("+(q.x-50)+"px,"+(q.y-AH)+"px) scale("+sc.toFixed(3)+")";
