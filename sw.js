@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v109';
+const CACHE_VERSION = 'v110';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -446,6 +446,7 @@ const CORE_ASSETS = [
   './t096.mp3',
   // [الرئيسية الجديدة r8] وحدات وصور أثر وخطوط محلية
   './next/home/app.css',
+  './next/home/app.js',
   './icons-athar/brand-96.png',
   './next/home/img/walk-back.webp',
   './next/home/img/walk-side.webp',
