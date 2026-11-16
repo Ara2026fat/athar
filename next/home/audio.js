@@ -51,7 +51,8 @@ H.say=function(name,done,low){ /* low = تحية/تشجيع: لا يقطع جم�
  if(H.bin&&H.idx){return play(name,done,tok)}
  H._q=tok;                                  /* الحزمة لم تُحمَّل بعد: انتظرها ثم انطق */
  var p=loadVoice();if(!p){H._q=0;done&&done();return false}
- p.then(function(){if(H._q===tok){H._q=0;play(name,done,tok)}else done&&done()});
+ var fin=false,wd=setTimeout(function(){if(fin)return;fin=true;if(H._q===tok)H._q=0;done&&done()},6000); /* شبكة معلّقة: لا نترك المتصل ينتظر للأبد */
+ p.then(function(){if(fin)return;fin=true;clearTimeout(wd);if(H._q===tok){H._q=0;play(name,done,tok)}else done&&done()});
  return true;
 };
 function play(name,done,tok){
