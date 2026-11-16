@@ -10003,7 +10003,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     NOOR_ST.forEach(function(S, si){
       var c = noorStageCounts(si), first = -1; NOOR.forEach(function(L, i){ if(L.st === si && first < 0) first = i; });
       var open = noorUnlocked(first), b = document.createElement("button");
-      b.className = "choice-tile small" + (open ? "" : " locked"); b.style.setProperty("--c", LCOL[si % LCOL.length]);
+      b.className = "choice-tile small noor-ls noor-st" + (open ? "" : " locked"); b.style.setProperty("--c", LCOL[si % LCOL.length]);
       b.innerHTML = '<span class="choice-icon" style="font-size:28px;line-height:1">' + S.e + '</span><span class="choice-txt"><span class="ct1">' + arNum(si + 1) + '. ' + S.n + '</span><span class="ct2">' + S.d + ' — ' + arNum(c[0]) + ' من ' + arNum(c[1]) + '</span></span><svg class="choice-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       b.addEventListener("click", function(){ if(!open){ showToast("أنهِ المرحلة السابقة أولًا"); return; } sfx("tap"); noorStage(si); });
       body.appendChild(b);
@@ -10021,7 +10021,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     NOOR.forEach(function(L, i){
       if(L.st !== si) return;
       var st = d[L.id] || 0, open = noorUnlocked(i);
-      var b = document.createElement("button"); b.className = "choice-tile small" + (open ? "" : " locked"); b.style.setProperty("--c", LCOL[i % LCOL.length]);
+      var b = document.createElement("button"); b.className = "choice-tile small noor-ls" + (open ? "" : " locked"); b.style.setProperty("--c", LCOL[i % LCOL.length]);
       b.innerHTML = '<span class="choice-icon" style="font-size:20px;font-weight:800">' + arNum(i + 1) + '</span><span class="choice-txt"><span class="ct1">' + L.title + '</span><span class="ct2">' + (open ? (st ? new Array(st + 1).join("⭐") : "ابدأ الدرس") : "🔒 أنهِ الدرس السابق") + '</span></span>';
       b.addEventListener("click", function(){ if(!open){ showToast("أنهِ الدرس السابق أولًا"); return; } sfx("tap"); noorLesson(i); });
       body.appendChild(b);

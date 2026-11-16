@@ -344,8 +344,8 @@
       b.textContent = ""; b.appendChild(s); b.appendChild(t);
     }
   }
-  var FP = { noorBody:".us-parent", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile" };
-  function fpIsGrid(c){ return c.children.length > 1 && /(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips)(\s|$)/.test(c.className); }
+  var FP = { noorBody:".us-parent,.choice-tile,.us-text", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile" };
+  function fpIsGrid(c){ return c.children.length > 1 && (/(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips)(\s|$)/.test(c.className) || (c.classList.contains("lq-opts") && !!c.querySelector(".noor-it"))); }
   function fpLayout(b){
     if(b.__fpBusy) return; b.__fpBusy = true;
     try{
