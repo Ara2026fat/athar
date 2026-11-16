@@ -107,7 +107,7 @@ B.forEach(function(b){
 var big=b.k==="valley";
 h+='<button type="button" class="wb" id="wb-'+b.k+'" data-k="'+b.k+'" aria-label="'+b.l+'" style="left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px">'+ART[b.k]()+'<i class="bd" hidden></i><span class="lb">'+b.l+'</span></button>'});
 h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span class="ath-sh"></span><span class="ath-nl"></span><span class="ath-j"><span class="ath-b"><span class="ath-br"><span class="ath-halo"></span>'+
-['idle','hello','joy','think'].map(function(n){return '<img class="p" data-p="'+n+'" src="next/home/img/'+n+'.webp" width="348" height="640" alt="" draggable="false">'}).join('')+
+'<img class="p pp" data-p="idle" src="next/home/img/idle.webp" width="348" height="640" alt="" draggable="false">'+
 [['wkb','walk-back'],['wks','walk-side'],['wkf','walk-front']].map(function(n){return '<img class="p" data-p="'+n[0]+'" src="next/home/img/'+n[1]+'.webp" width="348" height="640" alt="" draggable="false" loading="lazy">'}).join('')+
 '<span class="ath-hint"></span><span class="ath-core"></span></span></span></span><i class="ath-dot"></i></button>'+
 '<div class="w-pop w-peek" id="wPeek" role="status" aria-live="polite" hidden><b></b><span></span><button type="button" class="go">افتح</button></div>'+
@@ -200,7 +200,7 @@ var curPose="idle",ax=HOME.ax,ay=HOME.ay;
 var PW={idle:151/425*AH,hello:239/560*AH,joy:305/560*AH,think:186/560*AH};
 function setPose(p){
 curPose=p;
-Array.prototype.forEach.call(ath.querySelectorAll(".p"),function(i){i.classList.toggle("on",i.dataset.p===p)});
+Array.prototype.forEach.call(ath.querySelectorAll(".p"),function(i){if(i.classList.contains("pp")){i.dataset.p=p;i.classList.add("on")}else i.classList.remove("on")});
 var f=POSE[p],cx=50+(f[0]-.5)*PW[p],cy=AH*f[1];
 halo.style.left=(cx-50)+"px";halo.style.top=(cy-50)+"px";core.style.left=(cx-20)+"px";core.style.top=(cy-20)+"px";
 hint.style.left=(cx-35)+"px";hint.style.top=(cy-35)+"px";

@@ -21,7 +21,7 @@ var NEXT=qs.get("next")||"hifz",hr=new Date().getHours(),T=qs.get("t")||"day";
 var w=D.createElement("div");w.id="homeWorld";w.className="jr jr-"+T;
 var nx=by[NEXT]||DOORS[1],rest=DOORS.filter(function(d){return d!==nx});
 w.innerHTML='<div class="jr-bg" id="jrBg"></div><div class="jr-tint"></div>'+
-'<img class="jr-ath" src="next/home/img/hello.webp" alt=""><div class="jr-bub">هيا نكمل!</div>'+
+'<img class="jr-ath" src="next/home/img/idle.webp" alt=""><div class="jr-bub">هيا نكمل!</div>'+
 '<div class="jr-dock" id="jrDock"><button type="button" class="jr-go" data-k="'+nx.k+'"><img src="'+ic(nx)+'" alt=""><span><b>هيا نكمل</b><small>'+nx.l+'</small></span><i>◀</i></button>'+
 '<div class="jr-grid">'+rest.map(function(d){return '<button type="button" class="jr-it" data-k="'+d.k+'" style="--c:'+d.c+'"><img src="'+ic(d)+'" alt=""><span>'+d.l+'</span></button>'}).join('')+'</div></div>';
 view.insertBefore(w,view.firstChild);
