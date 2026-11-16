@@ -14,3 +14,4 @@
 @keyframes fxgw{0%,100%{opacity:.45}50%{opacity:1}}
 .w-map{will-change:transform;transition:transform .25s ease-out}
 @media (prefers-reduced-motion:reduce){#wScene *,#homeWorld .wb,#homeWorld .wb::after{animation:none!important}}
+@media (max-height:700px){#wScene .gl{display:none}}
