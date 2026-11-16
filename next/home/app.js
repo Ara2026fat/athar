@@ -588,7 +588,7 @@
           if(getStatus(s.num,a) !== "memorized") setStatus(s.num,a,"trained");
         }
       }
-      showToast("أحسنت! أتممتَ وِرد هذه السورة");
+      showToast("ما شاء الله! تمّ وِرد هذه السورة");
     };
     w.onMushafClose = function(){
       leaveSurah(false);
@@ -603,7 +603,7 @@
     }
   }
 
-  // يحاول عرض صفحة الآية المطلوبة؛ يتنقّل صفحةً صفحةً (حتى 6 محاولات)
+  // يحاول عرض صفحة الآية المطلوبة؛ يتنقّل صفحةً صفحةً (حتى ٦ محاولات)
   // إن لم تكن الآية على الصفحة الحاليّة، ثم يطلب تظليلها.
   function mushafGoToVerse(surah, ayah, direction, tries){
     if(!mushafState.loaded || !mushafFrame.contentWindow) return;
@@ -661,13 +661,13 @@
     haltPlayback("idle");
 
     if(from === 1 && to === total){
-      $("statusLine").textContent = "اضغط تشغيل للاستماع";
+      $("statusLine").textContent = "اضغط للاستماع";
       if(mushafFrame.contentWindow && mushafFrame.contentWindow.mushafClearVerseRange){
         mushafFrame.contentWindow.mushafClearVerseRange();
       }
       syncMushafToCurrentAyah(1);
     } else {
-      $("statusLine").textContent = "وضع تركيز: آية " + from + " إلى " + to;
+      $("statusLine").textContent = "نحفظ من آية " + arNum(from) + " إلى آية " + arNum(to);
       showFocusedRange();
     }
   }
@@ -792,7 +792,7 @@
   var ayahPg = { page:0, per:18, surah:0 };
   function renderAyahChips(){
     var s = pickSurahData(); if(!s) return;
-    $("ayahPickSurahName").textContent = "سورة " + s.name + " — " + s.ayahs + " آية";
+    $("ayahPickSurahName").textContent = "سورة " + s.name + " — " + arNum(s.ayahs) + " آية";
     var grid = $("ayahPickGrid");
     grid.innerHTML = "";
     var per = ayahPg.per, pages = Math.max(1, Math.ceil(s.ayahs / per));
@@ -821,8 +821,8 @@
     pgBuild($("ayahPager"), ayahPg.page, pages, function(n){ ayahPg.page = n; renderAyahChips(); });
     var f = ayahPick.from, t = ayahPick.to;
     $("ayahPickSummary").textContent = (f === t)
-      ? ("الآية " + f + " فقط — اضغط آية أخرى لتمديد النطاق")
-      : ("من الآية " + f + " إلى الآية " + t + " (" + (t - f + 1) + " آيات)");
+      ? ("الآية " + arNum(f) + " فقط. اضغط آية أخرى لنزيد")
+      : ("من الآية " + arNum(f) + " إلى الآية " + arNum(t) + " (" + arNum(t - f + 1) + " آيات)");
   }
   function startAyahPick(){
     var s = pickSurahData(); if(!s) return;
@@ -891,15 +891,15 @@
   }
 
   function updateAyahBadge(){
-    $("ayahBadge").textContent = "الآية " + player.currentAyah + " من " + player.ayahsTotal;
+    $("ayahBadge").textContent = "الآية " + arNum(player.currentAyah) + " من " + arNum(player.ayahsTotal);
     try{ if(player.surah) sessionStorage.setItem("athar_last_place", JSON.stringify({s:player.surah,a:player.currentAyah})); }catch(e){}
     updateVoiceBar();
   }
 
   /* ================= حالة الكرة ================= */
   var ORB_TEXT = {
-    idle:"اضغط للاستماع", listen:"استمع…", turn:"دورك أنت!", paused:"متوقف — اضغط للمتابعة",
-    done:"أحسنت!", rec:"أنا أسمعك… اضغط زرّ التسجيل لإنهائه", mine:"هذا صوتك…"
+    idle:"اضغط للاستماع", listen:"استمع…", turn:"دورك أنت!", paused:"توقّفنا. اضغط لنكمل",
+    done:"ما شاء الله!", rec:"أسمعك… اضغط لتنتهي", mine:"هذا صوتك…"
   };
   function setOrb(state, text){
     $("orbWrap").setAttribute("data-state", state);
@@ -1050,7 +1050,7 @@
         pr.catch(function(){
           if(tok !== playTok) return;
           haltPlayback("idle");
-          $("statusLine").textContent = "اضغط الكرة مرة أخرى للسماح بالصوت";
+          $("statusLine").textContent = "اضغط الكرة مرة ثانية";
         });
       }
     };
@@ -1133,7 +1133,7 @@
   function onAyahEnded(){
     if(player.compareMode){
       haltPlayback("done");
-      $("statusLine").textContent = "أحسنت! سمعتَ صوتك ثم صوت القارئ";
+      $("statusLine").textContent = "ما شاء الله! سمعتَ صوتك ثم صوت القارئ";
       sfx("done");
       return;
     }
@@ -2182,7 +2182,7 @@
   function wordEnd(){
     markDayActive();
     var r = gameState ? gameState.right : 5, st = r >= 5 ? 3 : r >= 4 ? 2 : r >= 2 ? 1 : 0;
-    var box = endCard({ title: st ? "أحسنت!" : "لنُعِد المحاولة", sub: "أتممتَ الجولة بتوفيق الله، وأُضيء نورٌ جديد.", stars: st, cat: "comp", key: "word" });
+    var box = endCard({ title: st ? "ما شاء الله!" : "لنُعِد المحاولة", sub: "تمّت الجولة بتوفيق الله، وأُضيء نورٌ جديد.", stars: st, cat: "comp", key: "word" });
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto 0"; b.textContent = "جولة أخرى";
     b.addEventListener("click", function(){ gameState = { kind:"word", ayah:player.currentAyah, round:0, max:5, right:0 }; wordRound(); });
     box.appendChild(b); openSheet(box);
@@ -2564,7 +2564,7 @@
     var body = $("lettersBody"); body.innerHTML = "";
     markDayActive();
     var gst = [0,1,2].filter(function(k){ return right >= Math.ceil(max * (k + 1) / 3) - (k === 0 ? 1 : 0); }).length;
-    var w = endCard({ title: gst ? "أحسنت!" : "لنُعِد المحاولة", sub: "عرفتَ " + arNum(right) + " من " + arNum(max) + " من أول مرّة.", stars: gst, cat: "noor", key: "letters" });
+    var w = endCard({ title: gst ? "ما شاء الله!" : "لنُعِد المحاولة", sub: "عرفتَ " + arNum(right) + " من " + arNum(max) + " من أول مرّة.", stars: gst, cat: "noor", key: "letters" });
     body.appendChild(w);
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto"; b.textContent = "جولة أخرى";
     b.addEventListener("click", again); body.appendChild(b);
@@ -2700,7 +2700,7 @@
     var body = $("numbersBody"); body.innerHTML = "";
     markDayActive();
     var gst = [0,1,2].filter(function(k){ return right >= Math.ceil(max * (k + 1) / 3) - (k === 0 ? 1 : 0); }).length;
-    var w = endCard({ title: gst ? "أحسنت!" : "لنُعِد المحاولة", sub: "عرفتَ " + arNum(right) + " من " + arNum(max) + " من أول مرّة.", stars: gst, cat: "num", key: "numbers" });
+    var w = endCard({ title: gst ? "ما شاء الله!" : "لنُعِد المحاولة", sub: "عرفتَ " + arNum(right) + " من " + arNum(max) + " من أول مرّة.", stars: gst, cat: "num", key: "numbers" });
     body.appendChild(w);
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto"; b.textContent = "جولة أخرى";
     b.addEventListener("click", again); body.appendChild(b);
@@ -2788,7 +2788,7 @@
   }
 
   /* --- ألعاب الرياضيات الممتعة: مقارنة، ماذا ينقص، ترتيب، نمط، أشكال (بلا صور لكائنات حيّة) --- */
-  var NM_PRAISE = ["أحسنت!", "ما شاء الله!", "ممتاز!", "رائع!", "بارك الله فيك!", "عمل جميل!"];
+  var NM_PRAISE = ["ما شاء الله!", "ممتاز!", "رائع!", "بارك الله فيك!", "عمل جميل!"];
   function nmPraise(){ return NM_PRAISE[nmRand(NM_PRAISE.length)]; }
   /* تهنئة مرئية ومسموعة بعد الإجابة الصحيحة، ثم الانتقال بعد انتهاء الصوت (لا قبله) */
   function nmWin(body, sayText, fn){
@@ -2830,7 +2830,7 @@
       body.appendChild(b);
     });
     var par = document.createElement("div"); par.className = "us-parent"; par.style.marginTop = "14px";
-    par.innerHTML = "<b>لولي الأمر</b><span>ألعاب قصيرة (٦ جولات) لتنمية حسّ العدد والمقارنة والنمط والأشكال. شجّع طفلك بعبارة «أحسنت» حتى لو أخطأ أول مرة، فالتجربة جزء من التعلّم.</span>";
+    par.innerHTML = "<b>لولي الأمر</b><span>ألعاب قصيرة (٦ جولات) لتنمية حسّ العدد والمقارنة والنمط والأشكال. شجّع طفلك بعبارة «ما شاء الله» حتى لو أخطأ أول مرة، فالتجربة جزء من التعلّم.</span>";
     body.appendChild(par);
   }
   /* ===== قياس ونقود وساعة (الأرقام — تبويب «قياس») ===== */
@@ -3337,7 +3337,7 @@
       dots.children[n].classList.add("on"); n++; sfx("tap");
       if(n === 3){
         adkAdd(a.id); markDayActive(); sfx("done"); burst(["⭐","🌟","✨"], 14);
-        say.textContent = "أحسنت! 🌟"; say.disabled = true;
+        say.textContent = "ما شاء الله! 🌟"; say.disabled = true;
         adkList();
       }
     });
@@ -3566,7 +3566,7 @@
     var S = ayqSt, body = $("ayqBody"); body.innerHTML = "";
     ayqSave(S.stage, S.right); markDayActive();
     var stars = S.right >= 9 ? 3 : S.right >= 7 ? 2 : S.right >= 5 ? 1 : 0;
-    var w = endCard({ title: stars ? "أحسنت!" : "حاول مرّة أخرى", sub: "عرفتَ " + arNum(S.right) + " من ١٠ من أول مرّة.", stars: stars, cat: "comp", key: "ayq" });
+    var w = endCard({ title: stars ? "ما شاء الله!" : "حاول مرّة أخرى", sub: "عرفتَ " + arNum(S.right) + " من ١٠ من أول مرّة.", stars: stars, cat: "comp", key: "ayq" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "أعد المرحلة";
     again.addEventListener("click", function(){ ayqStart(S.stage); }); body.appendChild(again);
@@ -4204,7 +4204,7 @@
   }
   function rvEmpty(didToday){
     rvBody('<div class="rv-card rv-end"><svg class="rv-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="#FFC93C" stroke="#E0891A" stroke-width="1.4" stroke-linejoin="round"/></svg>' +
-      '<h2>' + (didToday ? "أحسنتَ، راجعتَ اليوم" : "لا مراجعة اليوم") + '</h2><p>' + (didToday ? "نلتقي في مراجعة جديدة حين يحين موعدها." : "حين تحفظ آيات جديدة ستعود هنا لتراجعها بلطف.") + '</p></div>' +
+      '<h2>' + (didToday ? "ما شاء الله، تمّت مراجعة اليوم" : "لا مراجعة اليوم") + '</h2><p>' + (didToday ? "نلتقي في مراجعة جديدة حين يحين موعدها." : "حين تحفظ آيات جديدة ستعود هنا لتراجعها بلطف.") + '</p></div>' +
       '<button class="rv-ok" id="rvDone">حسنًا</button>');
     $("rvDone").addEventListener("click", rvBackToDoor);
   }
@@ -8544,7 +8544,7 @@
     if(round >= max){
       var stars = right >= 5 ? 3 : (right >= 3 ? 2 : 1); noorSet(L.id, stars); markDayActive();
       var w = document.createElement("div"); w.className = "wg";
-      w = endCard({ title: "أحسنت!", sub: "أتممتَ «" + L.title + "»", stars: stars, cat: "noor", key: "noor" });
+      w = endCard({ title: "ما شاء الله!", sub: "تمّ درس «" + L.title + "»", stars: stars, cat: "noor", key: "noor" });
       body.appendChild(w); sfx("done");
       var nx = document.createElement("button"); nx.className = "pill-btn"; nx.style.margin = "10px auto"; nx.textContent = i + 1 < NOOR.length ? "الدرس التالي" : "كل المراحل";
       nx.addEventListener("click", function(){ if(i + 1 < NOOR.length) noorLesson(i + 1); else noorHome(); }); body.appendChild(nx);
@@ -8606,14 +8606,14 @@
   function brEnd(g, res, tok){
     markDayActive();
     var body = brBody(); body.innerHTML = "";
-    var w = endCard({ title: "أحسنت!", sub: "أنهيتَ اللعبة بنجاح، وعقلك صار أقوى.", stars: 3, cat: "comp", key: "brain" });
+    var w = endCard({ title: "ما شاء الله!", sub: "تمّت اللعبة بنجاح، والعقل صار أقوى.", stars: 3, cat: "comp", key: "brain" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "العب مرة أخرى";
     again.addEventListener("click", function(){ brStart(g); });
     var back = document.createElement("button"); back.className = "lq-say"; back.textContent = "رجوع للمسابقات";
     back.addEventListener("click", function(){ openQuiz("brain"); });
     body.appendChild(again); body.appendChild(back);
-    sfx("done"); speak("أحسنت");
+    sfx("done"); speak("ما شاء الله");
   }
 
   /* 1) ذاكرة الفوانيس */
@@ -8867,14 +8867,14 @@
     try{ localStorage.removeItem(usKey("qzmix")); }catch(e){}
     markDayActive();
     var body = $("libBody"); body.innerHTML = "";
-    var w = endCard({ title: "أحسنت!", sub: "أجبتَ عن " + arNum(n) + " سؤالًا في «" + title + "».", stars: 3, cat: "comp", key: "mix" });
+    var w = endCard({ title: "ما شاء الله!", sub: "تمّت الإجابة عن " + arNum(n) + " سؤالًا في «" + title + "».", stars: 3, cat: "comp", key: "mix" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "جولة جديدة";
     again.addEventListener("click", function(){ var a = quizMixArgs; startMix(a[0], a[1], a[2]); });
     var back = document.createElement("button"); back.className = "lq-say"; back.textContent = "رجوع للمسابقات";
     back.addEventListener("click", function(){ BK = BKS.usul; openQuiz(); });
     body.appendChild(again); body.appendChild(back);
-    sfx("done"); speak("أحسنت");
+    sfx("done"); speak("ما شاء الله");
   }
 
   var libSec = "";
@@ -9931,7 +9931,7 @@
           locked = true; b.classList.add("ok"); lan.classList.add("lit"); sfx("done"); starFly(b); burst(["🏮", "⭐", "✨"], 14); haptic(30);
           q.textContent = A.say; speak(A.say);
           list.style.display = "none"; usSet(C.id); markDayActive();
-          next.style.display = ""; next.textContent = "أحسنت ✔";
+          next.style.display = ""; next.textContent = "ما شاء الله ✔";
         } else { b.classList.add("bad"); oops(); haptic(20); }
       });
       list.appendChild(b);
@@ -10065,7 +10065,7 @@
     w.innerHTML = '<div class="sc-stars" aria-hidden="true">' + rain + '</div>' +
       '<div class="hc-card">' +
         '<svg class="medal-badge hc-medal" viewBox="0 0 120 120" width="104" height="104" aria-hidden="true"><use href="#badge-medal"/></svg>' +
-        '<div class="hc-title">أحسنت!</div>' +
+        '<div class="hc-title">ما شاء الله!</div>' +
         '<p class="hc-sub">' + (whole ? "أتممتَ سورة " + sd.name : "أتممتَ الآيات المحدّدة") + '</p>' +
         '<div class="ge-stars hc-stars" role="img" aria-label="ثلاث نجوم">' + STAR_SVG + STAR_SVG + STAR_SVG + '</div>' +
         '<button class="hc-btn" id="hcBack" type="button">العودة للسور</button>' +
@@ -10147,10 +10147,10 @@
   function setPinMode(m){
     pinMode = m; pinBuffer = ""; pinFirst = "";
     var t = $("pinTitle"), sub = $("pinSub"), h = $("pinHint");
-    if(m === "create"){ t.textContent = "أنشئ رمز ولي الأمر"; sub.textContent = "اختر 4 أرقام تتذكرها لحماية الإعدادات"; h.textContent = "لن يستطيع الطفل فتح الإعدادات دونه"; }
+    if(m === "create"){ t.textContent = "أنشئ رمز ولي الأمر"; sub.textContent = "اختر ٤ أرقام تتذكرها لحماية الإعدادات"; h.textContent = "لن يستطيع الطفل فتح الإعدادات دونه"; }
     else if(m === "confirm"){ t.textContent = "أعد إدخال الرمز"; sub.textContent = "اكتب الأرقام نفسها للتأكيد"; h.textContent = ""; }
-    else { t.textContent = "الإعدادات — ولي الأمر"; sub.textContent = "أدخل الرمز السري (4 أرقام)";
-      h.textContent = (settings.pin === "0000") ? "رمزك الحالي هو الرمز القديم 0000، غيّره من لوحة ولي الأمر" : ""; }
+    else { t.textContent = "الإعدادات — ولي الأمر"; sub.textContent = "أدخل الرمز السري (٤ أرقام)";
+      h.textContent = (settings.pin === "0000") ? "رمزك الحالي هو الرمز القديم ٠٠٠٠، غيّره من لوحة ولي الأمر" : ""; }
     renderPinDots();
     var fb = $("btnForgot"); if(fb){ fb.style.display = (m === "enter" && settings.pin) ? "" : "none"; closeForgot(); }
   }
@@ -10197,7 +10197,7 @@
   }
   function renderPinDots(){
     var wrap = $("pinDots");
-    wrap.setAttribute("aria-label", pinBuffer.length ? ("أُدخل " + arNum(pinBuffer.length) + " من ٤ أرقام") : "أدخل الرمز السري المكوّن من 4 أرقام");
+    wrap.setAttribute("aria-label", pinBuffer.length ? ("أُدخل " + arNum(pinBuffer.length) + " من ٤ أرقام") : "أدخل الرمز السري المكوّن من ٤ أرقام");
     wrap.innerHTML = "";
     for(var i=0;i<4;i++){
       var s = document.createElement("span");
@@ -10223,7 +10223,7 @@
     } else {
       pinFails++;
       pinLocked = true;
-      var wait = pinFails >= 3 ? 20000 : 400;   /* بعد 3 محاولات خاطئة: انتظار قصير يحمي من التخمين المتكرر */
+      var wait = pinFails >= 3 ? 20000 : 400;   /* بعد ٣ محاولات خاطئة: انتظار قصير يحمي من التخمين المتكرر */
       showToast(pinFails >= 3 ? "محاولات كثيرة، انتظر قليلًا" : "رمز غير صحيح");
       setTimeout(function(){ pinBuffer=""; pinLocked = false; if(pinFails >= 3) pinFails = 0; renderPinDots(); }, wait);
     }
@@ -10447,7 +10447,7 @@
     $("btnApplyCustomRepeat").addEventListener("click", function(){
       var val = parseInt($("customRepeatInput").value, 10);
       if(!val || val < 1 || val > 50){
-        showToast("أدخل رقمًا بين 1 و 50");
+        showToast("أدخل رقمًا بين ١ و ٥٠");
         return;
       }
       settings.repeatCount = val;
@@ -10460,7 +10460,7 @@
     $("btnSavePin").addEventListener("click", function(){
       var val = $("newPinInput").value.trim();
       if(!/^[0-9]{4}$/.test(val)){
-        showToast("الرجاء إدخال 4 أرقام فقط");
+        showToast("الرجاء إدخال ٤ أرقام فقط");
         return;
       }
       settings.pin = val;

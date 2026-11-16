@@ -144,7 +144,7 @@
     if(root.nodeType !== 1) return;
     renameAgain(root);
     var t = root.textContent || "";
-    if(t.indexOf("أحسنت!") >= 0 && t.indexOf("⭐") >= 0) celebrate();
+    if((t.indexOf("أحسنت!") >= 0 || t.indexOf("ما شاء الله!") >= 0) && t.indexOf("⭐") >= 0) celebrate();
   }
 
   /* ---------- إتاحة: حقول بلا تسمية ---------- */
@@ -282,7 +282,7 @@
     var inp = $("newPinInput"); if(!inp || document.getElementById("scPinHint")) return;
     var st = jget("athar_quran_settings_v1"), def = !st || !st.pin || st.pin === "0000";
     var p = document.createElement("p"); p.id = "scPinHint"; p.className = "sc-pinhint";
-    p.textContent = def ? "الرمز الحالي هو الرمز الافتراضي «0000». غيّره الآن ليبقى سرًّا." : "تم تغيير الرمز السري. اكتب رمزًا جديدًا من 4 أرقام لتغييره.";
+    p.textContent = def ? "الرمز الحالي هو الرمز الافتراضي «٠٠٠٠». غيّره الآن ليبقى سرًّا." : "تم تغيير الرمز السري. اكتب رمزًا جديدًا من ٤ أرقام لتغييره.";
     var row = inp.parentNode; row.parentNode.insertBefore(p, row);
   }
 

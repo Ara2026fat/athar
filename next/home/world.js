@@ -307,7 +307,7 @@ saveSt({cel:ds,gcel:gd?ds:s.gcel});
 later("cel",function(){
 if(!active||first||pending)return;
 ath.classList.remove("jump");jump();
-say(gNew?"هدف اليوم تحقّق، ما شاء الله":"أحسنت اليوم",4200);
+say(gNew?"هدف اليوم تحقّق، ما شاء الله":"ما شاء الله اليوم",4200);
 if(RM)return;
 var f=$("wFall"),i,n=16;
 for(i=0;i<n;i++){var e=D.createElement("i");e.className="w-fl";e.style.left=(8+Math.random()*84)+"%";e.style.animationDelay=(Math.random()*1.1).toFixed(2)+"s";e.style.animationDuration=(1.7+Math.random()*.9).toFixed(2)+"s";f.appendChild(e)}
