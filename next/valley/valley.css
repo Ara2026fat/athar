@@ -6,7 +6,7 @@
   box-shadow:0 4px 0 rgba(58,46,36,.28),0 8px 14px rgba(58,46,36,.14)!important;
   top:calc(10px + env(safe-area-inset-top))!important;display:flex!important;align-items:center;justify-content:center;
   position:absolute;overflow:hidden;color:var(--line)}
-#vhome{inset-inline-start:10px!important;flex-direction:column;gap:2px;width:72px!important;font-size:12.5px}
+#vhome{inset-inline-start:10px!important;flex-direction:column;gap:2px;width:72px!important;font-size:14px}
 #myv{inset-inline-end:86px!important}
 #sett{inset-inline-end:162px!important;color:#3F72BE}
 #snd{inset-inline-end:10px!important}
