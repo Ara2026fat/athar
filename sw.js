@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v113';
+const CACHE_VERSION = 'v114';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -448,6 +448,10 @@ const CORE_ASSETS = [
   './next/home/app.css',
   './next/home/app.js',
   './icons-athar/brand-96.png',
+  './icons-athar/apple-touch-icon.png',
+  './icons-athar/icon-512.png',
+  './icons-athar/icon-192.png',
+  './icons-athar/favicon-64.png',
   './next/home/img/walk-back.webp',
   './next/home/img/walk-side.webp',
   './next/home/img/walk-front.webp',
