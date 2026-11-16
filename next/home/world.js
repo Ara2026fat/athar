@@ -180,7 +180,7 @@ if(!view.classList.contains("active"))return;
 var vh=D.documentElement.clientHeight||W.innerHeight,top=world.getBoundingClientRect().top;
 var hd=D.querySelector("header"),stTop=hd?Math.max(44,hd.offsetHeight-6):52;
 var show=dockShow();$("wDock").style.display=show?"":"none";app.classList.toggle("hw-pk",show);
-var res=(!dis&&!first&&pk)?52:0,ls=W.innerWidth>W.innerHeight&&vh<430,H=Math.max(ls?280:420,vh-top),Hs=H-stTop-res;
+var res=show?52:0,ls=W.innerWidth>W.innerHeight&&vh<430,H=Math.max(ls?280:420,vh-top),Hs=H-stTop-res;
 world.style.height=H+"px";
 var w=world.clientWidth;
 sc=Math.min(w/390,Hs/704);if(ls)sc=Math.max(sc,.56);world.style.overflowY=ls?"auto":"";
