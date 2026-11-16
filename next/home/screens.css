@@ -257,7 +257,8 @@ html.sc-sub #view-numbers .letter-grid .letter-tile{min-height:78px}
 #wLanterns [data-time=dusk] .al-ln.today .al-dt,#wLanterns [data-time=night] .al-ln.today .al-dt{fill:#fff6e0!important}
 /* حقوق © في الرئيسية: شريط صغير مستقل بعيدًا عن قدمي أثر */
 #app.hw-on .sig{left:50%!important;right:auto!important;transform:translateX(-50%);width:max-content;max-width:92%;bottom:0!important;padding:1px 12px 2px!important;border-radius:10px 10px 0 0;background:rgba(255,255,255,.55);color:#4a4560;opacity:1!important;font-size:10px}
-#app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz).active) footer.sig{display:none}
+#app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz,#view-ayq,#view-brain,#view-prophets,#view-door,#view-letters).active) footer.sig{display:none}
+#app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz,#view-ayq,#view-brain,#view-prophets,#view-door,#view-letters).active){padding-bottom:0}
 html.sc-sub #view-adhkar .adk-tile{min-height:0;padding:8px 6px;gap:2px}
 html.sc-sub #view-adhkar .adk-e:has(.sc-ie){width:44px;height:44px}
 html.sc-sub #view-adhkar .adk-hero{padding-top:8px;padding-bottom:8px}
