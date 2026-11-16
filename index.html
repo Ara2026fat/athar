@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<script>/* tablet fit: scale the phone layout proportionally on portrait touch tablets */
+(function(){try{var m=document.querySelector('meta[name=viewport]'),base=m.content;
+function f(){var s=screen,a=Math.min(s.width,s.height),b=Math.max(s.width,s.height);
+if(!matchMedia('(pointer:coarse)').matches||a<600||matchMedia('(orientation:landscape)').matches){m.content=base;return}
+var z=Math.min(b/780,a/390,1.9);if(z<1.1){m.content=base;return}
+m.content='width='+Math.round(a/z)+', user-scalable=no, viewport-fit=cover'}
+f();addEventListener('resize',f);addEventListener('orientationchange',f)}catch(e){}})();
+</script>
 <title>أثر</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#28522F">
@@ -99,6 +107,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 </head>
 <body>
 <div id="wBoot" aria-hidden="true"></div>
+<div id="rotHint" role="alert" aria-live="polite"><svg class="rh-hills" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120V70C50 40 100 40 160 66S280 90 340 56 400 44 400 44V120z" fill="#7fc47a"/><path d="M0 120V92C70 70 130 84 200 94S330 76 400 88V120z" fill="#5aa95f"/></svg><div class="rh-sun" aria-hidden="true"></div><div class="rh-box"><svg class="rh-phone" viewBox="0 0 64 64" aria-hidden="true"><rect x="19" y="6" width="26" height="52" rx="7" fill="rgba(255,255,255,.16)" stroke="#FFD75E" stroke-width="4"/><circle cx="32" cy="51" r="2.6" fill="#FFD75E"/><path d="M8 24a26 26 0 0 1 8-12M56 40a26 26 0 0 1-8 12" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></svg><div><div class="rh-t">أدِر الجهاز</div><div class="rh-s">ليبقى طولياً ونكمل الرحلة</div></div></div></div>
 
 <!-- مكتبة رموز شخصيّتي «ورقة» و«قُمَير» — تُستدعى بـ <use> في أكثر من مكان -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

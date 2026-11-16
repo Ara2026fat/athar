@@ -32,7 +32,7 @@
   #app{
     position:relative;
     min-height:100vh;
-    max-width:560px;
+    max-width:620px;
     margin:0 auto;
     padding:0 0 40px;
     overflow:hidden;
@@ -1454,3 +1454,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
   .rdh-g{flex-wrap:nowrap!important;gap:6px!important}
   .rdh-g .pill-btn{padding-inline:10px;font-size:14px;white-space:nowrap;min-width:0}
 }
+
+/* portrait-only: rotate hint on phones held sideways */
+#rotHint{display:none;position:fixed;inset:0;z-index:100000;background:linear-gradient(180deg,#4aa3e8 0,#9fd6f5 55%,#d6f0d4 100%);align-items:center;justify-content:center;direction:rtl;overflow:hidden;touch-action:none}
+#rotHint .rh-hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:42%}
+#rotHint .rh-sun{position:absolute;top:10%;inset-inline-start:12%;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fffbe0 0,#ffe27a 60%,rgba(255,226,122,0) 72%)}
+#rotHint .rh-box{position:relative;display:flex;align-items:center;gap:18px;padding:0 24px;color:#fff;text-shadow:0 2px 8px rgba(20,60,110,.45)}
+#rotHint .rh-phone{width:84px;height:84px;flex:none;filter:drop-shadow(0 4px 8px rgba(20,60,110,.35));animation:rhTurn 2.6s ease-in-out infinite}
+#rotHint .rh-t{font:800 32px/1.2 'Baloo Bhaijan 2','Tajawal',sans-serif}
+#rotHint .rh-s{font:700 17px/1.4 'Tajawal',sans-serif;opacity:.95}
+@keyframes rhTurn{0%,18%{transform:rotate(90deg)}55%,100%{transform:rotate(0deg)}}
+@media (orientation:landscape) and (max-height:500px) and (pointer:coarse){#rotHint{display:flex}}
+@media (prefers-reduced-motion:reduce){#rotHint .rh-phone{animation:none}}

@@ -295,3 +295,7 @@ ellipse.wg{opacity:0;pointer-events:none;animation:wwin 3s ease-in-out infinite 
 #homeWorld .wb .lb,.w-night .wb .lb{background:none!important;border:0!important;box-shadow:none!important;padding:0 2px!important;color:#fff!important;font-size:16px!important;font-weight:800;max-width:170px!important;margin-top:-6px;-webkit-text-stroke:4px #2b2140;paint-order:stroke fill;text-shadow:0 2px 3px rgba(20,10,40,.55)}
 #homeWorld .wb:not(#wb-valley) .bd{display:none!important}
 @media (max-width:340px){#app.hw-on .brand{padding:3px 9px 3px 5px}#app.hw-on .brand-text{font-size:21px}}
+
+/* tablet/wide: keep the artwork at its designed width, blur-fill the sides */
+#homeWorld.w-wide .w-map::before{content:"";position:absolute;inset:-6%;background:var(--mapimg) center bottom/cover no-repeat;filter:blur(14px) saturate(.9) brightness(.94)}
+#homeWorld.w-wide .w-map .mi{left:50%;margin-left:calc(var(--mw)*-.525);width:calc(var(--mw)*1.05);animation:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%),linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 14%),linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);-webkit-mask-composite:source-in;mask-composite:intersect}

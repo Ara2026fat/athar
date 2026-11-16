@@ -160,7 +160,7 @@ var mp=$("wMap");if(!mp)return;
 var kind=per==="night"?"night":per==="evening"?"sun":"day",key=kind+mapVar();
 if(key===mapK)return;mapK=key;applyLay(mapVar());
 var im=mp.querySelectorAll(".mi"),nx=im[mapN?0:1],cu=im[mapN?1:0];mapN=mapN?0:1;
-var src="next/home/img/map/"+key+".webp";
+var src="next/home/img/map/"+key+".webp";mp.style.setProperty("--mapimg","url("+new URL(src,D.baseURI).href+")");
 function sw(){nx.classList.add("on");cu.classList.remove("on");world.classList.add("w-mapon")}
 nx.onload=sw;nx.onerror=function(){};nx.src=src;if(nx.complete&&nx.naturalWidth)sw();
 }
@@ -189,7 +189,7 @@ ex=Math.max(0,Hs/sc-704);
 stage.style.top=stTop+"px";
 stage.style.height=(704+ex)+"px";
 stage.style.transform="translate("+((w-390*sc)/2)+"px,0) scale("+sc+")";
-var mp=$("wMap"),mt=stTop/sc;mp.style.top=(-mt)+"px";mp.style.height=(704+ex+mt)+"px";mp.style.left="-"+Math.max(0,((w/sc)-390)/2)+"px";mp.style.width=Math.max(390,w/sc)+"px";
+var mp=$("wMap"),mt=stTop/sc;mp.style.top=(-mt)+"px";mp.style.height=(704+ex+mt)+"px";mp.style.left="-"+Math.max(0,((w/sc)-390)/2)+"px";mp.style.width=Math.max(390,w/sc)+"px";var wd=(w/sc)>440;world.classList.toggle("w-wide",wd);mp.style.setProperty("--mw",(wd?390:0)+"px");
 lower.style.top=ex+"px";
 $("wSky").style.height=(180+ex*.85)+"px";
 $("wProf").style.top=(stTop+2)+"px";
