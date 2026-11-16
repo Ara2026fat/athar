@@ -28,7 +28,7 @@ function setA(l,dir){var q=at(l),sc=dsc(q.y);ath.classList.add("nm");ath.style.t
 function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
 function wpose(cat,flip){var ps=ath.querySelectorAll(".p"),i,t="wk"+cat;for(i=0;i<ps.length;i++){var on=ps[i].getAttribute("data-p")===t;ps[i].classList.toggle("on",on);ps[i].classList.toggle("fl",on&&flip)}}
 var vcat=null;
-function walk(k,done){var to=stops[k],from=cur,dist=Math.abs(to-from);if(dist<4){done();return}
+function walk(k,done){var to=stops[k],from=cur,dist=Math.abs(to-from);if(dist<4){setTimeout(done,0);return}  /* click() المتداخل داخل معالج النقر نفسه يُتجاهَل: نؤجّله لنقرة جديدة */
  var prev=ath.querySelector(".p.on"),prevK=prev&&prev.getAttribute("data-p");vcat=null;
  var dur=Math.min(2.6,Math.max(.9,dist/170))*1000,t0=performance.now();busy=true;ath.classList.add("walk");
  var HA=window.HomeAudio;try{if(HA){HA.say(k);HA.steps(dur)}}catch(e){}

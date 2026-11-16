@@ -31,7 +31,7 @@ function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 var base=(function(){var s=D.currentScript;return s&&s.src?s.src.replace(/audio\.js(\?.*)?$/,""):"next/home/"})();
 var H={on:ls("athar_home_snd")!=="0",unlocked:false,per:"day",idx:null,bin:null,voice:null,amb:null,ambKey:"",cache:{},lastLine:0};
-function mkAudio(src,loop,vol){var a=new Audio(src);a.loop=!!loop;a.volume=vol;a.preload="auto";return a}
+function mkAudio(src,loop,vol){var a=new Audio(src);a.loop=!!loop;a.volume=vol;a.muted=!!H._mu;a.preload="auto";return a}
 function loadVoice(){
  if(H._p)return H._p;
  H._p=fetch(base+"voice/home-index.json").then(function(r){return r.json()}).then(function(j){H.idx=j.e;return fetch(base+"voice/sp_home.bin")}).then(function(r){return r.arrayBuffer()}).then(function(b){H.bin=b}).catch(function(){H._p=null});
@@ -99,7 +99,13 @@ H.unlock=function(){
  setTimeout(function(){if(H.on)H.greet()},900);
 };
 ["pointerdown","keydown","touchstart"].forEach(function(n){D.addEventListener(n,function f(){H.unlock();D.removeEventListener(n,f,true)},true)});
-D.addEventListener("visibilitychange",function(){if(!H.amb)return;if(D.hidden)try{H.amb.pause()}catch(e){}else if(H.on&&H.unlocked)try{H.amb.play().catch(function(){})}catch(e){}});
+/* الإيقاف المؤقت عند اختفاء التبويب يمرّ عبر AtharSound (طبقة app.js المركزية) */
+if(W.AtharSound)W.AtharSound.register("home",{
+ stop:function(){H.hold(true)},
+ mute:function(on){H._mu=!!on;[H.amb,H.voice].forEach(function(a){if(a)try{a.muted=!!on}catch(e){}})},
+ pause:function(){var h=false;if(H.voice&&!H.voice.paused&&!H.voice.ended){try{H.voice.pause();H._vh=H.voice;h=true}catch(e){}}if(H.amb&&!H.amb.paused){try{H.amb.pause();H._ah=1;h=true}catch(e){}}return h},
+ resume:function(){if(H._vh){var v=H._vh;H._vh=null;if(H.voice===v)try{v.play().catch(function(){})}catch(e){}}if(H._ah){H._ah=0;if(H.on&&H.unlocked&&H.amb)try{H.amb.play().catch(function(){})}catch(e){}}}
+});else D.addEventListener("visibilitychange",function(){if(!H.amb)return;if(D.hidden)try{H.amb.pause()}catch(e){}else if(H.on&&H.unlocked)try{H.amb.play().catch(function(){})}catch(e){}});
 W.HomeAudio=H;/* بعد أول رسم وخمول المتصفح: لا ننافس الرسم الأول على 1MB من الصوت (unlock/say يستدعيانها عند الحاجة) */
 function lateVoice(){setTimeout(function(){(W.requestIdleCallback||function(f){setTimeout(f,1)})(loadVoice)},4500)}
 if(D.readyState==="complete")lateVoice();else W.addEventListener("load",lateVoice);
