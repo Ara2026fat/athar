@@ -330,5 +330,85 @@
       setTimeout(function(){ el.classList.remove("sc-pop"); }, 460);
     }, true);
   }
+
+  /* ---------- جولة 2: أيقونة مع كل تبويب + ترقيم صفحات يمنع التمرير ---------- */
+  var SEGIC = {"أعدّ":"balloon","أجمع":"plus","أطرح":"minus","أضرب":"times","قياس":"ruler","ألعاب":"dice","قرآن":"book","حروف":"abc","أرقام":"bars","قصص":"bubble","ذكاء":"bulb","ديني":"mosque","أذكاري":"beads","متى أقول؟":"ques"};
+  function segIcons(){
+    var bs = document.querySelectorAll("#view-numbers .seg-btn,#view-quiz .seg-btn,#view-adhkar .seg-btn");
+    for(var i = 0; i < bs.length; i++){
+      var b = bs[i]; if(b.querySelector(".seg-ic")) continue;
+      var k = SEGIC[b.textContent.trim()]; if(!k || !IC[k]) continue;
+      var s = document.createElement("span"); s.className = "seg-ic"; s.setAttribute("aria-hidden","true");
+      s.innerHTML = '<svg class="sc-ic" viewBox="0 0 24 24" fill="none">' + IC[k] + '</svg>';
+      var t = document.createElement("span"); t.className = "seg-tx"; t.textContent = b.textContent;
+      b.textContent = ""; b.appendChild(s); b.appendChild(t);
+    }
+  }
+  var FP = { noorBody:".us-parent", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile" };
+  function fpIsGrid(c){ return c.children.length > 1 && /(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips)(\s|$)/.test(c.className); }
+  function fpLayout(b){
+    if(b.__fpBusy) return; b.__fpBusy = true;
+    try{
+      var old = b.querySelector(":scope>.fp-bar"); if(old) old.remove();
+      var all = b.querySelectorAll(".fp-h"); for(var i = 0; i < all.length; i++) all[i].classList.remove("fp-h");
+      var v = b.closest(".view"); if(!v || !v.classList.contains("active") || !b.querySelector(FP[b.id])) return;
+      var items = [], kids = b.children;
+      for(var k = 0; k < kids.length; k++){ var c = kids[k]; if(c.classList.contains("fp-bar")) continue;
+        if(fpIsGrid(c)){ for(var m = 0; m < c.children.length; m++) items.push({el:c.children[m], g:c}); } else items.push({el:c}); }
+      if(!items.length) return;
+      var avail = window.innerHeight - b.getBoundingClientRect().top - 36;
+      items.forEach(function(o){ o.t = o.el.offsetTop; o.b = o.t + o.el.offsetHeight; });
+      var last = items[items.length - 1];
+      if(last.b - items[0].t <= avail) return;
+      avail -= 70;
+      var pages = [], s0 = 0;
+      while(s0 < items.length){
+        var j = s0 + 1; while(j < items.length && items[j].b - items[s0].t <= avail) j++;
+        if(j < items.length){
+          while(j > s0 + 1 && items[j].t === items[j - 1].t) j--;
+          while(j > s0 + 1 && /adk-gh|lq-q|intro/.test(items[j - 1].el.className)) j--;
+        }
+        pages.push([s0, j]); s0 = j;
+      }
+      if(pages.length < 2) return;
+      var cur = Math.min(b.__fpPg || 0, pages.length - 1);
+      var bar = document.createElement("div"); bar.className = "fp-bar"; bar.setAttribute("dir","rtl");
+      var CH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var prev = document.createElement("button"), next = document.createElement("button"), dots = document.createElement("span");
+      prev.className = "fp-nav fp-prev"; next.className = "fp-nav fp-next"; dots.className = "fp-dots";
+      prev.setAttribute("aria-label","الصفحة السابقة"); next.setAttribute("aria-label","الصفحة التالية"); prev.innerHTML = CH; next.innerHTML = CH;
+      bar.appendChild(prev); bar.appendChild(dots); bar.appendChild(next);
+      function show(n){
+        b.__fpPg = cur = n;
+        items.forEach(function(o, i){ var on = i >= pages[n][0] && i < pages[n][1]; o.el.classList.toggle("fp-h", !on); });
+        var gs = []; items.forEach(function(o){ if(o.g && gs.indexOf(o.g) < 0) gs.push(o.g); });
+        gs.forEach(function(g){ g.classList.toggle("fp-h", !g.querySelector(":scope>:not(.fp-h)")); });
+        dots.innerHTML = ""; pages.forEach(function(_, i){ var d = document.createElement("i"); if(i === n) d.className = "on"; dots.appendChild(d); });
+        prev.disabled = n === 0; next.disabled = n === pages.length - 1;
+      }
+      prev.addEventListener("click", function(){ if(cur > 0) show(cur - 1); });
+      next.addEventListener("click", function(){ if(cur < pages.length - 1) show(cur + 1); });
+      b.appendChild(bar); show(cur);
+    } finally {
+      if(b.__fpMo) b.__fpMo.takeRecords(); b.__fpBusy = false;
+    }
+  }
+  function fpInit(){
+    Object.keys(FP).forEach(function(id){
+      var b = document.getElementById(id); if(!b) return;
+      var tm = 0, run = function(){ clearTimeout(tm); tm = setTimeout(function(){ fpLayout(b); setTimeout(function(){ fpLayout(b); }, 450); }, 90); };
+      b.__fpRun = run;
+      try{ b.__fpMo = new MutationObserver(function(){ if(!b.__fpBusy){ b.__fpPg = 0; run(); } }); b.__fpMo.observe(b, {childList:true}); }catch(e){}
+      var v = b.closest(".view");
+      if(v) try{ new MutationObserver(run).observe(v, {attributes:true, attributeFilter:["class"]}); }catch(e){}
+    });
+    window.addEventListener("resize", function(){ Object.keys(FP).forEach(function(id){ var b = document.getElementById(id); if(b && b.__fpRun) b.__fpRun(); }); });
+    ["view-numbers","view-quiz","view-adhkar"].forEach(function(id){
+      var v = document.getElementById(id); if(!v) return;
+      try{ new MutationObserver(segIcons).observe(v, {childList:true, subtree:true}); }catch(e){}
+    });
+    segIcons();
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", fpInit); else fpInit();
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

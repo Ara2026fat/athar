@@ -202,3 +202,70 @@ html.sc-sub :is(.locked,.lock){opacity:1;filter:saturate(.8) brightness(.96)}
 html.sc-sub .adk-hero,html.sc-sub .adk-hero *{color:#fff}
 html.sc-sub .adk-hero{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#0b6b63}
 html.sc-sub .strip-pill:not(.active){opacity:1;filter:saturate(.8)}
+/* ===== جولة 2: تبويبات بأيقونة وخط ١٦+، وترقيم صفحات بدل التمرير ===== */
+html.sc-sub :is(#noorBody,#libBody,#adhkarBody,#numbersBody,#quizBody){position:relative}
+.fp-h{display:none!important}
+.fp-bar{display:flex;align-items:center;justify-content:center;gap:18px;margin:10px 0 0;min-height:56px}
+.fp-nav{width:56px;height:56px;border-radius:50%;border:2.5px solid rgba(58,43,77,.5);background:linear-gradient(180deg,#fff,#ffe7a8);color:#3a2b4d;display:grid;place-items:center;padding:0;box-shadow:0 4px 0 rgba(58,43,77,.35);cursor:pointer}
+.fp-nav svg{width:28px;height:28px}
+.fp-prev svg{transform:scaleX(-1)}
+.fp-nav:disabled{opacity:.35;box-shadow:none}
+.fp-nav:not(:disabled):active{transform:translateY(3px);box-shadow:0 1px 0 rgba(58,43,77,.35)}
+.fp-dots{display:flex;gap:10px;align-items:center}
+.fp-dots i{width:12px;height:12px;border-radius:50%;background:rgba(58,43,77,.28)}
+.fp-dots i.on{width:26px;border-radius:8px;background:#1b7a3a}
+/* تبويب: أيقونة فوق النص، خط ١٦ على الأقل */
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg{flex-wrap:nowrap;gap:4px;padding:5px}
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:16px;font-weight:800;min-height:62px;padding:4px 2px;min-width:0;flex:1 1 0;line-height:1.1}
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg-btn .seg-ic{width:26px;height:26px;display:block;flex:none}
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg-btn .seg-tx{font-size:16px;white-space:nowrap}
+html.sc-sub #view-adhkar .seg-btn{flex-direction:row;gap:8px;min-height:56px}
+html.sc-sub #view-adhkar .seg-btn .seg-ic{width:24px;height:24px}
+/* ضغط الشاشات الخمس */
+html.sc-sub #view-quiz .door-intro{display:none}
+html.sc-sub #view-quiz .sc-hub{gap:10px}
+html.sc-sub #view-quiz .sc-hub.g1>.choice-tile{min-height:104px;padding:10px 16px;gap:12px}
+html.sc-sub #view-quiz .sc-hub.g1 .choice-icon{width:68px;height:68px;border-radius:22px}
+html.sc-sub #view-quiz .sc-hub.g1 .ct1{font-size:21px;line-height:1.2}
+html.sc-sub #view-quiz .sc-hub.g1 .ct2{font-size:14px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+html.sc-sub #view-quiz .sc-hub.g2>.choice-tile{min-height:132px}
+html.sc-sub #view-quiz .sc-hub.g2 .choice-icon{width:56px;height:56px}
+html.sc-sub :is(#view-noor,#view-library) .sc-hub.g2>.choice-tile,html.sc-sub #noorBody>.choice-tile{min-height:112px;padding:8px 8px;gap:4px}
+html.sc-sub :is(#view-noor,#view-library) .sc-hub.g2 .choice-icon,html.sc-sub #noorBody>.choice-tile .choice-icon{width:52px;height:52px;border-radius:18px}
+html.sc-sub #libBody .lib-secs .ct2{-webkit-line-clamp:1}
+html.sc-sub #noorBody{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+html.sc-sub #noorBody>*{margin:0!important;grid-column:1/-1}
+html.sc-sub #noorBody>.choice-tile{grid-column:auto;flex-direction:column;justify-content:center;text-align:center;width:100%}
+html.sc-sub #noorBody>.choice-tile.sc-wide{grid-column:1/-1}
+html.sc-sub #noorBody>.choice-tile .choice-txt{flex:none;width:100%}
+html.sc-sub #noorBody>.choice-tile .ct1{font-size:18px;line-height:1.2}
+html.sc-sub #noorBody>.choice-tile .ct2{font-size:13px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+html.sc-sub #noorBody>.choice-tile .choice-chev{display:none}
+html.sc-sub #view-adhkar .adk-tile{min-height:108px}
+html.sc-sub #view-numbers .intro p{display:none}
+html.sc-sub #view-numbers .intro{margin:0 0 6px}
+html.sc-sub #view-numbers .letter-grid .letter-tile{min-height:78px}
+@media (max-height:700px){
+  html.sc-sub :is(#view-noor,#view-library) .sc-hub.g2>.choice-tile,html.sc-sub #noorBody>.choice-tile{min-height:100px}
+  html.sc-sub #view-adhkar .adk-tile{min-height:96px}
+  html.sc-sub #view-numbers .letter-grid .letter-tile{min-height:68px}
+}
+/* تاريخ قنديل اليوم فوق صورة المسجد: حدّ أوضح وخط أثقل */
+#wLanterns .al-ln.today .al-tx{font-weight:900!important;stroke-width:5.5px!important;filter:drop-shadow(0 0 3px rgba(255,255,255,.95))}
+#wLanterns .al-ln.today .al-dt{font-size:13px!important;font-weight:900!important;fill:#2a1608!important}
+#wLanterns [data-time=dusk] .al-ln.today .al-tx,#wLanterns [data-time=night] .al-ln.today .al-tx{filter:drop-shadow(0 0 3px rgba(24,16,52,.95))}
+#wLanterns [data-time=dusk] .al-ln.today .al-dt,#wLanterns [data-time=night] .al-ln.today .al-dt{fill:#fff6e0!important}
+/* حقوق © في الرئيسية: شريط صغير مستقل بعيدًا عن قدمي أثر */
+#app.hw-on .sig{left:50%!important;right:auto!important;transform:translateX(-50%);width:max-content;max-width:92%;bottom:0!important;padding:1px 12px 2px!important;border-radius:10px 10px 0 0;background:rgba(255,255,255,.55);color:#4a4560;opacity:1!important;font-size:10px}
+#app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz).active) footer.sig{display:none}
+html.sc-sub #view-adhkar .adk-tile{min-height:0;padding:8px 6px;gap:2px}
+html.sc-sub #view-adhkar .adk-e:has(.sc-ie){width:44px;height:44px}
+html.sc-sub #view-adhkar .adk-hero{padding-top:8px;padding-bottom:8px}
+@media (max-height:700px){
+  html.sc-sub #view-adhkar .dk-scene{height:104px;min-height:0;margin:2px 0}
+  html.sc-sub #view-adhkar .dk-scene>*{max-height:104px}
+  html.sc-sub #view-adhkar .adk-opts{gap:6px}
+  html.sc-sub #view-adhkar .adk-opt{min-height:52px;padding:6px 12px}
+  html.sc-sub #view-adhkar .lq-say{min-height:44px;padding:6px 16px}
+}
+.rw-live{top:0;left:0}
