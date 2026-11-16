@@ -84,3 +84,6 @@ html.rw-warm::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:n
 @media (prefers-reduced-motion:reduce){.rw-chip.pulse,.rw-box,.rw-sheet.on{animation:none}.rw-chip,.rw-sheet.out,.rw-sheet.out .rw-box{transition:none}.rw-toast{transition:opacity .01s}.rw-fly{display:none}}
 #wPal .sw.rw-lock{position:relative;filter:grayscale(.55) brightness(.9)}
 #wPal .sw.rw-lock::after{content:"";position:absolute;inset:28%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='4' y='9' width='12' height='9' rx='2' fill='%233A2E24'/%3E%3Cpath d='M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9' fill='none' stroke='%233A2E24' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat}
+/* الصفر العربي «٠» يظهر كنقطة صغيرة: نكبّر العدّاد ليُقرأ بوضوح */
+.rw-chip #rwCnt{font-size:21px;font-weight:800;line-height:1;min-width:16px;text-align:center}
+.rw-toast{text-wrap:balance}

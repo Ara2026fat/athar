@@ -169,7 +169,7 @@
   function say(cat, plus) {
     build();
     var line = typeof cat === "string" && L[cat] ? pick(cat) : String(cat);
-    var v = activeView(), bot = (v === "view-surah" || v === "view-ayahs");
+    var v = activeView(), bot = (v === "view-surah" || v === "view-ayahs" || (!!v && v !== "view-home" && mode() === "home"));   /* في الألعاب: أسفل الشاشة كي لا يغطّي العنوان والتبويبات */
     toast.className = "rw-toast" + (bot ? " bot" : "");
     toast.innerHTML = "";
     toast.appendChild(D.createTextNode(line));
