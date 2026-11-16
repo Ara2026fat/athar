@@ -214,7 +214,7 @@
   .rep-grp{display:flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--sage);border-radius:16px;padding:4px 8px;font-size:12.5px;color:var(--text-soft);}
   .rep-lb{font-weight:700;color:var(--forest-dark);}
   .rep-b{width:30px;height:30px;border-radius:50%;border:0;background:var(--forest);color:#fff;font-size:18px;font-weight:800;line-height:1;cursor:pointer;font-family:inherit;}
-  .rep-b.rep-inf{background:#8b87a8;} .rep-b.on{background:#E09A00;}
+  .rep-b.rep-inf{background:#6a6690;} .rep-b.on{background:#E09A00;}
   .rep-v{min-width:28px;text-align:center;font-size:16px;color:var(--forest-dark);}
   body.child-lock .rep-picker{display:none;}
   .range-picker{
@@ -474,7 +474,7 @@
   .toast.show{opacity:1;}
 
   footer.sig{
-    position:relative;z-index:1;text-align:center;color:#B9B29C;font-size:12px;
+    position:relative;z-index:1;text-align:center;color:#6f6a58;font-size:12px;
     margin-top:20px;padding-bottom:6px;
   }
 
@@ -499,7 +499,7 @@
   }
   .brand-mark{--c:#F5A623;width:48px;height:48px;}
   .gear-btn{--c:#3B82F6;width:46px;height:46px;font-size:20px;}
-  .back-btn{--c:#22A04B;}
+  .back-btn{--c:#178A3C;}
   .ctrl-btn.small{--c:#3B82F6;width:54px;height:54px;font-size:20px;color:#fff;}
   #btnRepeatAyah{--c:#A855F7;}
   .ctrl-btn.main{--c:#22A04B;width:82px;height:82px;font-size:32px;background:
@@ -704,6 +704,7 @@
     background:rgba(255,255,255,.2);
     box-shadow:inset 0 3px 0 rgba(255,255,255,.55),inset 0 -7px 11px rgba(0,0,0,.22),0 7px 12px -5px rgba(0,0,0,.45);
   }
+  .noor-ls:not(.locked) .choice-icon{background:rgba(0,0,0,.3);} .noor-ls.locked .choice-icon{background:rgba(255,255,255,.07);}
   .choice-icon svg{width:40px;height:40px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));}
   .choice-txt{position:relative;z-index:2;flex:1;display:block;}
   .ct1{display:block;font-family:'Baloo Bhaijan 2','Tajawal',sans-serif;font-weight:800;font-size:26px;line-height:1.15;
@@ -1237,12 +1238,12 @@
   .nm-stars{direction:ltr;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;font-size:30px;margin:10px 4px;line-height:1.2;}
   .nm-stars .gone{opacity:.2;filter:grayscale(1);} .nm-plus{font-size:30px;color:#8B5CF6;margin:0 6px;}
   .nm-eq{direction:ltr;display:flex;justify-content:center;align-items:center;gap:12px;font-family:'Baloo Bhaijan 2','Amiri',sans-serif;font-weight:800;font-size:54px;color:var(--forest-dark);margin:10px 0;}
-  .nm-eq .op{color:#8B5CF6;} .nm-eq .q{color:#E09A00;} .nm-eq .q.got{color:#22A04B;}
+  .nm-eq .op{color:#8B5CF6;} .nm-eq .q{color:#A86300;} .nm-eq .q.got{color:#22A04B;}
   .nm-chips{display:flex;gap:8px;justify-content:center;margin:6px 0 10px;flex-wrap:wrap;}
   .nm-chip{border:none;border-radius:999px;padding:8px 16px;font-family:inherit;font-weight:800;font-size:14px;background:#E1E9DA;color:var(--text-soft);cursor:pointer;}
   .nm-chip.on{background:#8B5CF6;color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.25);}
   .nm-mrow{width:100%;direction:ltr;display:flex;justify-content:center;align-items:center;gap:14px;padding:8px 10px;margin:6px 0;border:none;border-radius:16px;background:#F7F2E6;font-family:'Baloo Bhaijan 2','Amiri',sans-serif;font-weight:800;font-size:26px;color:var(--forest-dark);cursor:pointer;}
-  .nm-mrow.alt{background:#EEF4E6;} .nm-mrow .op{color:#8B5CF6;} .nm-mrow .q{color:#E09A00;min-width:56px;text-align:center;}
+  .nm-mrow.alt{background:#EEF4E6;} .nm-mrow .op{color:#8B5CF6;} .nm-mrow .q{color:#A86300;min-width:56px;text-align:center;}
   .nm-mrow.flash{background:#FFE27A;}
   /* ===== مكتبة الطفل المسلم ===== */
   .lib-shelf{display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;padding:6px 2px 24px;background:
@@ -1454,3 +1455,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
   .rdh-g{flex-wrap:nowrap!important;gap:6px!important}
   .rdh-g .pill-btn{padding-inline:10px;font-size:14px;white-space:nowrap;min-width:0}
 }
+
+/* Global reduced-motion safety net (QA r7): any animation/transition anywhere collapses to its end state.
+   Durations stay non-zero so animationend/transitionend handlers still fire. Looping decorations stop after one tick. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+}
+
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}

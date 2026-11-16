@@ -94,7 +94,7 @@ var CN=['ذهبي','أزرق','أخضر','وردي','بنفسجي'];
 var COLS=[['255,206,100','255,230,150'],['70,200,240','170,236,255'],['90,210,130','190,246,200'],['255,120,180','255,200,225'],['170,125,250','215,195,255']];
 var CLOUD='<svg viewBox="0 0 96 52" aria-hidden="true"><path d="M14 46C0 46 0 28 14 27C14 12 34 8 40 20C46 6 70 8 72 24C88 20 96 40 82 46Z"/></svg>';
 var world=D.createElement("div");world.id="homeWorld";
-var h='<div class="w-sky"></div><div class="w-glow"></div>'+
+var h='<h1 class="sr-only">أثر — ماذا نتعلّم اليوم؟</h1><div class="w-sky"></div><div class="w-glow"></div>'+
 '<div class="w-hill h0"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 60C40 30 80 36 120 52S190 20 250 40S340 24 400 46V200H0Z"/></svg></div>'+
 '<div class="w-hill h1"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 70C50 20 110 30 170 60S300 20 400 55V200H0Z"/></svg></div>'+
 '<div class="w-hill h2"><svg viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 50C70 20 120 70 200 45S330 10 400 50V200H0Z"/></svg></div>'+
