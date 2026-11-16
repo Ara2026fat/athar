@@ -1769,7 +1769,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       <div class="pin-wrap">
         <h2>الإعدادات — ولي الأمر</h2>
         <p>أدخل الرمز السري (4 أرقام)</p>
-        <div class="pin-dots" id="pinDots"></div>
+        <div class="pin-dots" id="pinDots" role="img" aria-label="أدخل الرمز السري المكوّن من 4 أرقام"></div>
         <div class="pin-pad" id="pinPad"></div>
         <button class="back-btn" id="btnPinBack" style="margin-top:18px;">→ رجوع</button>
         <div class="pin-hint">الرمز الافتراضي: 0000 (يمكن تغييره من لوحة ولي الأمر)</div>
@@ -1983,7 +1983,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     for(var k in D){ if(s[k] === undefined) s[k] = D[k]; }
     return s;
   }
-  function saveSettings(s){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+  function saveSettings(s){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }catch(e){} }
 
   var progress = loadProgress();
   var settings = loadSettings();
@@ -11547,8 +11547,10 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       var btn = document.createElement("button");
       btn.className = "pin-key";
       btn.textContent = k;
+      if(k==="⌫") btn.setAttribute("aria-label","مسح الرقم الأخير");
       if(k===""){ btn.style.visibility="hidden"; }
       btn.addEventListener("click", function(){
+        if(pinLocked) return;
         if(k==="⌫"){ pinBuffer = pinBuffer.slice(0,-1); }
         else if(k!==""){ if(pinBuffer.length<4) pinBuffer += k; }
         renderPinDots();
@@ -11566,14 +11568,19 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       wrap.appendChild(s);
     }
   }
+  var pinLocked = false, pinFails = 0;
   function checkPin(){
+    if(pinLocked) return;
     if(pinBuffer === settings.pin){
-      pinBuffer = "";
+      pinBuffer = ""; pinFails = 0;
       renderPinDots();
       openDashboard();
     } else {
-      showToast("رمز غير صحيح");
-      setTimeout(function(){ pinBuffer=""; renderPinDots(); }, 400);
+      pinFails++;
+      pinLocked = true;
+      var wait = pinFails >= 3 ? 20000 : 400;   /* بعد 3 محاولات خاطئة: انتظار قصير يحمي من التخمين المتكرر */
+      showToast(pinFails >= 3 ? "محاولات كثيرة، انتظر قليلًا" : "رمز غير صحيح");
+      setTimeout(function(){ pinBuffer=""; pinLocked = false; if(pinFails >= 3) pinFails = 0; renderPinDots(); }, wait);
     }
   }
 
@@ -11757,7 +11764,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     $("btnAyahStart").addEventListener("click", startAyahPick);
 
     $("btnParent").addEventListener("click", function(){
-      pinBuffer = "";
+      if(!pinLocked) pinBuffer = "";
       renderPinDots();
       showView("view-pin");
     });
