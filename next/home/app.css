@@ -1373,3 +1373,21 @@
   html.sc-sub #view-ayahs .ayah-pick-grid{grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}
   html.sc-sub #view-ayahs .ayah-pick-chip{min-width:44px;min-height:44px}
 }
+
+/* r4: احتفال إتمام السورة */
+.hc{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(circle at 50% 38%,#fff4c8,#d6f0de 70%);animation:hcIn .35s ease both}
+@keyframes hcIn{from{opacity:0}to{opacity:1}}
+.hc .sc-stars{z-index:1}
+.hc-card{position:relative;z-index:2;width:min(340px,100%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.hc-medal{animation:medal-pulse 2.4s ease-in-out infinite}
+.hc-title{font-family:'Baloo Bhaijan 2','Tajawal',sans-serif;font-weight:800;font-size:38px;line-height:1.2;color:#C27E00;margin-top:6px}
+.hc-sub{margin:0 0 4px;font-size:19px;font-weight:700;color:#24402b;line-height:1.6}
+.hc-stars svg{width:64px;height:64px}
+.hc-add{min-height:26px}
+.hc-btn{margin-top:14px;width:100%;min-height:64px;border-radius:30px;cursor:pointer;font-family:'Baloo Bhaijan 2','Tajawal',sans-serif;font-weight:800;font-size:22px;color:#fff;
+  border:2px solid rgba(255,238,185,.9);background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(0,0,0,.18)),#1b7a3a;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.6),0 6px 0 rgba(0,0,0,.3),0 14px 18px -8px rgba(0,0,0,.4);text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.hc-btn:active{transform:translateY(4px);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 2px 0 rgba(0,0,0,.3)}
+@media (max-height:700px){.hc-medal{width:80px;height:80px}.hc-title{font-size:32px}.hc-stars svg{width:52px;height:52px}.hc-btn{min-height:58px;margin-top:8px}}
+@media (prefers-reduced-motion:reduce){.hc,.hc-medal{animation:none}}

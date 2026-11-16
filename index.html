@@ -1737,6 +1737,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       haltPlayback("done");
       $("statusLine").textContent = "انتهت الآيات المحدّدة";
       $("surahComplete").style.display = "block";
+      try{ showHifzCelebration(); }catch(e){}
       return;
     }
     var gap = turnGapMs();
@@ -10382,8 +10383,41 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     haltPlayback("idle");
     clearSession();
     if(mushafFrame){ mushafFrame.src = "about:blank"; }
+    var hc = $("hifzCelebrate");
+    if(hc){   /* النجوم تُمنح عند الضغط على «العودة»: فلا يحجب تنبيه الرصيد الزر */
+      var hk = hc.dataset.key; if(hc.parentNode) hc.parentNode.removeChild(hc);
+      setTimeout(function(){ try{ if(window.AtharReward) window.AtharReward.award(hk, 3, "hifz"); }catch(e){} }, 450);
+    }
     renderHomeGrid();
     showView(toHome ? "view-home" : browseView);
+    if(!toHome){ try{ relayoutPaged(); }catch(e){} }
+  }
+
+  /* ===== احتفال إتمام السورة: نجوم ثم زر رجوع واضح ===== */
+  function showHifzCelebration(){
+    if($("hifzCelebrate")) return;
+    var sd = currentSurahData(), whole = sd && player.rangeFrom <= 1 && player.rangeTo >= sd.ayahs;
+    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var w = document.createElement("div"); w.className = "hc"; w.id = "hifzCelebrate"; w.setAttribute("role", "dialog"); w.setAttribute("aria-modal", "true"); w.setAttribute("aria-label", "أتممتَ الحفظ");
+    var rain = "";
+    for(var i = 0; i < 14; i++) rain += '<i style="--x:' + (4 + i * 7 + (i % 3) * 2) + ';--dx:' + ((i % 2 ? 1 : -1) * (10 + (i * 7) % 40)) + ';--d:' + (i * 90) + ';--s:' + (18 + (i * 5) % 16) + 'px"></i>';
+    w.innerHTML = '<div class="sc-stars" aria-hidden="true">' + rain + '</div>' +
+      '<div class="hc-card">' +
+        '<svg class="medal-badge hc-medal" viewBox="0 0 120 120" width="104" height="104" aria-hidden="true"><use href="#badge-medal"/></svg>' +
+        '<div class="hc-title">أحسنت!</div>' +
+        '<p class="hc-sub">' + (whole ? "أتممتَ سورة " + sd.name : "أتممتَ الآيات المحدّدة") + '</p>' +
+        '<div class="ge-stars hc-stars" role="img" aria-label="ثلاث نجوم">' + STAR_SVG + STAR_SVG + STAR_SVG + '</div>' +
+        '<button class="hc-btn" id="hcBack" type="button">العودة للسور</button>' +
+      '</div>';
+    document.body.appendChild(w);
+    var ss = w.querySelectorAll(".ge-stars svg"), card = w.querySelector(".hc-card");
+    card.style.position = "relative";
+    for(var k = 0; k < 3; k++) (function(k){ setTimeout(function(){ if(!w.isConnected) return; ss[k].classList.add("on"); sparkle(card, ss[k]); if(k === 0) sfx("done"); }, 400 + k * (reduce ? 0 : 420)); })(k);
+    var d = new Date();
+    w.dataset.key = "r:hifzdone:" + player.surah + ":" + player.rangeFrom + "-" + player.rangeTo + ":" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    var b = $("hcBack");
+    b.addEventListener("click", function(){ leaveSurah(false); });
+    try{ b.focus({ preventScroll:true }); }catch(e){}
   }
   var holdTimer = null;
   function setupBackHold(){
