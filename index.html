@@ -265,6 +265,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <p>اضغط على السورة لتبدأ الحفظ.</p>
       </div>
       <div class="surah-grid" id="surahGrid"></div>
+      <div class="pgr" id="surahPager"></div>
     </section>
 
     <!-- اختيار آيات محدّدة -->
@@ -287,6 +288,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           <button class="mini-btn" id="btnPickAll">السورة كاملة</button>
         </div>
         <div class="ayah-pick-grid" id="ayahPickGrid"></div>
+        <div class="pgr" id="ayahPager"></div>
         <div class="ayah-pick-summary" id="ayahPickSummary"></div>
       </div>
       <button class="start-btn shine-sweep" id="btnAyahStart">ابدأ الحفظ</button>
@@ -1036,10 +1038,38 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     return done / s.ayahs;
   }
 
+  /* تقسيم القوائم الطويلة إلى صفحات تتسع لشاشة الهاتف بلا تمرير (قرار دائم) */
+  function pgFit(grid, cols, pager, minRows, maxRows){
+    var first = grid.firstElementChild; if(!first) return cols * minRows;
+    var gap = parseFloat(getComputedStyle(grid).rowGap) || 0, pitch = first.offsetHeight + gap;
+    var top = grid.getBoundingClientRect().top + (window.pageYOffset || 0);
+    var ft = document.querySelector("footer"), endY = ft ? ft.getBoundingClientRect().bottom + (window.pageYOffset || 0) + 28 : document.documentElement.scrollHeight;
+    var below = endY - (top + grid.offsetHeight) + (pager && pager.style.display === "none" ? 60 : 0);
+    var rows = Math.floor((window.innerHeight - top - below + gap) / Math.max(pitch, 1));
+    return Math.max(minRows, Math.min(maxRows, rows)) * cols;
+  }
+  function pgBuild(el, page, pages, go){
+    el.innerHTML = ""; el.style.display = pages > 1 ? "" : "none";
+    if(pages < 2) return;
+    function mk(cls, label, txt, to){
+      var b = document.createElement("button"); b.className = "pgr-b " + cls; b.setAttribute("aria-label", label); b.textContent = txt;
+      if(to < 0 || to >= pages) b.disabled = true; else b.addEventListener("click", function(){ sfx("tap"); go(to); });
+      return b;
+    }
+    var dots = document.createElement("div"); dots.className = "pgr-dots";
+    for(var i = 0; i < pages; i++){ var d = document.createElement("i"); if(i === page) d.className = "on"; dots.appendChild(d); }
+    el.appendChild(mk("pgr-prev", "الصفحة السابقة", "→", page - 1));
+    el.appendChild(dots);
+    el.appendChild(mk("pgr-next", "الصفحة التالية", "←", page + 1));
+  }
+  var surahPg = { page:0, per:12 };
   function renderHomeGrid(){
     var grid = $("surahGrid");
     grid.innerHTML = "";
-    JUZ_AMMA.forEach(function(s, i){
+    var per = surahPg.per, pages = Math.max(1, Math.ceil(JUZ_AMMA.length / per));
+    if(surahPg.page >= pages) surahPg.page = pages - 1;
+    var from = surahPg.page * per;
+    JUZ_AMMA.slice(from, from + per).forEach(function(s, i){
       var ratio = surahProgressRatio(s.num);
       var dotClass = ratio===0 ? "" : (ratio>=1 ? "done" : "some");
       var col = SURAH_COLOR[s.num] || "#22A04B";
@@ -1054,7 +1084,33 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       card.addEventListener("click", function(){ openSurah(s.num); });
       grid.appendChild(card);
     });
+    pgBuild($("surahPager"), surahPg.page, pages, function(n){ surahPg.page = n; renderHomeGrid(); });
   }
+  function relayoutPaged(){
+    var act = document.querySelector(".view.active"), id = act ? act.id : "";
+    if(id === "view-surahs"){
+      var g = $("surahGrid"); if(!g.firstElementChild) renderHomeGrid();
+      var per = pgFit(g, 3, $("surahPager"), 2, 8);
+      if(per !== surahPg.per){ var firstIdx = surahPg.page * surahPg.per; surahPg.per = per; surahPg.page = Math.floor(firstIdx / per); renderHomeGrid(); }
+    } else if(id === "view-ayahs"){
+      var ag = $("ayahPickGrid"); if(!ag.firstElementChild) renderAyahChips();
+      var cols = Math.max(1, getComputedStyle(ag).gridTemplateColumns.split(" ").length);
+      var ap = pgFit(ag, cols, $("ayahPager"), 1, 6);
+      if(ap !== ayahPg.per){ var fi = ayahPg.page * ayahPg.per; ayahPg.per = ap; ayahPg.page = Math.floor(fi / ap); renderAyahChips(); }
+    }
+    pgShrink();
+  }
+  /* احتياط: إن بقي تمرير بعد الحساب نُنقص صفًّا حتى تتّسع الصفحة */
+  function pgShrink(){
+    var act = document.querySelector(".view.active"), id = act ? act.id : "";
+    var o = id === "view-surahs" ? surahPg : (id === "view-ayahs" ? ayahPg : null); if(!o) return;
+    var cols = id === "view-surahs" ? 3 : Math.max(1, getComputedStyle($("ayahPickGrid")).gridTemplateColumns.split(" ").length);
+    for(var k = 0; k < 4 && o.per > cols && document.documentElement.scrollHeight > window.innerHeight + 1; k++){
+      var fi = o.page * o.per; o.per -= cols; o.page = Math.floor(fi / o.per);
+      if(id === "view-surahs") renderHomeGrid(); else renderAyahChips();
+    }
+  }
+  window.addEventListener("resize", function(){ try{ relayoutPaged(); }catch(e){} });
 
   /* ================= ربط قارئ المصحف (iframe) ================= */
   var mushafFrame;
@@ -1279,6 +1335,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     if(which === "ayahs"){ renderAyahStrip(); renderAyahChips(); }
     else { renderHomeGrid(); }
     showView(browseView);
+    try{ relayoutPaged(); }catch(e){}
     if(which === "ayahs"){ centerActivePill(); }
     window.scrollTo(0,0);
   }
@@ -1299,17 +1356,22 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       b.textContent = s.name;
       b.addEventListener("click", function(){
         ayahPick.surah = s.num; ayahPick.from = 1; ayahPick.to = 1; ayahPick.step = 0;
-        renderAyahStrip(); renderAyahChips(); centerActivePill();
+        renderAyahStrip(); renderAyahChips(); relayoutPaged(); centerActivePill();
       });
       strip.appendChild(b);
     });
   }
+  var ayahPg = { page:0, per:18, surah:0 };
   function renderAyahChips(){
     var s = pickSurahData(); if(!s) return;
     $("ayahPickSurahName").textContent = "سورة " + s.name + " — " + s.ayahs + " آية";
     var grid = $("ayahPickGrid");
     grid.innerHTML = "";
-    for(var a=1;a<=s.ayahs;a++){
+    var per = ayahPg.per, pages = Math.max(1, Math.ceil(s.ayahs / per));
+    if(ayahPg.surah !== s.num){ ayahPg.surah = s.num; ayahPg.page = 0; }
+    if(ayahPg.page >= pages) ayahPg.page = pages - 1;
+    var a0 = ayahPg.page * per + 1, a1 = Math.min(s.ayahs, a0 + per - 1);
+    for(var a=a0;a<=a1;a++){
       (function(n){
         var c = document.createElement("button");
         var inR = n >= ayahPick.from && n <= ayahPick.to;
@@ -1328,6 +1390,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         grid.appendChild(c);
       })(a);
     }
+    pgBuild($("ayahPager"), ayahPg.page, pages, function(n){ ayahPg.page = n; renderAyahChips(); });
     var f = ayahPick.from, t = ayahPick.to;
     $("ayahPickSummary").textContent = (f === t)
       ? ("الآية " + f + " فقط — اضغط آية أخرى لتمديد النطاق")
@@ -1450,6 +1513,12 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   /* خطأ لطيف: نغمتان هابطتان ناعمتان + جملة مرئية قصيرة (للطفل الذي لا يسمع)، بلا توبيخ */
   var oopsT = 0, oopsRun = { g:null, n:0, t:0 };
   /* ثلاثة أخطاء متتالية في السؤال نفسه: تلميح بصري لطيف (يلمع الخيار/الخيارات المتبقية) بدل ترك الطفل يتخبّط */
+  /* دالة التلميح المشتركة: توهّج لطيف على عنصر (يُزال تلقائيًا). تستعملها الألعاب كلّها بعد ثلاثة أخطاء */
+  function gentleHint(el, ms){
+    if(!el) return;
+    el.classList.add("gentle-hint");
+    setTimeout(function(){ el.classList.remove("gentle-hint"); }, ms || 3600);
+  }
   function oopsHint(){
     try{
       var el = window.__lastTapBtn, g = el && el.parentElement, now = Date.now();
@@ -1458,10 +1527,10 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       oopsRun.t = now;
       if(oopsRun.n < 3) return;
       var rt = g.querySelector("[data-right]:not(.ok)");
-      if(rt && rt !== el){ rt.classList.add("gentle-hint"); setTimeout(function(){ rt.classList.remove("gentle-hint"); }, 3600); oopsT = now; showToast("انظر إلى الخيار الذي يلمع"); return; }
+      if(rt && rt !== el){ gentleHint(rt); oopsT = now; showToast("انظر إلى الخيار الذي يلمع"); return; }
       var c = Array.prototype.filter.call(g.children, function(x){ return x !== el && x.tagName === "BUTTON" && !/(^|\s)(bad|ok|locked)(\s|$)/.test(x.className) && x.offsetParent; });
       if(!c.length || c.length > 2) return;
-      c.forEach(function(x){ x.classList.add("gentle-hint"); setTimeout(function(){ x.classList.remove("gentle-hint"); }, 3600); });
+      c.forEach(function(x){ gentleHint(x); });
       oopsT = now; showToast("انظر إلى الخيار الذي يلمع");
     }catch(e){}
   }
@@ -1684,6 +1753,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       haltPlayback("done");
       $("statusLine").textContent = "انتهت الآيات المحدّدة";
       $("surahComplete").style.display = "block";
+      try{ showHifzCelebration(); }catch(e){}
       return;
     }
     var gap = turnGapMs();
@@ -2988,6 +3058,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     [0, 1, 2].forEach(function(j){
       var sy = LETTERS[idx][2 + j];
       var b = document.createElement("button"); b.className = "letter-tile huge"; b.style.setProperty("--c", LCOL[(idx + j * 3) % LCOL.length]);
+      if(j === k) b.setAttribute("data-right", "1");
       b.innerHTML = '<span class="lt-ch">' + sy + '</span>';
       b.addEventListener("click", function(){
         if(locked) return;
@@ -3052,6 +3123,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     optIdx.forEach(function(i){
       var L = LETTERS[i];
       var b = document.createElement("button"); b.className = "letter-tile huge" + (pics ? " pic" : "");
+      if(i === idx) b.setAttribute("data-right", "1");
       b.style.setProperty("--c", LCOL[i % LCOL.length]);
       b.innerHTML = pics ? '<span class="lt-emoji big">' + LWORDS[i][1] + '</span>' : '<span class="lt-ch">' + L[0] + '</span>';
       b.addEventListener("click", function(){
@@ -3232,6 +3304,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var first = true, locked = false;
     nmOpts(n, 1, 1, Math.max(hi, n + 3)).forEach(function(x){
       var b = document.createElement("button"); b.className = "letter-tile huge"; b.style.setProperty("--c", LCOL[(x * 2) % LCOL.length]);
+      if(x === n) b.setAttribute("data-right", "1");
       b.innerHTML = '<span class="lt-ch">' + nm(x) + '</span>';
       b.addEventListener("click", function(){
         if(locked) return;
@@ -3409,6 +3482,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     function wrong(b){ first = false; b.classList.add("bad"); oops(); haptic(20); speak("حاول مرة أخرى"); }
     function tile(html, color, ok, sayWin){
       var b = nmPlayTile(html, color, function(){ if(locked) return; if(ok){ b.classList.add("ok"); win(sayWin); } else wrong(b); });
+      if(ok) b.setAttribute("data-right", "1");
       return b;
     }
     if(game === "length"){
@@ -3419,6 +3493,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       [[w1, "#22A04B"], [w2, "#3B82F6"]].forEach(function(p, i){
         var other = i === 0 ? w2 : w1, isLong = p[0] > other;
         var b = document.createElement("button"); b.className = "mq-bar"; b.style.width = p[0] + "%"; b.style.background = p[1];
+        if(big === isLong) b.setAttribute("data-right", "1");
         b.addEventListener("click", function(){ if(locked) return; if(big === isLong){ b.classList.add("ok"); win(big ? "هذا أطول" : "هذا أقصر"); } else wrong(b); });
         bars.appendChild(b);
       });
@@ -3439,7 +3514,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       [[n1, "⭐"], [n2, "🔷"]].forEach(function(p, i){
         var other = i === 0 ? n2 : n1, isMore = p[0] > other;
         var b = nmPlayTile('', MQ_TCOL[(i * 2 + round) % MQ_TCOL.length], function(){ if(locked) return; if(most === isMore){ b.classList.add("ok"); win(nmWord(p[0])); } else wrong(b); });
-        b.appendChild(nmStarsEl(p[0], p[1])); b.className = "mq-group"; optsEl.appendChild(b);
+        b.appendChild(nmStarsEl(p[0], p[1])); b.className = "mq-group"; if(most === isMore) b.setAttribute("data-right", "1"); optsEl.appendChild(b);
       });
     } else if(game === "clock"){
       var hh = 1 + nmRand(12), mm = nmRand(2) === 0 ? 0 : 30;
@@ -3453,6 +3528,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       shuffle(opts).forEach(function(o, i){
         var txt = MQ_ORD[o[0]] + (o[1] === 30 ? " والنصف" : "");
         var b = document.createElement("button"); b.className = "nm-chip big"; b.textContent = txt;
+        if(o[0] === hh && o[1] === mm) b.setAttribute("data-right", "1");
         b.addEventListener("click", function(){ if(locked) return; if(o[0] === hh && o[1] === mm){ b.classList.add("ok"); win(mqClockText(hh, mm)); } else wrong(b); });
         optsEl.appendChild(b);
       });
@@ -3475,6 +3551,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       vis.innerHTML = '<div class="mq-item"><span style="font-size:54px;line-height:1">' + th[0] + '</span><b>' + nm(price) + ' ريال</b></div><div class="mq-have">معك: ' + nm(have) + ' ريال</div>';
       [["نعم، يكفي", true], ["لا، لا يكفي", false]].forEach(function(o, i){
         var b = document.createElement("button"); b.className = "nm-chip big"; b.textContent = o[0];
+        if(o[1] === ok) b.setAttribute("data-right", "1");
         b.addEventListener("click", function(){ if(locked) return; if(o[1] === ok){ b.classList.add("ok"); win(ok ? "نعم يكفي" : "لا يكفي"); } else wrong(b); });
         optsEl.appendChild(b);
       });
@@ -3521,6 +3598,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           if(locked) return;
           if(x === ans){ t.classList.add("ok"); win(nmWord(x)); } else wrong(t);
         });
+        if(x === ans) t.setAttribute("data-right", "1");
         optsEl.appendChild(t);
       });
     } else if(game === "missing"){
@@ -3536,6 +3614,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           if(locked) return;
           if(x === ans){ t.classList.add("ok"); vis.children[miss].textContent = nm(ans); vis.children[miss].className = "miss ok"; win(nmWord(ans)); } else wrong(t);
         });
+        if(x === ans) t.setAttribute("data-right", "1");
         optsEl.appendChild(t);
       });
     } else if(game === "pattern"){
@@ -3554,6 +3633,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           if(locked) return;
           if(x === next){ t.classList.add("ok"); qm.textContent = x; qm.className = "miss ok"; win(""); } else wrong(t);
         });
+        if(x === next) t.setAttribute("data-right", "1");
         optsEl.appendChild(t);
       });
     } else if(game === "shapes"){
@@ -3564,6 +3644,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           if(locked) return;
           if(si === target){ t.classList.add("ok"); win(NM_SHAPES[si].n); } else wrong(t);
         });
+        if(si === target) t.setAttribute("data-right", "1");
         optsEl.appendChild(t);
       });
     } else if(game === "order"){
@@ -3623,6 +3704,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var first = true, locked = false;
     nmOpts(ans, a, b, kind === "add" ? Math.max(L, ans + 3) : Math.max(a, 3)).forEach(function(x){
       var bt = document.createElement("button"); bt.className = "letter-tile huge"; bt.style.setProperty("--c", LCOL[(x * 2) % LCOL.length]);
+      if(x === ans) bt.setAttribute("data-right", "1");
       bt.innerHTML = '<span class="lt-ch">' + nm(x) + '</span>';
       bt.addEventListener("click", function(){
         if(locked) return;
@@ -3693,6 +3775,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var first = true, locked = false;
     nmOpts(ans, a, b, 0, true).forEach(function(x){
       var bt = document.createElement("button"); bt.className = "letter-tile huge"; bt.style.setProperty("--c", LCOL[(x * 2) % LCOL.length]);
+      if(x === ans) bt.setAttribute("data-right", "1");
       bt.innerHTML = '<span class="lt-ch" style="font-size:' + (x > 99 ? 40 : 52) + 'px">' + nm(x) + '</span>';
       bt.addEventListener("click", function(){
         if(locked) return;
@@ -3809,6 +3892,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var first = true, locked = false;
     opts.forEach(function(o, k){
       var b = document.createElement("button"); b.className = "adk-opt"; b.style.setProperty("--c", LCOL[(k * 3 + 1) % LCOL.length]);
+      if(o.t === a.t) b.setAttribute("data-right", "1");
       b.textContent = o.q;
       b.addEventListener("click", function(){
         if(locked) return;
@@ -4343,6 +4427,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var opts = shuffle([P.right].concat(P.wrong)), locked = false;
     opts.forEach(function(o, k){
       var b = document.createElement("button"); b.className = "ayq-opt us-opt us-opt-s"; b.style.setProperty("--c", LCOL[(k * 3 + 1) % LCOL.length]); b.textContent = o;
+      if(o === P.right) b.setAttribute("data-right", "1");
       b.addEventListener("click", function(){
         if(locked) return;
         if(o === P.right){
@@ -8848,6 +8933,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var row = document.createElement("div"); row.className = "lq-opts"; row.style.flexWrap = "wrap"; var first = true, locked = false;
     opts.forEach(function(o, k){
       var b = document.createElement("button"); b.className = "letter-tile noor-it" + (isAy ? " noor-ay" : ""); b.style.setProperty("--c", LCOL[(k * 3 + round) % LCOL.length]);
+      if(o === target) b.setAttribute("data-right", "1");
       b.innerHTML = '<span class="lt-ch" style="font-size:' + (isAy ? '26' : '32') + 'px;line-height:' + (isAy ? '2' : '1.7') + '">' + o.t + '</span>';
       b.addEventListener("click", function(){
         if(locked) return;
@@ -8957,7 +9043,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
             if(done === n){ msg.textContent = ""; brWin(tok, body, function(){ brNext("pairs", round, tok, res, mis <= n + 1); }); }
           } else {
             mis++; brT(tok, function(){ cards[a].classList.remove("up"); cards[c].classList.remove("up"); lock = false;
-              if(mis % 5 === 0){ msg.textContent = "تلميح: انظر إلى البطاقة المضيئة"; var f = deck.indexOf(deck[a]); cards[f].classList.add("hint"); brT(tok, function(){ cards[f].classList.remove("hint"); }, 1400); }
+              if(mis % 3 === 0){ msg.textContent = "تلميح: انظر إلى البطاقة المضيئة"; gentleHint(cards[deck.indexOf(deck[a])], 2600); }
             }, 900);
           }
         }
@@ -10210,6 +10296,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var opts = shuffle([A.right].concat(A.wrong)), locked = false;
     opts.forEach(function(o, k){
       var b = document.createElement("button"); b.className = "ayq-opt us-opt"; b.style.setProperty("--c", LCOL[(k * 3 + 1) % LCOL.length]); b.textContent = o;
+      if(o === A.right) b.setAttribute("data-right", "1");
       b.addEventListener("click", function(){
         if(locked) return;
         if(o === A.right){
@@ -10329,8 +10416,41 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     haltPlayback("idle");
     clearSession();
     if(mushafFrame){ mushafFrame.src = "about:blank"; }
+    var hc = $("hifzCelebrate");
+    if(hc){   /* النجوم تُمنح عند الضغط على «العودة»: فلا يحجب تنبيه الرصيد الزر */
+      var hk = hc.dataset.key; if(hc.parentNode) hc.parentNode.removeChild(hc);
+      setTimeout(function(){ try{ if(window.AtharReward) window.AtharReward.award(hk, 3, "hifz"); }catch(e){} }, 450);
+    }
     renderHomeGrid();
     showView(toHome ? "view-home" : browseView);
+    if(!toHome){ try{ relayoutPaged(); }catch(e){} }
+  }
+
+  /* ===== احتفال إتمام السورة: نجوم ثم زر رجوع واضح ===== */
+  function showHifzCelebration(){
+    if($("hifzCelebrate")) return;
+    var sd = currentSurahData(), whole = sd && player.rangeFrom <= 1 && player.rangeTo >= sd.ayahs;
+    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var w = document.createElement("div"); w.className = "hc"; w.id = "hifzCelebrate"; w.setAttribute("role", "dialog"); w.setAttribute("aria-modal", "true"); w.setAttribute("aria-label", "أتممتَ الحفظ");
+    var rain = "";
+    for(var i = 0; i < 14; i++) rain += '<i style="--x:' + (4 + i * 7 + (i % 3) * 2) + ';--dx:' + ((i % 2 ? 1 : -1) * (10 + (i * 7) % 40)) + ';--d:' + (i * 90) + ';--s:' + (18 + (i * 5) % 16) + 'px"></i>';
+    w.innerHTML = '<div class="sc-stars" aria-hidden="true">' + rain + '</div>' +
+      '<div class="hc-card">' +
+        '<svg class="medal-badge hc-medal" viewBox="0 0 120 120" width="104" height="104" aria-hidden="true"><use href="#badge-medal"/></svg>' +
+        '<div class="hc-title">أحسنت!</div>' +
+        '<p class="hc-sub">' + (whole ? "أتممتَ سورة " + sd.name : "أتممتَ الآيات المحدّدة") + '</p>' +
+        '<div class="ge-stars hc-stars" role="img" aria-label="ثلاث نجوم">' + STAR_SVG + STAR_SVG + STAR_SVG + '</div>' +
+        '<button class="hc-btn" id="hcBack" type="button">العودة للسور</button>' +
+      '</div>';
+    document.body.appendChild(w);
+    var ss = w.querySelectorAll(".ge-stars svg"), card = w.querySelector(".hc-card");
+    card.style.position = "relative";
+    for(var k = 0; k < 3; k++) (function(k){ setTimeout(function(){ if(!w.isConnected) return; ss[k].classList.add("on"); sparkle(card, ss[k]); if(k === 0) sfx("done"); }, 400 + k * (reduce ? 0 : 420)); })(k);
+    var d = new Date();
+    w.dataset.key = "r:hifzdone:" + player.surah + ":" + player.rangeFrom + "-" + player.rangeTo + ":" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    var b = $("hcBack");
+    b.addEventListener("click", function(){ leaveSurah(false); });
+    try{ b.focus({ preventScroll:true }); }catch(e){}
   }
   var holdTimer = null;
   function setupBackHold(){
