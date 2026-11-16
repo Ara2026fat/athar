@@ -1474,3 +1474,49 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 }
 
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}
+/* r7: «راجع ما حفظت» — مراجعة متباعدة هادئة */
+#choiceReview{position:relative}
+#choiceReview .rv-bd{position:absolute;z-index:4;top:8px;left:14px;pointer-events:none;display:inline-flex;align-items:center;gap:5px;padding:2px 10px 3px;border-radius:999px;font:800 12px/1.2 'Tajawal',system-ui,sans-serif;color:#3A2A08;background:linear-gradient(#FFF1B8,#FFD25E);border:2px solid #FFF8E0;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+#choiceReview .rv-bd[hidden]{display:none}
+#choiceReview .rv-bd i{width:7px;height:7px;border-radius:50%;background:#E0891A;flex:none}
+.rv-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 16px 0}
+.rv-dots{display:flex;gap:10px;justify-content:center;margin-top:4px}
+.rv-dots i{width:14px;height:14px;border-radius:50%;background:rgba(34,160,75,.18);border:2px solid #22A04B}
+.rv-dots i.on{background:#22A04B}
+.rv-dots i.cur{background:#FFC93C;border-color:#E0891A;transform:scale(1.2)}
+.rv-card{width:100%;max-width:420px;box-sizing:border-box;padding:18px 16px;border-radius:24px;background:linear-gradient(180deg,#fff,#EAF8F0);border:2px solid #BFE5CD;box-shadow:0 8px 20px rgba(34,100,60,.16);text-align:center;color:#1F3B2B}
+.rv-sn{font-size:26px;font-weight:800;line-height:1.4}
+.rv-an{font-size:20px;margin-top:2px}
+.rv-an b{font-size:30px;color:#0E8A55;margin-inline-start:4px}
+.rv-q{margin:10px 0 12px;font-size:16px;line-height:1.7;color:#35574A}
+.rv-play{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:170px;min-height:56px;padding:0 24px;border:0;border-radius:999px;background:linear-gradient(#35C985,#0E9F63);color:#fff;font:800 20px 'Tajawal',system-ui,sans-serif;box-shadow:0 5px 0 #0A6F45;cursor:pointer}
+.rv-play svg{width:24px;height:24px}
+.rv-play:active{transform:translateY(3px);box-shadow:0 2px 0 #0A6F45}
+.rv-msg{min-height:22px;margin-top:8px;font-size:14px;color:#8A5A12}
+.rv-ok{width:100%;max-width:420px;min-height:56px;border:0;border-radius:18px;background:linear-gradient(#FFD25E,#F2A81D);color:#3A2A08;font:800 22px 'Tajawal',system-ui,sans-serif;box-shadow:0 5px 0 #B87408;cursor:pointer}
+.rv-ok:active{transform:translateY(3px);box-shadow:0 2px 0 #B87408}
+.rv-later{min-height:48px;padding:0 22px;border:0;background:none;color:#35574A;font:700 17px 'Tajawal',system-ui,sans-serif;text-decoration:underline;cursor:pointer}
+.rv-end h2{margin:6px 0 4px;font-size:26px}
+.rv-end p{margin:0;font-size:17px;line-height:1.7;color:#35574A}
+.rv-star{width:76px;height:76px}
+@media (max-height:600px){.rv-card{padding:12px}.rv-q{margin:6px 0 8px;font-size:15px}.rv-sn{font-size:23px}.rv-wrap{gap:8px}}
+/* r7: جدول الضرب ١٢ سطرًا بلا تمرير: عمودان (١–٦ ثم ٧–١٢) */
+.nm-mgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,auto);grid-auto-flow:column;gap:6px;direction:rtl;margin-top:4px}
+.nm-mgrid .nm-mrow{margin:0;gap:5px;padding:5px 4px;font-size:19px;border-radius:12px;min-height:44px;box-sizing:border-box;min-width:0}
+.nm-mgrid .nm-mrow .q{min-width:34px}
+@media (min-height:700px){.nm-mgrid{gap:10px}.nm-mgrid .nm-mrow{min-height:56px;font-size:24px}}
+.nm-mact{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:8px}
+.nm-mact .pill-btn,.nm-mact .lq-say{margin:0!important;min-height:44px;padding:0 14px;font-size:15px}
+@media (max-height:600px){.nm-mgrid{gap:4px}.nm-mgrid .nm-mrow{min-height:36px;padding:2px 3px;font-size:18px}.nm-mact{margin-top:6px}#numbersBody .lq-q{margin:2px 0 4px;font-size:22px}}
+/* r7: طريق الكنز وذاكرة الفوانيس بلا تمرير على الشاشات القصيرة: صفّ أسهم واحد، شبكة تتقلّص بحسب الارتفاع */
+.br-pad{display:flex;grid-template-areas:none;gap:8px;justify-content:center;margin:6px auto}
+.br-pad .br-arrow{width:62px;height:52px;grid-area:auto!important}
+.br-grid{max-width:min(320px,calc(100vh - 380px));min-width:150px}
+.br-prog{min-height:30px;margin:4px 12px}
+@media (max-height:700px){
+  #brainBody>.lq-say:last-child{display:none}
+  #view-brain .br-title{margin:2px 0;font-size:21px}
+  #view-brain .br-msg{margin:2px 12px;min-height:22px;font-size:15px}
+  .br-lamps{max-width:min(300px,calc(100vh - 330px));gap:10px;margin:8px auto}
+}
+@media (max-height:600px){ #view-brain .br-title{display:none} .br-grid{margin:6px auto} }

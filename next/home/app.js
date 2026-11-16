@@ -122,6 +122,7 @@
   function setStatus(surah,ayah,status){
     progress[ayahKey(surah,ayah)] = status;
     saveProgress(progress);
+    try{ if(typeof rvOnStatus === "function") rvOnStatus(surah, ayah, status); }catch(e){}
   }
   function cycleStatus(current){
     var order = ["new","trained","memorized","review"];
@@ -149,6 +150,7 @@
         spkTok++; if(vAudio){ vAudio.pause(); vAudio = null; }
         if(nrAudio){ nrAudio.pause(); nrAudio = null; }
         if(window.speechSynthesis) speechSynthesis.cancel();
+        if(cur.id === "view-review" && typeof rvStop === "function") rvStop();
       }
     }catch(e){}
     var views = document.querySelectorAll(".view");
@@ -2792,6 +2794,11 @@
   function nmWin(body, sayText, fn){
     var p = nmPraise();
     var bn = document.createElement("div"); bn.className = "lq-q nm-praise"; bn.style.cssText = "color:#1f7a3a;font-size:26px;font-weight:800;margin-top:10px"; bn.textContent = p; body.appendChild(bn);
+    /* شاشة قصيرة: لو أدّى سطر الثناء إلى تمرير يحلّ محلّ زرّ «اسمع» (لا تمرير في أي شاشة) */
+    try{
+      var de = document.documentElement, sb = body.querySelector(".lq-say");
+      if(sb && de.scrollHeight > window.innerHeight + 1){ bn.style.marginTop = "4px"; bn.style.fontSize = "22px"; sb.parentNode.insertBefore(bn, sb); sb.style.display = "none"; }
+    }catch(e){}
     var gone = false;
     function go(){ if(gone) return; gone = true; var v = $("view-numbers"); if(v && v.classList.contains("active")) fn(); }
     speak((sayText ? sayText + ". " : "") + p, function(){ setTimeout(go, 450); });
@@ -3212,17 +3219,19 @@
   function nmTable(n){
     var body = $("numbersBody"); body.innerHTML = "";
     var head = document.createElement("div"); head.className = "lq-q"; head.textContent = "جدول الضرب في " + nm(n); body.appendChild(head);
+    var mg = document.createElement("div"); mg.className = "nm-mgrid"; body.appendChild(mg);
     for(var m = 1; m <= 12; m++){
       (function(m){
         var r = document.createElement("button"); r.className = "nm-mrow" + (m % 2 ? "" : " alt");
         r.innerHTML = '<span>' + nm(n) + '</span><span class="op">×</span><span>' + nm(m) + '</span><span class="op">=</span><span class="q">' + nm(n * m) + '</span>';
         r.addEventListener("click", function(){ speak(nmWord(n) + ". في. " + nmWord(m) + ". يساوي. " + nmWord(n * m)); r.classList.add("flash"); setTimeout(function(){ r.classList.remove("flash"); }, 500); });
-        body.appendChild(r);
+        mg.appendChild(r);
       })(m);
     }
-    var t = document.createElement("button"); t.className = "pill-btn"; t.style.margin = "14px auto 6px"; t.textContent = "اختبرني في جدول " + nm(n);
-    t.addEventListener("click", function(){ nmMulQuiz(n, 0, 0, null); }); body.appendChild(t);
-    var back = document.createElement("button"); back.className = "lq-say"; back.textContent = "كل الجداول"; back.addEventListener("click", nmMulHome); body.appendChild(back);
+    var act = document.createElement("div"); act.className = "nm-mact"; body.appendChild(act);
+    var t = document.createElement("button"); t.className = "pill-btn"; t.textContent = "اختبرني في جدول " + nm(n);
+    t.addEventListener("click", function(){ nmMulQuiz(n, 0, 0, null); }); act.appendChild(t);
+    var back = document.createElement("button"); back.className = "lq-say"; back.textContent = "كل الجداول"; back.addEventListener("click", nmMulHome); act.appendChild(back);
   }
   function nmMulQuiz(n, round, right, list){
     var body = $("numbersBody"); body.innerHTML = "";
@@ -4130,11 +4139,160 @@
     fin:"﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾", finR:"سورة البقرة: ١٩٧", finSay:"فإن خير الزاد التقوى", finBtn:"⭐ الخاتمة: خير الزاد التقوى",
     parent:"للأعمار ٥ سنوات فأكثر. يناسب الاستعداد لرمضان والحج. الأحاديث من الصحيحين ومن سنن أبي داود.", lan:"فانوس" };
 
+  /* ===== راجع ما حفظت: مراجعة متباعدة هادئة للآيات المُعلَّمة «حُفظت» =====
+     بعد يوم ثم ٣ أيام ثم أسبوع، جولة قصيرة (حتى ٣ آيات) في اليوم. لا عقوبة ولا إعادة عدّاد عند التفويت: الآية تبقى بانتظارك.
+     التخزين: athar_quran_srs_v1[_<profile>] = { b:1, day:"YYYY-MM-DD", a:{ "سورة-آية": {s:عدد المراجعات 0..3, d:يوم الاستحقاق ms} } } (قراءة آمنة عبر lsObj). */
+  var RV_KEY = "athar_quran_srs_v1", RV_GAP = [1, 3, 7], RV_MAX = 3;
+  var rv = {items:[], i:0, done:0, audio:null};
+  function rvKey(){ return profiles.active === "p1" ? RV_KEY : RV_KEY + "_" + profiles.active; }
+  function rvDay0(ts, add){ var x = new Date(ts); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() + (add || 0)); return x.getTime(); }
+  function rvYmd(ts){ var x = new Date(ts), z = function(n){ return (n < 10 ? "0" : "") + n; }; return x.getFullYear() + "-" + z(x.getMonth() + 1) + "-" + z(x.getDate()); }
+  function rvLoad(){
+    var o = lsObj(rvKey()), a = (o.a && typeof o.a === "object" && !Array.isArray(o.a)) ? o.a : {}, r = {b:o.b === 1 ? 1 : 0, day:(typeof o.day === "string" ? o.day : ""), a:{}};
+    var cap = rvDay0(Date.now(), 7);
+    for(var k in a){
+      var e = a[k];
+      if(!/^\d+-\d+$/.test(k) || !e || typeof e !== "object" || !isFinite(e.d) || [0,1,2,3].indexOf(e.s) < 0) continue;
+      r.a[k] = {s:e.s, d:Math.min(e.d, cap)};   /* ساعة جهاز مضطربة لا تُخفي آية شهرًا */
+    }
+    return r;
+  }
+  function rvSave(r){ try{ localStorage.setItem(rvKey(), JSON.stringify(r)); }catch(e){} }
+  /* مزامنة مع التقدّم: آية صارت محفوظة تدخل، وآية لم تعد محفوظة تخرج. أول مرة: الحافظون سابقًا يبدأون مستحقّين اليوم. */
+  function rvSync(skip){
+    var r = rvLoad(), pr = loadProgress(), ch = false, now = Date.now(), k;
+    for(k in r.a){ if(pr[k] !== "memorized"){ delete r.a[k]; ch = true; } }
+    for(k in pr){
+      if(pr[k] === "memorized" && !r.a[k] && k !== skip && /^\d+-\d+$/.test(k)){ r.a[k] = {s:0, d:r.b ? rvDay0(now, RV_GAP[0]) : rvDay0(now, 0)}; ch = true; }
+    }
+    if(!r.b){ r.b = 1; ch = true; }
+    if(ch) rvSave(r);
+    return r;
+  }
+  function rvOnStatus(surah, ayah, status){
+    var k = surah + "-" + ayah, r = rvSync(status === "memorized" ? k : null);
+    if(status === "memorized"){ if(!r.a[k]){ r.a[k] = {s:0, d:rvDay0(Date.now(), RV_GAP[0])}; rvSave(r); } }
+    else if(r.a[k]){ delete r.a[k]; rvSave(r); }
+  }
+  function rvDoneToday(r){ return r.day === rvYmd(Date.now()); }
+  function rvDueList(r){
+    var now = Date.now(), out = [], k;
+    for(k in r.a){ if(r.a[k].s < 3 && r.a[k].d <= now){ var p = k.split("-"); out.push({k:k, sn:+p[0], an:+p[1], d:r.a[k].d}); } }
+    out.sort(function(x, y){ return x.d - y.d || x.sn - y.sn || x.an - y.an; });
+    return out;
+  }
+  function rvPick(r){
+    var due = rvDueList(r);
+    if(!due.length) return [];
+    var first = due[0], same = due.filter(function(x){ return x !== first && x.sn === first.sn; }).sort(function(x, y){ return Math.abs(x.an - first.an) - Math.abs(y.an - first.an); });
+    var rest = due.filter(function(x){ return x !== first && x.sn !== first.sn; });
+    return [first].concat(same, rest).slice(0, RV_MAX).sort(function(x, y){ return x.sn - y.sn || x.an - y.an; });
+  }
+  function rvCount(){ try{ var r = rvSync(); return rvDoneToday(r) ? 0 : Math.min(RV_MAX, rvDueList(r).length); }catch(e){ return 0; } }
+  window.AtharReview = {due: rvCount};
+  function rvStop(){ try{ if(rv.audio){ rv.audio.pause(); rv.audio = null; } }catch(e){} }
+  function rvSurahName(n){ var s = JUZ_AMMA.filter(function(x){ return x.num === n; })[0]; return s ? s.name : ""; }
+  function rvPlayIc(on){ return on ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.6" fill="#fff"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.6" fill="#fff"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z" fill="#fff"/></svg>'; }
+  function rvBody(h){ $("rvBody").innerHTML = h; }
+  function rvBackToDoor(){ rvStop(); var d = $("doorHifz"); if(d) d.click(); else showView("view-home"); }
+  function rvRefreshOutside(){ try{ if(window.AtharWorld) window.AtharWorld.refresh(); }catch(e){} rvRefreshTile(); }
+  function rvStart(){
+    var r = rvSync();
+    rv.items = rvDoneToday(r) ? [] : rvPick(r); rv.i = 0; rv.done = 0;
+    showView("view-review"); window.scrollTo(0, 0);
+    if(!rv.items.length) rvEmpty(rvDoneToday(r)); else rvShow();
+  }
+  function rvEmpty(didToday){
+    rvBody('<div class="rv-card rv-end"><svg class="rv-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="#FFC93C" stroke="#E0891A" stroke-width="1.4" stroke-linejoin="round"/></svg>' +
+      '<h2>' + (didToday ? "أحسنتَ، راجعتَ اليوم" : "لا مراجعة اليوم") + '</h2><p>' + (didToday ? "نلتقي في مراجعة جديدة حين يحين موعدها." : "حين تحفظ آيات جديدة ستعود هنا لتراجعها بلطف.") + '</p></div>' +
+      '<button class="rv-ok" id="rvDone">حسنًا</button>');
+    $("rvDone").addEventListener("click", rvBackToDoor);
+  }
+  function rvShow(){
+    rvStop();
+    var it = rv.items[rv.i], dots = "";
+    for(var j = 0; j < rv.items.length; j++) dots += '<i class="' + (j < rv.i ? "on" : j === rv.i ? "cur" : "") + '"></i>';
+    rvBody('<div class="rv-dots" aria-label="الآية ' + arNum(rv.i + 1) + ' من ' + arNum(rv.items.length) + '">' + dots + '</div>' +
+      '<div class="rv-card"><div class="rv-sn">سورة ' + rvSurahName(it.sn) + '</div><div class="rv-an">الآية <b>' + arNum(it.an) + '</b></div>' +
+      '<p class="rv-q">قُلها من ذاكرتك أولًا، ثم استمع للقارئ لتطمئن.</p>' +
+      '<button class="rv-play" id="rvPlay" aria-label="استمع للآية">' + rvPlayIc(false) + '<span>استمع</span></button><div class="rv-msg" id="rvMsg" aria-live="polite"></div></div>' +
+      '<button class="rv-ok" id="rvOk">راجعتها</button><button class="rv-later" id="rvLater">لاحقًا</button>');
+    $("rvPlay").addEventListener("click", function(){ rvPlay(it); });
+    $("rvOk").addEventListener("click", function(){ rvMark(it); });
+    $("rvLater").addEventListener("click", function(){ rvNext(); });
+  }
+  function rvPlay(it){
+    var b = $("rvPlay"), m = $("rvMsg");
+    if(rv.audio){ rvStop(); b.innerHTML = rvPlayIc(false) + '<span>استمع</span>'; return; }
+    try{
+      var a = new Audio(audioUrl(it.sn, it.an));
+      rv.audio = a; m.textContent = "";
+      try{ a.playbackRate = settings.speed || 1; a.volume = settings.vol == null ? 1 : settings.vol; }catch(e){}
+      var reset = function(){ if(rv.audio === a){ rv.audio = null; } var bb = $("rvPlay"); if(bb) bb.innerHTML = rvPlayIc(false) + '<span>استمع</span>'; };
+      a.onended = reset;
+      a.onerror = function(){ reset(); var mm = $("rvMsg"); if(mm) mm.textContent = "تعذّر تشغيل الصوت الآن، جرّب لاحقًا"; };
+      b.innerHTML = rvPlayIc(true) + '<span>إيقاف</span>';
+      var pr = a.play(); if(pr && pr.catch) pr.catch(function(){ reset(); var mm = $("rvMsg"); if(mm) mm.textContent = "اضغط مرة أخرى للسماح بالصوت"; });
+    }catch(e){ rv.audio = null; }
+  }
+  function rvMark(it){
+    var r = rvLoad(), e = r.a[it.k];
+    if(e){
+      e.s = Math.min(3, e.s + 1);
+      e.d = e.s >= 3 ? e.d : rvDay0(Date.now(), RV_GAP[e.s]);
+      rvSave(r);
+    }
+    rv.done++;
+    rvNext();
+  }
+  function rvNext(){
+    rvStop();
+    rv.i++;
+    if(rv.i < rv.items.length){ rvShow(); return; }
+    rvFinish();
+  }
+  function rvFinish(){
+    var n = rv.done;
+    if(!n){
+      rvBody('<div class="rv-card rv-end"><h2>لا بأس</h2><p>الآيات بانتظارك حين تشاء.</p></div><button class="rv-ok" id="rvDone">حسنًا</button>');
+      $("rvDone").addEventListener("click", rvBackToDoor);
+      return;
+    }
+    var r = rvLoad(); r.day = rvYmd(Date.now()); rvSave(r);
+    try{ if(window.AtharReward) window.AtharReward.award("rv:" + profiles.active + ":" + r.day, n, "hifz"); }catch(e){}
+    rvBody('<div class="rv-card rv-end"><svg class="rv-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="#FFC93C" stroke="#E0891A" stroke-width="1.4" stroke-linejoin="round"/></svg>' +
+      '<h2>ما شاء الله!</h2><p>راجعتَ ' + (n === 1 ? "آية واحدة" : n === 2 ? "آيتين" : arNum(n) + " آيات") + ' من حفظك.</p></div><button class="rv-ok" id="rvDone">تم</button>');
+    $("rvDone").addEventListener("click", rvBackToDoor);
+    rvRefreshOutside();
+  }
+  function rvRefreshTile(){
+    var t = $("choiceReview"); if(!t) return;
+    var n = rvCount(), c2 = t.querySelector(".ct2"), bd = t.querySelector(".rv-bd");
+    c2.textContent = n ? (n === 1 ? "آية واحدة من حفظك تنتظر مراجعتك اليوم" : arNum(n) + " آيات من حفظك تنتظر مراجعتك اليوم") : "آيات حفظتَها تعود إليك بعد يوم ثم أيام لتثبت";
+    if(bd) bd.hidden = !n;
+    t.classList.toggle("rv-due", !!n);
+  }
+  function rvSetup(){
+    if($("choiceReview")) return;
+    var t = document.createElement("button"); t.className = "choice-tile small"; t.id = "choiceReview"; t.style.setProperty("--c", "#0EA5A0");
+    t.innerHTML = '<span class="choice-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 0113-5.1M19.5 12a7.5 7.5 0 01-13 5.1" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M17.8 2.8v4.4h-4.4M6.2 21.2v-4.4h4.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+      '<span class="choice-txt"><span class="ct1">راجع ما حفظت</span><span class="ct2"></span></span><span class="rv-bd" hidden><i></i>اليوم</span>' +
+      '<svg class="choice-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    t.addEventListener("click", rvStart);
+    var host = $("tileStore"); if(host) host.appendChild(t);
+    var sec = document.createElement("section"); sec.className = "view"; sec.id = "view-review";
+    sec.innerHTML = '<div class="browse-head"><button class="back-btn" id="rvBack" aria-label="رجوع">→</button></div><div class="rv-wrap" id="rvBody"></div>';
+    var dv = $("view-door"); dv.parentNode.insertBefore(sec, dv.nextSibling);
+    $("rvBack").addEventListener("click", rvBackToDoor);
+    rvRefreshTile();
+  }
+
   /* ===== الأبواب: الشاشة الرئيسية ثلاثة أبواب بدل ست أيقونات ===== */
   function setupDoors(){
     var store = document.createElement("div"); store.id = "tileStore"; store.hidden = true;
     $("app").appendChild(store);
     ["choiceSurah","choiceAyah","choiceAyq","choiceAdhkar","choiceLetters","choiceNumbers","choiceLibrary"].forEach(function(id){ var n = $(id); if(n) store.appendChild(n); });
+    rvSetup();
     var DOORS = [
       { id:"doorHifz", c:"#22A04B", t:"أحفظ القرآن", d:"سورة كاملة أو آيات محدّدة مع القارئ", sub:"اختر طريقة الحفظ التي تناسبك اليوم.", tiles:["choiceSurah","choiceAyah"],
         ic:'<path d="M12 6.5C10 5 7 4.6 3.5 5v13c3.5-.4 6.5 0 8.5 1.5 2-1.5 5-1.9 8.5-1.5V5C17 4.6 14 5 12 6.5z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>' },
@@ -4152,7 +4310,9 @@
     function stash(){ var b = $("doorBody"); while(b.firstChild) store.appendChild(b.firstChild); }
     function openDoor(D){
       stash(); $("doorTitle").textContent = D.t; $("doorSub").textContent = D.sub || "";
-      D.tiles.forEach(function(id){ $("doorBody").appendChild($(id)); });
+      var tl = D.tiles;
+      if(D.id === "doorHifz"){ rvRefreshTile(); tl = rvCount() ? ["choiceReview"].concat(tl) : tl.concat(["choiceReview"]); }
+      tl.forEach(function(id){ var n = $(id); if(n) $("doorBody").appendChild(n); });
       showView("view-door"); window.scrollTo(0, 0);
     }
     var anchor = $("lanternCard");
@@ -8599,7 +8759,7 @@
     function drawProg(){ chips.innerHTML = ""; if(!prog.length){ chips.textContent = "خطواتك تظهر هنا"; return; } prog.forEach(function(d){ var s = document.createElement("span"); s.textContent = BR_DIR[d][2]; chips.appendChild(s); }); }
     drawProg();
     var pad = document.createElement("div"); pad.className = "br-pad";
-    ["U", "L", "R", "D"].forEach(function(d){
+    ["L", "U", "D", "R"].forEach(function(d){
       var b = document.createElement("button"); b.className = "br-arrow"; b.textContent = BR_DIR[d][2]; b.setAttribute("data-d", d);
       b.addEventListener("click", function(){ if(busy) return; if(prog.length < L.path.length + 4){ prog.push(d); drawProg(); tone(500, 0, .08, .06); } });
       pad.appendChild(b);
