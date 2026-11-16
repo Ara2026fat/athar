@@ -584,6 +584,16 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </div>
       </div>
 
+      <div class="section-card priv-card" data-grp="parent" data-sub="priv">
+        <h3>الخصوصية</h3>
+        <ul class="priv-list">
+          <li><b>لا تتبّع ولا حسابات.</b> لا نجمع أي بيانات عن طفلك، ولا نطلب اسمًا أو بريدًا.</li>
+          <li><b>على الجهاز فقط:</b> التقدّم، والإعدادات، وأسماء الأبناء، والرمز السري، وتسجيلات صوت الطفل. لا تُرسَل إلى أي جهة، وتُمسَح بمسح بيانات الموقع من المتصفح.</li>
+          <li><b>من خوادم خارجية عند أول استخدام:</b> صوت الآيات من <span dir="ltr">everyayah.com</span>، وخطوط المصحف وصفحاته من <span dir="ltr">cdn.jsdelivr.net</span> (ومرآتيه <span dir="ltr">fastly.jsdelivr.net</span> و<span dir="ltr">gcore.jsdelivr.net</span>) و<span dir="ltr">raw.githubusercontent.com</span>. قد تطّلع هذه الخوادم على عنوان الاتصال (IP) فقط، ثم يُحفظ ما نُزِّل على الجهاز.</li>
+          <li><b>روابط المراجع</b> لا تُفتح إلا من هنا، وبعد تأكيدك.</li>
+        </ul>
+      </div>
+
       <div class="section-card about-card" data-grp="parent" data-sub="ref">
         <h3>عن التطبيق</h3>
         <p class="muted">أثر — أول تطبيقات سلسلة «أثر»، لتحفيظ جزء عمّ للأطفال من عمر 3 سنوات فما فوق.</p>
@@ -10733,7 +10743,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 (function(){
   var tabs=document.getElementById("setTabs"); if(!tabs) return; var cur;
   var view=document.getElementById("view-dashboard");
-  var SUBS={child:[["rep","التكرار"],["exp","الجلسة"],["opt","خيارات"],["view","العرض"]],prog:[["grow","النمو"],["list","السور"]],parent:[["sec","الرمز"],["prof","الملفات"],["ref","المراجع"]]};
+  var SUBS={child:[["rep","التكرار"],["exp","الجلسة"],["opt","خيارات"],["view","العرض"]],prog:[["grow","النمو"],["list","السور"]],parent:[["sec","الرمز"],["prof","الملفات"],["priv","الخصوصية"],["ref","المراجع"]]};
   var subCur={child:"rep",prog:"grow",parent:"sec"},subBar=document.createElement("div");
   subBar.className="sub-tabs";subBar.setAttribute("role","tablist");subBar.setAttribute("aria-label","أقسام");
   tabs.parentNode.insertBefore(subBar,tabs.nextSibling);
@@ -10741,7 +10751,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function detailOpen(){var d=document.getElementById("surahDetailCard");return !!d&&d.style.display!=="none"&&d.style.display!==""}
   function show(g){
     try{localStorage.setItem("athar_set_tab",g)}catch(e){}
-    [].forEach.call(tabs.children,function(b){b.classList.toggle("on",b.dataset.g===g)});
+    [].forEach.call(tabs.children,function(b){b.classList.toggle("on",b.dataset.g===g);b.setAttribute("role","tab");b.setAttribute("aria-selected",b.dataset.g===g?"true":"false")});
     cur=g;
     var list=SUBS[g]||[],sub=subCur[g]||(list[0]&&list[0][0]);
     if(g==="prog"&&detailOpen())sub="detail";else if(sub==="detail")sub="list";
