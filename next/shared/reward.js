@@ -63,7 +63,8 @@
     ["mSpring2", "عين ماء", ["mSpring2"]], ["mStill", "سكون", ["mStill", "mMirror"]], ["mCompass", "بوصلة", ["mCompass"]],
     ["mCart", "عربة", ["mCart"]], ["mNest", "عش", ["mNest"]], ["mLeaf", "ورقة", ["mLeaf"]]
   ];
-  function marksNow() { try { var d = JSON.parse(ls("athar.world.v2")); return (d && d.marks) || []; } catch (e) { return []; } }
+  function wkey() { try { var p = JSON.parse(ls("athar_profiles_v1")), l = (p && p.list) || [], a = p && p.active; if (!l.length || !a) return "athar.world.v2"; var own = l.some(function (x) { return x && x.id === "p1"; }) ? "p1" : l[0].id; return a === own ? "athar.world.v2" : "athar_world_v2_" + a; } catch (e) { return "athar.world.v2"; } }
+  function marksNow() { try { var d = JSON.parse(ls(wkey())); return (d && d.marks) || []; } catch (e) { return []; } }
   function albumBase() { return (/\/valley\//.test(location.pathname) ? "img/marks/" : "valley/img/marks/"); }
 
   /* ───────── عبارات التشجيع (نصّ فقط، نبرة هادئة) ───────── */
@@ -72,7 +73,7 @@
     lesson: ["أتممتَ الدرس، ما شاء الله", "أحسنتَ، أنهيتَ الدرس بهدوء وانتباه", "بارك الله في جهدك، أحسنتَ", "تعلّمتَ شيئًا جديدًا اليوم", "ما شاء الله، أنت تتقدّم", "شكرًا لانتباهك الجميل", "بارك الله في تعبك", "أكملتَ الطريق، أحسنتَ", "خطوة بعد خطوة، وها قد وصلت"],
     retry: ["لا بأس، حاول مرة أخرى", "أنت تتعلّم، وهذا هو المهم", "المحاولة جميلة، جرّب من جديد", "خذ نفسًا هادئًا ثم أعد المحاولة", "التعلّم يأتي بالتكرار، وأنت قريب", "لا تقلق، نحاول معًا", "محاولة طيبة، لنعد مرة أخرى", "كل مرة تقترب أكثر"],
     back: ["أهلًا بعودتك، اشتقنا لك", "سعيدون برؤيتك من جديد", "مرحبًا بك، لنكمل من حيث توقفنا", "أهلًا يا صديقي، هيا نبدأ بهدوء", "عدتَ، وهذا جميل", "البداية الجديدة جميلة دائمًا"],
-    goal: ["أتممتَ هدف اليوم، ما شاء الله", "ثلاث نجوم اليوم، أحسنتَ", "هدفك لهذا اليوم تحقّق", "يوم موفّق، أحسنتَ", "أنجزتَ ما نويتَ اليوم", "عمل اليوم تمّ، هنيئًا لك"],
+    goal: ["أتممتَ هدف اليوم، ما شاء الله", "ثلاث نجوم اليوم، أحسنتَ", "هدفك لهذا اليوم تحقّق", "يوم موفّق، أحسنتَ", "أنجزتَ ما نويتَ اليوم", "اكتمل عمل اليوم، هنيئًا لك"],
     streak: ["أيام متتالية معنا، ما شاء الله", "استمرارك جميل، واصل", "مداومتك تسعدنا", "يوم آخر في رحلتك، أحسنتَ", "الاستمرار أجمل من السرعة", "عدتَ اليوم أيضًا، رائع"],
     adhkar: ["أحسنتَ، ذكرٌ جميل", "قلتَها بهدوء، ما شاء الله", "ما أجمل أن تذكر الله", "أتممتَ الذكر، أحسنتَ", "كرّرتَها ثلاثًا، بارك الله فيك", "ذكر جديد في رصيدك"],
     noor: ["حروفك صارت أوضح، أحسنتَ", "نطقتَ بتأنٍّ، ما شاء الله", "أتممتَ درس الحروف", "قراءتك تتحسّن", "استمع ثم أعِد، هكذا نتعلّم", "حرف جديد صار صديقك"],
@@ -91,7 +92,7 @@
 
   /* ───────── واجهة: الشريحة ───────── */
   var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17l-6 3.3 1.3-6.6L2.4 9.1l6.7-.8z" fill="#F2B71F" stroke="#B07A00" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 5.4l1.5 3.3" stroke="#FFF3B0" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>';
-  var chip, cnt, live, toast, tT, shown = 0, sheet = null, tab = "lamp", confirmI = -1, confirmT = 0;
+  var chip, cnt, dayEl, live, toast, tT, shown = 0, sheet = null, tab = "lamp", confirmI = -1, confirmT = 0;
   function mode() { return $("view-home") ? "home" : ($("scene") ? "valley" : "none"); }
   function cur() { return prof(load(), pid()); }
   function build() {
@@ -103,15 +104,33 @@
     live = D.createElement("div"); live.className = "rw-live"; live.setAttribute("role", "status"); live.setAttribute("aria-live", "polite");
     toast = D.createElement("div"); toast.className = "rw-toast"; toast.setAttribute("aria-hidden", "true");
     D.body.appendChild(chip); D.body.appendChild(live); D.body.appendChild(toast);
+    /* نجم اليوم (الرئيسية فقط): ثلاث نجوم صغيرة تمتلئ بقدر ما كسبه الطفل اليوم (الهدف ٣) */
+    if (m === "home") {
+      dayEl = D.createElement("span"); dayEl.className = "rw-day"; dayEl.setAttribute("aria-hidden", "true");
+      dayEl.innerHTML = '<i></i><i></i><i></i>'; for (var q = 0; q < 3; q++) dayEl.children[q].innerHTML = STAR;
+      chip.appendChild(dayEl);
+    }
     syncChip(true); gifts();
   }
   function syncChip(noAnim) {
     if (!chip) return;
     var p = cur(); shown = p.stars; cnt.textContent = num(p.stars);
-    chip.setAttribute("aria-label", "نجومي: " + sTxt(p.stars) + ". افتح مقتنياتي");
+    var e = syncDay(p);
+    chip.setAttribute("aria-label", "نجومي: " + sTxt(p.stars) + (dayEl ? ". اليوم: " + num(Math.min(e, GOAL)) + " من " + num(GOAL) : "") + ". افتح مقتنياتي");
+  }
+  function syncDay(p) {
+    var e = (p.day && p.day.date === today()) ? (+p.day.earned || 0) : 0;
+    if (!dayEl) return e;
+    var n = Math.min(e, GOAL), prev = +dayEl.getAttribute("data-n") || 0, k, el;
+    dayEl.setAttribute("data-n", n); dayEl.classList.toggle("full", e >= GOAL);
+    for (k = 0; k < 3; k++) {
+      el = dayEl.children[k]; el.classList.toggle("on", k < n);
+      if (k >= prev && k < n && !reduced()) { el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+    }
+    return e;
   }
   function countTo(to) {
-    var from = shown; shown = to;
+    var from = shown; shown = to; try { syncDay(cur()); } catch (e) {}
     if (!cnt) return;
     if (reduced() || from === to) { cnt.textContent = num(to); return; }
     var t0 = Date.now(), dur = 520;
@@ -169,7 +188,7 @@
   function say(cat, plus) {
     build();
     var line = typeof cat === "string" && L[cat] ? pick(cat) : String(cat);
-    var v = activeView(), bot = (v === "view-surah" || v === "view-ayahs");
+    var v = activeView(), bot = (v === "view-surah" || v === "view-ayahs" || (!!v && v !== "view-home" && mode() === "home"));   /* في الألعاب: أسفل الشاشة كي لا يغطّي العنوان والتبويبات */
     toast.className = "rw-toast" + (bot ? " bot" : "");
     toast.innerHTML = "";
     toast.appendChild(D.createTextNode(line));
@@ -199,6 +218,11 @@
       p.streak.last = t;
     }
     save(o);
+    /* قنديل الأيام: أي نجمة (ومنها الوادي) تُضيء قنديل اليوم في الرئيسية */
+    try {
+      var dk = "athar_days_v1_" + pid(), dl = JSON.parse(ls(dk)); if (!Array.isArray(dl)) dl = [];
+      if (dl.indexOf(today()) < 0) { dl.push(today()); lset(dk, JSON.stringify(dl)); }
+    } catch (e) {}
     var line = goalNow ? "goal" : (first && p.streak.n >= 2 ? "streak" : (cat || "lesson"));
     setTimeout(function () { fly(n); }, 150);
     setTimeout(function () { countTo(p.stars); pulse(); }, 750);
@@ -299,19 +323,19 @@
   /* ───────── بطاقة ولي الأمر ───────── */
   function parentCard() {
     var p = cur(), st = p.streak.n && (p.streak.last === today() || p.streak.last === ymd(new Date(Date.now() - 864e5))) ? p.streak.n : 0;
-    var c = D.createElement("div"); c.className = "rw-parent";
+    var c = D.createElement("div"); c.className = "rw-parent"; c.dataset.grp = "prog"; c.dataset.sub = "grow";
     c.innerHTML = '<h3>نجوم الطفل</h3><p>أيام متتالية: ' + num(st) + '<br>مجموع النجوم: ' + num(p.total) + '<br>رصيده الآن: ' + num(p.stars) + '</p><button class="rw-btn soft" type="button">تصفير المكافآت</button>';
     var b = c.querySelector("button"), t = 0, ask = false;
     b.onclick = function () {
       if (!ask) { ask = true; b.textContent = "تأكيد التصفير؟ لا رجوع"; b.className = "rw-btn ask"; clearTimeout(t); t = setTimeout(function () { ask = false; b.textContent = "تصفير المكافآت"; b.className = "rw-btn soft"; }, 4000); return; }
-      var o = load(); o.profiles[pid()] = fresh(); save(o); syncChip(); gifts(); ask = false; b.textContent = "تمّ التصفير"; b.className = "rw-btn soft"; b.disabled = true;
+      var o = load(); o.profiles[pid()] = fresh(); save(o); syncChip(); gifts(); ask = false; b.textContent = "اكتمل التصفير"; b.className = "rw-btn soft"; b.disabled = true;
       c.querySelector("p").innerHTML = "أيام متتالية: ٠<br>مجموع النجوم: ٠<br>رصيده الآن: ٠";
     };
     return c;
   }
   function parentHook() {
     var dash = $("view-dashboard"), par = $("parent");
-    function putHome() { if (dash && dash.classList.contains("active") && !dash.querySelector(".rw-parent")) { var g = dash.querySelector(".growth-card"); if (g && g.parentNode) g.parentNode.insertBefore(parentCard(), g.nextSibling); } }
+    function putHome() { if (dash && dash.classList.contains("active") && !dash.querySelector(".rw-parent")) { var g = dash.querySelector(".growth-card"); if (g && g.parentNode) var pc = parentCard(); g.parentNode.insertBefore(pc, g.nextSibling); if (g.classList.contains("grp-hide")) pc.classList.add("grp-hide"); } }
     function putValley() { if (par && par.classList.contains("on") && !par.querySelector(".rw-parent")) { var c = par.querySelector(".pcard:not(.pgate)"); if (c) { var tg = c.querySelector(".ptag"); c.insertBefore(parentCard(), tg ? tg.nextSibling : c.firstChild); } } }
     try { if (dash) new MutationObserver(function () { if (!dash.classList.contains("active")) { var x = dash.querySelector(".rw-parent"); if (x) x.remove(); } else putHome(); }).observe(dash, { attributes: true, attributeFilter: ["class"] }); } catch (e) {}
     try { if (par) new MutationObserver(function () { if (par.classList.contains("on")) putValley(); }).observe(par, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] }); } catch (e) {}

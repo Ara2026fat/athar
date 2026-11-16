@@ -27,8 +27,14 @@
 .jr-land .jl-ring img{width:66%}
 .jr-land h2{margin:6px 0 0;font-size:38px;text-shadow:0 3px 8px #0005}
 .jr-land p{margin:0;font-size:20px;line-height:1.6;max-width:320px;text-shadow:0 2px 6px #0004;font-family:'Tajawal',sans-serif;font-weight:700}
-.jr-land .jl-in{margin-top:10px;border:0;border-radius:99px;background:#ffd75e;color:#3a2c00;font:800 26px inherit;font-family:inherit;padding:12px 46px;box-shadow:0 6px 0 #c98f12,0 12px 20px #0004;cursor:pointer}
-.jr-land .jl-bk{background:transparent;border:0;color:#fff;font:700 18px inherit;font-family:inherit;opacity:.9;cursor:pointer;padding:8px 18px}
+.jr-land .jl-in{margin-top:10px;border:0;border-radius:99px;background:#ffd75e;color:#3a2c00;font-weight:800;font-size:26px;font-family:inherit;min-height:56px;padding:10px 52px;box-shadow:0 6px 0 #c98f12,0 12px 20px #0004;cursor:pointer}
+.jr-land .jl-bk{background:rgba(255,255,255,.18);border:0;border-radius:99px;color:#fff;font-weight:700;font-size:20px;font-family:inherit;cursor:pointer;min-height:48px;min-width:120px;padding:8px 26px;margin-top:6px}
 html.hw-pre-j #app header{position:absolute;top:0;left:0;right:0;background:transparent;padding:12px 16px 2px;z-index:9}
 html.hw-pre-j #app .brand-mark{width:72px;height:72px}html.hw-pre-j #app .brand-mark img{width:100%!important;height:100%!important}html.hw-pre-j #app .brand-text{font-size:36px}html.hw-pre-j #app .brand-text span{font-size:12.5px;font-weight:700}
 html.hw-pre-j #app .gear-btn{width:48px;height:48px}html.hw-pre-j #app .brand{padding:3px 18px 3px 8px}html.hw-pre-j #app .sig{position:absolute;left:0;right:0;bottom:3px;margin:0;padding:0;z-index:7;pointer-events:none;opacity:.75;line-height:1.2}html.hw-pre-j #app main{padding:0}</style>
+
+/* r9: gentle pulse on the expected button after a short pause */
+@keyframes jlNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.jr-land.on .jl-in{animation:jlNudge 1.5s ease-in-out 2.2s infinite}
+@media (prefers-reduced-motion:reduce){.jr-land.on .jl-in{animation:none}}
+.jr-land .jl-ring img[src*="valley"]{width:100%;height:100%;border-radius:50%;object-fit:cover;transform:scale(1.02)}

@@ -5,7 +5,7 @@ var W=window,D=document;
 var LINES={
 hello:"السلام عليكم، أنا أثر! هيا نبدأ رحلتنا اليوم.",
 morning:"صباح الخير! يوم جديد وخير جديد.",
-evening:"مساء الخير! أحسنتَ اليوم يا بطل.",
+evening:"مساء الخير! يومٌ جميل، ما شاء الله.",
 night:"ليلة هادئة يا بطل. هيا نختم يومنا بخير.",
 noor:"هيا نتعلم الحروف في القاعدة النورانية.",
 hifz:"هيا نحفظ من القرآن الكريم.",
@@ -15,7 +15,7 @@ math:"هيا نلعب مع الأرقام.",
 adhkar:"هيا نقرأ أذكارنا.",
 quiz:"هيا إلى المسابقات، أنا واثق بك.",
 can:"أنت تستطيع. خطوة صغيرة كل يوم.",
-well:"أحسنتَ! استمر يا بطل.",
+well:"ما شاء الله! هيّا نكمل.",
 repeat:"التكرار يصنع المهارة. أعد مرة أخرى.",
 letter:"كل حرف تتعلمه نور جديد.",
 mash:"ما شاء الله! تقدمك جميل.",
@@ -31,7 +31,7 @@ function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 var base=(function(){var s=D.currentScript;return s&&s.src?s.src.replace(/audio\.js(\?.*)?$/,""):"next/home/"})();
 var H={on:ls("athar_home_snd")!=="0",unlocked:false,per:"day",idx:null,bin:null,voice:null,amb:null,ambKey:"",cache:{},lastLine:0};
-function mkAudio(src,loop,vol){var a=new Audio(src);a.loop=!!loop;a.volume=vol;a.preload="auto";return a}
+function mkAudio(src,loop,vol){var a=new Audio(src);a.loop=!!loop;a.volume=vol;a.muted=!!H._mu;a.preload="auto";return a}
 function loadVoice(){
  if(H._p)return H._p;
  H._p=fetch(base+"voice/home-index.json").then(function(r){return r.json()}).then(function(j){H.idx=j.e;return fetch(base+"voice/sp_home.bin")}).then(function(r){return r.arrayBuffer()}).then(function(b){H.bin=b}).catch(function(){H._p=null});
@@ -51,7 +51,8 @@ H.say=function(name,done,low){ /* low = تحية/تشجيع: لا يقطع جم�
  if(H.bin&&H.idx){return play(name,done,tok)}
  H._q=tok;                                  /* الحزمة لم تُحمَّل بعد: انتظرها ثم انطق */
  var p=loadVoice();if(!p){H._q=0;done&&done();return false}
- p.then(function(){if(H._q===tok){H._q=0;play(name,done,tok)}else done&&done()});
+ var fin=false,wd=setTimeout(function(){if(fin)return;fin=true;if(H._q===tok)H._q=0;done&&done()},6000); /* شبكة معلّقة: لا نترك المتصل ينتظر للأبد */
+ p.then(function(){if(fin)return;fin=true;clearTimeout(wd);if(H._q===tok){H._q=0;play(name,done,tok)}else done&&done()});
  return true;
 };
 function play(name,done,tok){
@@ -98,6 +99,14 @@ H.unlock=function(){
  setTimeout(function(){if(H.on)H.greet()},900);
 };
 ["pointerdown","keydown","touchstart"].forEach(function(n){D.addEventListener(n,function f(){H.unlock();D.removeEventListener(n,f,true)},true)});
-D.addEventListener("visibilitychange",function(){if(!H.amb)return;if(D.hidden)try{H.amb.pause()}catch(e){}else if(H.on&&H.unlocked)try{H.amb.play().catch(function(){})}catch(e){}});
-W.HomeAudio=H;loadVoice();
+/* الإيقاف المؤقت عند اختفاء التبويب يمرّ عبر AtharSound (طبقة app.js المركزية) */
+if(W.AtharSound)W.AtharSound.register("home",{
+ stop:function(){H.hold(true)},
+ mute:function(on){H._mu=!!on;[H.amb,H.voice].forEach(function(a){if(a)try{a.muted=!!on}catch(e){}})},
+ pause:function(){var h=false;if(H.voice&&!H.voice.paused&&!H.voice.ended){try{H.voice.pause();H._vh=H.voice;h=true}catch(e){}}if(H.amb&&!H.amb.paused){try{H.amb.pause();H._ah=1;h=true}catch(e){}}return h},
+ resume:function(){if(H._vh){var v=H._vh;H._vh=null;if(H.voice===v)try{v.play().catch(function(){})}catch(e){}}if(H._ah){H._ah=0;if(H.on&&H.unlocked&&H.amb)try{H.amb.play().catch(function(){})}catch(e){}}}
+});
+W.HomeAudio=H;/* بعد أول رسم وخمول المتصفح: لا ننافس الرسم الأول على 1MB من الصوت (unlock/say يستدعيانها عند الحاجة) */
+function lateVoice(){setTimeout(function(){(W.requestIdleCallback||function(f){setTimeout(f,1)})(loadVoice)},4500)}
+if(D.readyState==="complete")lateVoice();else W.addEventListener("load",lateVoice);
 })();

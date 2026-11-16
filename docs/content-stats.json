@@ -1,0 +1,1740 @@
+{
+  "generated": "2026-11-16",
+  "tool": "tools/qa/content-stats.js",
+  "pageErrors": [],
+  "library": {
+    "books": 120,
+    "chapters": 642,
+    "pagesByGame": {
+      "plain": 18,
+      "signs": 1,
+      "pillars": 1,
+      "qa": 2654,
+      "story": 317
+    },
+    "questions": 2654,
+    "riddles": 5,
+    "questionsWithVerseOrHadith": 2434,
+    "chapterAskQuestions": 9,
+    "storyPages": 317,
+    "prophetStories": 7,
+    "sections": [
+      {
+        "id": "aqida",
+        "title": "العقيدة والإيمان",
+        "books": 11,
+        "chapters": 66,
+        "questions": 293
+      },
+      {
+        "id": "ibadat",
+        "title": "العبادات",
+        "books": 12,
+        "chapters": 60,
+        "questions": 275
+      },
+      {
+        "id": "quran",
+        "title": "القرآن والعلم",
+        "books": 5,
+        "chapters": 25,
+        "questions": 104
+      },
+      {
+        "id": "sira",
+        "title": "السيرة والصحابة",
+        "books": 7,
+        "chapters": 35,
+        "questions": 155
+      },
+      {
+        "id": "qisas",
+        "title": "قصص الطفل المسلم",
+        "books": 12,
+        "chapters": 104,
+        "questions": 216
+      },
+      {
+        "id": "anbiya",
+        "title": "قصص الأنبياء",
+        "books": 25,
+        "chapters": 112,
+        "questions": 534
+      },
+      {
+        "id": "ibar",
+        "title": "عِبَر من القرآن",
+        "books": 8,
+        "chapters": 40,
+        "questions": 178
+      },
+      {
+        "id": "hayati",
+        "title": "حياتي اليومية",
+        "books": 6,
+        "chapters": 24,
+        "questions": 119
+      },
+      {
+        "id": "akhlaq",
+        "title": "الأخلاق والقيم",
+        "books": 20,
+        "chapters": 101,
+        "questions": 447
+      },
+      {
+        "id": "adab",
+        "title": "الآداب والحقوق",
+        "books": 15,
+        "chapters": 75,
+        "questions": 333
+      }
+    ],
+    "booksNotInAnySection": [],
+    "topBooksByQuestions": [
+      {
+        "key": "kibar",
+        "title": "ركن الكبار",
+        "chapters": 10,
+        "questions": 61,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "qa",
+        "title": "أسئلتي عن ديني",
+        "chapters": 10,
+        "questions": 60,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "akhlaq",
+        "title": "أخلاقي",
+        "chapters": 6,
+        "questions": 31,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "arkan",
+        "title": "أركان الإسلام: الزكاة والصيام والحج",
+        "chapters": 5,
+        "questions": 30,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "salah",
+        "title": "صلاتي",
+        "chapters": 5,
+        "questions": 29,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "tafakkur",
+        "title": "التفكر في خلق الله",
+        "chapters": 5,
+        "questions": 28,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "fadail",
+        "title": "من فضائل الصحابة",
+        "chapters": 5,
+        "questions": 27,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "sabr",
+        "title": "الصبر والابتلاء",
+        "chapters": 5,
+        "questions": 27,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "maryam",
+        "title": "مريم وعيسى عليهما السلام",
+        "chapters": 5,
+        "questions": 27,
+        "story": 0,
+        "plain": 0
+      },
+      {
+        "key": "rahma",
+        "title": "الرحمة بالمخلوقات",
+        "chapters": 5,
+        "questions": 26,
+        "story": 0,
+        "plain": 0
+      }
+    ],
+    "smallestBooks": [
+      {
+        "key": "sqsa",
+        "title": "قصص الصحابيات",
+        "chapters": 7,
+        "questions": 14,
+        "story": 18,
+        "plain": 0
+      },
+      {
+        "key": "sqnb",
+        "title": "قصص نبوية جميلة",
+        "chapters": 7,
+        "questions": 14,
+        "story": 17,
+        "plain": 0
+      },
+      {
+        "key": "sqsh",
+        "title": "قصص الصحابة",
+        "chapters": 6,
+        "questions": 12,
+        "story": 14,
+        "plain": 0
+      },
+      {
+        "key": "usul",
+        "title": "الأصول الثلاثة",
+        "chapters": 5,
+        "questions": 10,
+        "story": 0,
+        "plain": 11
+      },
+      {
+        "key": "iman",
+        "title": "أركان الإيمان",
+        "chapters": 6,
+        "questions": 0,
+        "story": 0,
+        "plain": 7
+      }
+    ]
+  },
+  "duplicates": {
+    "questionGroupsRepeatedText": 124,
+    "extraCopiesByText": 153,
+    "sameQuestionAndAnswerExtraCopies": 67,
+    "groupsAcrossBooks": 113,
+    "groupsInsideOneBook": 11,
+    "top": [
+      {
+        "q": "ماذا ندعو لوالدينا؟",
+        "times": 5,
+        "books": [
+          "akhlaq",
+          "rahma",
+          "dua",
+          "walid",
+          "isra"
+        ]
+      },
+      {
+        "q": "من لا يدخل الجنة؟",
+        "times": 5,
+        "books": [
+          "tawadu",
+          "jar",
+          "rahim",
+          "lisan",
+          "kibr"
+        ]
+      },
+      {
+        "q": "من يحب الله؟",
+        "times": 5,
+        "books": [
+          "tawadu",
+          "adl",
+          "ihsan",
+          "aman",
+          "nazafa"
+        ]
+      },
+      {
+        "q": "لماذا أرسل الله محمدًا ﷺ؟",
+        "times": 4,
+        "books": [
+          "usul",
+          "sira",
+          "ulul",
+          "mahabba"
+        ]
+      },
+      {
+        "q": "ماذا قال النبي ﷺ عمّن لا يرحم؟",
+        "times": 4,
+        "books": [
+          "akhlaq",
+          "rahma",
+          "rifq"
+        ]
+      },
+      {
+        "q": "أيّ الإسلام خير؟",
+        "times": 4,
+        "books": [
+          "akhlaq",
+          "salam",
+          "jar",
+          "huquq"
+        ]
+      },
+      {
+        "q": "ماذا مع العسر؟",
+        "times": 4,
+        "books": [
+          "sabr",
+          "yusr",
+          "ayyub",
+          "amal"
+        ]
+      },
+      {
+        "q": "ما أدنى شعب الإيمان؟",
+        "times": 3,
+        "books": [
+          "qa",
+          "tayyiba",
+          "aman"
+        ]
+      },
+      {
+        "q": "ما الإحسان؟",
+        "times": 3,
+        "books": [
+          "kibar",
+          "ihsan"
+        ]
+      },
+      {
+        "q": "ماذا قال النبي ﷺ عن الحياء؟",
+        "times": 3,
+        "books": [
+          "kibar",
+          "akhlaq",
+          "sqsd"
+        ]
+      }
+    ]
+  },
+  "ageBands": {
+    "dataFieldsPresent": {
+      "q3": 0,
+      "a3": 0
+    },
+    "note": "لا حقل عمر في بيانات الأسئلة؛ طبقة ٣–٥ (q3/right3/wrong3/a3) موثّقة في docs/age-3-5-layer.md لكنها غير موجودة في البيانات بعد. التقسيم الموضوعي بالأقسام أعلاه."
+  },
+  "audio": {
+    "definition": "نصّ منطوق = سؤال/جواب/نصّ صفحة/خاتمة/مشهد نبيّ/شرح ومفردات نور/حروف/أذكار. \"مسجَّل\" = كل جمله لها مقطع في story-index.json أو في VCL/NRX (نفس منطق vPlan في التطبيق).",
+    "overall": {
+      "pctFull": 98.7,
+      "pctAnyRecorded": 98.7,
+      "texts": 6499,
+      "full": 6414,
+      "partial": 1,
+      "none": 84
+    },
+    "sentences": {
+      "total": 6771,
+      "recorded": 6661,
+      "pct": 98.4
+    },
+    "unique": {
+      "texts": 5862,
+      "full": 5778,
+      "partial": 1,
+      "none": 83,
+      "pctFull": 98.6
+    },
+    "byCategory": {
+      "ask": {
+        "texts": 9,
+        "full": 9,
+        "partial": 0,
+        "none": 0,
+        "sentences": 9,
+        "sentRec": 9
+      },
+      "plain": {
+        "texts": 18,
+        "full": 18,
+        "partial": 0,
+        "none": 0,
+        "sentences": 30,
+        "sentRec": 30
+      },
+      "q": {
+        "texts": 2654,
+        "full": 2654,
+        "partial": 0,
+        "none": 0,
+        "sentences": 2664,
+        "sentRec": 2664
+      },
+      "a": {
+        "texts": 2654,
+        "full": 2654,
+        "partial": 0,
+        "none": 0,
+        "sentences": 2663,
+        "sentRec": 2663
+      },
+      "fin": {
+        "texts": 120,
+        "full": 120,
+        "partial": 0,
+        "none": 0,
+        "sentences": 120,
+        "sentRec": 120
+      },
+      "story": {
+        "texts": 317,
+        "full": 316,
+        "partial": 0,
+        "none": 1,
+        "sentences": 521,
+        "sentRec": 519
+      },
+      "prophet": {
+        "texts": 50,
+        "full": 0,
+        "partial": 1,
+        "none": 49,
+        "sentences": 67,
+        "sentRec": 1
+      },
+      "noor-rule": {
+        "texts": 105,
+        "full": 97,
+        "partial": 0,
+        "none": 8,
+        "sentences": 113,
+        "sentRec": 97
+      },
+      "noor-item": {
+        "texts": 490,
+        "full": 490,
+        "partial": 0,
+        "none": 0,
+        "sentences": 490,
+        "sentRec": 490
+      },
+      "letter": {
+        "texts": 28,
+        "full": 28,
+        "partial": 0,
+        "none": 0,
+        "sentences": 28,
+        "sentRec": 28
+      },
+      "letter-word": {
+        "texts": 28,
+        "full": 15,
+        "partial": 0,
+        "none": 13,
+        "sentences": 28,
+        "sentRec": 15
+      },
+      "adhkar-text": {
+        "texts": 13,
+        "full": 0,
+        "partial": 0,
+        "none": 13,
+        "sentences": 13,
+        "sentRec": 0
+      },
+      "adhkar-ask": {
+        "texts": 13,
+        "full": 13,
+        "partial": 0,
+        "none": 0,
+        "sentences": 25,
+        "sentRec": 25
+      }
+    },
+    "gapsByBook": [
+      {
+        "book": "PSTORIES",
+        "none": 49,
+        "partial": 1,
+        "cats": {
+          "prophet": 50
+        }
+      },
+      {
+        "book": "LWORDS",
+        "none": 13,
+        "partial": 0,
+        "cats": {
+          "letter-word": 13
+        }
+      },
+      {
+        "book": "ADHKAR",
+        "none": 12,
+        "partial": 0,
+        "cats": {
+          "adhkar-text": 12
+        }
+      },
+      {
+        "book": "NOOR",
+        "none": 8,
+        "partial": 0,
+        "cats": {
+          "noor-rule": 8
+        }
+      },
+      {
+        "book": "sihha",
+        "none": 1,
+        "partial": 0,
+        "cats": {
+          "story": 1
+        }
+      }
+    ],
+    "gapSample": [
+      {
+        "book": "sihha",
+        "ch": "sihha2",
+        "cat": "story",
+        "text": "قال النبي ﷺ: «المؤمن يأكل في معًى واحد». أي يأكل بقدر حاجته ولا يسرف.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "قال الله للملائكة: سأجعل في الأرض خليفة.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "وخلق الله آدم من طين، ثم نفخ فيه من روحه.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "وعلّم الله آدم أسماء الأشياء كلّها.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "وأمر الله الملائكة أن يسجدوا لآدم، فسجدوا، لكنّ إبليس أبى.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "وأسكن الله آدم وزوجه الجنّة، وقال لهما: كُلا منها حيث شئتما، ولا تقربا",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "لكنّ الشيطان أزلّهما، فأخرجهما ممّا كانا فيه.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "adam",
+        "cat": "prophet",
+        "text": "فتلقّى آدم من ربّه كلمات، فتاب الله عليه. والله يقبل التوبة ويرحم.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "أرسل الله نوحًا إلى قومه، فقال لهم: اعبدوا الله واتّقوه وأطيعوني.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "ودعا نوح قومه ليلًا ونهارًا.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "فأمره الله أن يصنع السفينة.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "وكان نوح يصنع السفينة، وكلّما مرّ عليه جماعة من قومه سخروا منه. فصبر.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "وجاء أمر الله، وفار التنّور. فقال الله لنوح: احمل فيها من كلّ زوجين اث",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "وقال نوح: اركبوا فيها بسم الله، إنّ ربّي لغفور رحيم.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "وانهمر الماء من السماء، وجرت السفينة بهم في موج كالجبال.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "nuh",
+        "cat": "prophet",
+        "text": "ثم قيل: يا أرض ابلعي ماءك، ويا سماء أقلعي. وغاض الماء، واستوت السفينة ",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "رأى إبراهيم كوكبًا، ثم رأى القمر، ثم رأى الشمس. وكلّها غابت. فقال: لا ",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "وقال إبراهيم: إنّي وجّهت وجهي للذي خلق السماوات والأرض.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "وسأل أباه وقومه: ما هذه التماثيل التي أنتم عليها مقيمون؟",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "فجعل الأصنام قطعًا صغيرة، إلا كبيرًا لهم.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "فقال قومه: حرّقوه! ولمّا أُلقي في النار قال إبراهيم: حسبنا الله ونعم ا",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "فقال الله للنار: كوني بردًا وسلامًا على إبراهيم!",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "ibrahim",
+        "cat": "prophet",
+        "text": "وكان إبراهيم يرفع قواعد البيت ومعه إسماعيل، وقالا: ربّنا تقبّل منّا.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "رأى يوسف في المنام أحد عشر كوكبًا، والشمس والقمر، ساجدين له. فحكى لأبي",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "وأخذه إخوته، واتّفقوا أن يضعوه في الجُبّ، أي البئر. فأوحى الله إليه أن",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "وقال أبوه: فصبرٌ جميل، والله المستعان.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "وجاءت قافلة، فأرسلوا من يستقي لهم، فأنزل دلوه وقال: يا بشرى، هذا غلام!",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "وفي مصر قال الذي اشتراه لزوجته: أكرمي مثواه. ومكّن الله ليوسف في الأرض",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "وقال الملك: ائتوني به أستخلصه لنفسي. فلمّا كلّمه قال: إنّك اليوم لدينا",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "ثمّ التقى يوسف بإخوته، فقال لهم: لا تثريب عليكم اليوم، يغفر الله لكم و",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yusuf",
+        "cat": "prophet",
+        "text": "وجاء أبواه إليه. وقال يوسف: هذا تأويل رؤياي من قبل، قد جعلها ربّي حقًّ",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "أوحى الله إلى أمّ موسى: أرضعيه، فإذا خفتِ عليه فألقيه في اليمّ، ولا تخ",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "وردّ الله موسى إلى أمّه، لتفرح ولا تحزن، ولتعلم أنّ وعد الله حقّ.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "ورأى موسى نارًا، فقال لأهله: امكثوا، إنّي رأيتُ نارًا، لعلّي آتيكم منه",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "فلمّا أتاها نودي: يا موسى! إنّي أنا ربّك.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "وقال الله لموسى: وأنا اخترتك، فاستمع لما يوحى. إنّني أنا الله لا إله إ",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "وأوحى الله إلى موسى: اضرب بعصاك البحر. فانفلق البحر، وكان كلّ جزء منه ",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "musa",
+        "cat": "prophet",
+        "text": "وأنجى الله موسى ومن معه أجمعين.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "ركب يونس السفينة المملوءة.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "ثمّ أجروا قرعة، فكان يونس من المغلوبين.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "فابتلعه الحوت.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "فنادى يونس في الظلمات: لا إله إلا أنت، سبحانك، إنّي كنت من الظالمين.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "فاستجاب الله له، ونجّاه من الغمّ، وكذلك ينجّي الله المؤمنين.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "ثمّ وضعه الله على أرض مكشوفة وهو مريض، وأنبت عليه شجرة من يقطين.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "yunus",
+        "cat": "prophet",
+        "text": "وأرسله الله إلى مئة ألف أو أكثر، فآمنوا.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "muhammad",
+        "cat": "prophet",
+        "text": "كان نبيّنا محمد ﷺ يخلو في غار حراء، ويتعبّد الله ليالي عدّة.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "muhammad",
+        "cat": "prophet",
+        "text": "وفي الغار جاءه المَلَك، فقال له: اقرأ.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "muhammad",
+        "cat": "prophet",
+        "text": "ثمّ نزل القرآن: اقرأ باسم ربّك الذي خلق.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "muhammad",
+        "cat": "prophet",
+        "text": "وفي الهجرة اختبأ النبيّ ﷺ مع صاحبه أبي بكر في غار.",
+        "st": 0
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "muhammad",
+        "cat": "prophet",
+        "text": "قال أبو بكر: لو نظر أحدهم تحت قدميه لرآنا. فقال النبيّ ﷺ: ما ظنّك يا أ",
+        "st": 1
+      },
+      {
+        "book": "PSTORIES",
+        "ch": "muhammad",
+        "cat": "prophet",
+        "text": "وقال لصاحبه: لا تحزن، إنّ الله معنا. فأنزل الله سكينته عليه.",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq1",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة الكوثر آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّ",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq2",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة الإخلاص آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كر",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq3",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة العصر آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّر",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq4",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة النصر آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّر",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq5",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة قريش آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّره",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq6",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة الفلق آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّر",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq7",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة الناس آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّر",
+        "st": 0
+      },
+      {
+        "book": "NOOR",
+        "ch": "nq8",
+        "cat": "noor-rule",
+        "text": "نقرأ آيات سورة الكافرون آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم ك",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 0,
+        "cat": "letter-word",
+        "text": "أَنَانَاس",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 1,
+        "cat": "letter-word",
+        "text": "بِطِّيخ",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 3,
+        "cat": "letter-word",
+        "text": "ثَلْج",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 4,
+        "cat": "letter-word",
+        "text": "جَزَر",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 5,
+        "cat": "letter-word",
+        "text": "حَقِيبَة",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 6,
+        "cat": "letter-word",
+        "text": "خَيْمَة",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 7,
+        "cat": "letter-word",
+        "text": "دَرَّاجَة",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 10,
+        "cat": "letter-word",
+        "text": "زَهْرَة",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 11,
+        "cat": "letter-word",
+        "text": "سَيَّارَة",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 13,
+        "cat": "letter-word",
+        "text": "صَارُوخ",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 14,
+        "cat": "letter-word",
+        "text": "ضَوْء",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 19,
+        "cat": "letter-word",
+        "text": "فَرَاوِلَة",
+        "st": 0
+      },
+      {
+        "book": "LWORDS",
+        "ch": 20,
+        "cat": "letter-word",
+        "text": "قَلَم",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "wake",
+        "cat": "adhkar-text",
+        "text": "الحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ ا",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "sleep",
+        "cat": "adhkar-text",
+        "text": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "eat1",
+        "cat": "adhkar-text",
+        "text": "بِسْمِ اللَّهِ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "eat2",
+        "cat": "adhkar-text",
+        "text": "الحَمْدُ لِلَّهِ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "wc",
+        "cat": "adhkar-text",
+        "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "mosque",
+        "cat": "adhkar-text",
+        "text": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "salam",
+        "cat": "adhkar-text",
+        "text": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "hear",
+        "cat": "adhkar-text",
+        "text": "يَرْحَمُكَ اللَّهُ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "parents",
+        "cat": "adhkar-text",
+        "text": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "anger",
+        "cat": "adhkar-text",
+        "text": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "rain",
+        "cat": "adhkar-text",
+        "text": "صَيِّبًا نَافِعًا",
+        "st": 0
+      },
+      {
+        "book": "ADHKAR",
+        "ch": "tasbih",
+        "cat": "adhkar-text",
+        "text": "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، و",
+        "st": 0
+      }
+    ],
+    "valley": {
+      "lines": 1907,
+      "covered": 1830,
+      "pct": 96,
+      "linesExcludingQuranRecitation": 1875,
+      "coveredExcludingQuran": 1830,
+      "pctExcludingQuran": 97.6,
+      "quranRecitationNote": "سطور voice=quran تُتلى من everyayah ولا تحتاج حزمة",
+      "viaPack": 1775,
+      "viaFile": 55,
+      "viaKid": 0,
+      "byVoice": {
+        "athar": {
+          "total": 436,
+          "covered": 436
+        },
+        "narrator": {
+          "total": 1286,
+          "covered": 1285
+        },
+        "sacred": {
+          "total": 152,
+          "covered": 108
+        },
+        "friend": {
+          "total": 1,
+          "covered": 1
+        },
+        "quran": {
+          "total": 32,
+          "covered": 0
+        }
+      },
+      "uncoveredByLessonPrefix": [
+        [
+          "rec.fat",
+          6
+        ],
+        [
+          "rec.feel",
+          5
+        ],
+        [
+          "rec.mao",
+          5
+        ],
+        [
+          "rec.qar",
+          5
+        ],
+        [
+          "rec.qur",
+          4
+        ],
+        [
+          "rec.zal",
+          4
+        ],
+        [
+          "rec.asr",
+          3
+        ],
+        [
+          "src.aad",
+          3
+        ],
+        [
+          "src.tw3",
+          3
+        ],
+        [
+          "src.mur",
+          2
+        ],
+        [
+          "src.qad",
+          2
+        ],
+        [
+          "src.mar",
+          2
+        ],
+        [
+          "src.kh",
+          2
+        ],
+        [
+          "src.nim",
+          2
+        ],
+        [
+          "src.ras",
+          2
+        ],
+        [
+          "src.kas",
+          2
+        ],
+        [
+          "src.tym",
+          2
+        ],
+        [
+          "src.rabbi",
+          1
+        ],
+        [
+          "src.wal",
+          1
+        ],
+        [
+          "src.aman",
+          1
+        ],
+        [
+          "rev.ark",
+          1
+        ],
+        [
+          "src.ruk",
+          1
+        ],
+        [
+          "src.haya",
+          1
+        ],
+        [
+          "src.mal",
+          1
+        ],
+        [
+          "src.tw",
+          1
+        ]
+      ],
+      "uncoveredCount": 77,
+      "uncoveredSample": [
+        "src.rabbi.proof [sacred]",
+        "rec.asr.1 [quran]",
+        "rec.asr.2 [quran]",
+        "rec.asr.3 [quran]",
+        "src.wal.ayah [sacred]",
+        "src.aman.ayah [sacred]",
+        "src.mur.ayah [sacred]",
+        "src.mur.ghayb [sacred]",
+        "rev.ark.4 [narrator]",
+        "src.qad.ayah [sacred]",
+        "rec.feel.1 [quran]",
+        "rec.feel.2 [quran]"
+      ]
+    }
+  },
+  "noor": {
+    "stages": 7,
+    "lessons": 105,
+    "perStage": [
+      {
+        "stage": "الحروف الهجائية",
+        "lessons": 14
+      },
+      {
+        "stage": "أشكال الحروف",
+        "lessons": 12
+      },
+      {
+        "stage": "الحركات مع الحروف",
+        "lessons": 28
+      },
+      {
+        "stage": "مخارج الحروف",
+        "lessons": 12
+      },
+      {
+        "stage": "حروف متشابهة",
+        "lessons": 11
+      },
+      {
+        "stage": "قراءة الكلمات القرآنية",
+        "lessons": 20
+      },
+      {
+        "stage": "أقرأ آياتٍ قصيرة",
+        "lessons": 8
+      }
+    ],
+    "byIdPrefix": {
+      "nl": 14,
+      "nf": 12,
+      "nh": 28,
+      "nm": 12,
+      "ns": 11,
+      "nq": 28
+    },
+    "itemsTotal": 524,
+    "quranAyahItems": 34
+  },
+  "valley": {
+    "lessons": 93,
+    "days": 58,
+    "weeks": 13,
+    "twoLessonDays": 35,
+    "oneLessonDays": 23,
+    "learningDaysPerWeek": 5,
+    "domains": {
+      "adab": 9,
+      "adhkar": 12,
+      "akhlaq": 14,
+      "aqeedah": 13,
+      "hadith": 8,
+      "ibadah": 14,
+      "misc": 7,
+      "quran": 7,
+      "seerah": 9
+    },
+    "beats": 799,
+    "beatTypes": {
+      "say": 279,
+      "source": 133,
+      "order": 21,
+      "tadabbur": 93,
+      "act": 93,
+      "pick": 82,
+      "narrate": 9,
+      "collect": 49,
+      "touch": 28,
+      "story": 5,
+      "recite": 7
+    },
+    "places": 5
+  },
+  "games": {
+    "inLessonPageTypes": [
+      {
+        "type": "plain",
+        "pages": 18
+      },
+      {
+        "type": "signs",
+        "pages": 1
+      },
+      {
+        "type": "pillars",
+        "pages": 1
+      },
+      {
+        "type": "qa",
+        "pages": 2654
+      },
+      {
+        "type": "story",
+        "pages": 317
+      }
+    ],
+    "standaloneTiles": [
+      {
+        "kind": "math-tile",
+        "fn": "nmPlayHome",
+        "key": "compare",
+        "title": "الأكبر والأصغر",
+        "line": 2848
+      },
+      {
+        "kind": "math-tile",
+        "fn": "nmPlayHome",
+        "key": "missing",
+        "title": "ماذا ينقص؟",
+        "line": 2849
+      },
+      {
+        "kind": "math-tile",
+        "fn": "nmPlayHome",
+        "key": "order",
+        "title": "رتّب الأرقام",
+        "line": 2850
+      },
+      {
+        "kind": "math-tile",
+        "fn": "nmPlayHome",
+        "key": "pattern",
+        "title": "أكمل النمط",
+        "line": 2851
+      },
+      {
+        "kind": "math-tile",
+        "fn": "nmPlayHome",
+        "key": "shapes",
+        "title": "أعرف الأشكال",
+        "line": 2852
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "clockLearn",
+        "title": "أتعلّم الساعة",
+        "line": 2908
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "moneyLearn",
+        "title": "أتعرّف على الريال",
+        "line": 2909
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "length",
+        "title": "أطول وأقصر",
+        "line": 2910
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "weight",
+        "title": "أثقل وأخفّ",
+        "line": 2911
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "more",
+        "title": "أكثر وأقلّ",
+        "line": 2912
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "clock",
+        "title": "كم الساعة؟",
+        "line": 2913
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "count",
+        "title": "كم ريالًا معي؟",
+        "line": 2914
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "buy",
+        "title": "هل يكفي مالي؟",
+        "line": 2915
+      },
+      {
+        "kind": "math-tile",
+        "fn": "mqHome",
+        "key": "change",
+        "title": "كم الباقي؟",
+        "line": 2916
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "quran",
+        "title": "اسألني في الآيات",
+        "line": 8848
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "quran",
+        "title": "مسابقة الدين: العقيدة والعبادات",
+        "line": 8849
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "quran",
+        "title": "مسابقة القرآن والعلم",
+        "line": 8850
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "letters",
+        "title": "القاعدة النورانية",
+        "line": 8852
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "letters",
+        "title": "اختبار الحروف",
+        "line": 8853
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "letters",
+        "title": "بالونات الحروف",
+        "line": 8854
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "letters",
+        "title": "أقرأ: المقاطع والكلمات",
+        "line": 8855
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "letters",
+        "title": "أتعرّف على الحروف",
+        "line": 8856
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "numbers",
+        "title": "مسابقة الجمع",
+        "line": 8858
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "numbers",
+        "title": "مسابقة الطرح",
+        "line": 8859
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "numbers",
+        "title": "مسابقة الضرب",
+        "line": 8860
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "numbers",
+        "title": "ألعاب الرياضيات",
+        "line": 8861
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "brain",
+        "title": "ذاكرة الفوانيس",
+        "line": 8863
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "brain",
+        "title": "أزواج متطابقة",
+        "line": 8864
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "brain",
+        "title": "من لا يشبه الباقي؟",
+        "line": 8865
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "brain",
+        "title": "طريق الكنز",
+        "line": 8866
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "كل القصص",
+        "line": 8869
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "الصحابة والصحابيات",
+        "line": 8870
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "الرحمة والأخلاق",
+        "line": 8871
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "العبادة والدعاء",
+        "line": 8872
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "قصص الأنبياء",
+        "line": 8873
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "اختبرني في كل شيء",
+        "line": 8875
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "العبادات",
+        "line": 8876
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "الأخلاق والقيم",
+        "line": 8877
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "الآداب والحقوق",
+        "line": 8878
+      },
+      {
+        "kind": "quiz-tile",
+        "tab": "stories",
+        "title": "السيرة",
+        "line": 8879
+      }
+    ],
+    "standaloneTileCount": 40,
+    "otherModes": [
+      "lettersTab: تعرّف/اختبار/بالونات/قراءة (٤)",
+      "numTab: أرقام/جمع/طرح/ضرب/قياس/ألعاب (٦)",
+      "adhkar quiz",
+      "ayq: اسألني في الآيات",
+      "review: راجع ما حفظت (SRS)"
+    ]
+  },
+  "letters": {
+    "letters": 28,
+    "words": 28,
+    "adhkar": 13,
+    "quizTabs": 6
+  },
+  "quran": {
+    "juzAmmaSurahs": 37,
+    "juzAmmaAyahs": 564,
+    "surahJsonFiles": 37,
+    "verseQuotesInBooksAndStories": 1738,
+    "uniqueVerseQuotes": 1560,
+    "uniqueVerseRefs": 1041
+  },
+  "hadith": {
+    "quotesWithSource": 884,
+    "uniqueWithSource": 823,
+    "byCollection": {
+      "مسلم": 190,
+      "البخاري": 482,
+      "أبو داود": 20,
+      "الترمذي": 33,
+      "النسائي": 1,
+      "ابن حبان": 2,
+      "ابن ماجه": 1
+    },
+    "withoutCollectionName": 105,
+    "withoutNumber": 380,
+    "hasanMentions": 10,
+    "sahihMentions": 40,
+    "mutafaqAlayh": 3,
+    "sampleNeedingCheck": [
+      {
+        "book": "qa",
+        "r": "سورة الذاريات: ٥٦"
+      },
+      {
+        "book": "kibar",
+        "r": "سورة آل عمران: ١٩"
+      },
+      {
+        "book": "salah",
+        "r": "سورة طه: ١٤"
+      },
+      {
+        "book": "akhlaq",
+        "r": "سورة البقرة: ٨٣"
+      },
+      {
+        "book": "arkan",
+        "r": "سورة البقرة: ١٩٧"
+      },
+      {
+        "book": "sira",
+        "r": "سورة الأحزاب: ٢١"
+      },
+      {
+        "book": "asma",
+        "r": "سورة الأعراف: ١٨٠"
+      },
+      {
+        "book": "wudu",
+        "r": "سورة التوبة: ١٠٨"
+      }
+    ],
+    "valleySacred": {
+      "lines": 149,
+      "byCollection": {
+        "الترمذي": 18,
+        "أبو داود": 15,
+        "ابن ماجه": 7,
+        "البخاري": 25,
+        "مسلم": 21,
+        "أحمد": 1,
+        "الحاكم": 1
+      },
+      "refsByWork": [
+        [
+          "متفق عليه",
+          9
+        ],
+        [
+          "رواه البخاري ومسلم",
+          8
+        ],
+        [
+          "رواه مسلم",
+          8
+        ],
+        [
+          "السيرة النبوية",
+          7
+        ],
+        [
+          "ص ٢١",
+          6
+        ],
+        [
+          "التفسير",
+          4
+        ],
+        [
+          "رواه الترمذي",
+          4
+        ],
+        [
+          "ص ١٢",
+          3
+        ],
+        [
+          "ص ٨١",
+          3
+        ],
+        [
+          "رواه أبو داود والترمذي",
+          2
+        ],
+        [
+          "النمل: ٦٥",
+          2
+        ],
+        [
+          "القمر: ٤٩",
+          2
+        ]
+      ],
+      "refsWithoutNumber": 9
+    }
+  }
+}

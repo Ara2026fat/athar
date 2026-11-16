@@ -21,7 +21,7 @@ var NEXT=qs.get("next")||"hifz",hr=new Date().getHours(),T=qs.get("t")||"day";
 var w=D.createElement("div");w.id="homeWorld";w.className="jr jr-"+T;
 var nx=by[NEXT]||DOORS[1],rest=DOORS.filter(function(d){return d!==nx});
 w.innerHTML='<div class="jr-bg" id="jrBg"></div><div class="jr-tint"></div>'+
-'<img class="jr-ath" src="next/home/img/hello.webp" alt=""><div class="jr-bub">هيا نكمل!</div>'+
+'<img class="jr-ath" src="next/home/img/idle.webp" alt=""><div class="jr-bub">هيا نكمل!</div>'+
 '<div class="jr-dock" id="jrDock"><button type="button" class="jr-go" data-k="'+nx.k+'"><img src="'+ic(nx)+'" alt=""><span><b>هيا نكمل</b><small>'+nx.l+'</small></span><i>◀</i></button>'+
 '<div class="jr-grid">'+rest.map(function(d){return '<button type="button" class="jr-it" data-k="'+d.k+'" style="--c:'+d.c+'"><img src="'+ic(d)+'" alt=""><span>'+d.l+'</span></button>'}).join('')+'</div></div>';
 view.insertBefore(w,view.firstChild);
@@ -35,12 +35,12 @@ function dockH(){var d=$("jrDock");if(d)w.style.setProperty("--dock",d.offsetHei
 setTimeout(dockH,50);addEventListener("resize",dockH);
 })()}
 /* صفحة التعريف (الباب الأول) ثم الدخول (الباب الثاني) */
-var land=D.createElement("div");land.className="jr-land";land.id="jrLand";
+var land=D.createElement("div");land.className="jr-land";land.id="jrLand";land.setAttribute("role","dialog");land.setAttribute("aria-modal","true");
 land.innerHTML='<div class="jl-ring"><img alt=""></div><h2></h2><p></p><button type="button" class="jl-in">ادخل</button><button type="button" class="jl-bk">رجوع</button>';
 D.body.appendChild(land);var cur=null,cb=null;
 function open(k,f){cur=by[k];cb=f||null;if(!cur)return;
 land.style.setProperty("--a",cur.a);land.style.setProperty("--b",cur.b);
-land.querySelector("img").src=ic(cur);land.querySelector("h2").textContent=cur.l;land.querySelector("p").textContent=cur.t;land.classList.add("on")}
+land.querySelector("img").src=ic(cur);land.querySelector("h2").textContent=cur.l;land.setAttribute("aria-label",cur.l);land.querySelector("p").textContent=cur.t;land.classList.add("on");try{land.querySelector(".jl-in").focus({preventScroll:true})}catch(e){}}
 function close(){land.classList.remove("on")}
 function enter(){var d=cur,f=cb;if(!d)return;close();
 if(f){f();return}

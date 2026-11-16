@@ -6,14 +6,21 @@ var DOOR={math:[76,628],quiz:[314,618],lib:[76,508],adhkar:[314,498],noor:[76,38
 var w,ath,path,len,stops={},busy=false,cur=0,AH=152;
 function dsc(y){return Math.max(.4,Math.min(1,.4+.6*((y-250)/452)))}
 function build(){
- var pts=W_.map(function(p){return[p[0],p[1]]}),d="M"+pts[0][0]+" "+pts[0][1];
+ var SEG=[],pts=W_.map(function(p){return[p[0],p[1]]}),d="M"+pts[0][0]+" "+pts[0][1];
  for(var i=0;i<pts.length-1;i++){var p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
-  d+=" C"+(p1[0]+(p2[0]-p0[0])/6)+" "+(p1[1]+(p2[1]-p0[1])/6)+" "+(p2[0]-(p3[0]-p1[0])/6)+" "+(p2[1]-(p3[1]-p1[1])/6)+" "+p2[0]+" "+p2[1]}
+  var c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6,c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6;
+  SEG.push([p1[0],p1[1],c1x,c1y,c2x,c2y,p2[0],p2[1]]);
+  d+=" C"+c1x+" "+c1y+" "+c2x+" "+c2y+" "+p2[0]+" "+p2[1]}
  var s=D.createElementNS(NS,"svg");s.id="wPath";s.setAttribute("viewBox","0 0 390 780");
  s.setAttribute("style","position:absolute;left:0;top:0;width:390px;height:780px;z-index:2;pointer-events:none");
  s.innerHTML='<path id="wPathP" d="'+d+'" fill="none" stroke="rgba(110,72,30,.40)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="rgba(255,232,170,.6)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="3" stroke-dasharray="2 11" stroke-linecap="round"/>';
  var wb=w.querySelector(".wb");wb.parentNode.insertBefore(s,wb);path=D.getElementById("wPathP");len=path.getTotalLength();
- W_.forEach(function(p){if(!p[2])return;var nm=Array.isArray(p[2])?p[2]:[p[2]];var best=0,bd=1e9;for(var l=0;l<=len;l+=2){var q=path.getPointAtLength(l),dd=Math.abs(q.x-p[0])+Math.abs(q.y-p[1]);if(dd<bd){bd=dd;best=l}}nm.forEach(function(n){stops[n]=best})})}
+ /* عيّنات من منحنيات بيزييه في JS (بدل مئات استدعاءات getPointAtLength البطيئة) */
+ var SP=[],acc=0,px=null,py=null;
+ SEG.forEach(function(g){for(var k=0;k<=40;k++){var t=k/40,u=1-t,x=u*u*u*g[0]+3*u*u*t*g[2]+3*u*t*t*g[4]+t*t*t*g[6],y=u*u*u*g[1]+3*u*u*t*g[3]+3*u*t*t*g[5]+t*t*t*g[7];
+  if(px!==null)acc+=Math.sqrt((x-px)*(x-px)+(y-py)*(y-py));px=x;py=y;SP.push([x,y,acc])}});
+ var kf=acc?len/acc:1;
+ W_.forEach(function(p){if(!p[2])return;var nm=Array.isArray(p[2])?p[2]:[p[2]];var best=0,bd=1e9;for(var i=0;i<SP.length;i++){var q=SP[i],dd=Math.abs(q[0]-p[0])+Math.abs(q[1]-p[1]);if(dd<bd){bd=dd;best=q[2]*kf}}nm.forEach(function(n){stops[n]=best})})}
 function place(){Object.keys(DOOR).forEach(function(k){var el=D.getElementById("wb-"+k);if(!el)return;var c=DOOR[k],ew=el.offsetWidth||112,eh=el.offsetHeight||90;el.style.left=Math.round(c[0]-ew/2)+"px";el.style.top=Math.round(c[1]-eh/2+OFF)+"px"})}
 function at(l){var q=path.getPointAtLength(Math.max(0,Math.min(len,l)));return q}
 function setA(l,dir){var q=at(l),sc=dsc(q.y);ath.classList.add("nm");ath.style.transform="translate("+(q.x-50)+"px,"+(q.y-AH)+"px) scale("+sc.toFixed(3)+")";
@@ -21,7 +28,7 @@ function setA(l,dir){var q=at(l),sc=dsc(q.y);ath.classList.add("nm");ath.style.t
 function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
 function wpose(cat,flip){var ps=ath.querySelectorAll(".p"),i,t="wk"+cat;for(i=0;i<ps.length;i++){var on=ps[i].getAttribute("data-p")===t;ps[i].classList.toggle("on",on);ps[i].classList.toggle("fl",on&&flip)}}
 var vcat=null;
-function walk(k,done){var to=stops[k],from=cur,dist=Math.abs(to-from);if(dist<4){done();return}
+function walk(k,done){var to=stops[k],from=cur,dist=Math.abs(to-from);if(dist<4){setTimeout(done,0);return}  /* click() المتداخل داخل معالج النقر نفسه يُتجاهَل: نؤجّله لنقرة جديدة */
  var prev=ath.querySelector(".p.on"),prevK=prev&&prev.getAttribute("data-p");vcat=null;
  var dur=Math.min(2.6,Math.max(.9,dist/170))*1000,t0=performance.now();busy=true;ath.classList.add("walk");
  var HA=window.HomeAudio;try{if(HA){HA.say(k);HA.steps(dur)}}catch(e){}

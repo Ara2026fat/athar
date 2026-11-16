@@ -28,11 +28,12 @@
   } else {
     cfg = {
       overlay: function () {
+        var j = D.getElementById("jrLand"); if (j && j.classList.contains("on")) return j;
         var s = D.getElementById("sheet"); if (s && s.classList.contains("show")) return s;
         var r = D.getElementById("rwSheet"); if (r && r.classList.contains("on")) return r;
         return null;
       },
-      closeOverlay: function (e) { var b = e.querySelector("#sheetX,.rw-x"); if (b) b.click(); else e.classList.remove("show", "on"); },
+      closeOverlay: function (e) { var b = e.querySelector("#sheetX,.rw-x,.jl-bk"); if (b) b.click(); else e.classList.remove("show", "on"); },
       inner: function () { var a = $(".view.active"); return !!(a && a.id !== "view-home"); },
       back: function () {
         var a = $(".view.active"); if (!a) return;
@@ -76,6 +77,7 @@
     } else {
       [].forEach.call(D.querySelectorAll(".view"), function (v) { mo.observe(v, cls); });
       var s = D.getElementById("sheet"); if (s) mo.observe(s, cls);
+      var jl = D.getElementById("jrLand"); if (jl) mo.observe(jl, cls);
       /* نافذة المقتنيات تُنشأ عند أول فتح */
       new MutationObserver(function () {
         var r = D.getElementById("rwSheet");

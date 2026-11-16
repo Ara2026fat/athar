@@ -69,11 +69,11 @@
 .ath.lk .ath-b{animation:wlook 2.7s ease-in-out}
 .ath-hint{position:absolute;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,236,170,.9);opacity:0;pointer-events:none}
 .w-first .ath-hint{animation:whint 2.2s ease-out infinite}
-#wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,80%),rgba(8,10,35,0) 0,rgba(8,10,35,.35) 70px,rgba(8,10,35,.9) 230px)}
+#wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,80%),rgba(255,236,150,.5) 0,rgba(255,246,214,.38) 90px,rgba(255,252,238,.46) 260px)}
 .w-first #wDusk{pointer-events:auto}
 #wDusk.off{opacity:0}
 #homeWorld:not(.w-first) #wDusk{display:none}
-.w-first .wb:not(.on){opacity:.15;pointer-events:none}
+.w-first .wb:not(.on){opacity:.4;pointer-events:none}
 .wb{transition:opacity .6s}
 .wb.on.flash{z-index:4}
 #wProf{position:absolute;left:8px;right:8px;top:6px;z-index:30}
@@ -179,7 +179,7 @@ body.hw-home .leaf{display:none}
 #wLanterns .al-ln.fri .al-halo{opacity:.95;transform:scale(1.25)}
 .wb .jp{transform-box:fill-box;transform-origin:50% 100%;animation:wjp 24s ease-in-out infinite}.s0 .jp{animation-delay:-6s}.s1 .jp{animation-delay:-12s}.s2 .jp{animation-delay:-18s}
 @keyframes wjp{0%,12%,100%{transform:none}3%{transform:translateY(-15px) scale(.95,1.07)}7%{transform:scale(1.07,.9)}}
-.wg{opacity:0;pointer-events:none;animation:wwin 3s ease-in-out infinite alternate}.w-night .wg{display:none}
+ellipse.wg{opacity:0;pointer-events:none;animation:wwin 3s ease-in-out infinite alternate}.w-night ellipse.wg{display:none}
 @keyframes wwin{to{opacity:.6}}
 @keyframes wsq{30%{transform:scale(1.28,.8)}60%{transform:scale(.9,1.14)}80%{transform:scale(1.05,.97)}}
 .w-sp{position:absolute;width:9px;height:9px;margin:-4px 0 0 -4px;border-radius:50%;background:#fff6c8;box-shadow:0 0 7px 2px rgba(255,214,110,.85);z-index:8;pointer-events:none;animation:wsp .65s ease-out forwards}
@@ -281,7 +281,7 @@ body.hw-home .leaf{display:none}
 #wLanterns .al-ln:not(.today){display:none}
 #wLanterns .al-ln.today .al-tx{font-size:16px}
 #wLanterns .al-ln.today .al-dt{font-size:13px;font-weight:700}
-#homeWorld .w-snd{left:14px;right:auto;top:96px}
+#homeWorld .w-snd{left:12px;right:auto;top:100px;width:58px;height:58px;font-size:24px}
 /* خيط يعلّق فانوس اليوم من أعلى الشاشة + حلقة صغيرة، حتى لا يبدو معلّقًا في الهواء */
 #wLanterns::before{content:"";position:absolute;left:352px;top:-6px;width:3px;height:70px;border-radius:2px;background:linear-gradient(#6b4a2b,#a47a4a);box-shadow:0 0 0 1px #0002;z-index:-1}
 #wLanterns::after{content:"";position:absolute;left:346px;top:-10px;width:15px;height:15px;border-radius:50%;background:radial-gradient(#ffd75e,#c8962b);border:2px solid #7a5420;z-index:-1}
@@ -294,3 +294,9 @@ body.hw-home .leaf{display:none}
 /* r16: بلا مستطيل أبيض — نص أبيض بحدّ داكن، وإخفاء الشارات الصغيرة فوق الأبواب */
 #homeWorld .wb .lb,.w-night .wb .lb{background:none!important;border:0!important;box-shadow:none!important;padding:0 2px!important;color:#fff!important;font-size:16px!important;font-weight:800;max-width:170px!important;margin-top:-6px;-webkit-text-stroke:4px #2b2140;paint-order:stroke fill;text-shadow:0 2px 3px rgba(20,10,40,.55)}
 #homeWorld .wb:not(#wb-valley) .bd{display:none!important}
+@media (max-width:340px){#app.hw-on .brand{padding:3px 9px 3px 5px}#app.hw-on .brand-text{font-size:21px}}
+
+/* tablet/wide: keep the artwork at its designed width, blur-fill the sides */
+#homeWorld.w-wide .w-map::before{content:"";position:absolute;inset:-6%;background:var(--mapimg) center bottom/cover no-repeat;filter:blur(14px) saturate(.9) brightness(.94)}
+#homeWorld.w-wide .w-map .mi{left:50%;margin-left:calc(var(--mw)*-.525);width:calc(var(--mw)*1.05);animation:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%),linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 14%),linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);-webkit-mask-composite:source-in;mask-composite:intersect}
+#homeWorld #wb-hifz .bd.rv:not([hidden]){display:block!important}

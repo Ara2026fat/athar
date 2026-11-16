@@ -32,6 +32,9 @@
       }
       head.appendChild(t);
     });
+    /* one level-1 heading per screen: sc-title is it, view h1s (rendered later by each screen) become level 2 */
+    var dem = function(){ document.querySelectorAll(".view:has(.sc-title) h1:not([aria-level])").forEach(function(h){ h.setAttribute("aria-level","2"); }); }, dq = 0;
+    dem(); try{ new MutationObserver(function(){ if(dq) return; dq = requestAnimationFrame(function(){ dq = 0; dem(); }); }).observe(document.body,{childList:true,subtree:true}); }catch(e){}
     var dt = $("doorTitle"), dv = document.querySelector("#view-door .sc-tt");
     if(dt && dv){
       var sy = function(){ dv.textContent = dt.textContent; };
@@ -44,6 +47,7 @@
     var dots = view.querySelectorAll(".dots-prog i");
     if(dots.length > 1 && (id === "view-letters" || id === "view-numbers" || id === "view-adhkar")){
       var on = view.querySelectorAll(".dots-prog i.on").length, cur = view.querySelectorAll(".dots-prog i.cur").length ? 0 : 0;
+      if(!on) return null;
       return {p: on / dots.length, label: on + " / " + dots.length};
     }
     var P = pid();
@@ -141,7 +145,7 @@
     if(root.nodeType !== 1) return;
     renameAgain(root);
     var t = root.textContent || "";
-    if(t.indexOf("أحسنت!") >= 0 && t.indexOf("⭐") >= 0) celebrate();
+    if((t.indexOf("أحسنت!") >= 0 || t.indexOf("ما شاء الله!") >= 0) && t.indexOf("⭐") >= 0) celebrate();
   }
 
   /* ---------- إتاحة: حقول بلا تسمية ---------- */
@@ -164,7 +168,7 @@
     book:'<path d="M3 6c3-1.3 6-1 9 1 3-2 6-2.3 9-1v13c-3-1.3-6-1-9 1-3-2-6-2.3-9-1z" fill="#FFF6D8"/><path d="M12 7v13"/>',
     ques:'<circle cx="12" cy="12" r="9" fill="#FFC93C"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 1.8-2.5 2-2.5 4M12 16.6v.4"/>',
     bulb:'<path d="M12 3a6 6 0 00-3.5 10.9V17h7v-3.1A6 6 0 0012 3z" fill="#FFE27A"/><path d="M9.5 20h5M10.5 22h3"/>',
-    abc:'<rect x="3" y="4" width="18" height="16" rx="4" fill="#8FD3FF"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="800" fill="#3a2b4d">أب</text>',
+    abc:'<rect x="1.5" y="3.5" width="21" height="17" rx="4.5" fill="#8FD3FF"/><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="800" fill="#3a2b4d">أب</text>',
     pen:'<path d="M4 20l1-4L16 5l3 3L8 19z" fill="#FFB35C"/><path d="M14 7l3 3"/>',
     balloon:'<ellipse cx="12" cy="10" rx="6" ry="7.5" fill="#FF8FB1"/><path d="M12 17.5l-1.2 2.3h2.4zM12 20c-1 1.4 1 1.8 0 3"/>',
     plus:'<circle cx="12" cy="12" r="9" fill="#7BE0A0"/><path d="M12 7.5v9M7.5 12h9"/>',
@@ -194,7 +198,7 @@
     cart:'<path d="M3 5h3l2 10h10l2-7H7" fill="#8FD3FF"/><circle cx="9.5" cy="19" r="1.6" fill="#3a2b4d"/><circle cx="17" cy="19" r="1.6" fill="#3a2b4d"/>',
     ruler:'<rect x="2.5" y="8" width="19" height="8" rx="2" fill="#FFE27A"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/>',
     scale:'<path d="M12 4v15M6 20h12M4 8h16"/><path d="M4 8l-2 6h4zM20 8l-2 6h4z" fill="#FFC93C"/>',
-    n123:'<rect x="3" y="5" width="18" height="14" rx="4" fill="#B79BFF"/><text x="12" y="15.8" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">١٢٣</text>',
+    n123:'<rect x="1.5" y="4" width="21" height="16" rx="4.5" fill="#B79BFF"/><text x="12" y="16.3" text-anchor="middle" font-size="12.5" font-weight="800" fill="#fff">١٢٣</text>',
     repeat:'<path d="M5 11V9a3 3 0 013-3h9l-2-2M19 13v2a3 3 0 01-3 3H7l2 2"/>',
     bars:'<path d="M5 20v-5M10 20v-9M15 20V8M20 20V4" stroke="#FFB35C" stroke-width="3.2"/>',
     diamond:'<path d="M12 3l8 9-8 9-8-9z" fill="#8FD3FF"/>',
@@ -217,7 +221,7 @@
   }
   function swapNode(tn){
     var t = tn.nodeValue; if(!t || !EMRE.test(t)) return;
-    var par = tn.parentNode; if(!par || par.closest && par.closest("#view-letters,.lt-em,.nm-stars,script,style,textarea")) return;
+    var par = tn.parentNode; if(!par || par.closest && par.closest("#view-letters,.lt-em,.nm-stars,.br-opt,.br-card,.br-cell,script,style,textarea")) return;
     var inIcon = par.closest && par.closest(".choice-icon,.lib-em,.adk-e,.adk-hero-e");
     var out = [], buf = "", changed = false;
     Array.from(t).forEach(function(c){
@@ -269,8 +273,9 @@
       var h = hs[i], tiles = [];
       for(var j = 0; j < h.children.length; j++) if(h.children[j].classList.contains("choice-tile")) tiles.push(h.children[j]);
       var n = tiles.length;
-      h.classList.toggle("sc-hub", n > 0); h.classList.toggle("g2", n >= 4); h.classList.toggle("g1", n > 0 && n < 4);
-      tiles.forEach(function(t, k){ t.classList.toggle("sc-wide", n >= 4 && n % 2 === 1 && k === n - 1); badge(t); lamp(t); });
+      var two = n >= 4 || (n >= 2 && (h.id === "doorBody" || h.id === "quizBody"));
+      h.classList.toggle("sc-hub", n > 0); h.classList.toggle("g2", two); h.classList.toggle("g1", n > 0 && !two);
+      tiles.forEach(function(t, k){ t.classList.toggle("sc-wide", two && n % 2 === 1 && k === n - 1); badge(t); lamp(t); });
     }
   }
   /* ---------- (1) تلميح الرمز الافتراضي داخل لوحة ولي الأمر فقط ---------- */
@@ -278,7 +283,7 @@
     var inp = $("newPinInput"); if(!inp || document.getElementById("scPinHint")) return;
     var st = jget("athar_quran_settings_v1"), def = !st || !st.pin || st.pin === "0000";
     var p = document.createElement("p"); p.id = "scPinHint"; p.className = "sc-pinhint";
-    p.textContent = def ? "الرمز الحالي هو الرمز الافتراضي «0000». غيّره الآن ليبقى سرًّا." : "تم تغيير الرمز السري. اكتب رمزًا جديدًا من 4 أرقام لتغييره.";
+    p.textContent = def ? "الرمز الحالي هو الرمز الافتراضي «٠٠٠٠». غيّره الآن ليبقى سرًّا." : "تم تغيير الرمز السري. اكتب رمزًا جديدًا من ٤ أرقام لتغييره.";
     var row = inp.parentNode; row.parentNode.insertBefore(p, row);
   }
 
@@ -330,5 +335,88 @@
       setTimeout(function(){ el.classList.remove("sc-pop"); }, 460);
     }, true);
   }
+
+  /* ---------- جولة 2: أيقونة مع كل تبويب + ترقيم صفحات يمنع التمرير ---------- */
+  var SEGIC = {"أعدّ":"balloon","أجمع":"plus","أطرح":"minus","أضرب":"times","قياس":"ruler","ألعاب":"dice","قرآن":"book","حروف":"abc","أرقام":"bars","قصص":"bubble","ذكاء":"bulb","ديني":"mosque","أذكاري":"beads","متى أقول؟":"ques"};
+  function segIcons(){
+    var bs = document.querySelectorAll("#view-numbers .seg-btn,#view-quiz .seg-btn,#view-adhkar .seg-btn");
+    for(var i = 0; i < bs.length; i++){
+      var b = bs[i]; if(b.querySelector(".seg-ic")) continue;
+      var k = SEGIC[b.textContent.trim()]; if(!k || !IC[k]) continue;
+      var s = document.createElement("span"); s.className = "seg-ic"; s.setAttribute("aria-hidden","true");
+      s.innerHTML = '<svg class="sc-ic" viewBox="0 0 24 24" fill="none">' + IC[k] + '</svg>';
+      var t = document.createElement("span"); t.className = "seg-tx"; t.textContent = b.textContent;
+      b.textContent = ""; b.appendChild(s); b.appendChild(t);
+    }
+  }
+  var FP = { noorBody:".us-parent,.choice-tile,.us-text", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile", ayqBody:".ayq-grid", lettersBody:".letter-grid" };
+  /* r4: ترقيم تلقائي لأي جسم شاشة (…Body) يتجاوز الارتفاع؛ FP يبقى لضبط بوابة الشاشات المعروفة، والبقية تأخذ البوابة العامة */
+  var FP_DEF = ".choice-tile,.letter-grid,.sc-hub,.lib-secs,.adk-grid,.ayq-grid,.nm-chips,.noor-it";
+  function fpBodies(){ var o = {}, a = document.querySelectorAll(".view [id$='Body']"); for(var i = 0; i < a.length; i++) if(a[i].parentNode && a[i].parentNode.classList.contains("view") || a[i].closest(".view")) o[a[i].id] = 1; Object.keys(FP).forEach(function(k){ o[k] = 1; }); return o; }
+  function fpIsGrid(c){ return c.children.length > 1 && (/(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips|ayq-grid)(\s|$)/.test(c.className) || (c.classList.contains("lq-opts") && !!c.querySelector(".noor-it"))); }
+  function fpLayout(b){
+    if(b.__fpBusy) return; b.__fpBusy = true;
+    try{
+      var old = b.querySelector(":scope>.fp-bar"); if(old) old.remove();
+      var all = b.querySelectorAll(".fp-h"); for(var i = 0; i < all.length; i++) all[i].classList.remove("fp-h");
+      var v = b.closest(".view"); if(!v || !v.classList.contains("active") || !b.querySelector(FP[b.id] || FP_DEF)) return;
+      var items = [], kids = b.children;
+      for(var k = 0; k < kids.length; k++){ var c = kids[k]; if(c.classList.contains("fp-bar")) continue;
+        if(fpIsGrid(c)){ for(var m = 0; m < c.children.length; m++) items.push({el:c.children[m], g:c}); } else items.push({el:c}); }
+      if(!items.length) return;
+      var avail = window.innerHeight - b.getBoundingClientRect().top - 36;
+      items.forEach(function(o){ o.t = o.el.offsetTop; o.b = o.t + o.el.offsetHeight; });
+      var last = items[items.length - 1];
+      if(last.b - items[0].t <= avail) return;
+      avail -= 70 + (b.id === "lettersBody" ? 14 : 0);
+      var pages = [], s0 = 0;
+      while(s0 < items.length){
+        var j = s0 + 1; while(j < items.length && items[j].b - items[s0].t <= avail) j++;
+        if(j < items.length){
+          while(j > s0 + 1 && items[j].t === items[j - 1].t) j--;
+          while(j > s0 + 1 && /adk-gh|lq-q|intro/.test(items[j - 1].el.className)) j--;
+        }
+        pages.push([s0, j]); s0 = j;
+      }
+      if(pages.length < 2) return;
+      var cur = Math.min(b.__fpPg || 0, pages.length - 1);
+      var bar = document.createElement("div"); bar.className = "fp-bar"; bar.setAttribute("dir","rtl");
+      var CH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var prev = document.createElement("button"), next = document.createElement("button"), dots = document.createElement("span");
+      prev.className = "fp-nav fp-prev"; next.className = "fp-nav fp-next"; dots.className = "fp-dots";
+      prev.setAttribute("aria-label","الصفحة السابقة"); next.setAttribute("aria-label","الصفحة التالية"); prev.innerHTML = CH; next.innerHTML = CH;
+      bar.appendChild(prev); bar.appendChild(dots); bar.appendChild(next);
+      function show(n){
+        b.__fpPg = cur = n;
+        items.forEach(function(o, i){ var on = i >= pages[n][0] && i < pages[n][1]; o.el.classList.toggle("fp-h", !on); });
+        var gs = []; items.forEach(function(o){ if(o.g && gs.indexOf(o.g) < 0) gs.push(o.g); });
+        gs.forEach(function(g){ g.classList.toggle("fp-h", !g.querySelector(":scope>:not(.fp-h)")); });
+        dots.innerHTML = ""; pages.forEach(function(_, i){ var d = document.createElement("i"); if(i === n) d.className = "on"; dots.appendChild(d); });
+        prev.disabled = n === 0; next.disabled = n === pages.length - 1;
+      }
+      prev.addEventListener("click", function(){ if(cur > 0) show(cur - 1); });
+      next.addEventListener("click", function(){ if(cur < pages.length - 1) show(cur + 1); });
+      b.appendChild(bar); show(cur);
+    } finally {
+      if(b.__fpMo) b.__fpMo.takeRecords(); b.__fpBusy = false;
+    }
+  }
+  function fpInit(){
+    Object.keys(fpBodies()).forEach(function(id){
+      var b = document.getElementById(id); if(!b) return;
+      var tm = 0, run = function(){ clearTimeout(tm); tm = setTimeout(function(){ fpLayout(b); setTimeout(function(){ fpLayout(b); }, 450); }, 90); };
+      b.__fpRun = run;
+      try{ b.__fpMo = new MutationObserver(function(){ if(!b.__fpBusy){ b.__fpPg = 0; run(); } }); b.__fpMo.observe(b, {childList:true}); }catch(e){}
+      var v = b.closest(".view");
+      if(v) try{ new MutationObserver(run).observe(v, {attributes:true, attributeFilter:["class"]}); }catch(e){}
+    });
+    window.addEventListener("resize", function(){ Object.keys(fpBodies()).forEach(function(id){ var b = document.getElementById(id); if(b && b.__fpRun) b.__fpRun(); }); });
+    ["view-numbers","view-quiz","view-adhkar"].forEach(function(id){
+      var v = document.getElementById(id); if(!v) return;
+      try{ new MutationObserver(segIcons).observe(v, {childList:true, subtree:true}); }catch(e){}
+    });
+    segIcons();
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", fpInit); else fpInit();
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

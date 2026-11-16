@@ -1,6 +1,7 @@
 {
   "name": "أثر",
   "short_name": "أثر",
+  "id": "./index.html",
   "description": "تطبيق تحفيظ جزء عمّ للأطفال — استماع، ترديد، وحفظ.",
   "start_url": "./index.html",
   "scope": "./",
@@ -9,7 +10,7 @@
   "lang": "ar",
   "dir": "rtl",
   "background_color": "#F3F7EF",
-  "theme_color": "#0e2040",
+  "theme_color": "#28522F",
   "icons": [
     {
       "src": "icons-athar/icon-192.png",
@@ -29,5 +30,9 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "categories": [
+    "education",
+    "kids"
   ]
 }

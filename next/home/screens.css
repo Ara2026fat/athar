@@ -99,8 +99,8 @@ html.sc-sub .choice-tile::before{opacity:.3}
 html.sc-sub .sc-w .ct1,html.sc-sub .sc-w .ct2{text-shadow:0 1px 0 rgba(0,0,0,.35)}
 /* أزرار ثابتة اللون */
 html.sc-sub :is(.view,#view-numbers) .seg-btn.active{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.1)),#1b7a3a;text-shadow:none}
-html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1f5fd8}
-html.sc-sub .pill-btn,html.sc-sub .glass-card .pill-btn{background:linear-gradient(180deg,#a8690f,#8a5a12);color:#fff}
+html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1a4fc0}
+html.sc-sub .pill-btn,html.sc-sub .glass-card .pill-btn{background:linear-gradient(180deg,#FFD75E,#F2B632);color:#3a2c00;text-shadow:none;box-shadow:0 5px 0 #c98f12,inset 0 2px 0 rgba(255,255,255,.5)}
 html.sc-sub .nm-chip{color:#3f3a55}
 html.sc-sub .nm-chip.on{background:#5b2fc4;color:#fff}
 html.sc-sub .muted,html.sc-sub .pin-hint,html.sc-sub small{color:#4f4a66}
@@ -202,3 +202,124 @@ html.sc-sub :is(.locked,.lock){opacity:1;filter:saturate(.8) brightness(.96)}
 html.sc-sub .adk-hero,html.sc-sub .adk-hero *{color:#fff}
 html.sc-sub .adk-hero{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.1)),#0b6b63}
 html.sc-sub .strip-pill:not(.active){opacity:1;filter:saturate(.8)}
+/* ===== جولة 2: تبويبات بأيقونة وخط ١٦+، وترقيم صفحات بدل التمرير ===== */
+html.sc-sub :is(#noorBody,#libBody,#adhkarBody,#numbersBody,#quizBody){position:relative}
+.fp-h{display:none!important}
+.fp-bar{display:flex;align-items:center;justify-content:center;gap:18px;margin:10px 0 0;min-height:56px}
+.fp-nav{width:56px;height:56px;border-radius:50%;border:2.5px solid rgba(58,43,77,.5);background:linear-gradient(180deg,#fff,#ffe7a8);color:#3a2b4d;display:grid;place-items:center;padding:0;box-shadow:0 4px 0 rgba(58,43,77,.35);cursor:pointer}
+.fp-nav svg{width:28px;height:28px}
+.fp-prev svg{transform:scaleX(-1)}
+.fp-nav:disabled{opacity:.35;box-shadow:none}
+.fp-nav:not(:disabled):active{transform:translateY(3px);box-shadow:0 1px 0 rgba(58,43,77,.35)}
+.fp-dots{display:flex;gap:10px;align-items:center}
+.fp-dots i{width:12px;height:12px;border-radius:50%;background:rgba(58,43,77,.28)}
+.fp-dots i.on{width:26px;border-radius:8px;background:#1b7a3a}
+/* تبويب: أيقونة فوق النص، خط ١٦ على الأقل */
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg{flex-wrap:nowrap;gap:4px;padding:5px}
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:16px;font-weight:800;min-height:62px;padding:4px 2px;min-width:0;flex:1 1 0;line-height:1.1}
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg-btn .seg-ic{width:26px;height:26px;display:block;flex:none}
+html.sc-sub :is(#view-numbers,#view-quiz,#view-adhkar) .seg-btn .seg-tx{font-size:16px;white-space:nowrap}
+html.sc-sub #view-adhkar .seg-btn{flex-direction:row;gap:8px;min-height:56px}
+html.sc-sub #view-adhkar .seg-btn .seg-ic{width:24px;height:24px}
+/* ضغط الشاشات الخمس */
+html.sc-sub #view-quiz .door-intro{display:none}
+html.sc-sub #view-quiz .sc-hub{gap:10px}
+html.sc-sub #view-quiz .sc-hub.g1>.choice-tile{min-height:104px;padding:10px 16px;gap:12px}
+html.sc-sub #view-quiz .sc-hub.g1 .choice-icon{width:68px;height:68px;border-radius:22px}
+html.sc-sub #view-quiz .sc-hub.g1 .ct1{font-size:21px;line-height:1.2}
+html.sc-sub #view-quiz .sc-hub.g1 .ct2{font-size:14px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+html.sc-sub #view-quiz .sc-hub.g2>.choice-tile{min-height:132px}
+html.sc-sub #view-quiz .sc-hub.g2 .choice-icon{width:56px;height:56px}
+html.sc-sub :is(#view-noor,#view-library) .sc-hub.g2>.choice-tile,html.sc-sub #noorBody>.choice-tile{min-height:112px;padding:8px 8px;gap:4px}
+html.sc-sub :is(#view-noor,#view-library) .sc-hub.g2 .choice-icon,html.sc-sub #noorBody>.choice-tile .choice-icon{width:52px;height:52px;border-radius:18px}
+html.sc-sub #libBody .lib-secs .ct2{-webkit-line-clamp:1}
+html.sc-sub #noorBody{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+html.sc-sub #noorBody>*{margin:0!important;grid-column:1/-1}
+html.sc-sub #noorBody>.choice-tile{grid-column:auto;flex-direction:column;justify-content:center;text-align:center;width:100%}
+html.sc-sub #noorBody>.choice-tile.sc-wide{grid-column:1/-1}
+html.sc-sub #noorBody>.choice-tile .choice-txt{flex:none;width:100%}
+html.sc-sub #noorBody>.choice-tile .ct1{font-size:18px;line-height:1.2}
+html.sc-sub #noorBody>.choice-tile .ct2{font-size:13px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+html.sc-sub #noorBody>.choice-tile .choice-chev{display:none}
+html.sc-sub #view-adhkar .adk-tile{min-height:108px}
+html.sc-sub #view-numbers .intro p{display:none}
+html.sc-sub #view-numbers .intro{margin:0 0 6px}
+html.sc-sub #view-numbers .letter-grid .letter-tile{min-height:78px}
+@media (max-height:700px){
+  html.sc-sub :is(#view-noor,#view-library) .sc-hub.g2>.choice-tile,html.sc-sub #noorBody>.choice-tile{min-height:100px}
+  html.sc-sub #view-adhkar .adk-tile{min-height:96px}
+  html.sc-sub #view-numbers .letter-grid .letter-tile{min-height:68px}
+}
+/* تاريخ قنديل اليوم فوق صورة المسجد: حدّ أوضح وخط أثقل */
+#wLanterns .al-ln.today .al-tx{font-weight:900!important;stroke-width:5.5px!important;filter:drop-shadow(0 0 3px rgba(255,255,255,.95))}
+#wLanterns .al-ln.today .al-dt{font-size:13px!important;font-weight:900!important;fill:#2a1608!important}
+#wLanterns [data-time=dusk] .al-ln.today .al-tx,#wLanterns [data-time=night] .al-ln.today .al-tx{filter:drop-shadow(0 0 3px rgba(24,16,52,.95))}
+#wLanterns [data-time=dusk] .al-ln.today .al-dt,#wLanterns [data-time=night] .al-ln.today .al-dt{fill:#fff6e0!important}
+/* حقوق © في الرئيسية: شريط صغير مستقل بعيدًا عن قدمي أثر */
+#app.hw-on .sig{left:50%!important;right:auto!important;transform:translateX(-50%);width:max-content;max-width:92%;bottom:0!important;padding:1px 12px 2px!important;border-radius:10px 10px 0 0;background:rgba(255,255,255,.55);color:#4a4560;opacity:1!important;font-size:10px}
+#app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz,#view-ayq,#view-brain,#view-prophets,#view-door,#view-letters).active) footer.sig{display:none}
+#app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz,#view-ayq,#view-brain,#view-prophets,#view-door,#view-letters).active){padding-bottom:0}
+html.sc-sub #view-adhkar .adk-tile{min-height:0;padding:8px 6px;gap:2px}
+html.sc-sub #view-adhkar .adk-e:has(.sc-ie){width:44px;height:44px}
+html.sc-sub #view-adhkar .adk-hero{padding-top:8px;padding-bottom:8px}
+@media (max-height:700px){
+  html.sc-sub #view-adhkar .dk-scene{height:104px;min-height:0;margin:2px 0}
+  html.sc-sub #view-adhkar .dk-scene>*{max-height:104px}
+  html.sc-sub #view-adhkar .adk-opts{gap:6px}
+  html.sc-sub #view-adhkar .adk-opt{min-height:52px;padding:6px 12px}
+  html.sc-sub #view-adhkar .lq-say{min-height:44px;padding:6px 16px}
+}
+.rw-live{top:0;left:0}
+/* r3: الشاشات الفرعية بلا تذييل ©، فلا حاجة لحشوة سفلية (تمرير زائد 20-26px على 360×640) */
+html.sc-sub #app:has(:is(#view-noor,#view-numbers,#view-adhkar,#view-quiz,#view-library).active){padding-bottom:0}
+/* r3: قائمة دروس المرحلة: بطاقات مدمجة (صفان × عدّة صفوف) لتقليل الصفحات */
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls{min-height:62px;padding:6px 8px;flex-direction:row;gap:8px;text-align:right;justify-content:flex-start;align-items:center}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .choice-icon{width:40px;height:40px;border-radius:14px;flex:none;font-size:18px!important}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .choice-txt{flex:1;min-width:0;width:auto}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .ct1{font-size:15px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .ct2{font-size:12px}
+/* r3: رئيسية المكتبة: بطاقات أقسام مدمجة (ستّ بطاقات في الصفحة بدل أربع) */
+html.sc-sub #view-library:has(.lib-secs) .intro p{display:none}
+html.sc-sub #view-library:has(.lib-secs) .intro{margin:0 0 4px}
+html.sc-sub #view-library:has(.lib-secs) .intro h1{font-size:20px;margin:0}
+html.sc-sub #libBody .lib-secs.sc-hub.g2{gap:8px}
+html.sc-sub #view-library .lib-secs.sc-hub.g2>.choice-tile{min-height:0;padding:6px 6px;gap:2px}
+html.sc-sub #view-library .lib-secs.sc-hub.g2 .choice-icon{width:40px;height:40px;border-radius:14px}
+html.sc-sub #view-library .lib-secs.sc-hub.g2 .choice-letter{font-size:24px!important}
+html.sc-sub #view-library .lib-secs.sc-hub.g2 .ct1{font-size:17px}
+html.sc-sub #view-library .lib-secs.sc-hub.g2 .ct2{font-size:12px}
+html.sc-sub #view-library .lib-secs.sc-hub.g2 .sc-bd{margin-top:2px;padding:1px 10px;font-size:12px}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st{min-height:72px}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .ct2{display:none}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .sc-bd{margin-top:2px;padding:0 8px;font-size:12px;gap:4px}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .sc-bd i{display:none}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .sc-bd{white-space:nowrap}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .sc-lamp{transform:scale(.75);transform-origin:top left}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .choice-icon{font-size:24px!important}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .ct1{padding-left:12px;font-size:14px}
+
+/* r4: بطاقات «أحفظ القرآن» والمسابقات بنفس روح بطاقات المكتبة والقاعدة */
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2>.choice-tile{min-height:150px;padding:12px 8px;gap:6px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2>.choice-tile.sc-wide{min-height:112px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2 .choice-icon{width:64px;height:64px;border-radius:22px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2 .ct1{font-size:19px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2 .ct2{-webkit-line-clamp:3;font-size:13.5px}
+html.sc-sub #view-door .sc-hub.g2>.choice-tile:not(.sc-wide){min-height:210px}
+html.sc-sub #view-door .sc-hub.g2 .choice-icon{width:84px;height:84px;border-radius:28px}
+
+/* جولة ٦: زر رجوع شاشة الرمز بنفس شكل وموضع بقية الشاشات */
+html.sc-sub #view-pin #btnPinBack{position:absolute;top:4px;right:0;margin:0!important;width:56px;min-width:56px;height:56px;padding:0;font-size:30px;z-index:5}
+/* noor lesson cards: keep the lamp badge clear of the title */
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls{padding-left:40px}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .sc-lamp{top:50%;left:6px;width:28px;height:28px;margin-top:-14px}
+
+/* r8: شاشة السورة موحّدة مع بقية الشاشات (أزرار كريمية + إطار بحدّ داكن ناعم) دون المساس بقارئ المصحف */
+html[data-sv="view-surah"] :is(.back-btn,.gear-btn){background:linear-gradient(180deg,#fffdf4,#ffe9b8);border:2.5px solid var(--sc-line);color:#3a2b4d;text-shadow:none;
+  box-shadow:inset 0 2px 0 #fff,0 4px 0 rgba(58,43,77,.3),0 10px 14px -8px rgba(58,43,77,.45)}
+html[data-sv="view-surah"] .gear-btn svg{filter:none}
+html[data-sv="view-surah"] .gear-btn svg g,html[data-sv="view-surah"] .gear-btn svg rect{fill:#3a2b4d}
+html[data-sv="view-surah"] .gear-btn svg *{stroke:#3a2b4d}
+html[data-sv="view-surah"] .gear-btn svg circle{fill:none}
+html[data-sv="view-surah"] .back-btn .bk{color:#3a2b4d}
+html[data-sv="view-surah"] :is(.back-btn,.gear-btn):active{box-shadow:inset 0 2px 0 #fff,0 1px 0 rgba(58,43,77,.3)}
+html[data-sv="view-surah"] .mushaf-frame{border:2.5px solid var(--sc-line);border-radius:26px;box-shadow:0 5px 0 rgba(58,43,77,.22),0 12px 16px -10px rgba(58,43,77,.4)}
