@@ -2326,7 +2326,7 @@
     }
     next();
   }
-  var sndMuted = false, spkHeld = 0;
+  var sndMuted = false, spkHeld = 0, ayHeld = 0;
   if(window.AtharSound){
     AtharSound.register("speak", {
       stop: function(){ spkTok++; if(vAudio){ vAudio.pause(); vAudio = null; } if(nrAudio){ nrAudio.pause(); nrAudio = null; } if(window.speechSynthesis) speechSynthesis.cancel(); },
@@ -2345,8 +2345,14 @@
     AtharSound.register("ayah", {
       stop: function(){ haltPlayback("idle"); },
       mute: function(on){ if(audioEl) audioEl.muted = !!on; },
-      pause: function(){ if(audioEl && !audioEl.paused && !audioEl.ended && audioEl.src){ audioEl.pause(); return true; } return false; },
-      resume: function(){ if(audioEl){ var p = audioEl.play(); if(p && p.catch) p.catch(function(){}); } }
+      pause: function(){ var h = false;
+        if(audioEl && !audioEl.paused && !audioEl.ended && audioEl.src){ audioEl.pause(); h = true; ayHeld |= 1; }
+        if(recAudio && !recAudio.paused && !recAudio.ended){ recAudio.pause(); h = true; ayHeld |= 2; }
+        return h; },
+      resume: function(){
+        if((ayHeld & 1) && audioEl){ var p = audioEl.play(); if(p && p.catch) p.catch(function(){}); }
+        if((ayHeld & 2) && recAudio){ var q = recAudio.play(); if(q && q.catch) q.catch(function(){}); }
+        ayHeld = 0; }
     });
   }
   setTimeout(vLoadIndex, 1500);
