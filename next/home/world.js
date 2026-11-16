@@ -176,7 +176,8 @@ if(skyApi)try{skyApi.setTime(skyTime())}catch(e){}
 var skyApi=null;function skyTime(){return per==="night"?"night":per==="evening"?"dusk":"day"}
 var sc=1,ex=0;
 var lq=0;function layoutSoon(){if(lq)return;lq=requestAnimationFrame(function(){lq=0;layout()})}
-function layout(){
+var lastL=0;
+function layout(){lastL=Date.now();
 if(!view.classList.contains("active"))return;
 var vh=D.documentElement.clientHeight||W.innerHeight,top=world.getBoundingClientRect().top;
 var hd=D.querySelector("header"),stTop=hd?Math.max(44,hd.offsetHeight-6):52;
@@ -476,7 +477,7 @@ var active=false,wasAway=false;
 function enter(){
 if(active)return;active=true;if(W.HomeAudio){W.HomeAudio.hold(false);if(wasAway){wasAway=false;setTimeout(function(){if(active&&!first)W.HomeAudio.back()},900)}}
 app.classList.add("hw-on");D.documentElement.classList.remove("hw-pre");D.body.classList.add("hw-home");world.classList.remove("w-paused");svgs(1);if(skyApi)try{skyApi.resume()}catch(e){}
-period();layout();badges();layoutSoon();setTimeout(layout,400);if(skyApi)try{skyApi.refresh()}catch(e){}
+period();layout();badges();var t0=lastL;setTimeout(function(){if(lastL-t0<100)layout()},400);if(skyApi)try{skyApi.refresh()}catch(e){}
 if(first){world.classList.add("w-first");dusk.classList.remove("off");put(HOME.ax,HOME.ay,0,true);setPose("think");
 B.forEach(function(b){bEl[b.k].classList.remove("on")});placeHalo();dusk.removeAttribute("aria-hidden");dusk.tabIndex=0;later("nudge",function(){if(first&&!seq)world.classList.add("w-nudge")},6000)}
 else{world.classList.remove("w-first");placeLast();armLook(8000)}

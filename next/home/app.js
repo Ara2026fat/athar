@@ -1,6 +1,23 @@
 (function(){
   "use strict";
 
+  /* ===== AtharSound: طبقة مركزية صغيرة للصوت (الرئيسية HomeAudio + النطق speak + التلاوة audioEl) =====
+     register(name,{stop,mute(on),pause()->true إن أوقف شيئًا,resume}) · stopAll · muteAll(on) · suspend/resume عند اختفاء التبويب */
+  if(!window.AtharSound){ (function(){
+    var parts = {}, held = {}, muted = false, S = {};
+    function each(fn){ for(var k in parts){ try{ fn(parts[k], k); }catch(e){} } }
+    S.register = function(n, api){ parts[n] = api; if(muted && api.mute){ try{ api.mute(true); }catch(e){} } };
+    S.stopAll = function(){ each(function(p){ if(p.stop) p.stop(); }); };
+    S.muteAll = function(on){ muted = !!on; each(function(p){ if(p.mute) p.mute(muted); }); };
+    S.isMuted = function(){ return muted; };
+    S.suspend = function(){ each(function(p, k){ if(!held[k] && p.pause && p.pause()) held[k] = 1; }); };
+    S.resume = function(){ each(function(p, k){ if(held[k]){ delete held[k]; if(p.resume) p.resume(); } }); };
+    document.addEventListener("visibilitychange", function(){ if(document.hidden) S.suspend(); else S.resume(); });
+    window.addEventListener("pagehide", S.suspend);
+    window.addEventListener("pageshow", function(){ if(!document.hidden) S.resume(); });
+    window.AtharSound = S;
+  })(); }
+
   /* ================= البيانات الأساسية: سور جزء عمّ ================= */
   var PLAY_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
   var PAUSE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg>';
@@ -2220,7 +2237,7 @@
   }
   function ttsSay(text, done){
     try{
-      if(!window.speechSynthesis){ if(done) done(); return; }
+      if(!window.speechSynthesis || (window.AtharSound && AtharSound.isMuted())){ if(done) done(); return; }
       var u = new SpeechSynthesisUtterance(text);
       u.lang = "ar-SA"; u.rate = 0.7;
       if(done){ u.onend = done; u.onerror = done; }
@@ -2264,6 +2281,7 @@
         vPackBlob(st.s).then(function(bl){
           if(tok !== spkTok) return;
           var u = URL.createObjectURL(bl), a2 = new Audio(u);
+          a2.muted = sndMuted;
           vAudio = a2;
           a2.onended = function(){ try{ URL.revokeObjectURL(u); }catch(e){} if(tok === spkTok) next(); };
           a2.onerror = fb2;
@@ -2274,6 +2292,7 @@
       }
       if(!st.c){ ttsSay(st.t, next); return; }
       var a = new Audio(st.c + ".mp3"), fell = false;
+      a.muted = sndMuted;
       vAudio = a;
       function fb(){ if(fell || tok !== spkTok) return; fell = true; ttsSay(st.t, next); }
       a.onended = function(){ if(tok === spkTok) next(); };
@@ -2282,6 +2301,29 @@
       if(pr && pr.catch) pr.catch(fb);
     }
     next();
+  }
+  var sndMuted = false, spkHeld = 0;
+  if(window.AtharSound){
+    AtharSound.register("speak", {
+      stop: function(){ spkTok++; if(vAudio){ vAudio.pause(); vAudio = null; } if(nrAudio){ nrAudio.pause(); nrAudio = null; } if(window.speechSynthesis) speechSynthesis.cancel(); },
+      mute: function(on){ sndMuted = !!on; if(vAudio) vAudio.muted = sndMuted; if(nrAudio) nrAudio.muted = sndMuted; if(on && window.speechSynthesis) speechSynthesis.cancel(); },
+      pause: function(){ var h = false;
+        if(vAudio && !vAudio.paused && !vAudio.ended){ vAudio.pause(); h = true; spkHeld |= 1; }
+        if(nrAudio && !nrAudio.paused && !nrAudio.ended){ nrAudio.pause(); h = true; spkHeld |= 2; }
+        if(window.speechSynthesis && speechSynthesis.speaking && !speechSynthesis.paused){ speechSynthesis.pause(); h = true; spkHeld |= 4; }
+        return h; },
+      resume: function(){
+        if((spkHeld & 1) && vAudio){ var p = vAudio.play(); if(p && p.catch) p.catch(function(){}); }
+        if((spkHeld & 2) && nrAudio){ var q = nrAudio.play(); if(q && q.catch) q.catch(function(){}); }
+        if((spkHeld & 4) && window.speechSynthesis) speechSynthesis.resume();
+        spkHeld = 0; }
+    });
+    AtharSound.register("ayah", {
+      stop: function(){ haltPlayback("idle"); },
+      mute: function(on){ if(audioEl) audioEl.muted = !!on; },
+      pause: function(){ if(audioEl && !audioEl.paused && !audioEl.ended && audioEl.src){ audioEl.pause(); return true; } return false; },
+      resume: function(){ if(audioEl){ var p = audioEl.play(); if(p && p.catch) p.catch(function(){}); } }
+    });
   }
   setTimeout(vLoadIndex, 1500);
   var lettersTab = "learn";
@@ -8315,7 +8357,7 @@
   function noorAyPlay(sn, an){
     try{ if(nrAudio){ nrAudio.pause(); nrAudio = null; } if(window.speechSynthesis) speechSynthesis.cancel(); spkTok++; if(vAudio){ vAudio.pause(); vAudio = null; } }catch(e){}
     try{
-      var a = new Audio(audioUrl(sn, an)); nrAudio = a;
+      var a = new Audio(audioUrl(sn, an)); a.muted = sndMuted; nrAudio = a;
       a.onerror = function(){ showToast("تعذّر تشغيل صوت القارئ، تحقّق من الإنترنت"); };
       var p = a.play(); if(p && p.catch) p.catch(function(){ showToast("تعذّر تشغيل صوت القارئ، تحقّق من الإنترنت"); });
     }catch(e){}
