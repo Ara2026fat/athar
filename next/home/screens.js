@@ -344,8 +344,8 @@
       b.textContent = ""; b.appendChild(s); b.appendChild(t);
     }
   }
-  var FP = { noorBody:".us-parent,.choice-tile,.us-text", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile" };
-  function fpIsGrid(c){ return c.children.length > 1 && (/(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips)(\s|$)/.test(c.className) || (c.classList.contains("lq-opts") && !!c.querySelector(".noor-it"))); }
+  var FP = { noorBody:".us-parent,.choice-tile,.us-text", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile", ayqBody:".ayq-grid", lettersBody:".letter-grid" };
+  function fpIsGrid(c){ return c.children.length > 1 && (/(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips|ayq-grid)(\s|$)/.test(c.className) || (c.classList.contains("lq-opts") && !!c.querySelector(".noor-it"))); }
   function fpLayout(b){
     if(b.__fpBusy) return; b.__fpBusy = true;
     try{
@@ -360,7 +360,7 @@
       items.forEach(function(o){ o.t = o.el.offsetTop; o.b = o.t + o.el.offsetHeight; });
       var last = items[items.length - 1];
       if(last.b - items[0].t <= avail) return;
-      avail -= 70;
+      avail -= 70 + (b.id === "lettersBody" ? 14 : 0);
       var pages = [], s0 = 0;
       while(s0 < items.length){
         var j = s0 + 1; while(j < items.length && items[j].b - items[s0].t <= avail) j++;

@@ -1438,18 +1438,37 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   }
   function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
   /* خطأ لطيف: نغمتان هابطتان ناعمتان + جملة مرئية قصيرة (للطفل الذي لا يسمع)، بلا توبيخ */
-  var oopsT = 0;
+  var oopsT = 0, oopsRun = { g:null, n:0, t:0 };
+  /* ثلاثة أخطاء متتالية في السؤال نفسه: تلميح بصري لطيف (يلمع الخيار/الخيارات المتبقية) بدل ترك الطفل يتخبّط */
+  function oopsHint(){
+    try{
+      var el = window.__lastTapBtn, g = el && el.parentElement, now = Date.now();
+      if(!g) return;
+      if(oopsRun.g === g && now - oopsRun.t < 40000) oopsRun.n++; else { oopsRun.g = g; oopsRun.n = 1; }
+      oopsRun.t = now;
+      if(oopsRun.n < 3) return;
+      var rt = g.querySelector("[data-right]:not(.ok)");
+      if(rt && rt !== el){ rt.classList.add("gentle-hint"); setTimeout(function(){ rt.classList.remove("gentle-hint"); }, 3600); oopsT = now; showToast("انظر إلى الخيار الذي يلمع"); return; }
+      var c = Array.prototype.filter.call(g.children, function(x){ return x !== el && x.tagName === "BUTTON" && !/(^|\s)(bad|ok|locked)(\s|$)/.test(x.className) && x.offsetParent; });
+      if(!c.length || c.length > 2) return;
+      c.forEach(function(x){ x.classList.add("gentle-hint"); setTimeout(function(){ x.classList.remove("gentle-hint"); }, 3600); });
+      oopsT = now; showToast("انظر إلى الخيار الذي يلمع");
+    }catch(e){}
+  }
   function oops(){
     tone(392, 0, .14, .05); tone(311, .12, .24, .05);
     var now = Date.now();
+    oopsHint();
     if(now - oopsT > 2500){ oopsT = now; try{ showToast("لا بأس، جرّب مرة أخرى"); }catch(e){} }
   }
+  document.addEventListener("pointerdown", function(e){ var b = e.target && e.target.closest ? e.target.closest("button") : null; if(b) window.__lastTapBtn = b; }, true);
   function sfx(kind){
     if(!settings.sfx || settings.bedtime || (document.body && document.body.classList.contains("bedtime"))) return;   /* وقت النوم: صمت كامل */
     if(kind === "tap" && window.__atharQuietTap > Date.now()) return;   /* نقر باب العالم: صوت «الطرق» الجديد يكفي، فلا نغمة قديمة فوقه */
     if(kind === "tap"){ tone(660, 0, 0.12, 0.07); haptic(8); }
     else if(kind === "turn"){ tone(523, 0, 0.18, 0.08); tone(784, 0.14, 0.3, 0.08); haptic(16); }
     else if(kind === "done"){
+      oopsRun.n = 0;
       var _t = document.getElementById("toast"); if(_t) _t.classList.remove("show");   /* لا تبقى «جرّب مرة أخرى» فوق الاحتفال */
       [523, 659, 784, 1047].forEach(function(f, i){ tone(f, i * 0.12, 0.35, 0.07); });
       haptic([20, 40, 20]);
@@ -2579,16 +2598,16 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       else line.appendChild(glyphSpan(o, "gw"));
     });
     var row = document.createElement("div"); row.className = "wg-opts";
-    var locked = false;
+    var locked = false, firstTry = true;
     opts.forEach(function(o){
-      var b = document.createElement("button"); b.className = "wg-opt";
+      var b = document.createElement("button"); b.className = "wg-opt"; if(o.t === target.t) b.setAttribute("data-right", "1");
       b.appendChild(glyphSpan(o, "gw big"));
       b.addEventListener("click", function(){
         if(locked) return;
         if(o.t === target.t){
           locked = true;
           slot.textContent = ""; slot.appendChild(glyphSpan(target, "gw")); slot.classList.add("ok");
-          b.classList.add("ok"); sfx("done"); starFly(b); gameState.right++;
+          b.classList.add("ok"); sfx("done"); starFly(b); if(firstTry) gameState.right++;
           setTimeout(function(){
             if(!gameState) return;
             gameState.round++;
@@ -2596,7 +2615,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
             if(gameState.round >= gameState.max) wordEnd(); else wordRound();
           }, 1100);
         } else {
-          b.classList.add("bad"); oops(); haptic(20);
+          b.classList.add("bad"); oops(); haptic(20); firstTry = false;
         }
       });
       row.appendChild(b);
@@ -2606,10 +2625,46 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     box.appendChild(h); box.appendChild(wprog); box.appendChild(line); box.appendChild(row);
     openSheet(box);
   }
+  /* ===== شاشة نهاية موحّدة: o = {title, sub, stars(0-3), cat, key, html} ===== */
+  var STAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="st-f" d="M12 2.2l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17l-6 3.3 1.3-6.6L2.4 9.1l6.7-.8z"/></svg>';
+  function endCard(o){
+    var n = Math.max(0, Math.min(3, o.stars | 0));
+    var w = document.createElement("div"); w.className = "wg ge"; w.style.position = "relative";
+    w.innerHTML = '<div class="ge-title">' + o.title + '</div>' + (o.sub ? '<p class="ge-sub">' + o.sub + '</p>' : '') + (o.html || "") +
+      '<div class="ge-stars" role="img" aria-label="' + (n ? arNum(n) + ' من ٣ نجوم' : 'بلا نجوم هذه المرة') + '">' + STAR_SVG + STAR_SVG + STAR_SVG + '</div>' +
+      '<div class="ge-add" aria-live="polite"></div>';
+    var ss = w.querySelectorAll(".ge-stars svg"), add = w.querySelector(".ge-add");
+    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var step = reduce ? 0 : 420;
+    for(var k = 0; k < n; k++) (function(k){ setTimeout(function(){ ss[k].classList.add("on"); sparkle(w, ss[k]); }, 350 + k * step); })(k);
+    var tAward = 350 + n * step + 250;
+    setTimeout(function(){
+      if(!w.isConnected) return;
+      if(n > 0){
+        add.textContent = "+ " + arNum(n) + (n === 1 ? " نجمة" : n === 2 ? " نجمتان" : " نجوم") + " إلى رصيدك"; add.classList.add("on");
+        try{ if(window.AtharReward) window.AtharReward.award("g:" + (o.key || "end") + ":" + Date.now() + ":" + Math.floor(Math.random() * 1e6), n, o.cat || "comp"); }catch(e){}
+      } else {
+        add.textContent = "المرّة القادمة ستكون أجمل"; add.classList.add("on");
+        try{ if(window.AtharReward) window.AtharReward.say("retry"); }catch(e){}
+      }
+    }, tAward);
+    return w;
+  }
+  function sparkle(host, star){
+    try{
+      var hr = host.getBoundingClientRect(), r = star.getBoundingClientRect();
+      var cx = r.left - hr.left + r.width / 2, cy = r.top - hr.top + r.height / 2;
+      for(var i = 0; i < 6; i++){
+        var d = document.createElement("i"); d.className = "ge-sp"; var a = (i / 6) * Math.PI * 2 + Math.random() * .5, L = 34 + Math.random() * 22;
+        d.style.left = (cx - 5) + "px"; d.style.top = (cy - 5) + "px"; d.style.setProperty("--dx", Math.cos(a) * L + "px"); d.style.setProperty("--dy", Math.sin(a) * L + "px");
+        host.appendChild(d); (function(x){ setTimeout(function(){ if(x.parentNode) x.parentNode.removeChild(x); }, 1400); })(d);
+      }
+    }catch(e){}
+  }
   function wordEnd(){
     markDayActive();
-    var box = document.createElement("div"); box.className = "wg";
-    box.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">أتممتَ الجولة بتوفيق الله، وأُضيء نورٌ جديد.</p>';
+    var r = gameState ? gameState.right : 5, st = r >= 5 ? 3 : r >= 4 ? 2 : r >= 2 ? 1 : 0;
+    var box = endCard({ title: st ? "أحسنت!" : "لنُعِد المحاولة", sub: "أتممتَ الجولة بتوفيق الله، وأُضيء نورٌ جديد.", stars: st, cat: "comp", key: "word" });
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto 0"; b.textContent = "جولة أخرى";
     b.addEventListener("click", function(){ gameState = { kind:"word", ayah:player.currentAyah, round:0, max:5, right:0 }; wordRound(); });
     box.appendChild(b); openSheet(box);
@@ -2961,13 +3016,12 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function lettersEnd(right, max, again){
     var body = $("lettersBody"); body.innerHTML = "";
     markDayActive();
-    var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">عرفتَ ' + arNum(right) + ' من ' + arNum(max) + ' من أول مرّة.</p><div class="stars-row">' +
-      [0,1,2].map(function(k){ return '<span class="' + (right >= Math.ceil(max * (k + 1) / 3) - (k === 0 ? 1 : 0) ? "on" : "") + '">⭐</span>'; }).join("") + '</div>';
+    var gst = [0,1,2].filter(function(k){ return right >= Math.ceil(max * (k + 1) / 3) - (k === 0 ? 1 : 0); }).length;
+    var w = endCard({ title: gst ? "أحسنت!" : "لنُعِد المحاولة", sub: "عرفتَ " + arNum(right) + " من " + arNum(max) + " من أول مرّة.", stars: gst, cat: "noor", key: "letters" });
     body.appendChild(w);
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto"; b.textContent = "جولة أخرى";
     b.addEventListener("click", again); body.appendChild(b);
-    sfx("done"); burst(["⭐","🌟","✨","🎈"], 16);
+    sfx("done");
   }
   // اختبار: مرّة "أين الحرف؟" ومرّة "أيّ صورة تبدأ بالحرف؟"
   function lettersQuiz(round, right){
@@ -3019,7 +3073,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var sky = document.createElement("div"); sky.className = "balloon-sky";
     var first = true, locked = false;
     optIdx.forEach(function(i, k){
-      var b = document.createElement("button"); b.className = "balloon";
+      var b = document.createElement("button"); b.className = "balloon"; if(i === idx) b.setAttribute("data-right", "1");
       b.style.setProperty("--c", LCOL[(k * 2) % LCOL.length]);
       b.style.setProperty("--d", (k * .37) + "s");
       b.innerHTML = '<span class="bl-ch">' + LETTERS[i][0] + '</span><i class="bl-str"></i>';
@@ -3097,16 +3151,15 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function nmEnd(right, max, again, home){
     var body = $("numbersBody"); body.innerHTML = "";
     markDayActive();
-    var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">عرفتَ ' + arNum(right) + ' من ' + arNum(max) + ' من أول مرّة.</p><div class="stars-row">' +
-      [0,1,2].map(function(k){ return '<span class="' + (right >= Math.ceil(max * (k + 1) / 3) - (k === 0 ? 1 : 0) ? "on" : "") + '">⭐</span>'; }).join("") + '</div>';
+    var gst = [0,1,2].filter(function(k){ return right >= Math.ceil(max * (k + 1) / 3) - (k === 0 ? 1 : 0); }).length;
+    var w = endCard({ title: gst ? "أحسنت!" : "لنُعِد المحاولة", sub: "عرفتَ " + arNum(right) + " من " + arNum(max) + " من أول مرّة.", stars: gst, cat: "num", key: "numbers" });
     body.appendChild(w);
     var b = document.createElement("button"); b.className = "pill-btn"; b.style.margin = "10px auto"; b.textContent = "جولة أخرى";
     b.addEventListener("click", again); body.appendChild(b);
     if(home){
       var h = document.createElement("button"); h.className = "lq-say"; h.textContent = "رجوع"; h.addEventListener("click", home); body.appendChild(h);
     }
-    sfx("done"); burst(["⭐","🌟","✨","🎈"], 16);
+    sfx("done");
   }
   /* --- الأرقام: تعرّف ولعبة عدّ --- */
   function nmDigits(){
@@ -3809,7 +3862,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     }
     if(!document.fonts || !document.fonts.load) return Promise.resolve(true);
     var loads = Promise.all(AYQ_FONTS.map(function(n){ return document.fonts.load("24px '" + n + "'"); }))
-      .then(function(r){ return r.every(function(x){ return x && x.length; }); });
+      .then(function(r){ return r.every(function(x){ return x && x.length; }); }).catch(function(){ return false; });
     var timeout = new Promise(function(res){ setTimeout(function(){ res(false); }, 7000); });
     return Promise.race([loads, timeout]);
   }
@@ -3922,7 +3975,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var list = document.createElement("div"); list.className = "ayq-opts";
     var first = true, locked = false;
     opts.forEach(function(o, k){
-      var b = document.createElement("button"); b.className = "ayq-opt"; b.style.setProperty("--c", LCOL[(k * 3 + 2) % LCOL.length]);
+      var b = document.createElement("button"); b.className = "ayq-opt"; if(o === right) b.setAttribute("data-right", "1"); b.style.setProperty("--c", LCOL[(k * 3 + 2) % LCOL.length]);
       b.appendChild(ayqLine(o, "ayq-o", true));
       b.addEventListener("click", function(){
         if(locked) return;
@@ -3942,9 +3995,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var S = ayqSt, body = $("ayqBody"); body.innerHTML = "";
     ayqSave(S.stage, S.right); markDayActive();
     var stars = S.right >= 9 ? 3 : S.right >= 7 ? 2 : S.right >= 5 ? 1 : 0;
-    var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<div class="wg-big">' + (stars ? "أحسنت!" : "حاول مرّة أخرى") + '</div><p class="muted" style="text-align:center">عرفتَ ' + arNum(S.right) + ' من ١٠ من أول مرّة.</p><div class="stars-row">' +
-      [1, 2, 3].map(function(k){ return '<span class="' + (k <= stars ? "on" : "") + '">⭐</span>'; }).join("") + '</div>';
+    var w = endCard({ title: stars ? "أحسنت!" : "حاول مرّة أخرى", sub: "عرفتَ " + arNum(S.right) + " من ١٠ من أول مرّة.", stars: stars, cat: "comp", key: "ayq" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "أعد المرحلة";
     again.addEventListener("click", function(){ ayqStart(S.stage); }); body.appendChild(again);
@@ -3953,7 +4004,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       nx.addEventListener("click", function(){ ayqStart(S.stage + 1); }); body.appendChild(nx);
     }
     var home = document.createElement("button"); home.className = "lq-say"; home.textContent = "كل المراحل"; home.addEventListener("click", ayqHome); body.appendChild(home);
-    if(stars){ sfx("done"); burst(["⭐", "🌟", "✨"], 16); }
+    if(stars) sfx("done");
   }
 
   /* ================= قصص الأنبياء: مشاهد طبيعية فقط (بلا أشخاص ولا حيوانات) ================= */
@@ -8770,8 +8821,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     if(round >= max){
       var stars = right >= 5 ? 3 : (right >= 3 ? 2 : 1); noorSet(L.id, stars); markDayActive();
       var w = document.createElement("div"); w.className = "wg";
-      w.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">أتممتَ «' + L.title + '»</p><div class="stars-row">' + [1, 2, 3].map(function(k){ return '<span class="' + (k <= stars ? "on" : "") + '">⭐</span>'; }).join("") + '</div>';
-      body.appendChild(w); sfx("done"); burst(["⭐", "🌟", "✨"], 16);
+      w = endCard({ title: "أحسنت!", sub: "أتممتَ «" + L.title + "»", stars: stars, cat: "noor", key: "noor" });
+      body.appendChild(w); sfx("done");
       var nx = document.createElement("button"); nx.className = "pill-btn"; nx.style.margin = "10px auto"; nx.textContent = i + 1 < NOOR.length ? "الدرس التالي" : "كل المراحل";
       nx.addEventListener("click", function(){ if(i + 1 < NOOR.length) noorLesson(i + 1); else noorHome(); }); body.appendChild(nx);
       var rp = document.createElement("button"); rp.className = "lq-say"; rp.textContent = "أعد الدرس"; rp.addEventListener("click", function(){ noorLesson(i); }); body.appendChild(rp);
@@ -8831,15 +8882,14 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function brEnd(g, res, tok){
     markDayActive();
     var body = brBody(); body.innerHTML = "";
-    var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">أنهيتَ اللعبة بنجاح، وعقلك صار أقوى.</p><div class="stars-row"><span class="on">⭐</span><span class="on">⭐</span><span class="on">⭐</span></div>';
+    var w = endCard({ title: "أحسنت!", sub: "أنهيتَ اللعبة بنجاح، وعقلك صار أقوى.", stars: 3, cat: "comp", key: "brain" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "العب مرة أخرى";
     again.addEventListener("click", function(){ brStart(g); });
     var back = document.createElement("button"); back.className = "lq-say"; back.textContent = "رجوع للمسابقات";
     back.addEventListener("click", function(){ openQuiz("brain"); });
     body.appendChild(again); body.appendChild(back);
-    sfx("done"); burst(["⭐", "🌟", "✨", "🏆"], 18); speak("أحسنت");
+    sfx("done"); speak("أحسنت");
   }
 
   /* 1) ذاكرة الفوانيس */
@@ -9093,15 +9143,14 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     try{ localStorage.removeItem(usKey("qzmix")); }catch(e){}
     markDayActive();
     var body = $("libBody"); body.innerHTML = "";
-    var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<div class="wg-big">أحسنت!</div><p class="muted" style="text-align:center">أجبتَ عن ' + arNum(n) + ' سؤالًا في «' + title + '».</p><div class="stars-row"><span class="on">⭐</span><span class="on">⭐</span><span class="on">⭐</span></div>';
+    var w = endCard({ title: "أحسنت!", sub: "أجبتَ عن " + arNum(n) + " سؤالًا في «" + title + "».", stars: 3, cat: "comp", key: "mix" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "جولة جديدة";
     again.addEventListener("click", function(){ var a = quizMixArgs; startMix(a[0], a[1], a[2]); });
     var back = document.createElement("button"); back.className = "lq-say"; back.textContent = "رجوع للمسابقات";
     back.addEventListener("click", function(){ BK = BKS.usul; openQuiz(); });
     body.appendChild(again); body.appendChild(back);
-    sfx("done"); burst(["⭐", "🌟", "✨", "🏆"], 18); speak("أحسنت");
+    sfx("done"); speak("أحسنت");
   }
 
   var libSec = "";
@@ -10241,7 +10290,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var d = pstGet(); d[S.id] = 1; try{ localStorage.setItem(pstKey(), JSON.stringify(d)); }catch(e){}
     markDayActive();
     var w = document.createElement("div"); w.className = "wg";
-    w.innerHTML = '<div class="wg-big">ما أجمل القصة!</div><div class="ps-lesson"><small>ماذا نتعلّم؟</small><div class="ps-lt">' + S.lesson.t + '</div><div class="ps-vr">' + S.lesson.r + '</div></div><div class="stars-row"><span class="on">⭐</span></div>';
+    w = endCard({ title: "ما أجمل القصة!", html: '<div class="ps-lesson"><small>ماذا نتعلّم؟</small><div class="ps-lt">' + S.lesson.t + '</div><div class="ps-vr">' + S.lesson.r + '</div></div>', stars: 1, cat: "story", key: "story" });
     body.appendChild(w);
     var again = document.createElement("button"); again.className = "pill-btn"; again.style.margin = "10px auto"; again.textContent = "اقرأها مرّة أخرى";
     again.addEventListener("click", function(){ showStoryScene(si, 0); }); body.appendChild(again);
