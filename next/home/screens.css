@@ -99,7 +99,7 @@ html.sc-sub .choice-tile::before{opacity:.3}
 html.sc-sub .sc-w .ct1,html.sc-sub .sc-w .ct2{text-shadow:0 1px 0 rgba(0,0,0,.35)}
 /* أزرار ثابتة اللون */
 html.sc-sub :is(.view,#view-numbers) .seg-btn.active{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.1)),#1b7a3a;text-shadow:none}
-html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1f5fd8}
+html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1a4fc0}
 html.sc-sub .pill-btn,html.sc-sub .glass-card .pill-btn{background:linear-gradient(180deg,#FFD75E,#F2B632);color:#3a2c00;text-shadow:none;box-shadow:0 5px 0 #c98f12,inset 0 2px 0 rgba(255,255,255,.5)}
 html.sc-sub .nm-chip{color:#3f3a55}
 html.sc-sub .nm-chip.on{background:#5b2fc4;color:#fff}

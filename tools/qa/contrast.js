@@ -25,6 +25,8 @@ const COLLECT = () => {
     const e = t.parentElement; if (!e || /^(SCRIPT|STYLE|NOSCRIPT|OPTION)$/.test(e.tagName)) continue;
     const rg = document.createRange(); rg.selectNodeContents(t); const r = rg.getBoundingClientRect();
     const er = e.getBoundingClientRect(); if (er.width < 3 || er.height < 3) continue; /* sr-only */
+    if (e.closest(':disabled,[aria-disabled=true]')) continue; /* inactive controls are exempt (WCAG 1.4.3) */
+    if (/^[\p{Extended_Pictographic}\s\uFE0F]+$/u.test(s)) continue; /* colour-emoji glyphs are images, not text colour */
     if (e.ownerSVGElement) continue; /* SVG glyph icons: fill sits on an explicit shape, not sampled here */
     if (r.width < 2 || r.height < 2 || r.bottom <= 0 || r.right <= 0 || r.left >= vw || r.top >= vh) continue;
     let op = 1, hidden = false;
@@ -69,15 +71,16 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
         }
         await page.waitForTimeout(900);
         if (!ok) { res.skipped = true; } else {
+          await page.addStyleTag({ content: '*,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}' }); await page.waitForTimeout(300); /* jump animations to their END state (fill-mode kept) so we measure the settled layout, not a pop-in frame */
           const items = await page.evaluate(COLLECT);
-          await page.addStyleTag({ content: '*,*::before,*::after{color:transparent!important;-webkit-text-fill-color:transparent!important;fill:transparent!important;caret-color:transparent!important;animation:none!important;transition:none!important}' });
+          await page.addStyleTag({ content: '*,*::before,*::after{color:transparent!important;-webkit-text-fill-color:transparent!important;fill:transparent!important;caret-color:transparent!important}' });
           await page.waitForTimeout(250);
           const buf = await page.screenshot();
           if (arg('--shots')) fs.writeFileSync(path.join(arg('--shots'), `${sc.n}-${vp}.png`), buf);
           const px = await page.evaluate(async ([b64, items]) => {
             const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode();
             const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(img, 0, 0);
-            return items.map(it => { const [x0, y0, x1, y1] = it.r.map(Math.round); const W = Math.max(1, x1 - x0), H = Math.max(1, y1 - y0);
+            return items.map(it => { let [x0, y0, x1, y1] = it.r.map(Math.round); if (it.fs >= 28) { const hh = y1 - y0, m = Math.round(hh * 0.22); y0 += m; y1 -= m; } /* big glyphs: the line box is much taller than the ink; sample the middle band only */ const W = Math.max(1, x1 - x0), H = Math.max(1, y1 - y0);
               const d = g.getImageData(x0, y0, W, H).data, out = []; const step = Math.max(1, Math.floor(Math.sqrt(W * H / 200)));
               for (let y = 0; y < H; y += step) for (let x = 0; x < W; x += step) { const i = (y * W + x) * 4; out.push([d[i], d[i + 1], d[i + 2]]); }
               return out; });

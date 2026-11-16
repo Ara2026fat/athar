@@ -21,6 +21,7 @@ run audio    node tools/qa/audio.js "$PORT"
 run migrate  node tools/qa/migrate.js "$PORT"
 run family   node tools/qa/family.js "$PORT"
 run smoke    node tools/qa/smoke.js "$PORT"
+[ -d "${MAIN_WT:-}" ] && run legacy node tools/qa/legacy.js "$MAIN_WT" 8898
 echo; echo "=========== QA summary (port $PORT) ==========="
 FAIL=0
 for i in "${!NAMES[@]}"; do
