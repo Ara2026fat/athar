@@ -99,5 +99,7 @@ H.unlock=function(){
 };
 ["pointerdown","keydown","touchstart"].forEach(function(n){D.addEventListener(n,function f(){H.unlock();D.removeEventListener(n,f,true)},true)});
 D.addEventListener("visibilitychange",function(){if(!H.amb)return;if(D.hidden)try{H.amb.pause()}catch(e){}else if(H.on&&H.unlocked)try{H.amb.play().catch(function(){})}catch(e){}});
-W.HomeAudio=H;loadVoice();
+W.HomeAudio=H;/* بعد أول رسم وخمول المتصفح: لا ننافس الرسم الأول على 1MB من الصوت (unlock/say يستدعيانها عند الحاجة) */
+function lateVoice(){setTimeout(function(){(W.requestIdleCallback||function(f){setTimeout(f,1)})(loadVoice)},1200)}
+if(D.readyState==="complete")lateVoice();else W.addEventListener("load",lateVoice);
 })();
