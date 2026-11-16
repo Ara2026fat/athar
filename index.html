@@ -38,6 +38,38 @@
 .set-tabs button.on{background:#0e2040;color:#fff}
 .set-tabs button{min-height:44px}#view-dashboard button:not(.ayah-chip):not(.back-btn),#view-dashboard input:not([type=range]):not([type=checkbox]){min-height:44px}
 .grp-hide{display:none!important}
+.sub-tabs{display:flex;gap:6px;padding:0 2px 10px}
+.sub-tabs button{flex:1 1 0;min-width:0;border:0;border-radius:12px;padding:6px 4px;font:inherit;font-weight:700;font-size:12.5px;background:rgba(255,255,255,.6);color:#31405a;cursor:pointer;min-height:44px;box-shadow:0 1px 3px rgba(14,32,64,.1)}
+.sub-tabs button[aria-selected=true]{background:#2f6b3f;color:#fff}
+.sub-tabs:empty{display:none}
+.prog-pager{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:13px;color:#31405a}
+.pager-btn{border:0;border-radius:12px;padding:6px 14px;font:inherit;font-weight:700;background:#e9efe4;color:#2f6b3f;cursor:pointer}
+.pager-btn:disabled{opacity:.35}
+.pin-forgot{margin:10px auto 0;display:block;background:transparent;box-shadow:none;color:#31405a;text-decoration:underline;width:auto;padding:6px 14px;height:auto}
+.forgot-box{max-width:260px;margin:10px auto 0;background:rgba(255,255,255,.85);border-radius:16px;padding:10px 12px;text-align:center}
+.forgot-box[hidden]{display:none}
+#view-pin .pin-wrap{padding-top:8px;margin-top:6px}
+#view-pin .pin-dots{margin:10px 0}
+#view-pin .pin-pad{gap:8px}
+#view-pin .pin-key{height:48px;min-height:48px}
+#view-pin .back-btn{width:auto;height:auto;min-height:44px;padding:8px 18px;border-radius:999px;font-size:14px;margin-top:8px!important}
+#view-pin .pin-forgot{background:none;border:0;box-shadow:none;text-decoration:underline;color:#31405a;margin-top:0!important}
+#view-pin .pin-hint{margin-top:6px}
+.forgot-box p{margin:0 0 8px;font-weight:700;font-size:14px;color:var(--forest-dark)}
+.forgot-box small{display:block;margin-top:6px;font-size:11px;color:#6b6552}
+#view-dashboard .section-card{padding:12px 14px;margin-bottom:8px}
+#view-dashboard .set-tabs{gap:5px;padding:0 2px 6px;overflow:visible}
+#view-dashboard .set-tabs button{flex:1 1 auto;padding:4px 6px;font-size:13px;min-height:40px}
+#view-dashboard .sub-tabs{padding-bottom:6px}
+#view-dashboard .sub-tabs button{min-height:40px}
+#view-dashboard button.repeat-chip.repeat-chip.repeat-chip{min-height:38px;padding:4px 12px;font-size:13px}
+#view-dashboard .back-row{margin-bottom:6px}
+#view-dashboard .sw-row{padding:6px 0}
+#app:has(#view-dashboard.active) footer.sig{display:none}
+#view-dashboard .ref-links{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#view-dashboard .ref-links a{padding:8px 10px}
+#view-dashboard .ref-links a small{display:none}
+#view-dashboard .about-card .muted{margin:4px 0}
 .view:not(#view-home):not(#view-dashboard):not(#view-pin){zoom:var(--ts,1)}
 body.calm .view:not(#view-home) *,body.calm .view:not(#view-home) *::before{animation:none!important;transition:none!important}
 .set-card .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
@@ -428,12 +460,21 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     <!-- شاشة PIN لولي الأمر -->
     <section class="view" id="view-pin">
       <div class="pin-wrap">
-        <h2 id="pinTitle">الإعدادات — ولي الأمر</h2>
+        <h2 id="pinTitle" tabindex="-1">الإعدادات — ولي الأمر</h2>
         <p id="pinSub">أدخل الرمز السري (4 أرقام)</p>
         <div class="pin-dots" id="pinDots" role="img" aria-label="أدخل الرمز السري المكوّن من 4 أرقام"></div>
         <div class="pin-pad" id="pinPad"></div>
         <button class="back-btn" id="btnPinBack" style="margin-top:18px;">→ رجوع</button>
         <div class="pin-hint" id="pinHint"></div>
+        <button type="button" class="back-btn pin-forgot" id="btnForgot">نسيت الرمز؟</button>
+        <div class="forgot-box" id="forgotBox" role="group" aria-labelledby="forgotQ" hidden>
+          <p id="forgotQ"></p>
+          <div class="pin-change-row">
+            <input type="text" id="forgotAns" inputmode="numeric" maxlength="3" autocomplete="off" aria-labelledby="forgotQ">
+            <button type="button" class="save-btn" id="forgotOk">تحقق</button>
+          </div>
+          <small>لا يُعرض الرمز القديم؛ بعد الإجابة تختار رمزًا جديدًا.</small>
+        </div>
       </div>
     </section>
 
@@ -455,9 +496,9 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       <div class="set-tabs" id="setTabs" role="tablist">
         <button data-g="child" class="on">الطفل</button><button data-g="sound">الصوت</button><button data-g="prog">التقدّم</button><button data-g="device">الجهاز</button><button data-g="parent">ولي الأمر</button>
       </div>
-      <div class="section-card set-card" id="digitsCard" data-grp="child"></div>
+      <div class="section-card set-card" id="digitsCard" data-grp="child" data-sub="rep"></div>
 
-      <div class="section-card growth-card" data-grp="prog">
+      <div class="section-card growth-card" data-grp="prog" data-sub="grow">
         <h3>نموّ الحفظ</h3>
         <div class="growth-row">
           <div class="growth-svg-box">
@@ -480,7 +521,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <button class="pill-btn shine-sweep" id="btnInstallApp" style="width:100%;justify-content:center;">أضف إلى الشاشة الرئيسية</button>
       </div>
 
-      <div data-grp="child" class="section-card">
+      <div data-grp="child" data-sub="rep" class="section-card">
         <h3>عدد مرات التكرار</h3>
         <div class="repeat-options" id="repeatOptions"></div>
         <div class="pin-change-row" style="margin-top:10px;">
@@ -490,15 +531,16 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <p class="muted" style="margin:8px 0 0;">اختر «∞ حتى الإيقاف» ليتكرّر الاستماع بلا حدّ حتى يضغط الطفل إيقافًا أو ينتقل للآية التالية بنفسه.</p>
       </div>
 
-      <div class="section-card" id="extraSettings" data-grp="child"></div>
-      <div class="section-card" id="plusDisplay" data-grp="child"></div>
+      <div class="section-card" id="extraSettings" data-grp="child" data-sub="exp"></div>
+      <div class="section-card" id="extraSettings2" data-grp="child" data-sub="opt"></div>
+      <div class="section-card" id="plusDisplay" data-grp="child" data-sub="view"></div>
       <div class="section-card" id="plusSound" data-grp="sound"></div>
-      <div class="section-card" id="plusData" data-grp="parent"></div>
-      <div class="section-card" id="profilesCard" data-grp="parent"></div>
+      <div class="section-card" id="plusData" data-grp="parent" data-sub="sec"></div>
+      <div class="section-card" id="profilesCard" data-grp="parent" data-sub="prof"></div>
       <div class="section-card" id="voicesCard" data-grp="sound"></div>
       <div class="section-card" id="offlineCard" data-grp="device"></div>
 
-      <div data-grp="parent" class="section-card">
+      <div data-grp="parent" data-sub="sec" class="section-card">
         <div class="row-between">
           <h3 style="margin:0;">تغيير الرمز السري</h3>
         </div>
@@ -508,9 +550,10 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </div>
       </div>
 
-      <div data-grp="prog" class="section-card">
+      <div data-grp="prog" data-sub="list" class="section-card">
         <h3>متابعة تقدّم الحفظ</h3>
         <div id="progressList"></div>
+        <div class="prog-pager" id="progPager"></div>
         <div class="legend">
           <span><i style="background:#D8D3C4;"></i> لم يبدأ</span>
           <span><i style="background:var(--gold);"></i> تم التدريب</span>
@@ -520,7 +563,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       </div>
 
       <!-- تفاصيل سورة (شبكة الآيات) -->
-      <div class="section-card" id="surahDetailCard" style="display:none;">
+      <div class="section-card" id="surahDetailCard" data-grp="prog" data-sub="detail" style="display:none;">
         <div class="row-between">
           <h3 id="detailSurahName" style="margin:0;">—</h3>
           <button class="back-btn" id="btnCloseDetail" style="width:32px;height:32px;font-size:14px;">✕</button>
@@ -529,7 +572,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <div class="ayah-status-grid" id="ayahStatusGrid"></div>
       </div>
 
-      <div class="section-card" id="refCard" data-grp="parent">
+      <div class="section-card" id="refCard" data-grp="parent" data-sub="ref">
         <h3>مراجع الأحاديث للأهل</h3>
         <p class="muted" style="margin:0 0 10px;">كل آية وحديث في كتب المكتبة راجعناه في هذه المراجع. للبحث والتحقق، ولا تُفتح إلا من لوحة ولي الأمر.</p>
         <div class="ref-links">
@@ -541,7 +584,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </div>
       </div>
 
-      <div class="section-card about-card" data-grp="parent">
+      <div class="section-card about-card" data-grp="parent" data-sub="ref">
         <h3>عن التطبيق</h3>
         <p class="muted">أثر — أول تطبيقات سلسلة «أثر»، لتحفيظ جزء عمّ للأطفال من عمر 3 سنوات فما فوق.</p>
         <p class="copyright">جميع الحقوق محفوظة © 2026 ARAFAT ALRAJHI</p>
@@ -1787,6 +1830,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     c.appendChild(chipRow("مدّة الجلسة", [[0,"بلا حدّ"],[3,"٣ دقائق"],[5,"٥ دقائق"],[10,"١٠ دقائق"]], settings.sessionMin,
       function(v){ settings.sessionMin = v; saveSettings(settings); renderExtraSettings(); }));
     c.appendChild(switchRow("وضع النوم", "إضاءة خافتة دافئة وحركة هادئة، وتتوقّف الجلسة تلقائيًّا", "bedtime"));
+    c = $("extraSettings2"); c.innerHTML = "<h3>خيارات أخرى</h3>";
     c.appendChild(switchRow("أصوات ناعمة واهتزاز خفيف", "نغمات قصيرة عند اللمس والإنجاز", "sfx"));
     c.appendChild(switchRow("تظليل الكلمات مع التلاوة", "يتتبّع الكلمة المقروءة تقريبيًّا", "wordHL"));
     c.appendChild(switchRow("قفل الطفل", "الرجوع بضغطة مطوّلة، وإخفاء الإعدادات أثناء الحفظ", "childLock"));
@@ -10254,9 +10298,19 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   /* نافذة تأكيد قبل مغادرة التطبيق إلى موقع خارجي (لولي الأمر فقط) */
   function setupLeaveDialog(){
     var dlg = $("leaveDlg"), go = $("leaveGo");
-    function close(){ dlg.classList.remove("show"); }
+    var opener = null;
+    function close(){ dlg.classList.remove("show"); try{ if(opener && opener.focus) opener.focus(); }catch(e){} opener = null; }
+    dlg.addEventListener("keydown", function(e){
+      if(e.key !== "Tab" || !dlg.classList.contains("show")) return;
+      var f = [].filter.call(dlg.querySelectorAll("a[href],button"), function(x){ return x.offsetParent !== null; });
+      if(!f.length) return;
+      var i = f.indexOf(document.activeElement);
+      if(e.shiftKey && i <= 0){ e.preventDefault(); f[f.length-1].focus(); }
+      else if(!e.shiftKey && i === f.length-1){ e.preventDefault(); f[0].focus(); }
+    });
     document.addEventListener("click", function(e){
       var a = e.target.closest ? e.target.closest(".ref-links a") : null;
+      if(a) opener = a;
       if(!a) return;
       e.preventDefault();
       var href = a.getAttribute("href");
@@ -10291,6 +10345,28 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     else { t.textContent = "الإعدادات — ولي الأمر"; sub.textContent = "أدخل الرمز السري (4 أرقام)";
       h.textContent = (settings.pin === "0000") ? "رمزك الحالي هو الرمز القديم 0000، غيّره من لوحة ولي الأمر" : ""; }
     renderPinDots();
+    var fb = $("btnForgot"); if(fb){ fb.style.display = (m === "enter" && settings.pin) ? "" : "none"; closeForgot(); }
+  }
+  function closeForgot(){ var b = $("forgotBox"); if(b) b.hidden = true; }
+  var forgotAns = 0;
+  function openForgot(){
+    var a = 6 + Math.floor(Math.random()*4), b = 6 + Math.floor(Math.random()*4);
+    forgotAns = a * b;
+    $("forgotQ").textContent = "سؤال للأهل: كم ناتج " + arNum(a) + " × " + arNum(b) + " ؟";
+    $("forgotAns").value = ""; $("forgotBox").hidden = false; $("forgotAns").focus();
+  }
+  function submitForgot(){
+    if(pinLocked) return;
+    var v = $("forgotAns").value.replace(/[٠-٩]/g, function(d){ return "٠١٢٣٤٥٦٧٨٩".indexOf(d); }).trim();
+    if(v !== "" && +v === forgotAns){
+      closeForgot(); pinFails = 0; showToast("أجبتَ صحيحًا، اختر رمزًا جديدًا"); setPinMode("create");
+      var h = $("pinTitle"); if(h) h.focus();
+    } else {
+      pinFails++; pinLocked = true; showToast("إجابة غير صحيحة");
+      setTimeout(function(){ pinLocked = false; }, pinFails >= 3 ? 20000 : 600);
+      if(pinFails >= 3) pinFails = 0;
+      openForgot();
+    }
   }
   function renderPinPad(){
     var pad = $("pinPad");
@@ -10314,6 +10390,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   }
   function renderPinDots(){
     var wrap = $("pinDots");
+    wrap.setAttribute("aria-label", pinBuffer.length ? ("أُدخل " + arNum(pinBuffer.length) + " من ٤ أرقام") : "أدخل الرمز السري المكوّن من 4 أرقام");
     wrap.innerHTML = "";
     for(var i=0;i<4;i++){
       var s = document.createElement("span");
@@ -10364,10 +10441,26 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     });
   }
 
+  var progPage = 0;
   function renderProgressList(){
     var list = $("progressList");
     list.innerHTML = "";
-    JUZ_AMMA.forEach(function(s){
+    var PP = 5, pages = Math.ceil(JUZ_AMMA.length / PP);
+    if(progPage >= pages) progPage = pages - 1; if(progPage < 0) progPage = 0;
+    var pg = $("progPager");
+    if(pg){
+      pg.innerHTML = "";
+      var pv = document.createElement("button"), nx = document.createElement("button"), lb = document.createElement("span");
+      pv.type = nx.type = "button"; pv.className = nx.className = "pager-btn";
+      pv.textContent = "السابق"; nx.textContent = "التالي";
+      pv.setAttribute("aria-label", "الصفحة السابقة"); nx.setAttribute("aria-label", "الصفحة التالية");
+      pv.disabled = progPage <= 0; nx.disabled = progPage >= pages - 1;
+      lb.setAttribute("aria-live", "polite"); lb.textContent = arNum(progPage + 1) + " / " + arNum(pages);
+      pv.addEventListener("click", function(){ progPage--; renderProgressList(); });
+      nx.addEventListener("click", function(){ progPage++; renderProgressList(); });
+      pg.appendChild(nx); pg.appendChild(lb); pg.appendChild(pv);
+    }
+    JUZ_AMMA.slice(progPage * PP, progPage * PP + PP).forEach(function(s){
       var trained=0, memorized=0;
       for(var a=1;a<=s.ayahs;a++){
         var st = getStatus(s.num,a);
@@ -10530,6 +10623,9 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       setPinMode(settings.pin ? "enter" : "create");
       showView("view-pin");
     });
+    $("btnForgot").addEventListener("click", openForgot);
+    $("forgotOk").addEventListener("click", submitForgot);
+    $("forgotAns").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); submitForgot(); } else if(e.key === "Escape"){ closeForgot(); $("btnForgot").focus(); } });
     $("btnPinBack").addEventListener("click", function(){
       showView("view-home");
     });
@@ -10588,16 +10684,30 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 (function(){
   var tabs=document.getElementById("setTabs"); if(!tabs) return; var cur;
   var view=document.getElementById("view-dashboard");
+  var SUBS={child:[["rep","التكرار"],["exp","الجلسة"],["opt","خيارات"],["view","العرض"]],prog:[["grow","النمو"],["list","السور"]],parent:[["sec","الرمز"],["prof","الملفات"],["ref","المراجع"]]};
+  var subCur={child:"rep",prog:"grow",parent:"sec"},subBar=document.createElement("div");
+  subBar.className="sub-tabs";subBar.setAttribute("role","tablist");subBar.setAttribute("aria-label","أقسام");
+  tabs.parentNode.insertBefore(subBar,tabs.nextSibling);
+  subBar.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;subCur[cur]=b.dataset.s;var d=document.getElementById("surahDetailCard");if(d&&b.dataset.s!=="detail")d.style.display="none";show(cur)});
+  function detailOpen(){var d=document.getElementById("surahDetailCard");return !!d&&d.style.display!=="none"&&d.style.display!==""}
   function show(g){
     try{localStorage.setItem("athar_set_tab",g)}catch(e){}
     [].forEach.call(tabs.children,function(b){b.classList.toggle("on",b.dataset.g===g)});
-    cur=g;[].forEach.call(view.querySelectorAll(":scope > *:not(.back-row):not(.set-tabs)"),function(c){c.classList.toggle("grp-hide",(c.dataset.grp||"child")!==g)});
+    cur=g;
+    var list=SUBS[g]||[],sub=subCur[g]||(list[0]&&list[0][0]);
+    if(g==="prog"&&detailOpen())sub="detail";else if(sub==="detail")sub="list";
+    subBar.innerHTML="";
+    list.forEach(function(x){var b=document.createElement("button");b.type="button";b.dataset.s=x[0];b.textContent=x[1];b.setAttribute("role","tab");b.setAttribute("aria-selected",x[0]===sub?"true":"false");subBar.appendChild(b)});
+    [].forEach.call(view.querySelectorAll(":scope > *:not(.back-row):not(.set-tabs):not(.sub-tabs)"),function(c){
+      var grp=c.dataset.grp||"child",sb=c.dataset.sub||(list[0]?(g==="child"?"view":list[0][0]):"");
+      c.classList.toggle("grp-hide",grp!==g||(list.length>0&&sb!==sub))});
     view.scrollTop=0;
   }
   tabs.addEventListener("click",function(e){var b=e.target.closest("button");if(b)show(b.dataset.g)});
   var g="child"; try{g=localStorage.getItem("athar_set_tab")||"child"}catch(e){}
   cur=g;show(g);
   new MutationObserver(function(){show(cur)}).observe(view,{attributes:true,attributeFilter:["class"]});
+  var dc=document.getElementById("surahDetailCard");if(dc)new MutationObserver(function(){if(cur==="prog")show("prog")}).observe(dc,{attributes:true,attributeFilter:["style"]});
   function digits(){
     var c=document.getElementById("digitsCard"),cur="ar";
     try{cur=localStorage.getItem("athar_num_fmt")==="en"?"en":"ar"}catch(e){}
