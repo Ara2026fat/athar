@@ -36,6 +36,7 @@
 .set-tabs::-webkit-scrollbar{display:none}
 .set-tabs button{flex:0 0 auto;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-weight:700;font-size:14px;background:rgba(255,255,255,.78);color:#31405a;box-shadow:0 1px 4px rgba(14,32,64,.12);cursor:pointer}
 .set-tabs button.on{background:#0e2040;color:#fff}
+.set-tabs button{min-height:44px}#view-dashboard button:not(.ayah-chip):not(.back-btn),#view-dashboard input:not([type=range]):not([type=checkbox]){min-height:44px}
 .grp-hide{display:none!important}
 .view:not(#view-home):not(#view-dashboard):not(#view-pin){zoom:var(--ts,1)}
 body.calm .view:not(#view-home) *,body.calm .view:not(#view-home) *::before{animation:none!important;transition:none!important}
@@ -340,6 +341,17 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     color:var(--text);cursor:pointer;
   }
   .pin-key:active{transform:scale(.94);}
+  body.in-pin .gear-btn{visibility:hidden;pointer-events:none;}
+  .pin-wrap{padding-top:34px;}
+  .leave-dlg{position:fixed;inset:0;z-index:900;background:rgba(27,58,32,.5);display:none;align-items:center;justify-content:center;padding:20px;}
+  .leave-dlg.show{display:flex;}
+  .leave-card{background:var(--bg,#fff);border-radius:24px;padding:20px 18px;max-width:340px;width:100%;text-align:center;box-shadow:0 18px 44px rgba(20,50,25,.3);}
+  .leave-card h3{margin:0 0 6px;font-size:19px;color:var(--forest-dark);}
+  .leave-card p{margin:0 0 4px;font-size:14px;color:var(--text);line-height:1.6;}
+  .leave-card .leave-host{direction:ltr;font-weight:700;color:var(--forest-dark);font-size:14px;margin-bottom:14px;word-break:break-all;}
+  .leave-card button,.leave-card a{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;border-radius:16px;border:none;font:700 16px 'Tajawal',sans-serif;cursor:pointer;text-decoration:none;margin-top:8px;}
+  .leave-card .leave-go{background:var(--forest);color:#fff;}
+  .leave-card .leave-stay{background:var(--card);color:var(--forest-dark);box-shadow:var(--shadow-sm);}
   .pin-hint{margin-top:16px;font-size:11.5px;color:#9A927C;}
 
   /* ---------- parent dashboard ---------- */
@@ -1707,15 +1719,25 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       <div id="libBody"></div>
     </section>
 
+    <div class="leave-dlg" id="leaveDlg" role="dialog" aria-modal="true" aria-labelledby="leaveTitle">
+      <div class="leave-card">
+        <h3 id="leaveTitle">ستغادر التطبيق</h3>
+        <p>سيُفتح موقع خارجي في صفحة جديدة. هذا للأهل فقط.</p>
+        <div class="leave-host" id="leaveHost"></div>
+        <a class="leave-go" id="leaveGo" href="#" target="_blank" rel="noopener noreferrer">متابعة إلى الموقع</a>
+        <button type="button" class="leave-stay" id="leaveStay">البقاء في أثر</button>
+      </div>
+    </div>
+
     <!-- شاشة PIN لولي الأمر -->
     <section class="view" id="view-pin">
       <div class="pin-wrap">
-        <h2>الإعدادات — ولي الأمر</h2>
-        <p>أدخل الرمز السري (4 أرقام)</p>
+        <h2 id="pinTitle">الإعدادات — ولي الأمر</h2>
+        <p id="pinSub">أدخل الرمز السري (4 أرقام)</p>
         <div class="pin-dots" id="pinDots" role="img" aria-label="أدخل الرمز السري المكوّن من 4 أرقام"></div>
         <div class="pin-pad" id="pinPad"></div>
         <button class="back-btn" id="btnPinBack" style="margin-top:18px;">→ رجوع</button>
-        <div class="pin-hint">الرمز الافتراضي: 0000 (يمكن تغييره من لوحة ولي الأمر)</div>
+        <div class="pin-hint" id="pinHint"></div>
       </div>
     </section>
 
@@ -1919,8 +1941,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   function loadSettings(){
     var s;
     try{ s = JSON.parse(localStorage.getItem(SETTINGS_KEY)); }catch(e){ s = null; }
-    if(!s) s = {repeatCount:3, pin:"0000"};
-    if(!s.pin) s.pin = "0000";
+    if(!s) s = {repeatCount:3};
+    /* لا رمز افتراضي: من لا يملك رمزًا محفوظًا يُطلب منه إنشاء واحد عند أول فتح للوحة الأهل (المستخدمون الحاليون يحتفظون برمزهم) */
     if(!s.repeatCount) s.repeatCount = 3;
     var D = {speed:1, vol:1, textSize:1, calm:false, surahRepeat:1, gapMult:1, sessionMin:5, bedtime:false, sfx:true, wordHL:true, childLock:false, voiceRec:false, voicesOn:false, voice:"qari", autoDl:false, voices:[{id:"v1",name:"أمي"},{id:"v2",name:"أبي"}]};
     for(var k in D){ if(s[k] === undefined) s[k] = D[k]; }
@@ -1957,6 +1979,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     for(var i=0;i<views.length;i++){ views[i].classList.remove("active"); }
     $(id).classList.add("active");
     document.body.classList.toggle("in-surah", id === "view-surah");
+    document.body.classList.toggle("in-pin", id === "view-pin");
+    if(id !== "view-surah"){ try{ sessionStorage.removeItem("athar_last_place"); }catch(e){} }
     if(id === "view-home" || id === "view-door" || id === "view-quiz"){ quizBack = false; }
     if(id === "view-door"){ curDoor = true; }
     else if(id === "view-home" || id === "view-library"){ curDoor = false; }
@@ -2628,6 +2652,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 
   function updateAyahBadge(){
     $("ayahBadge").textContent = "الآية " + player.currentAyah + " من " + player.ayahsTotal;
+    try{ if(player.surah) sessionStorage.setItem("athar_last_place", JSON.stringify({s:player.surah,a:player.currentAyah})); }catch(e){}
     updateVoiceBar();
   }
 
@@ -11488,8 +11513,47 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     });
   }
 
+  /* نافذة تأكيد قبل مغادرة التطبيق إلى موقع خارجي (لولي الأمر فقط) */
+  function setupLeaveDialog(){
+    var dlg = $("leaveDlg"), go = $("leaveGo");
+    function close(){ dlg.classList.remove("show"); }
+    document.addEventListener("click", function(e){
+      var a = e.target.closest ? e.target.closest(".ref-links a") : null;
+      if(!a) return;
+      e.preventDefault();
+      var href = a.getAttribute("href");
+      go.setAttribute("href", href);
+      $("leaveHost").textContent = href.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+      dlg.classList.add("show");
+      go.focus();
+    });
+    go.addEventListener("click", function(){ setTimeout(close, 50); });
+    $("leaveStay").addEventListener("click", close);
+    dlg.addEventListener("click", function(e){ if(e.target === dlg) close(); });
+    document.addEventListener("keydown", function(e){ if(e.key === "Escape") close(); });
+  }
+  /* استعادة آخر سورة عند إعادة تحميل الصفحة فقط (sessionStorage): تفتح على الآية دون تشغيل صوت */
+  function restoreLastPlace(){
+    try{
+      var v = JSON.parse(sessionStorage.getItem("athar_last_place") || "null");
+      if(!v || !(v.s >= 1) || !JUZ_AMMA.some(function(x){ return x.num === v.s; })) return;
+      var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+      if(nav && nav.type !== "reload") return;
+      openSurah(v.s, Math.max(1, v.a|0));
+    }catch(e){}
+  }
+
   /* ================= وضع ولي الأمر: PIN ================= */
-  var pinBuffer = "";
+  var pinBuffer = "", pinMode = "enter", pinFirst = "";
+  function setPinMode(m){
+    pinMode = m; pinBuffer = ""; pinFirst = "";
+    var t = $("pinTitle"), sub = $("pinSub"), h = $("pinHint");
+    if(m === "create"){ t.textContent = "أنشئ رمز ولي الأمر"; sub.textContent = "اختر 4 أرقام تتذكرها لحماية الإعدادات"; h.textContent = "لن يستطيع الطفل فتح الإعدادات دونه"; }
+    else if(m === "confirm"){ t.textContent = "أعد إدخال الرمز"; sub.textContent = "اكتب الأرقام نفسها للتأكيد"; h.textContent = ""; }
+    else { t.textContent = "الإعدادات — ولي الأمر"; sub.textContent = "أدخل الرمز السري (4 أرقام)";
+      h.textContent = (settings.pin === "0000") ? "رمزك الحالي هو الرمز القديم 0000، غيّره من لوحة ولي الأمر" : ""; }
+    renderPinDots();
+  }
   function renderPinPad(){
     var pad = $("pinPad");
     pad.innerHTML = "";
@@ -11522,6 +11586,14 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   var pinLocked = false, pinFails = 0;
   function checkPin(){
     if(pinLocked) return;
+    if(pinMode === "create"){ var first = pinBuffer; setPinMode("confirm"); pinFirst = first; return; }
+    if(pinMode === "confirm"){
+      if(pinBuffer === pinFirst){
+        settings.pin = pinBuffer; saveSettings(settings); showToast("تم حفظ الرمز السري");
+        setPinMode("enter"); openDashboard();
+      } else { showToast("الرمزان غير متطابقين، حاول من جديد"); setPinMode("create"); }
+      return;
+    }
     if(pinBuffer === settings.pin){
       pinBuffer = ""; pinFails = 0;
       renderPinDots();
@@ -11650,6 +11722,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 
     renderHomeGrid();
     renderPinPad();
+    setupLeaveDialog();
+    restoreLastPlace();
 
     setupBackHold();
     $("btnCompleteHome").addEventListener("click", function(){ leaveSurah(false); });
@@ -11715,8 +11789,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     $("btnAyahStart").addEventListener("click", startAyahPick);
 
     $("btnParent").addEventListener("click", function(){
-      if(!pinLocked) pinBuffer = "";
-      renderPinDots();
+      setPinMode(settings.pin ? "enter" : "create");
       showView("view-pin");
     });
     $("btnPinBack").addEventListener("click", function(){
