@@ -102,7 +102,10 @@
   function loadSettings(){
     var s;
     try{ s = JSON.parse(localStorage.getItem(SETTINGS_KEY)); }catch(e){ s = null; }
-    if(!s || typeof s !== "object" || Array.isArray(s)) s = {repeatCount:3};
+    var freshUser = false;
+    try{ freshUser = localStorage.getItem(SETTINGS_KEY) === null && localStorage.getItem(PROGRESS_KEY) === null; }catch(e){}
+    /* طفل جديد بلا إعدادات ولا تقدّم: أقصر دورة (استمع مرة ثم قلها مرة)؛ التكرار المخصص يبقى للأهل */
+    if(!s || typeof s !== "object" || Array.isArray(s)) s = {repeatCount: freshUser ? 1 : 3};
     /* لا رمز افتراضي: من لا يملك رمزًا محفوظًا يُطلب منه إنشاء واحد عند أول فتح للوحة الأهل (المستخدمون الحاليون يحتفظون برمزهم) */
     if(!s.repeatCount) s.repeatCount = 3;
     var D = {speed:1, vol:1, textSize:1, calm:false, surahRepeat:1, gapMult:1, sessionMin:5, bedtime:false, sfx:true, wordHL:true, childLock:false, voiceRec:false, voicesOn:false, voice:"qari", autoDl:false, voices:[{id:"v1",name:"أمي"},{id:"v2",name:"أبي"}]};
@@ -494,8 +497,20 @@
     el.appendChild(mk("pgr-next", "الصفحة التالية", "←", page + 1));
   }
   var surahPg = { page:0, per:12 };
+  function starterVisible(){
+    var n = 0;
+    for(var k in progress){ if(progress[k] === "trained" || progress[k] === "memorized") n++; }
+    if(n >= 3) return false;
+    return JUZ_AMMA.every(function(s){ return surahProgressRatio(s.num) < 1; });
+  }
   function renderHomeGrid(){
     var grid = $("surahGrid");
+    var sc = $("startCard");
+    if(sc){
+      var vis = starterVisible();
+      if(sc.hidden === vis){ sc.hidden = !vis; }
+      if(!sc._b){ sc._b = 1; sc.addEventListener("click", function(){ try{ sfx("tap"); }catch(e){} openSurah(108); }); }
+    }
     grid.innerHTML = "";
     var per = surahPg.per, pages = Math.max(1, Math.ceil(JUZ_AMMA.length / per));
     if(surahPg.page >= pages) surahPg.page = pages - 1;
@@ -768,6 +783,8 @@
     else { renderHomeGrid(); }
     showView(browseView);
     try{ relayoutPaged(); }catch(e){}
+    /* بعد استقرار الخطوط والحركة قد يتغيّر الارتفاع: أعد الملاءمة حتى لا يظهر تمرير */
+    [450, 1100].forEach(function(ms){ setTimeout(function(){ var v = document.querySelector(".view.active"); if(v && v.id === browseView){ try{ relayoutPaged(); }catch(e){} } }, ms); });
     if(which === "ayahs"){ centerActivePill(); }
     window.scrollTo(0,0);
   }
