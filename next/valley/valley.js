@@ -660,6 +660,8 @@ window.VX = { lift: liftAthar, placeSay: placeSay, tidy: tidy, relayout: relayou
   var NSX = "http://www.w3.org/2000/svg", NAMES = ["map_day", "map_sun", "map_night"], MR = [0, 0, 405, 720];
   var PL = { masjid: [322, 356, 40], hill: [218, 366, 40], home: [96, 420, 52], spring: [226, 528, 44], road: [330, 606, 42] };
   var bg = $("vx3d"); if (!bg) return;
+  /* الصور الثلاث غير موجودة بعد: لا نطلبها (تفادي 404). عند إضافتها ضع window.VX_MAP=true قبل هذا الكود أو غيّر القيمة هنا. */
+  if (window.VX_MAP !== true) { window.VX = window.VX || {}; window.VX.paint = function () { return false; }; return; }
   var imgs = [], ok = 0, painted = false, cur = -1;
   function idx(p) { return p === 2 ? 2 : (p === 1 || p === 3) ? 1 : 0; }
   NAMES.forEach(function (n, i) {

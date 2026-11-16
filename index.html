@@ -213,61 +213,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     animation:brandGlint 14.3s ease-in-out infinite;
     animation-delay:calc(var(--glint-delay,0s) * 3.3);
   }
-  .surah-icon{font-size:16px;line-height:1;display:inline-block;position:relative;z-index:1;
-    filter:drop-shadow(0 1px 1px rgba(40,82,47,.3));}
-  .ic-glow{animation:icGlow 2.6s ease-in-out infinite;}
-  @keyframes icGlow{
-    0%,100%{filter:drop-shadow(0 0 0 rgba(201,150,58,0));transform:scale(1);}
-    50%{filter:drop-shadow(0 0 5px rgba(201,150,58,.7));transform:scale(1.1);}
-  }
-  .ic-twinkle{animation:icTwinkle 3s ease-in-out infinite;}
-  @keyframes icTwinkle{
-    0%,100%{transform:rotate(0) scale(1);}
-    50%{transform:rotate(18deg) scale(1.15);}
-  }
-  .ic-sway{animation:icSway 3.4s ease-in-out infinite;transform-origin:50% 85%;}
-  @keyframes icSway{
-    0%,100%{transform:rotate(-9deg);}
-    50%{transform:rotate(9deg);}
-  }
-  .ic-bounce{animation:icBounce 2.1s ease-in-out infinite;}
-  @keyframes icBounce{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-4px);}
-  }
-  .ic-flip{animation:icFlip 3.6s ease-in-out infinite;}
-  @keyframes icFlip{
-    0%,55%,100%{transform:scaleX(1);}
-    70%{transform:scaleX(.15);}
-    85%{transform:scaleX(1);}
-  }
-  .ic-pulse{animation:icPulse 2s ease-in-out infinite;}
-  @keyframes icPulse{
-    0%,100%{transform:scale(1);}
-    50%{transform:scale(1.18);}
-  }
-  .ic-float{animation:icFloat 3s ease-in-out infinite;}
-  @keyframes icFloat{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-5px);}
-  }
-  .ic-shake{animation:icShake 3.8s ease-in-out infinite;}
-  @keyframes icShake{
-    0%,92%,100%{transform:translate(0,0) rotate(0);}
-    94%{transform:translate(-2px,0) rotate(-3deg);}
-    96%{transform:translate(2px,0) rotate(3deg);}
-    98%{transform:translate(-1px,0) rotate(-1deg);}
-  }
-  .ic-spin-slow{animation:icSpinSlow 7s linear infinite;}
-  @keyframes icSpinSlow{to{transform:rotate(360deg);}}
-  .ic-wobble{animation:icWobble 2.8s ease-in-out infinite;}
-  @keyframes icWobble{
-    0%,100%{transform:rotate(-7deg);}
-    50%{transform:rotate(7deg);}
-  }
   @media (prefers-reduced-motion: reduce){
     .surah-card{animation:none;}
-    .surah-icon{animation:none !important;}
     .surah-icon-badge::after{animation:none;opacity:0;}
   }
 
@@ -286,13 +233,6 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   @media (prefers-reduced-motion: reduce){
     .shine-sweep::after{animation:none;display:none;}
   }
-  .surah-num{
-    width:30px;height:30px;border-radius:50%;
-    background:var(--sage);color:var(--forest-dark);
-    font-family:'Baloo Bhaijan 2';font-weight:700;font-size:13px;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .surah-name{font-size:15px;font-weight:700;color:var(--text);}
   .surah-progress-dot{width:8px;height:8px;border-radius:50%;background:#E3DFD4;}
   .surah-progress-dot.some{background:var(--gold);}
   .surah-progress-dot.done{background:var(--success);}
