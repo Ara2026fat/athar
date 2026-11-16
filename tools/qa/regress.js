@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Athar regression QA — usage: NODE_PATH=$(npm root -g) node tools/qa/regress.js <port> [out.json] [--shots dir]
-   Options: --only name,name  --vp 320x568,390x780  --shots dir
+   Options: --jobs N (parallel pages, default 4)  --only name,name  --vp 320x568,390x780  --shots dir
    Serves nothing: run `python3 -m http.server <port>` from the repo root first.
    Checks per screen x viewport: console/page errors, local 4xx/failed requests, vertical/horizontal overflow
    (document + active view), tap targets <44px, text <12px. Exit code 1 if any "critical" issue (errors/404/overflow). */
@@ -90,45 +90,52 @@ const AUDIT = () => {
   const browser = await chromium.launch();
   const report = [];
   if (shots) fs.mkdirSync(shots, { recursive: true });
+  const ji = process.argv.indexOf('--jobs'); const JOBS = ji > 0 ? +process.argv[ji + 1] || 4 : 4;
+  const tasks = [];
   for (const [w, h] of VPS) {
     if (vpOnly && !vpOnly.includes(`${w}x${h}`)) continue;
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
-    for (const sc of SC) {
-      if (only && !only.includes(sc.n)) continue;
-      const page = await ctx.newPage();
-      const errs = [], nf = [];
-      page.on('pageerror', (e) => errs.push('pageerror: ' + e.message.slice(0, 160)));
-      page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console: ' + m.text().slice(0, 160)); });
-      page.on('response', (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) nf.push(r.status() + ' ' + r.url().replace(BASE, '')); });
-      page.on('requestfailed', (r) => { if (r.url().startsWith(BASE) && !/net::ERR_ABORTED/.test(r.failure()?.errorText || '')) nf.push('FAIL ' + r.url().replace(BASE, '')); });
-      let res = { name: sc.n, vp: `${w}x${h}` };
-      try {
-        await page.goto(BASE + sc.u, { waitUntil: 'load', timeout: 30000 });
-        await page.waitForTimeout(sc.wait || 2200);
-        let ok = true;
-        for (const st of sc.s) { const r = await clickStep(page, st); if (r === false) { ok = false; break; } }
-        await page.waitForTimeout(700);
-        if (!ok) res.skipped = 'selector not found';
-        else { Object.assign(res, await page.evaluate(AUDIT)); if (shots) await page.screenshot({ path: path.join(shots, `${sc.n}-${w}x${h}.png`) }); }
-      } catch (e) { errs.push('harness: ' + e.message.slice(0, 120)); }
-      res.errors = [...new Set(errs)]; res.notFound = [...new Set(nf)];
-      report.push(res); await page.close();
-    }
-    await ctx.close();
+    for (const sc of SC) { if (only && !only.includes(sc.n)) continue; tasks.push([w, h, sc]); }
   }
+  const ctxs = {};
+  const getCtx = async (w, h) => ctxs[`${w}x${h}`] || (ctxs[`${w}x${h}`] = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true, isMobile: true }));
+  const runOne = async ([w, h, sc]) => {
+    const ctx = await getCtx(w, h);
+    const page = await ctx.newPage();
+    const errs = [], nf = [];
+    page.on('pageerror', (e) => errs.push('pageerror: ' + e.message.slice(0, 160)));
+    page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console: ' + m.text().slice(0, 160)); });
+    page.on('response', (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) nf.push(r.status() + ' ' + r.url().replace(BASE, '')); });
+    page.on('requestfailed', (r) => { if (r.url().startsWith(BASE) && !/net::ERR_ABORTED/.test(r.failure()?.errorText || '')) nf.push('FAIL ' + r.url().replace(BASE, '')); });
+    const res = { name: sc.n, vp: `${w}x${h}`, small: [], tiny: [], scrollers: [] };
+    try {
+      await page.goto(BASE + sc.u, { waitUntil: 'load', timeout: 30000 });
+      await page.waitForTimeout(sc.wait || 2200);
+      let ok = true;
+      for (const st of sc.s) { const r = await clickStep(page, st); if (r === false) { ok = false; break; } }
+      await page.waitForTimeout(700);
+      if (!ok) res.skipped = 'selector not found';
+      else { Object.assign(res, await page.evaluate(AUDIT)); if (shots) await page.screenshot({ path: path.join(shots, `${sc.n}-${w}x${h}.png`) }); }
+    } catch (e) { errs.push('harness: ' + e.message.slice(0, 120)); res.harness = true; }
+    res.errors = [...new Set(errs)]; res.notFound = [...new Set(nf)];
+    report.push(res); await page.close().catch(() => {});
+  };
+  let qi = 0;
+  await Promise.all(Array.from({ length: JOBS }, async () => { while (qi < tasks.length) await runOne(tasks[qi++]); }));
+  const ord = (r) => VPS.findIndex(v => `${v[0]}x${v[1]}` === r.vp) * 1000 + SC.findIndex(s => s.n === r.name);
+  report.sort((a, b) => ord(a) - ord(b));
   await browser.close();
   fs.writeFileSync(out, JSON.stringify(report, null, 1));
   let crit = 0; const lines = [];
   for (const r of report) {
     if (r.skipped) { lines.push(`SKIP ${r.name} @${r.vp}`); continue; }
     const f = [];
-    if (r.errors.length) f.push(`errors:${r.errors.length}`);
+    if (r.errors.length || r.harness) f.push(`errors:${r.errors.length}`);
     if (r.notFound.length) f.push(`404:${r.notFound.length}`);
     if (r.docV > 1) f.push(`overflowV:${r.docV}`);
     if (r.docH > 1) f.push(`overflowH:${r.docH}`);
     if (f.length) crit++;
-    if (r.small.length) f.push(`tap<44:${r.small.length}`);
-    if (r.tiny.length) f.push(`text<12:${r.tiny.length}`);
+    if (r.small && r.small.length) f.push(`tap<44:${r.small.length}`);
+    if (r.tiny && r.tiny.length) f.push(`text<12:${r.tiny.length}`);
     if (f.length) lines.push(`${r.name} @${r.vp}  ${f.join(' ')}`);
   }
   console.log(lines.join('\n'));
