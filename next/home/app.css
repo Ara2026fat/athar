@@ -474,7 +474,7 @@
   .toast.show{opacity:1;}
 
   footer.sig{
-    position:relative;z-index:1;text-align:center;color:#B9B29C;font-size:10.5px;
+    position:relative;z-index:1;text-align:center;color:#B9B29C;font-size:12px;
     margin-top:20px;padding-bottom:6px;
   }
 
@@ -1061,8 +1061,8 @@
   #view-surah .ayah-badge-row{margin:0;}
   #view-surah .ayah-badge{font-size:13px;padding:4px 14px;}
   #view-surah .range-picker{margin:0;gap:4px;font-size:12px;flex-wrap:nowrap;}
-  #view-surah .range-input{width:38px;font-size:12.5px;padding:3px 2px;}
-  #view-surah .range-reset{padding:4px 10px;font-size:11.5px;}
+  #view-surah .range-input{width:44px;font-size:12.5px;padding:3px 2px;}
+  #view-surah .range-reset{padding:4px 10px;font-size:12px;}
   #view-surah .repeat-track{flex:none;margin:0 0 2px;}
   #view-surah .voice-bar{flex:none;margin:0 0 4px;}
   #view-surah .orb-row{flex:none;margin:0;gap:10px;}
@@ -1398,3 +1398,26 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 .hc-btn:active{transform:translateY(4px);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 2px 0 rgba(0,0,0,.3)}
 @media (max-height:700px){.hc-medal{width:80px;height:80px}.hc-title{font-size:32px}.hc-stars svg{width:52px;height:52px}.hc-btn{min-height:58px;margin-top:8px}}
 @media (prefers-reduced-motion:reduce){.hc,.hc-medal{animation:none}}
+
+/* r5-qa: هواتف قصيرة (≈320×568) — ضغط رأسي آمن بلا تمرير (html.sc-sub لتغلب screens.css) */
+@media (max-height:620px){
+  #app{padding-bottom:0}
+  .browse-head{margin:0 0 6px;gap:8px}
+  html.sc-sub .seg .seg-btn{min-height:44px;padding-top:4px;padding-bottom:4px}
+  html.sc-sub #view-numbers .seg .seg-btn{min-height:50px;padding:3px 2px}
+  #view-numbers .intro{margin-bottom:0}
+  #view-numbers .nm-chips{margin-bottom:4px}
+  #view-numbers .dots-prog{margin-top:4px}
+  #view-numbers .nm-stars{margin:4px 0}
+  #view-numbers .nm-eq{margin:2px 0}
+  #view-numbers .lq-say{margin-bottom:6px;padding-top:6px;padding-bottom:6px}
+  #view-numbers .lq-opts .letter-tile.huge{height:72px}
+  #view-ayahs .back-btn{width:44px;height:44px}
+  #view-ayahs .start-btn{margin-top:0}
+  footer.sig{margin-top:2px;padding-bottom:2px;line-height:1.2}
+}
+/* r5-qa: تبويبات الأرقام الستة تتسع على 320 بلا تمرير أفقي وبعرض ≥44px */
+@media (max-width:340px){
+  html.sc-sub :is(#view-numbers,#view-quiz) .seg.seg{padding:2px;gap:1px;overflow-x:hidden}
+  html.sc-sub :is(#view-numbers,#view-quiz) .seg .seg-btn{flex:1 1 0;min-width:0;font-size:13px}
+}
