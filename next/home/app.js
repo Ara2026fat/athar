@@ -9997,12 +9997,12 @@
     [1,2,3,5,"inf"].forEach(function(n){
       var chip = document.createElement("button");
       chip.className = "repeat-chip" + (settings.repeatCount===n ? " active":"");
-      chip.textContent = n === "inf" ? "∞ حتى الإيقاف" : (n + " مرات");
+      chip.textContent = n === "inf" ? "∞ حتى الإيقاف" : (n === 1 ? "مرّة واحدة" : (n === 2 ? "مرّتان" : (arNum(n) + " مرات")));
       chip.addEventListener("click", function(){
         settings.repeatCount = n;
         saveSettings(settings);
         renderRepeatOptions();
-        showToast(n === "inf" ? "تكرار بلا حدّ حتى الإيقاف" : ("تم ضبط التكرار: " + n));
+        showToast(n === "inf" ? "تكرار بلا حدّ حتى الإيقاف" : ("تمّ ضبط التكرار: " + arNum(n)));
       });
       wrap.appendChild(chip);
     });
