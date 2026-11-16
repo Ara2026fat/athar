@@ -544,7 +544,7 @@ function musNeedFonts(n){
   try{ canDl = window.parent !== window && typeof window.parent.atharDownloadFonts === 'function'; }catch(e){}
   pg.innerHTML =
     '<div class="mus-msg"><b>خطوط المصحف لم تُحمَّل بعد</b>'
-    + 'اتصل بالإنترنت ثم اضغط الزر: تُحمَّل الحزمة مرّةً واحدة (نحو ٣ ميغا) ثم تعمل الآيات دائمًا بلا إنترنت. تجدها لاحقًا في الصفحة الرئيسية ضمن «حزمة العمل دون إنترنت».'
+    + 'اتصل بالإنترنت ثم اضغط الزر لتحميل الخطوط مرّةً واحدة (نحو ٣ ميغا) فتظهر الآيات بسرعة. تجدها لاحقًا في الإعدادات ضمن «ملفات التنزيل».'
     + (canDl ? '<br><button type="button" id="musDlFonts">تحميل الخطوط الآن</button><div id="musDlProg" style="margin-top:8px;font-size:13px"></div>'
              : '<br><button type="button" onclick="location.reload()">أعِد المحاولة</button>')
     + '</div>';
