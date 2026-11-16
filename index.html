@@ -190,12 +190,12 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       </div>
       <button class="choice-tile" id="choiceSurah" style="--c:#22A04B">
         <span class="choice-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7 4.6 3.5 5v13c3.5-.4 6.5 0 8.5 1.5 2-1.5 5-1.9 8.5-1.5V5C17 4.6 14 5 12 6.5z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6.5v13" stroke="#fff" stroke-width="2.2"/></svg></span>
-        <span class="choice-txt"><span class="ct1">حفظ سورة</span><span class="ct2">اختر سورة كاملة من جزء عمّ — ٣٧ سورة</span></span>
+        <span class="choice-txt"><span class="ct1">حفظ سورة</span><span class="ct2">اختر سورة من جزء عمّ</span></span>
         <svg class="choice-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button class="choice-tile" id="choiceAyah" style="--c:#E09A00">
         <span class="choice-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4.5" width="16" height="3.2" rx="1.6" fill="#fff" opacity=".5"/><rect x="4" y="10.4" width="16" height="3.2" rx="1.6" fill="#fff"/><rect x="4" y="16.3" width="16" height="3.2" rx="1.6" fill="#fff" opacity=".5"/><path d="M1.8 9v6M22.2 9v6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span>
-        <span class="choice-txt"><span class="ct1">حفظ آيات</span><span class="ct2">حدّد السورة، ومن أيّ آية إلى أيّ آية</span></span>
+        <span class="choice-txt"><span class="ct1">حفظ آيات</span><span class="ct2">اختر سورة وبعض آياتها</span></span>
         <svg class="choice-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button class="choice-tile small" id="choiceLetters" style="--c:#8B5CF6">
@@ -271,7 +271,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       </div>
       <div class="intro small">
         <h1>اختر سورة</h1>
-        <p>اضغط على السورة لتبدأ الحفظ.</p>
+        <p>اضغط سورة لنبدأ.</p>
       </div>
       <div class="surah-grid" id="surahGrid"></div>
       <div class="pgr" id="surahPager"></div>
@@ -288,7 +288,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       </div>
       <div class="intro small">
         <h1>اختر الآيات</h1>
-        <p>اختر السورة، ثم اضغط آية البداية وبعدها آية النهاية.</p>
+        <p>اختر سورة. ثم اضغط أول آية، وبعدها آخر آية.</p>
       </div>
       <div class="surah-strip" id="ayahSurahStrip"></div>
       <div class="ayah-pick-card">
@@ -314,7 +314,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <iframe id="mushafFrame" class="mushaf-iframe" title="صفحة المصحف" loading="eager"></iframe>
       </div>
       <div class="meta-row">
-      <div class="ayah-badge-row"><span class="ayah-badge" id="ayahBadge">الآية 1 من 1</span></div>
+      <div class="ayah-badge-row"><span class="ayah-badge" id="ayahBadge">الآية ١ من ١</span></div>
 
       <div class="range-picker">
         <span class="range-label">حفظ من آية</span>
@@ -351,7 +351,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 
       <div class="surah-complete" id="surahComplete" style="display:none;">
         <svg class="medal-badge" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 120" width="84" height="84"><use href="#badge-medal" xlink:href="#badge-medal"/></svg>
-        <h3>أحسنت!</h3>
+        <h3>ما شاء الله!</h3>
         <p>أنهيت الاستماع والترديد لهذه السورة.</p>
         <button class="pill-btn" id="btnCompleteHome">العودة للسور</button>
       </div>
@@ -472,8 +472,8 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     <section class="view" id="view-pin">
       <div class="pin-wrap">
         <h2 id="pinTitle" tabindex="-1">الإعدادات — ولي الأمر</h2>
-        <p id="pinSub">أدخل الرمز السري (4 أرقام)</p>
-        <div class="pin-dots" id="pinDots" role="img" aria-label="أدخل الرمز السري المكوّن من 4 أرقام"></div>
+        <p id="pinSub">أدخل الرمز السري (٤ أرقام)</p>
+        <div class="pin-dots" id="pinDots" role="img" aria-label="أدخل الرمز السري المكوّن من ٤ أرقام"></div>
         <div class="pin-pad" id="pinPad"></div>
         <button class="back-btn" id="btnPinBack" aria-label="رجوع">→</button>
         <div class="pin-hint" id="pinHint"></div>
@@ -521,7 +521,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           </div>
           <div class="growth-text">
             <div class="growth-pct" id="growthPct">٠٪</div>
-            <p>كلّما حُفظت آيات أكثر، اكتمل «ضوء الحفظ» — <span id="growthCount">0 من 0</span> آية.</p>
+            <p>كلّما حُفظت آيات أكثر، اكتمل «ضوء الحفظ» — <span id="growthCount">٠ من ٠</span> آية.</p>
           </div>
         </div>
       </div>
@@ -556,7 +556,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           <h3 style="margin:0;">تغيير الرمز السري</h3>
         </div>
         <div class="pin-change-row">
-          <input type="text" id="newPinInput" maxlength="4" placeholder="رقم جديد من 4 خانات" inputmode="numeric">
+          <input type="text" id="newPinInput" maxlength="4" placeholder="رقم جديد من ٤ خانات" inputmode="numeric">
           <button class="save-btn" id="btnSavePin">حفظ</button>
         </div>
       </div>
@@ -607,7 +607,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 
       <div class="section-card about-card" data-grp="parent" data-sub="ref">
         <h3>عن التطبيق</h3>
-        <p class="muted">أثر — أول تطبيقات سلسلة «أثر»، لتحفيظ جزء عمّ للأطفال من عمر 3 سنوات فما فوق.</p>
+        <p class="muted">أثر — أول تطبيقات سلسلة «أثر»، لتحفيظ جزء عمّ للأطفال من عمر ٣ سنوات فما فوق.</p>
         <p class="copyright">جميع الحقوق محفوظة © 2026 ARAFAT ALRAJHI</p>
       </div>
     </section>
