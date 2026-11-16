@@ -474,7 +474,7 @@
   .toast.show{opacity:1;}
 
   footer.sig{
-    position:relative;z-index:1;text-align:center;color:#6f6a58;font-size:12px;
+    position:relative;z-index:1;text-align:center;color:#58533f;font-size:12px;
     margin-top:20px;padding-bottom:6px;
   }
 
@@ -979,7 +979,7 @@
   .letter-tile.ok{outline:5px solid #FFE27A;} .letter-tile.bad{opacity:.35;animation:wgShake .35s;}
   .lq-q{text-align:center;font-family:'Baloo Bhaijan 2';font-weight:800;font-size:28px;color:var(--forest-dark);margin:18px 0 8px;}
   .lq-q b{color:#8B5CF6;margin:0 8px;font-size:34px;}
-  .lq-say{display:block;margin:0 auto 18px;border:none;border-radius:999px;padding:8px 22px;font-weight:700;color:#fff;background:#3B82F6;box-shadow:0 4px 0 rgba(0,0,0,.3);cursor:pointer;}
+  .lq-say{display:block;margin:0 auto 18px;border:none;border-radius:999px;padding:8px 22px;font-weight:700;color:#fff;background:#2563EB;box-shadow:0 4px 0 rgba(0,0,0,.3);cursor:pointer;}
   .br-title{text-align:center;font-family:'Baloo Bhaijan 2';font-weight:800;font-size:24px;color:var(--forest-dark);margin:6px 0;}
   .br-msg{text-align:center;font-weight:700;font-size:17px;color:#475569;min-height:26px;margin:6px 12px;}
   .br-msg.win{color:#1f7a3a;font-size:26px;font-weight:800;}
@@ -1162,6 +1162,13 @@
     .adk-opts{gap:8px;margin-top:2px;} .adk-opt{padding:9px 12px;font-size:17px;}
   }
   @media (max-height:680px){ .dk-scene.big{display:none;} #adhkarBody .dots-prog{margin-bottom:6px;} }
+  /* r8-qa: بطاقة الذكر في ورقة منبثقة تتسع للشاشات القصيرة (320×568) بلا تمرير */
+  @media (max-height:640px){
+    .dk-panel{padding-top:0;} .dk-panel .dk-scene{width:48px;height:48px;box-shadow:0 3px 0 rgba(0,0,0,.16);} .dk-panel .dk-scene .dk-e{font-size:26px;}
+    .dk-panel .dk-scene svg{width:60%;height:60%;} .dk-panel .dk-when{margin:6px 0 2px;font-size:14px;} .dk-panel .dk-text{font-size:22px;line-height:1.5;} .dk-panel .dk-src{margin:2px 0 6px;}
+    .dk-panel>.lq-say{margin:0 auto 4px;padding:2px 18px;min-height:38px;} .dk-panel .dk-dots{margin:4px 0 0;} .dk-panel .dk-dots i{width:16px;height:16px;}
+    .dk-panel>.pill-btn{margin:4px auto !important;min-height:44px;padding-top:6px;padding-bottom:6px;} .dk-panel .lt-nav .lq-say{white-space:nowrap;padding-inline:14px;min-height:40px;padding-top:4px;padding-bottom:4px;}
+  }
   .dk-e{font-size:68px;line-height:1;animation:blFloat 3s ease-in-out infinite;display:block;}
   .dk-when{font-weight:800;color:var(--text-soft);margin:12px 0 6px;font-size:15px;}
   .dk-text{font-family:'Amiri','Baloo Bhaijan 2',serif;font-weight:700;font-size:29px;line-height:1.9;color:var(--forest-dark);padding:0 6px;}
