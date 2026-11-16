@@ -1421,3 +1421,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
   html.sc-sub :is(#view-numbers,#view-quiz) .seg.seg{padding:2px;gap:1px;overflow-x:hidden}
   html.sc-sub :is(#view-numbers,#view-quiz) .seg .seg-btn{flex:1 1 0;min-width:0;font-size:13px}
 }
+/* ختم دائم على بطاقة السورة المتمّة */
+.surah-stamp{position:absolute;inset-inline-start:5px;top:5px;width:30px;height:30px;display:block;transform:rotate(-12deg);filter:drop-shadow(0 2px 0 rgba(0,0,0,.35));pointer-events:none}
+.surah-stamp svg{width:100%;height:100%;display:block}
+@media (max-height:700px){ .surah-stamp{width:24px;height:24px;inset-inline-start:3px;top:3px} }
+/* ضغط وارتداد لطيف على الأزرار الكبيرة بدل تغيير مفاجئ */
+.letter-tile,.br-opt,.br-arrow,.br-card,.wg-opt,.ayq-opt,.balloon{transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent}
+.br-opt:active,.br-arrow:active,.br-card:active,.wg-opt:active,.ayq-opt:active,.balloon:active{transform:scale(.94)}
+@media (prefers-reduced-motion: reduce){.letter-tile,.br-opt,.br-arrow,.br-card,.wg-opt,.ayq-opt,.balloon{transition:none}}
+#brainBody>*,#lettersBody>*,#numbersBody>*{animation:gFade .22s ease both}
+@media (prefers-reduced-motion: reduce){#brainBody>*,#lettersBody>*,#numbersBody>*{animation:none}}
+@keyframes gFade{from{opacity:0}to{opacity:1}}

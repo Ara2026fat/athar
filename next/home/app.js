@@ -102,7 +102,10 @@
     setTimeout(function(){ t.classList.remove("show"); }, 1600);
   }
   var curDoor = false;   /* هل فُتح باب من الشاشة الرئيسية؟ يرجع منه الرجوع من الشاشات الفرعية */
+  var vEpoch = 0;
+  function vT(fn, ms){ var e = vEpoch; return setTimeout(function(){ if(e === vEpoch) fn(); }, ms); }
   function showView(id){
+    vEpoch++;
     var views = document.querySelectorAll(".view");
     for(var i=0;i<views.length;i++){ views[i].classList.remove("active"); }
     $(id).classList.add("active");
@@ -456,6 +459,7 @@
       card.innerHTML =
         '<span class="surah-icon-badge" style="--c:'+col+';--glint-delay:'+((i%9)*0.45)+'s">' +
           '<span class="surah-nm">'+s.name+'</span>' +
+          (ratio>=1 ? '<span class="surah-stamp" role="img" aria-label="سورة متمّة"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#FFE08A" stroke="#B07A00" stroke-width="2.4"/><circle cx="20" cy="20" r="12.5" fill="none" stroke="#B07A00" stroke-width="1.4" stroke-dasharray="2.4 2.4"/><path d="M12.5 20.5l5 5 10-11" fill="none" stroke="#1E7A3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' : '') +
         '</span>' +
         '<div class="surah-progress-dot '+dotClass+'"></div>';
       card.addEventListener("click", function(){ openSurah(s.num); });
@@ -2439,7 +2443,7 @@
       b.innerHTML = '<span class="lt-ch">' + sy + '</span>';
       b.addEventListener("click", function(){
         if(locked) return;
-        if(j === k){ locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8); setTimeout(function(){ readSound(round + 1, right + (first ? 1 : 0)); }, 1100); }
+        if(j === k){ locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8); vT(function(){ readSound(round + 1, right + (first ? 1 : 0)); }, 1100); }
         else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(b);
@@ -2455,18 +2459,21 @@
     var slots = document.createElement("div"); slots.className = "nm-seq"; slots.style.direction = "rtl";
     syl.forEach(function(){ var sp = document.createElement("span"); sp.className = "miss"; sp.textContent = "؟"; slots.appendChild(sp); });
     var row = document.createElement("div"); row.className = "lq-opts"; row.style.flexWrap = "wrap";
+    var sbs = [];
+    function sMark(){ sbs.forEach(function(x){ if(x._i === order && !x.classList.contains("ok")) x.setAttribute("data-right", "1"); else x.removeAttribute("data-right"); }); }
     shuffle(syl.map(function(x, i){ return i; })).forEach(function(i){
-      var b = document.createElement("button"); b.className = "letter-tile huge"; b.style.setProperty("--c", LCOL[(i * 4 + round) % LCOL.length]);
+      var b = document.createElement("button"); b.className = "letter-tile huge"; b._i = i; sbs.push(b); b.style.setProperty("--c", LCOL[(i * 4 + round) % LCOL.length]);
       b.innerHTML = '<span class="lt-ch" style="font-size:34px">' + syl[i] + '</span>';
       b.addEventListener("click", function(){
         if(locked || b.classList.contains("ok")) return;
         if(i === order){
-          b.classList.add("ok"); slots.children[i].textContent = syl[i]; slots.children[i].className = "miss ok"; speak(syl[i]); order++;
-          if(order === syl.length){ locked = true; sfx("done"); burst(["⭐", "✨"], 8); setTimeout(function(){ speak(W[1]); }, 500); setTimeout(function(){ readBuild(round + 1, right + (first ? 1 : 0)); }, 1900); }
+          b.classList.add("ok"); slots.children[i].textContent = syl[i]; slots.children[i].className = "miss ok"; speak(syl[i]); order++; sMark();
+          if(order === syl.length){ locked = true; sfx("done"); burst(["⭐", "✨"], 8); vT(function(){ speak(W[1]); }, 500); vT(function(){ readBuild(round + 1, right + (first ? 1 : 0)); }, 1900); }
         } else { first = false; b.classList.add("bad"); oops(); haptic(20); setTimeout(function(){ b.classList.remove("bad"); }, 500); }
       });
       row.appendChild(b);
     });
+    sMark();
     body.appendChild(nmDots(round, max)); body.appendChild(q); body.appendChild(slots); body.appendChild(row);
     speak("رتّب المقاطع");
   }
@@ -2508,7 +2515,7 @@
         if(i === idx){
           locked = true; b.classList.add("ok"); sfx("done"); burst([LWORDS[idx][1], "⭐"], 8);
           speak(LWORDS[idx][0]);
-          setTimeout(function(){ lettersQuiz(round + 1, right + (first ? 1 : 0)); }, 1300);
+          vT(function(){ lettersQuiz(round + 1, right + (first ? 1 : 0)); }, 1300);
         } else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(b);
@@ -2540,7 +2547,7 @@
         if(locked) return;
         if(i === idx){
           locked = true; b.classList.add("pop"); sfx("done"); starFly(b); burst(["🎈","⭐","✨"], 10); speak(target[1]);
-          setTimeout(function(){ lettersBalloons(round + 1, right + (first ? 1 : 0)); }, 1100);
+          vT(function(){ lettersBalloons(round + 1, right + (first ? 1 : 0)); }, 1100);
         } else { first = false; b.classList.add("shake"); setTimeout(function(){ b.classList.remove("shake"); }, 400); oops(); haptic(20); }
       });
       sky.appendChild(b);
@@ -3029,13 +3036,17 @@
       while(pool.length < n){ var x = 1 + nmRand(hi); if(pool.indexOf(x) < 0) pool.push(x); }
       var sorted = pool.slice().sort(function(p, q){ return asc ? p - q : q - p; }), idx = 0;
       qText = asc ? "اضغط الأرقام من الأصغر إلى الأكبر" : "اضغط الأرقام من الأكبر إلى الأصغر";
+      var ots = [];
+      function oMark(){ ots.forEach(function(t){ if(t._x === sorted[idx] && !t.classList.contains("ok")) t.setAttribute("data-right", "1"); else t.removeAttribute("data-right"); }); }
       shuffle(pool).forEach(function(x){
         var t = nmPlayTile('<span class="lt-ch">' + nm(x) + '</span>', LCOL[(x * 2) % LCOL.length], function(){
           if(locked || t.classList.contains("ok")) return;
-          if(x === sorted[idx]){ idx++; t.classList.add("ok"); sfx("tap"); speak(nmWord(x)); if(idx === sorted.length) win(""); } else wrong(t);
+          if(x === sorted[idx]){ idx++; t.classList.add("ok"); sfx("tap"); speak(nmWord(x)); oMark(); if(idx === sorted.length) win(""); } else wrong(t);
         });
+        t._x = x; ots.push(t);
         optsEl.appendChild(t);
       });
+      oMark();
     }
     var q = document.createElement("div"); q.className = "lq-q"; q.textContent = qText;
     var say = document.createElement("button"); say.className = "lq-say"; say.textContent = "اسمع"; say.addEventListener("click", function(){ speak(qText); });
@@ -8384,7 +8395,7 @@
           if(pos >= seq.length){ busy = true; msg.textContent = ""; brWin(tok, body, function(){ brNext("mem", round, tok, res, misses === 0); }); }
         } else {
           misses++; pos = 0; busy = true; haptic(20); b.classList.add("shake"); brT(tok, function(){ b.classList.remove("shake"); }, 400);
-          msg.textContent = "لا بأس، شاهد مرة أخرى"; brT(tok, function(){ show(misses >= 2); }, 1100);
+          msg.textContent = "لا بأس، شاهد مرة أخرى"; brT(tok, function(){ show(misses >= 3); }, 1100);
         }
       });
       box.appendChild(b); lamps.push(b);
@@ -8394,7 +8405,7 @@
       busy = true; pos = 0; msg.textContent = "انتبه للفوانيس…";
       lamps.forEach(function(l){ var n = l.querySelector("i"); n.textContent = ""; });
       seq.forEach(function(k, j){ brT(tok, function(){ flash(k); if(hint) lamps[k].querySelector("i").textContent = String(j + 1); }, 700 + j * 750); });
-      brT(tok, function(){ busy = false; msg.textContent = "دورك! أعد الترتيب نفسه"; if(!hint) lamps.forEach(function(l){ l.querySelector("i").textContent = ""; }); }, 700 + seq.length * 750);
+      brT(tok, function(){ busy = false; msg.textContent = "دورك! أعد الترتيب نفسه"; if(hint){ gentleHint(lamps[seq[0]], 3000); msg.textContent = "دورك! ابدأ بالفانوس الذي يلمع"; } if(!hint) lamps.forEach(function(l){ l.querySelector("i").textContent = ""; }); }, 700 + seq.length * 750);
     }
     show(false);
     var ex = document.createElement("button"); ex.className = "lq-say"; ex.style.marginTop = "14px"; ex.textContent = "خروج"; ex.addEventListener("click", function(){ openQuiz("brain"); }); body.appendChild(ex);
@@ -8420,7 +8431,7 @@
             if(done === n){ msg.textContent = ""; brWin(tok, body, function(){ brNext("pairs", round, tok, res, mis <= n + 1); }); }
           } else {
             mis++; brT(tok, function(){ cards[a].classList.remove("up"); cards[c].classList.remove("up"); lock = false;
-              if(mis % 3 === 0){ msg.textContent = "تلميح: انظر إلى البطاقة المضيئة"; gentleHint(cards[deck.indexOf(deck[a])], 2600); }
+              if(mis % 3 === 0){ msg.textContent = "تلميح: انظر إلى البطاقة المضيئة"; gentleHint(cards[a], 2600); var tw = deck.findIndex(function(f, j){ return j !== a && f === deck[a] && !cards[j].classList.contains("ok"); }); if(tw >= 0) gentleHint(cards[tw], 2600); }
             }, 900);
           }
         }
@@ -8456,7 +8467,7 @@
           wrong++; b.classList.add("shake"); haptic(20); brT(tok, function(){ b.classList.remove("shake"); }, 400);
           if(wrong === 1){ msg.textContent = "فكّر قليلًا: ما الذي يجمع الباقي؟"; }
           else if(wrong === 2){ b.disabled = true; b.classList.add("gone"); var rest = btns.filter(function(x, i){ return !items[i].odd && !x.disabled; }); if(rest.length > 1){ rest[0].disabled = true; rest[0].classList.add("gone"); } msg.textContent = "أزلتُ لك خيارًا، حاول مجددًا"; }
-          else { b.disabled = true; b.classList.add("gone"); btns.forEach(function(x, i){ if(items[i].odd) x.classList.add("good"); }); busy = true; msg.textContent = "هذا ليس من «" + main.n + "». تعلّمتَ شيئًا جديدًا!"; brT(tok, function(){ brNext("odd", round, tok, res, false); }, 2600); }
+          else { b.disabled = true; b.classList.add("gone"); btns.forEach(function(x, i){ if(items[i].odd){ x.classList.add("good"); gentleHint(x); } }); busy = true; msg.textContent = "هذا ليس من «" + main.n + "». تعلّمتَ شيئًا جديدًا!"; brT(tok, function(){ brNext("odd", round, tok, res, false); }, 2600); }
         }
       });
       row.appendChild(b); return b;
@@ -8536,8 +8547,8 @@
     }
     function miss(t){
       fails++; busy = false; msg.textContent = t;
-      if(fails === 2){ msg.textContent = "تلميح: ابدأ بالسهم المضيء"; var f = pad.querySelector('[data-d="' + L.path.charAt(0) + '"]'); if(f) f.classList.add("hint"); helped = true; }
-      else if(fails >= 3){ prog = L.path.split(""); drawProg(); msg.textContent = "هذا طريق مقترح، اضغط انطلق وتعلّم منه!"; helped = true; }
+      if(fails === 3){ msg.textContent = "انظر إلى السهم الذي يلمع"; var f = pad.querySelector('[data-d="' + L.path.charAt(0) + '"]'); if(f) gentleHint(f); helped = true; }
+      else if(fails >= 4){ prog = L.path.split(""); drawProg(); msg.textContent = "هذا طريق مقترح، اضغط انطلق وتعلّم منه!"; helped = true; }
     }
     speak("ساعد النجمة لتصل إلى الجوهرة");
   }
