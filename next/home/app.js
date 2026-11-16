@@ -1437,7 +1437,13 @@
           if(!confirm("حذف «" + pr.name + "» وكلّ تقدّمه؟")) return;
           var id = pr.id;
           profiles.list = profiles.list.filter(function(x){ return x.id !== id; });
-          try{ localStorage.removeItem(id === "p1" ? PROGRESS_KEY : PROGRESS_KEY + "_" + id); localStorage.removeItem("athar_days_v1_" + id); localStorage.removeItem("athar_mis_v1_" + id); }catch(e){}
+          try{
+            localStorage.removeItem(id === "p1" ? PROGRESS_KEY : PROGRESS_KEY + "_" + id); localStorage.removeItem(id === "p1" ? RV_KEY : RV_KEY + "_" + id);
+            var sfx = "_" + id, gone = [];
+            for(var qi = 0; qi < localStorage.length; qi++){ var qk = localStorage.key(qi); if(qk && qk.indexOf("athar_") === 0 && qk.length > sfx.length && qk.slice(-sfx.length) === sfx) gone.push(qk); }
+            gone.forEach(function(qk){ localStorage.removeItem(qk); });
+            var rwo = JSON.parse(localStorage.getItem("athar.rw.v1")); if(rwo && rwo.profiles && rwo.profiles[id]){ delete rwo.profiles[id]; localStorage.setItem("athar.rw.v1", JSON.stringify(rwo)); }
+          }catch(e){}
           if(profiles.active === id){ profiles.active = profiles.list[0].id; progress = loadProgress(); }
           saveProfiles(); renderProfilesCard(); renderProfileBar();
         });
