@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v107';
+const CACHE_VERSION = 'v108';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -445,6 +445,17 @@ const CORE_ASSETS = [
   './t094.mp3',
   './t096.mp3',
   // [الرئيسية الجديدة r8] وحدات وصور أثر وخطوط محلية
+  './next/home/app.css',
+  './icons-athar/brand-96.png',
+  './next/home/img/walk-back.webp',
+  './next/home/img/walk-side.webp',
+  './next/home/img/walk-front.webp',
+  './next/home/voice/home-index.json',
+  './next/home/voice/sp_home.bin',
+  './next/home/snd/day.mp3',
+  './next/home/snd/door.mp3',
+  './next/home/snd/steps.mp3',
+  './next/home/snd/whoosh.mp3',
   './next/home/world.css',
   './next/home/sky.css',
   './next/home/screens.css',
@@ -536,7 +547,7 @@ self.addEventListener('fetch', function(event){
   if(url.origin !== self.location.origin) return; // اتركه للشبكة كما هو
 
   event.respondWith(
-    caches.match(req).then(function(cached){
+    caches.match(req, /\/next\//.test(url.pathname) ? {ignoreSearch:true} : undefined).then(function(cached){
       var network = fetch(req).then(function(res){
         if(res && res.status === 200){
           var copy = res.clone();
