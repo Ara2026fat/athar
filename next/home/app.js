@@ -1455,16 +1455,19 @@
         var del = document.createElement("button"); del.className = "save-btn danger"; del.textContent = "حذف";
         del.addEventListener("click", function(){
           if(!confirm("حذف «" + pr.name + "» وكلّ تقدّمه؟")) return;
-          var id = pr.id;
+          var id = pr.id, ownerOf = function(){ for(var oi = 0; oi < profiles.list.length; oi++){ if(profiles.list[oi].id === "p1") return "p1"; } return profiles.list[0].id; }, wasOwner = (id === ownerOf());
           profiles.list = profiles.list.filter(function(x){ return x.id !== id; });
           try{
             localStorage.removeItem(id === "p1" ? PROGRESS_KEY : PROGRESS_KEY + "_" + id); localStorage.removeItem(id === "p1" ? RV_KEY : RV_KEY + "_" + id);
+            if(wasOwner){ var nk = "athar_world_v2_" + ownerOf(), nw = localStorage.getItem(nk); if(nw != null){ localStorage.setItem("athar.world.v2", nw); localStorage.removeItem(nk); } else localStorage.removeItem("athar.world.v2"); }
             var sfx = "_" + id, gone = [];
             for(var qi = 0; qi < localStorage.length; qi++){ var qk = localStorage.key(qi); if(qk && qk.indexOf("athar_") === 0 && qk.length > sfx.length && qk.slice(-sfx.length) === sfx) gone.push(qk); }
             gone.forEach(function(qk){ localStorage.removeItem(qk); });
             try{ var po = JSON.parse(localStorage.getItem("athar.profile.v1")); if(po && typeof po === "object"){ var chg = false;
               if(po.valleyBy && po.valleyBy[id]){ delete po.valleyBy[id]; chg = true; }
+              if(wasOwner){ var no = ownerOf(), nv = (po.valleyBy && po.valleyBy[no]) || null; if(nv){ po.valley = nv; delete po.valleyBy[no]; } else delete po.valley; chg = true; }
               if(po.quran && po.quran.base && po.quran.base[id]){ delete po.quran.base[id]; chg = true; }
+              if(po.quran){ var pf = id + ":"; if(po.quran.done) Object.keys(po.quran.done).forEach(function(dk){ if(dk.indexOf(pf) === 0){ delete po.quran.done[dk]; chg = true; } }); if(Array.isArray(po.quran.events)){ var ne = po.quran.events.filter(function(ev){ return !(ev && typeof ev.id === "string" && ev.id.indexOf(pf) === 0); }); if(ne.length !== po.quran.events.length){ po.quran.events = ne; chg = true; } } }
               if(chg) localStorage.setItem("athar.profile.v1", JSON.stringify(po)); } }catch(e2){}
             var rwo = JSON.parse(localStorage.getItem("athar.rw.v1")); if(rwo && rwo.profiles && rwo.profiles[id]){ delete rwo.profiles[id]; localStorage.setItem("athar.rw.v1", JSON.stringify(rwo)); }
           }catch(e){}
