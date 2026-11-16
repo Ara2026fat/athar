@@ -32,6 +32,9 @@
       }
       head.appendChild(t);
     });
+    /* one level-1 heading per screen: sc-title is it, view h1s (rendered later by each screen) become level 2 */
+    var dem = function(){ document.querySelectorAll(".view:has(.sc-title) h1:not([aria-level])").forEach(function(h){ h.setAttribute("aria-level","2"); }); }, dq = 0;
+    dem(); try{ new MutationObserver(function(){ if(dq) return; dq = requestAnimationFrame(function(){ dq = 0; dem(); }); }).observe(document.body,{childList:true,subtree:true}); }catch(e){}
     var dt = $("doorTitle"), dv = document.querySelector("#view-door .sc-tt");
     if(dt && dv){
       var sy = function(){ dv.textContent = dt.textContent; };
