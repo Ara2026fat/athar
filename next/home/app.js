@@ -50,12 +50,26 @@
   var SETTINGS_KEY = "athar_quran_settings_v1";
   var PROF_KEY = "athar_profiles_v1";
 
+  /* قراءة آمنة: JSON تالف أو نوع خاطئ (مصفوفة/نص/رقم/null) => {} دائمًا */
+  function lsObj(key){
+    try{ var o = JSON.parse(localStorage.getItem(key)); return (o && typeof o === "object" && !Array.isArray(o)) ? o : {}; }catch(e){ return {}; }
+  }
   function loadProfiles(){
     try{
       var p = JSON.parse(localStorage.getItem(PROF_KEY));
-      if(p && p.list && p.list.length){
-        if(!p.list.filter(function(x){ return x.id === p.active; }).length) p.active = p.list[0].id;
-        return p;
+      if(p && Array.isArray(p.list)){
+        var seen = {};
+        p.list = p.list.filter(function(x){
+          if(!x || typeof x !== "object" || typeof x.id !== "string" || !/^[A-Za-z0-9_-]{1,24}$/.test(x.id) || seen[x.id]) return false;
+          seen[x.id] = 1;
+          if(typeof x.name !== "string" || !x.name.trim()) x.name = "طفلي";
+          x.name = x.name.slice(0, 18);
+          return true;
+        });
+        if(p.list.length){
+          if(!p.list.filter(function(x){ return x.id === p.active; }).length) p.active = p.list[0].id;
+          return {list:p.list, active:p.active};
+        }
       }
     }catch(e){}
     return {list:[{id:"p1", name:"طفلي"}], active:"p1"};
@@ -63,17 +77,22 @@
   var profiles = loadProfiles();
   function progKey(){ return profiles.active === "p1" ? PROGRESS_KEY : PROGRESS_KEY + "_" + profiles.active; }
   function loadProgress(){
-    try{ return JSON.parse(localStorage.getItem(progKey())) || {}; }catch(e){ return {}; }
+    var o = lsObj(progKey()), ok = {new:1, trained:1, memorized:1, review:1}, r = {};
+    for(var k in o){ if(typeof o[k] === "string" && ok[o[k]]) r[k] = o[k]; }
+    return r;
   }
   function saveProgress(p){ try{ localStorage.setItem(progKey(), JSON.stringify(p)); }catch(e){} }
   function loadSettings(){
     var s;
     try{ s = JSON.parse(localStorage.getItem(SETTINGS_KEY)); }catch(e){ s = null; }
-    if(!s) s = {repeatCount:3};
+    if(!s || typeof s !== "object" || Array.isArray(s)) s = {repeatCount:3};
     /* لا رمز افتراضي: من لا يملك رمزًا محفوظًا يُطلب منه إنشاء واحد عند أول فتح للوحة الأهل (المستخدمون الحاليون يحتفظون برمزهم) */
     if(!s.repeatCount) s.repeatCount = 3;
     var D = {speed:1, vol:1, textSize:1, calm:false, surahRepeat:1, gapMult:1, sessionMin:5, bedtime:false, sfx:true, wordHL:true, childLock:false, voiceRec:false, voicesOn:false, voice:"qari", autoDl:false, voices:[{id:"v1",name:"أمي"},{id:"v2",name:"أبي"}]};
-    for(var k in D){ if(s[k] === undefined) s[k] = D[k]; }
+    for(var k in D){ if(s[k] === undefined || s[k] === null || (typeof s[k] !== typeof D[k]) || (typeof D[k] === "number" && !isFinite(s[k]))) s[k] = D[k]; }
+    if(!Array.isArray(s.voices)) s.voices = D.voices;
+    if(typeof s.repeatCount !== "number" || !isFinite(s.repeatCount) || s.repeatCount < 1) s.repeatCount = 3;
+    s.vol = Math.min(1, Math.max(0, s.vol)); s.speed = Math.min(2, Math.max(0.5, s.speed));
     return s;
   }
   function saveSettings(s){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }catch(e){} }
@@ -106,6 +125,15 @@
   function vT(fn, ms){ var e = vEpoch; return setTimeout(function(){ if(e === vEpoch) fn(); }, ms); }
   function showView(id){
     vEpoch++;
+    /* الانتقال لشاشة أخرى يقطع نطق الدرس/القصة الجاري كي لا يتداخل صوت الشاشة السابقة مع الجديدة */
+    try{
+      var cur = document.querySelector(".view.active");
+      if(cur && cur.id !== id){
+        spkTok++; if(vAudio){ vAudio.pause(); vAudio = null; }
+        if(nrAudio){ nrAudio.pause(); nrAudio = null; }
+        if(window.speechSynthesis) speechSynthesis.cancel();
+      }
+    }catch(e){}
     var views = document.querySelectorAll(".view");
     for(var i=0;i<views.length;i++){ views[i].classList.remove("active"); }
     $(id).classList.add("active");
@@ -284,7 +312,7 @@
 
   function scan(){
     var P = profiles.active, out = [], pr = {};
-    try{ pr = JSON.parse(localStorage.getItem(progKey())) || {}; }catch(e){}
+    pr = lsObj(progKey());
     for(var n in JUZ){
       var c = JUZ[n][0], ok = true;
       for(var a = 1; a <= c; a++){ var s = pr[n + "-" + a]; if(s !== "memorized" && s !== "review"){ ok = false; break; } }
@@ -1414,7 +1442,7 @@
   function pad2(n){ return n < 10 ? "0" + n : "" + n; }
   function todayStr(){ var d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
   function daysKey(){ return "athar_days_v1_" + profiles.active; }
-  function loadDays(){ try{ var a = JSON.parse(localStorage.getItem(daysKey())); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+  function loadDays(){ try{ var a = JSON.parse(localStorage.getItem(daysKey())); return Array.isArray(a) ? a.filter(function(x){ return typeof x === "string"; }) : []; }catch(e){ return []; } }
   function markDayActive(){
     try{ misTick(); }catch(e){}
     var d = loadDays(), t = todayStr();
@@ -1433,9 +1461,10 @@
   ];
   function misKey(){ return "athar_mis_v1_" + profiles.active; }
   function misLoad(){
-    var d = {}; try{ d = JSON.parse(localStorage.getItem(misKey())) || {}; }catch(e){}
-    if(d.date !== todayStr()){ d.date = todayStr(); d.done = {}; }
-    d.total = d.total || 0; d.bonus = d.bonus || {};
+    var d = lsObj(misKey());
+    if(d.date !== todayStr() || !d.done || typeof d.done !== "object" || Array.isArray(d.done)){ d.date = todayStr(); d.done = {}; }
+    d.total = (typeof d.total === "number" && isFinite(d.total) && d.total > 0) ? d.total : 0;
+    if(!d.bonus || typeof d.bonus !== "object" || Array.isArray(d.bonus)) d.bonus = {};
     return d;
   }
   function misSave(d){ try{ localStorage.setItem(misKey(), JSON.stringify(d)); }catch(e){} }
@@ -2175,7 +2204,7 @@
   }
   function vPackBlob(ref){
     var name = VST.packs[ref[0]];
-    if(!vPacks[name]) vPacks[name] = fetch(name).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); });
+    if(!vPacks[name]) vPacks[name] = fetch(name).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); }).catch(function(e){ delete vPacks[name]; throw e; });
     return vPacks[name].then(function(buf){
       return new Blob([buf.slice(ref[1], ref[1] + ref[2])], { type: "audio/mpeg" });
     });
@@ -3199,7 +3228,7 @@
   ];
   var ADHKAR_GROUPS = [["☀️","الصباح والنوم","#F59E0B"],["🌿","المائدة","#22A04B"],["🕌","البيت والمسجد","#3B82F6"],["💚","مع الناس","#EC4899"],["✨","في أيّ وقت","#8B5CF6"]];
   function adkKey(){ return "athar_adhkar_v1_" + profiles.active; }
-  function adkGet(){ try{ return JSON.parse(localStorage.getItem(adkKey())) || {}; }catch(e){ return {}; } }
+  function adkGet(){ return lsObj(adkKey()); }
   function adkAdd(id){ var d = adkGet(); d[id] = (d[id] || 0) + 1; try{ localStorage.setItem(adkKey(), JSON.stringify(d)); }catch(e){} return d; }
   var adkTab = "list";
   function openAdhkar(tab){
@@ -3328,7 +3357,7 @@
   var ayqTxt = {};   // سورة ← {رقم الآية: [{t,f},...]}
   var ayqSt = null;
   function ayqKey(){ return "athar_ayq_v1_" + profiles.active; }
-  function ayqGet(){ try{ return JSON.parse(localStorage.getItem(ayqKey())) || {}; }catch(e){ return {}; } }
+  function ayqGet(){ return lsObj(ayqKey()); }
   function ayqSave(stage, score){
     var d = ayqGet(); if(d[stage] === undefined || score > d[stage]) d[stage] = score;
     try{ localStorage.setItem(ayqKey(), JSON.stringify(d)); }catch(e){}
@@ -3623,7 +3652,7 @@
   ];
 
   function pstKey(){ return "athar_pstory_v1_" + profiles.active; }
-  function pstGet(){ try{ return JSON.parse(localStorage.getItem(pstKey())) || {}; }catch(e){ return {}; } }
+  function pstGet(){ return lsObj(pstKey()); }
   /* ================= مكتبة الطفل المسلم + كتاب «الأصول الثلاثة للصغار» ================= */
   // النصوص الشرعية هنا موثّقة: فصلت ٣٧، البقرة ٢٢، العلق ١ من quran.com؛ والأحاديث من sunnah.com:
   // البخاري ٨ (أركان الإسلام)، أبو داود ١٥٢٩ (رضيت بالله ربًّا). الباقي صياغة بسيطة لأفكار الكتاب.
@@ -8194,7 +8223,7 @@
     parent:"للأعمار ٤ سنوات فأكثر. اختاروا خلقًا كل أسبوع وجرّبوه عمليًا.", lan:"فانوس" };
 
   function usKey(k){ return "athar_" + (k || BK.key) + "_v1_" + profiles.active; }
-  function usGet(k){ try{ return JSON.parse(localStorage.getItem(usKey(k))) || {}; }catch(e){ return {}; } }
+  function usGet(k){ return lsObj(usKey(k)); }
   function usSet(id){ var d = usGet(); d[id] = 1; try{ localStorage.setItem(usKey(), JSON.stringify(d)); }catch(e){} }
 
   var LIB_SECS = [
@@ -8228,7 +8257,7 @@
   NOOR_ST.push({"n": "أقرأ آياتٍ قصيرة", "e": "📖", "d": "أقرأ آيات كاملة من جزء عمّ وأسمعها بصوت القارئ"});
   NOOR = NOOR.concat([{"id":"nq1","title":"سورة الكوثر","rule":"نقرأ آيات سورة الكوثر آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"إِنَّآ أَعْطَيْنَـٰكَ ٱلْكَوْثَرَ","r":"الكوثر ١","ay":[108,1]},{"t":"فَصَلِّ لِرَبِّكَ وَٱنْحَرْ","r":"الكوثر ٢","ay":[108,2]},{"t":"إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ","r":"الكوثر ٣","ay":[108,3]}]},{"id":"nq2","title":"سورة الإخلاص","rule":"نقرأ آيات سورة الإخلاص آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"قُلْ هُوَ ٱللَّهُ أَحَدٌ","r":"الإخلاص ١","ay":[112,1]},{"t":"ٱللَّهُ ٱلصَّمَدُ","r":"الإخلاص ٢","ay":[112,2]},{"t":"لَمْ يَلِدْ وَلَمْ يُولَدْ","r":"الإخلاص ٣","ay":[112,3]},{"t":"وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ","r":"الإخلاص ٤","ay":[112,4]}]},{"id":"nq3","title":"سورة العصر","rule":"نقرأ آيات سورة العصر آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"وَٱلْعَصْرِ","r":"العصر ١","ay":[103,1]},{"t":"إِنَّ ٱلْإِنسَـٰنَ لَفِى خُسْرٍ","r":"العصر ٢","ay":[103,2]},{"t":"إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ","r":"العصر ٣","ay":[103,3]}]},{"id":"nq4","title":"سورة النصر","rule":"نقرأ آيات سورة النصر آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ","r":"النصر ١","ay":[110,1]},{"t":"وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًۭا","r":"النصر ٢","ay":[110,2]},{"t":"فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ ۚ إِنَّهُۥ كَانَ تَوَّابًۢا","r":"النصر ٣","ay":[110,3]}]},{"id":"nq5","title":"سورة قريش","rule":"نقرأ آيات سورة قريش آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"لِإِيلَـٰفِ قُرَيْشٍ","r":"قريش ١","ay":[106,1]},{"t":"إِۦلَـٰفِهِمْ رِحْلَةَ ٱلشِّتَآءِ وَٱلصَّيْفِ","r":"قريش ٢","ay":[106,2]},{"t":"فَلْيَعْبُدُوا۟ رَبَّ هَـٰذَا ٱلْبَيْتِ","r":"قريش ٣","ay":[106,3]},{"t":"ٱلَّذِىٓ أَطْعَمَهُم مِّن جُوعٍۢ وَءَامَنَهُم مِّنْ خَوْفٍۭ","r":"قريش ٤","ay":[106,4]}]},{"id":"nq6","title":"سورة الفلق","rule":"نقرأ آيات سورة الفلق آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ","r":"الفلق ١","ay":[113,1]},{"t":"مِن شَرِّ مَا خَلَقَ","r":"الفلق ٢","ay":[113,2]},{"t":"وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ","r":"الفلق ٣","ay":[113,3]},{"t":"وَمِن شَرِّ ٱلنَّفَّـٰثَـٰتِ فِى ٱلْعُقَدِ","r":"الفلق ٤","ay":[113,4]},{"t":"وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ","r":"الفلق ٥","ay":[113,5]}]},{"id":"nq7","title":"سورة الناس","rule":"نقرأ آيات سورة الناس آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ","r":"الناس ١","ay":[114,1]},{"t":"مَلِكِ ٱلنَّاسِ","r":"الناس ٢","ay":[114,2]},{"t":"إِلَـٰهِ ٱلنَّاسِ","r":"الناس ٣","ay":[114,3]},{"t":"مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ","r":"الناس ٤","ay":[114,4]},{"t":"ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ","r":"الناس ٥","ay":[114,5]},{"t":"مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ","r":"الناس ٦","ay":[114,6]}]},{"id":"nq8","title":"سورة الكافرون","rule":"نقرأ آيات سورة الكافرون آيةً آية. اضغط الآية لتسمعها بصوت القارئ، ثم كرّرها بهدوء بعده.","tip":"اجعل الطفل يردّد كل آية بعد القارئ مرتين أو ثلاثًا قبل الاختبار، وصحّح له بلطف. التلاوة الصحيحة تُؤخذ بالتلقّي من معلّم متقن.","st":6,"items":[{"t":"قُلْ يَـٰٓأَيُّهَا ٱلْكَـٰفِرُونَ","r":"الكافرون ١","ay":[109,1]},{"t":"لَآ أَعْبُدُ مَا تَعْبُدُونَ","r":"الكافرون ٢","ay":[109,2]},{"t":"وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ","r":"الكافرون ٣","ay":[109,3]},{"t":"وَلَآ أَنَا۠ عَابِدٌۭ مَّا عَبَدتُّمْ","r":"الكافرون ٤","ay":[109,4]},{"t":"وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ","r":"الكافرون ٥","ay":[109,5]},{"t":"لَكُمْ دِينُكُمْ وَلِىَ دِينِ","r":"الكافرون ٦","ay":[109,6]}]}]);
   function noorKey(){ return "athar_noor_v1_" + profiles.active; }
-  function noorGet(){ try{ return JSON.parse(localStorage.getItem(noorKey())) || {}; }catch(e){ return {}; } }
+  function noorGet(){ return lsObj(noorKey()); }
   function noorSet(id, stars){ var d = noorGet(); d[id] = Math.max(d[id] || 0, stars); try{ localStorage.setItem(noorKey(), JSON.stringify(d)); }catch(e){} }
   function noorOpenAll(){ try{ return localStorage.getItem("athar_noor_all_" + profiles.active) === "1"; }catch(e){ return false; } }
   function noorNext(){ var d = noorGet(); for(var i = 0; i < NOOR.length; i++) if(!d[NOOR[i].id]) return i; return -1; }
@@ -8335,7 +8364,7 @@
 
   /* ================= ألعاب الدماغ (v79) ================= */
   var BR_KEY = "athar_brain_v1", brTok = 0, brG = "";
-  function brGet(){ try{ return JSON.parse(localStorage.getItem(BR_KEY)) || {}; }catch(e){ return {}; } }
+  function brGet(){ return lsObj(BR_KEY); }
   function brSet(o){ try{ localStorage.setItem(BR_KEY, JSON.stringify(o)); }catch(e){} }
   function brLvl(g){ var s = brGet(); return (s[g] && s[g].lvl) || 1; }
   /* تسجيل نتيجة جولة: النجاح من المحاولة الأولى يرفع المستوى بعد جولتين، والتعثّر يخفضه بلطف بعد جولتين */
