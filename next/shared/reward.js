@@ -63,7 +63,8 @@
     ["mSpring2", "عين ماء", ["mSpring2"]], ["mStill", "سكون", ["mStill", "mMirror"]], ["mCompass", "بوصلة", ["mCompass"]],
     ["mCart", "عربة", ["mCart"]], ["mNest", "عش", ["mNest"]], ["mLeaf", "ورقة", ["mLeaf"]]
   ];
-  function marksNow() { try { var d = JSON.parse(ls("athar.world.v2")); return (d && d.marks) || []; } catch (e) { return []; } }
+  function wkey() { try { var p = JSON.parse(ls("athar_profiles_v1")), l = (p && p.list) || [], a = p && p.active; if (!l.length || !a) return "athar.world.v2"; var own = l.some(function (x) { return x && x.id === "p1"; }) ? "p1" : l[0].id; return a === own ? "athar.world.v2" : "athar_world_v2_" + a; } catch (e) { return "athar.world.v2"; } }
+  function marksNow() { try { var d = JSON.parse(ls(wkey())); return (d && d.marks) || []; } catch (e) { return []; } }
   function albumBase() { return (/\/valley\//.test(location.pathname) ? "img/marks/" : "valley/img/marks/"); }
 
   /* ───────── عبارات التشجيع (نصّ فقط، نبرة هادئة) ───────── */
