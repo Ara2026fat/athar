@@ -17,7 +17,7 @@
    من تعديلات.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'v110';
+const CACHE_VERSION = 'v111';
 const CACHE_NAME = 'athar-quran-u-' + CACHE_VERSION;
 // [موقع موحَّد] /valley/ تطبيق مستقلّ بعامله وذاكرته: لا نعترض أي طلب منه ولا نخزّنه
 const VALLEY_PATH = new URL('valley/', self.registration.scope).pathname;
@@ -548,7 +548,7 @@ self.addEventListener('fetch', function(event){
   if(url.origin !== self.location.origin) return; // اتركه للشبكة كما هو
 
   event.respondWith(
-    caches.match(req, /\/next\//.test(url.pathname) ? {ignoreSearch:true} : undefined).then(function(cached){
+    caches.match(req, (/\/next\//.test(url.pathname) || req.mode==='navigate') ? {ignoreSearch:true} : undefined).then(function(cached){
       var network = fetch(req).then(function(res){
         if(res && res.status === 200){
           var copy = res.clone();
