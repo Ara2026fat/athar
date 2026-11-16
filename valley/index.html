@@ -885,7 +885,20 @@ root.I18n = I18n;
 (function (root) {
 "use strict";
 
-const KEY = "athar.world.v2";
+/* [r9] تقدّم الوادي لكل ملف طفل: صاحب المفتاح القديم (p1، أو أول ملف إن حُذف p1) يبقى على athar.world.v2 دون أي ترحيل؛
+   بقية الملفات athar_world_v2_<id> (يحذفها حذف الملف تلقائيًا). مستخدم بلا ملفات = المفتاح القديم كما هو. */
+const AtharPid = (function () {
+  try {
+    const p = JSON.parse(localStorage.getItem("athar_profiles_v1")), ok = i => typeof i === "string" && /^[A-Za-z0-9_-]{1,24}$/.test(i);
+    if (p && Array.isArray(p.list)) {
+      const ids = p.list.map(x => x && x.id).filter(ok), act = ids.indexOf(p.active) >= 0 ? p.active : ids[0];
+      if (act) return { id: act, owner: ids.indexOf("p1") >= 0 ? "p1" : ids[0] };
+    }
+  } catch (e) {}
+  return { id: "p1", owner: "p1" };
+})();
+root.AtharPid = AtharPid;
+const KEY = (AtharPid.id === AtharPid.owner ? "athar.world.v2" : "athar_world_v2_" + AtharPid.id);
 
 const State = {
   data: {
@@ -4085,6 +4098,18 @@ window.addEventListener("load", () => {
   "use strict";
   var PK = "athar.profile.v1", MAXL = 7;
   var home = document.getElementById("vhome");
+  var PID = AtharPid.id, ISOWN = PID === AtharPid.owner;
+  /* [r9] قسم الوادي في الملف المشترك لكل طفل: المالك يبقى على o.valley (لا ترحيل)، وغيره في o.valleyBy[id] */
+  function vsec(o, make) {
+    if (ISOWN) { var a = (o.valley && typeof o.valley === "object") ? o.valley : null; if (!a && make) a = o.valley = {}; return a; }
+    var m = (o.valleyBy && typeof o.valleyBy === "object" && !Array.isArray(o.valleyBy)) ? o.valleyBy : null;
+    if (!m && make) m = o.valleyBy = {};
+    if (!m) return null;
+    var b = (m[PID] && typeof m[PID] === "object") ? m[PID] : null; if (!b && make) b = m[PID] = {}; return b;
+  }
+  /* العودة من bfcache بعد تبديل الطفل في الرئيسية: أعد التحميل ليُقرأ تقدّم الطفل الصحيح */
+  function pidNow() { try { var p = JSON.parse(localStorage.getItem("athar_profiles_v1")); return (p && typeof p.active === "string") ? p.active : null; } catch (e) { return null; } }
+  window.addEventListener("pageshow", function (e) { var n = pidNow(); if (e.persisted && n && n !== PID && !(n === "p1" && PID === "p1")) location.reload(); });
 
   function rd() { try { var o = JSON.parse(localStorage.getItem(PK)); return (o && typeof o === "object" && !Array.isArray(o)) ? o : {}; } catch (e) { return {}; } }
   function wr(o) { try { o.v = 1; localStorage.setItem(PK, JSON.stringify(o)); return true; } catch (e) { return false; } }
@@ -4103,7 +4128,7 @@ window.addEventListener("load", () => {
 
   /* ── حصة اليوم: يعرفها الوادي وحده (المسار)، فينشرها للرئيسية ── */
   function publishToday() {
-    var pl = App.plan(), o = rd(), v = (o.valley && typeof o.valley === "object") ? o.valley : (o.valley = {});
+    var pl = App.plan(), o = rd(), v = vsec(o, true);
     var t = { d: State.localDay(), done: !pl || pl.kind !== "next", end: !!(pl && pl.kind === "end") }, p = v.today;
     if (p && p.d === t.d && p.done === t.done && p.end === t.end) return;
     v.today = t; wr(o);
@@ -4159,7 +4184,8 @@ window.addEventListener("load", () => {
   function absorb(force) {
     if (busy) return;
     var o = rd(), q = (o.quran && typeof o.quran === "object") ? o.quran : {}, ev = Array.isArray(q.events) ? q.events : [];
-    var v = (o.valley && typeof o.valley === "object") ? o.valley : (o.valley = {});
+    ev = ev.filter(function (e) { return e && typeof e.id === "string" && e.id.indexOf(PID + ":") === 0; });   /* إنجازات هذا الطفل فقط */
+    var v = vsec(o, true);
     if (!Array.isArray(v.seen)) v.seen = [];
     var fresh = ev.filter(function (e) { return e && e.id && v.seen.indexOf(e.id) < 0; });
     var lit = v.lanterns | 0;
@@ -4191,10 +4217,11 @@ window.addEventListener("load", () => {
   /* ?from=… علامة قدوم اختيارية: نُنظّف الرابط */
   if (/[?&]from=/.test(location.search)) { try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {} }
 
-  drawLanterns(rd().valley ? (rd().valley.lanterns | 0) : 0, -1);
-  setTimeout(function () { drawLanterns(rd().valley ? (rd().valley.lanterns | 0) : 0, -1); }, 400);
+  function lanN() { var v = vsec(rd(), false); return v ? (v.lanterns | 0) : 0; }
+  drawLanterns(lanN(), -1);
+  setTimeout(function () { drawLanterns(lanN(), -1); }, 400);
 
-  window.AtharHome = { absorb: absorb, lanterns: function () { return (rd().valley || {}).lanterns | 0; }, publishToday: publishToday };
+  window.AtharHome = { absorb: absorb, lanterns: lanN, publishToday: publishToday };
 })();
 
 </script>

@@ -375,11 +375,15 @@
      الأولوية: athar.profile.v1.valley.today = {d,done,end} (يكتبه الوادي نفسه لأنه وحده يعرف المسار)،
      وإلا نستنتج من athar.world.v2.sess: بدأ حصة اليوم فلا نزعجه، ولم يدخل الوادي قط أو يومٌ جديد فالحصة بانتظاره. */
   function localDay(){ var d = new Date(), z = function(n){ return (n < 10 ? "0" : "") + n; }; return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate()); }
+  /* [r9] تقدّم الوادي لكل طفل: مالك المفتاح القديم (p1 أو أول ملف) يبقى على athar.world.v2 وo.valley؛ غيره athar_world_v2_<id> وo.valleyBy[id] */
+  function vOwner(){ for(var i = 0; i < profiles.list.length; i++){ if(profiles.list[i].id === "p1") return "p1"; } return profiles.list[0].id; }
+  function worldKey(){ return profiles.active === vOwner() ? "athar.world.v2" : "athar_world_v2_" + profiles.active; }
+  function valleySec(p){ if(profiles.active === vOwner()) return p.valley; return (p.valleyBy && typeof p.valleyBy === "object") ? p.valleyBy[profiles.active] : null; }
   function valleyPending(){
-    var today = localDay(), p = rdP(), t = p.valley && p.valley.today;
+    var today = localDay(), p = rdP(), t = valleySec(p) && valleySec(p).today;
     if(t && t.end) return false;
     if(t && t.d === today) return !t.done;
-    var w = null; try{ w = JSON.parse(localStorage.getItem("athar.world.v2")); }catch(e){}
+    var w = null; try{ w = JSON.parse(localStorage.getItem(worldKey())); }catch(e){}
     if(!w || typeof w !== "object") return true;
     var s = w.sess;
     if(s && s.d === today && s.ids && s.ids.length) return false;
@@ -1458,6 +1462,10 @@
             var sfx = "_" + id, gone = [];
             for(var qi = 0; qi < localStorage.length; qi++){ var qk = localStorage.key(qi); if(qk && qk.indexOf("athar_") === 0 && qk.length > sfx.length && qk.slice(-sfx.length) === sfx) gone.push(qk); }
             gone.forEach(function(qk){ localStorage.removeItem(qk); });
+            try{ var po = JSON.parse(localStorage.getItem("athar.profile.v1")); if(po && typeof po === "object"){ var chg = false;
+              if(po.valleyBy && po.valleyBy[id]){ delete po.valleyBy[id]; chg = true; }
+              if(po.quran && po.quran.base && po.quran.base[id]){ delete po.quran.base[id]; chg = true; }
+              if(chg) localStorage.setItem("athar.profile.v1", JSON.stringify(po)); } }catch(e2){}
             var rwo = JSON.parse(localStorage.getItem("athar.rw.v1")); if(rwo && rwo.profiles && rwo.profiles[id]){ delete rwo.profiles[id]; localStorage.setItem("athar.rw.v1", JSON.stringify(rwo)); }
           }catch(e){}
           if(profiles.active === id){ profiles.active = profiles.list[0].id; progress = loadProgress(); }
