@@ -1184,6 +1184,9 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
   .lt-top{display:flex;gap:14px;justify-content:center;align-items:center;}
   .lt-pic{width:130px;height:130px;border-radius:34px;border:2px solid rgba(255,238,185,.9);background:#fff;box-shadow:0 8px 0 rgba(0,0,0,.2);cursor:pointer;}
   .lt-pic.pop .lt-emoji{animation:ltPop .5s;}
+  @keyframes tileCheer{0%{transform:scale(1)}35%{transform:scale(1.14) rotate(-3deg)}65%{transform:scale(.97) rotate(2deg)}100%{transform:scale(1)}}
+  .letter-tile.ok,.adk-opt.ok,.ayq-opt.ok,.wg-opt.ok{animation:tileCheer .55s ease-out;}
+  @media (prefers-reduced-motion: reduce){ .letter-tile.ok,.adk-opt.ok,.ayq-opt.ok,.wg-opt.ok{animation:none;} }
   @keyframes ltPop{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-8deg)}100%{transform:scale(1)}}
   .lt-word{font-size:26px;}
   .lt-nav{display:flex;gap:10px;justify-content:center;margin-top:12px;}
@@ -2729,12 +2732,20 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     }catch(e){}
   }
   function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+  /* خطأ لطيف: نغمتان هابطتان ناعمتان + جملة مرئية قصيرة (للطفل الذي لا يسمع)، بلا توبيخ */
+  var oopsT = 0;
+  function oops(){
+    tone(392, 0, .14, .05); tone(311, .12, .24, .05);
+    var now = Date.now();
+    if(now - oopsT > 2500){ oopsT = now; try{ showToast("لا بأس، جرّب مرة أخرى"); }catch(e){} }
+  }
   function sfx(kind){
     if(!settings.sfx || settings.bedtime || (document.body && document.body.classList.contains("bedtime"))) return;   /* وقت النوم: صمت كامل */
     if(kind === "tap" && window.__atharQuietTap > Date.now()) return;   /* نقر باب العالم: صوت «الطرق» الجديد يكفي، فلا نغمة قديمة فوقه */
     if(kind === "tap"){ tone(660, 0, 0.12, 0.07); haptic(8); }
     else if(kind === "turn"){ tone(523, 0, 0.18, 0.08); tone(784, 0.14, 0.3, 0.08); haptic(16); }
     else if(kind === "done"){
+      var _t = document.getElementById("toast"); if(_t) _t.classList.remove("show");   /* لا تبقى «جرّب مرة أخرى» فوق الاحتفال */
       [523, 659, 784, 1047].forEach(function(f, i){ tone(f, i * 0.12, 0.35, 0.07); });
       haptic([20, 40, 20]);
     }
@@ -3879,7 +3890,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
             if(gameState.round >= gameState.max) wordEnd(); else wordRound();
           }, 1100);
         } else {
-          b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20);
+          b.classList.add("bad"); oops(); haptic(20);
         }
       });
       row.appendChild(b);
@@ -4169,7 +4180,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       b.addEventListener("click", function(){
         if(locked) return;
         if(j === k){ locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8); setTimeout(function(){ readSound(round + 1, right + (first ? 1 : 0)); }, 1100); }
-        else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(b);
     });
@@ -4192,7 +4203,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         if(i === order){
           b.classList.add("ok"); slots.children[i].textContent = syl[i]; slots.children[i].className = "miss ok"; speak(syl[i]); order++;
           if(order === syl.length){ locked = true; sfx("done"); burst(["⭐", "✨"], 8); setTimeout(function(){ speak(W[1]); }, 500); setTimeout(function(){ readBuild(round + 1, right + (first ? 1 : 0)); }, 1900); }
-        } else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); setTimeout(function(){ b.classList.remove("bad"); }, 500); }
+        } else { first = false; b.classList.add("bad"); oops(); haptic(20); setTimeout(function(){ b.classList.remove("bad"); }, 500); }
       });
       row.appendChild(b);
     });
@@ -4238,7 +4249,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           locked = true; b.classList.add("ok"); sfx("done"); burst([LWORDS[idx][1], "⭐"], 8);
           speak(LWORDS[idx][0]);
           setTimeout(function(){ lettersQuiz(round + 1, right + (first ? 1 : 0)); }, 1300);
-        } else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(b);
     });
@@ -4270,7 +4281,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         if(i === idx){
           locked = true; b.classList.add("pop"); sfx("done"); burst(["🎈","⭐","✨"], 10); speak(target[1]);
           setTimeout(function(){ lettersBalloons(round + 1, right + (first ? 1 : 0)); }, 1100);
-        } else { first = false; b.classList.add("shake"); setTimeout(function(){ b.classList.remove("shake"); }, 400); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; b.classList.add("shake"); setTimeout(function(){ b.classList.remove("shake"); }, 400); oops(); haptic(20); }
       });
       sky.appendChild(b);
     });
@@ -4416,7 +4427,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         if(locked) return;
         if(x === n){
           locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8); nmWin(body, nmWord(n), function(){ nmCount(round + 1, right + (first ? 1 : 0)); });
-        } else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(b);
     });
@@ -4585,7 +4596,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       locked = true; sfx("done"); burst(["⭐", "✨"], 8);
       nmWin(body, sayText, function(){ mqPlay(game, round + 1, right + (first ? 1 : 0)); });
     }
-    function wrong(b){ first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); speak("حاول مرة أخرى"); }
+    function wrong(b){ first = false; b.classList.add("bad"); oops(); haptic(20); speak("حاول مرة أخرى"); }
     function tile(html, color, ok, sayWin){
       var b = nmPlayTile(html, color, function(){ if(locked) return; if(ok){ b.classList.add("ok"); win(sayWin); } else wrong(b); });
       return b;
@@ -4690,7 +4701,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       locked = true; sfx("done"); burst(["⭐", "✨"], 8);
       nmWin(body, sayText, function(){ nmPlay(game, round + 1, right + (first ? 1 : 0)); });
     }
-    function wrong(b){ first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); speak("حاول مرة أخرى"); }
+    function wrong(b){ first = false; b.classList.add("bad"); oops(); haptic(20); speak("حاول مرة أخرى"); }
     if(game === "compare"){
       var a = 1 + nmRand(hi), c = 1 + nmRand(hi); while(c === a) c = 1 + nmRand(hi);
       var big = round % 2 === 0, ans = big ? Math.max(a, c) : Math.min(a, c);
@@ -4809,7 +4820,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           locked = true; bt.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8);
           eq.querySelector(".q").textContent = nm(ans); eq.querySelector(".q").classList.add("got");
           nmWin(body, nmWord(ans), function(){ nmArith(kind, round + 1, right + (first ? 1 : 0)); });
-        } else { first = false; bt.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; bt.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(bt);
     });
@@ -4879,7 +4890,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           locked = true; bt.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8);
           eq.querySelector(".q").textContent = nm(ans); eq.querySelector(".q").classList.add("got");
           nmWin(body, nmWord(ans), function(){ nmMulQuiz(n, round + 1, right + (first ? 1 : 0), list); });
-        } else { first = false; bt.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; bt.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(bt);
     });
@@ -4994,7 +5005,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         if(o.t === a.t){
           locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", a.e], 8); speak(a.t);
           setTimeout(function(){ adkQuiz(round + 1, right + (first ? 1 : 0)); }, 1500);
-        } else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       list.appendChild(b);
     });
@@ -5172,7 +5183,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8);
           if(first) S.right++;
           setTimeout(function(){ if(ayqSt === S){ S.i++; ayqRound(); } }, 1300);
-        } else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       list.appendChild(b);
     });
@@ -5533,7 +5544,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           if(P.v){ var vv = document.createElement("div"); vv.className = "us-verse"; vv.innerHTML = '<div class="ps-vt">' + (P.h ? P.v : '﴿' + P.v + '﴾') + '</div><div class="ps-vr">' + P.r + '</div>'; ans.appendChild(vv); }
           else if(P.r){ var rr = document.createElement("div"); rr.className = "us-verse"; rr.innerHTML = '<div class="ps-vr">' + P.r + '</div>'; ans.appendChild(rr); }
           speak(P.a); next.disabled = false; next.style.opacity = "1";
-        } else { b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { b.classList.add("bad"); oops(); haptic(20); }
       });
       list.appendChild(b);
     });
@@ -10033,7 +10044,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       b.addEventListener("click", function(){
         if(locked) return;
         if(o === target){ locked = true; b.classList.add("ok"); sfx("done"); burst(["⭐", "✨"], 8); setTimeout(function(){ noorQuiz(i, round + 1, right + (first ? 1 : 0)); }, 1100); }
-        else { first = false; b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        else { first = false; b.classList.add("bad"); oops(); haptic(20); }
       });
       row.appendChild(b);
     });
@@ -11371,7 +11382,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       var c = document.createElement("button"); c.className = "us-col" + (k === 0 ? " now" : ""); c.style.setProperty("--c", P.c);
       c.innerHTML = '<span class="us-cap">' + P.e + '</span><span class="us-shaft"></span><small>' + P.n + '</small>';
       c.addEventListener("click", function(){
-        if(k !== idx) { tone(220, 0, .15, .05); return; }
+        if(k !== idx) { oops(); return; }
         c.classList.remove("now"); c.classList.add("up"); sfx("tap"); haptic(20);
         tx.textContent = arNum(k + 1) + ". " + P.n + ": " + P.d; speak(P.n + ". " + P.d);
         idx++;
@@ -11400,7 +11411,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           q.textContent = A.say; speak(A.say);
           list.style.display = "none"; usSet(C.id); markDayActive();
           next.style.display = ""; next.textContent = "أحسنت ✔";
-        } else { b.classList.add("bad"); tone(220, 0, .2, .06); haptic(20); }
+        } else { b.classList.add("bad"); oops(); haptic(20); }
       });
       list.appendChild(b);
     });
