@@ -297,3 +297,12 @@ html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .sc-bd{white-space:nowrap}
 html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .sc-lamp{transform:scale(.75);transform-origin:top left}
 html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .choice-icon{font-size:24px!important}
 html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-st .ct1{padding-left:12px;font-size:14px}
+
+/* r4: بطاقات «أحفظ القرآن» والمسابقات بنفس روح بطاقات المكتبة والقاعدة */
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2>.choice-tile{min-height:150px;padding:12px 8px;gap:6px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2>.choice-tile.sc-wide{min-height:112px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2 .choice-icon{width:64px;height:64px;border-radius:22px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2 .ct1{font-size:19px}
+html.sc-sub :is(#view-door,#view-quiz) .sc-hub.g2 .ct2{-webkit-line-clamp:3;font-size:13.5px}
+html.sc-sub #view-door .sc-hub.g2>.choice-tile:not(.sc-wide){min-height:210px}
+html.sc-sub #view-door .sc-hub.g2 .choice-icon{width:84px;height:84px;border-radius:28px}

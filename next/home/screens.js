@@ -269,8 +269,9 @@
       var h = hs[i], tiles = [];
       for(var j = 0; j < h.children.length; j++) if(h.children[j].classList.contains("choice-tile")) tiles.push(h.children[j]);
       var n = tiles.length;
-      h.classList.toggle("sc-hub", n > 0); h.classList.toggle("g2", n >= 4); h.classList.toggle("g1", n > 0 && n < 4);
-      tiles.forEach(function(t, k){ t.classList.toggle("sc-wide", n >= 4 && n % 2 === 1 && k === n - 1); badge(t); lamp(t); });
+      var two = n >= 4 || (n >= 2 && (h.id === "doorBody" || h.id === "quizBody"));
+      h.classList.toggle("sc-hub", n > 0); h.classList.toggle("g2", two); h.classList.toggle("g1", n > 0 && !two);
+      tiles.forEach(function(t, k){ t.classList.toggle("sc-wide", two && n % 2 === 1 && k === n - 1); badge(t); lamp(t); });
     }
   }
   /* ---------- (1) تلميح الرمز الافتراضي داخل لوحة ولي الأمر فقط ---------- */
@@ -345,13 +346,16 @@
     }
   }
   var FP = { noorBody:".us-parent,.choice-tile,.us-text", libBody:".lib-secs", adhkarBody:".adk-hero", numbersBody:".letter-grid,.choice-tile", quizBody:".choice-tile", ayqBody:".ayq-grid", lettersBody:".letter-grid" };
+  /* r4: ترقيم تلقائي لأي جسم شاشة (…Body) يتجاوز الارتفاع؛ FP يبقى لضبط بوابة الشاشات المعروفة، والبقية تأخذ البوابة العامة */
+  var FP_DEF = ".choice-tile,.letter-grid,.sc-hub,.lib-secs,.adk-grid,.ayq-grid,.nm-chips,.noor-it";
+  function fpBodies(){ var o = {}, a = document.querySelectorAll(".view [id$='Body']"); for(var i = 0; i < a.length; i++) if(a[i].parentNode && a[i].parentNode.classList.contains("view") || a[i].closest(".view")) o[a[i].id] = 1; Object.keys(FP).forEach(function(k){ o[k] = 1; }); return o; }
   function fpIsGrid(c){ return c.children.length > 1 && (/(^|\s)(lib-secs|adk-grid|letter-grid|sc-hub|nm-chips|ayq-grid)(\s|$)/.test(c.className) || (c.classList.contains("lq-opts") && !!c.querySelector(".noor-it"))); }
   function fpLayout(b){
     if(b.__fpBusy) return; b.__fpBusy = true;
     try{
       var old = b.querySelector(":scope>.fp-bar"); if(old) old.remove();
       var all = b.querySelectorAll(".fp-h"); for(var i = 0; i < all.length; i++) all[i].classList.remove("fp-h");
-      var v = b.closest(".view"); if(!v || !v.classList.contains("active") || !b.querySelector(FP[b.id])) return;
+      var v = b.closest(".view"); if(!v || !v.classList.contains("active") || !b.querySelector(FP[b.id] || FP_DEF)) return;
       var items = [], kids = b.children;
       for(var k = 0; k < kids.length; k++){ var c = kids[k]; if(c.classList.contains("fp-bar")) continue;
         if(fpIsGrid(c)){ for(var m = 0; m < c.children.length; m++) items.push({el:c.children[m], g:c}); } else items.push({el:c}); }
@@ -394,7 +398,7 @@
     }
   }
   function fpInit(){
-    Object.keys(FP).forEach(function(id){
+    Object.keys(fpBodies()).forEach(function(id){
       var b = document.getElementById(id); if(!b) return;
       var tm = 0, run = function(){ clearTimeout(tm); tm = setTimeout(function(){ fpLayout(b); setTimeout(function(){ fpLayout(b); }, 450); }, 90); };
       b.__fpRun = run;
@@ -402,7 +406,7 @@
       var v = b.closest(".view");
       if(v) try{ new MutationObserver(run).observe(v, {attributes:true, attributeFilter:["class"]}); }catch(e){}
     });
-    window.addEventListener("resize", function(){ Object.keys(FP).forEach(function(id){ var b = document.getElementById(id); if(b && b.__fpRun) b.__fpRun(); }); });
+    window.addEventListener("resize", function(){ Object.keys(fpBodies()).forEach(function(id){ var b = document.getElementById(id); if(b && b.__fpRun) b.__fpRun(); }); });
     ["view-numbers","view-quiz","view-adhkar"].forEach(function(id){
       var v = document.getElementById(id); if(!v) return;
       try{ new MutationObserver(segIcons).observe(v, {childList:true, subtree:true}); }catch(e){}
