@@ -2431,12 +2431,12 @@
   ];
   function lettersReadHome(){
     var body = $("lettersBody"); body.innerHTML = "";
-    var intro = document.createElement("div"); intro.className = "intro small";
+    var intro = document.createElement("div"); intro.className = "intro small rdh-intro";
     intro.innerHTML = "<h1>أقرأ</h1><p>الفتحة والضمة والكسرة، ثم أركّب كلمات.</p>";
     body.appendChild(intro);
     var idx = 0;
-    var big = document.createElement("div"); big.className = "lq-opts"; big.style.flexWrap = "wrap";
-    var pick = document.createElement("div"); pick.className = "lq-opts"; pick.style.flexWrap = "wrap"; pick.style.marginTop = "6px";
+    var big = document.createElement("div"); big.className = "lq-opts rdh-big"; big.style.flexWrap = "wrap";
+    var pick = document.createElement("div"); pick.className = "lq-opts rdh-pick"; pick.style.flexWrap = "wrap"; pick.style.marginTop = "6px";
     function show(){
       big.innerHTML = "";
       var base = LETTERS[idx][0] === "ا" ? "أ" : LETTERS[idx][0];
@@ -2456,13 +2456,13 @@
       pick.appendChild(c);
     });
     body.appendChild(big);
-    var h = document.createElement("div"); h.className = "muted"; h.style.cssText = "text-align:center;margin:10px 0"; h.textContent = "اختر حرفًا لتسمع حركاته:";
+    var h = document.createElement("div"); h.className = "muted rdh-h"; h.style.cssText = "text-align:center;margin:10px 0"; h.textContent = "اختر حرفًا لتسمع حركاته:";
     body.appendChild(h); body.appendChild(pick);
-    var g = document.createElement("div"); g.style.cssText = "display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0";
+    var g = document.createElement("div"); g.className = "rdh-g"; g.style.cssText = "display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0";
     var b1 = document.createElement("button"); b1.className = "pill-btn"; b1.textContent = "أيّ مقطع تسمع؟"; b1.addEventListener("click", function(){ readSound(0, 0); });
     var b2 = document.createElement("button"); b2.className = "pill-btn"; b2.textContent = "أركّب الكلمة"; b2.addEventListener("click", function(){ readBuild(0, 0); });
     g.appendChild(b1); g.appendChild(b2); body.appendChild(g);
-    var par = document.createElement("div"); par.className = "us-parent";
+    var par = document.createElement("div"); par.className = "us-parent rdh-par";
     par.innerHTML = "<b>لولي الأمر</b><span>ابدؤوا بالفتحة ثم الضمة ثم الكسرة، وكرّروا النطق مع الطفل ببطء. بعد ذلك ينتقل إلى تركيب المقاطع في كلمات بسيطة.</span>";
     body.appendChild(par);
     show();

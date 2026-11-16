@@ -271,7 +271,7 @@ B.forEach(function(b,i){
 var el=bEl[b.k];el.style.setProperty("--i",i);
 el.addEventListener("pointerdown",function(){el.classList.add("pr")});
 ["pointerup","pointercancel","pointerleave"].forEach(function(n){el.addEventListener(n,function(){el.classList.remove("pr")})});
-el.addEventListener("click",function(){if(first){ignite();return}if(Date.now()>guard&&!wasLP(el))walkTo(b)});
+el.addEventListener("click",function(){if(first){ignite();return}if(Date.now()>guard&&!wasLP(el)){sparks(b.x+b.w/2,b.y+b.h*.45);walkTo(b)}});
 lp(el,420,function(){if(!first&&!pending)peek(b)});
 });
 var lt=0;
@@ -298,17 +298,28 @@ bb.querySelector(".go").onclick=function(){closePops();var e=bEl[l.k];e.classLis
 function say(t,ms){closePops();var bb=$("wBub");bb.classList.add("say");bb.querySelector("span").textContent=t;showPop(bb,ax,ay-AH-50);later("pop",closePops,ms||4200)}
 function celebrate(){
 var s=jget(KEY()),d=new Date(),ds=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
-var days=jget("athar_days_v1_"+pid());if(!Array.isArray(days)||days.indexOf(ds)<0||s.cel===ds)return;
-saveSt({cel:ds});
+var days=jget("athar_days_v1_"+pid());if(!Array.isArray(days))days=[];
+var gd=false;try{var rw=JSON.parse(localStorage.getItem("athar.rw.v1")),pr=rw&&rw.profiles&&rw.profiles[pid()];gd=!!(pr&&pr.day&&pr.day.date===ds&&pr.day.goalDone)}catch(e){}
+var gNew=gd&&s.gcel!==ds,dNew=days.indexOf(ds)>=0&&s.cel!==ds;
+if(!gNew&&!dNew)return;
+saveSt({cel:ds,gcel:gd?ds:s.gcel});
 later("cel",function(){
 if(!active||first||pending)return;
 ath.classList.remove("jump");jump();
-say("أحسنت اليوم",4200);
+say(gNew?"هدف اليوم تحقّق، ما شاء الله":"أحسنت اليوم",4200);
 if(RM)return;
 var f=$("wFall"),i,n=16;
 for(i=0;i<n;i++){var e=D.createElement("i");e.className="w-fl";e.style.left=(8+Math.random()*84)+"%";e.style.animationDelay=(Math.random()*1.1).toFixed(2)+"s";e.style.animationDuration=(1.7+Math.random()*.9).toFixed(2)+"s";f.appendChild(e)}
 setTimeout(function(){f.innerHTML=""},3200);
 },RM?200:900);
+}
+function welcomeBack(){
+var s=jget(KEY()),d=new Date(),ds=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+var days=jget("athar_days_v1_"+pid());if(!Array.isArray(days)||!days.length||s.wb===ds||days.indexOf(ds)>=0)return;
+var last=days.slice().sort().pop(),a=last.split("-"),gap=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(+a[0],+a[1]-1,+a[2]))/864e5);
+if(!(gap>=2))return;
+saveSt({wb:ds});
+later("wb",function(){if(!active||first||pending)return;ath.classList.remove("glow");void ath.offsetWidth;ath.classList.add("glow");poseFor(2400,"hello");later("gl",function(){ath.classList.remove("glow")},1500)},700);
 }
 function friday(){
 var fr=(qs.get("d")!=null?+qs.get("d"):new Date().getDay())===5;
@@ -471,7 +482,7 @@ B.forEach(function(b){bEl[b.k].classList.remove("on")});placeHalo();dusk.removeA
 else{world.classList.remove("w-first");placeLast();armLook(8000)}
 var gb=$("btnParent");if(gb&&!gb.getAttribute("aria-label"))gb.setAttribute("aria-label","وضع ولي الأمر");
 mountSky();
-setTimeout(friday,60);if(!first)celebrate();
+setTimeout(friday,60);if(!first){celebrate();welcomeBack()}
 var bt=$("wBoot");if(bt)requestAnimationFrame(function(){requestAnimationFrame(function(){bt.classList.add("off");setTimeout(function(){bt.remove()},450)})});
 }
 function leave(){
