@@ -8877,7 +8877,9 @@
     sfx("done"); speak("أحسنت");
   }
 
-  var libSec = "";
+  var libSec = "", libFit = null;
+  function libBodyOk(sh){ return sh && sh.isConnected && document.querySelector(".view.active") && document.querySelector(".view.active").id === "view-library"; }
+  window.addEventListener("resize", function(){ if(libFit) libFit(); });
   function openLibrary(){ showView("view-library"); window.scrollTo(0, 0); libHome(""); }
   function libHome(sec){
     if(typeof sec !== "string") sec = libSec;
@@ -9035,14 +9037,31 @@
     var bk0 = document.createElement("button"); bk0.className = "lq-say"; bk0.textContent = "→ كل الأقسام";
     bk0.addEventListener("click", function(){ libHome(""); window.scrollTo(0, 0); });
     body.appendChild(bk0);
-    books.filter(function(bk){ return cur.keys.indexOf(bk.k) >= 0; }).forEach(function(bk){
-      var el = document.createElement("button"); el.className = "lib-book";
-      el.style.setProperty("--a", bk.a); el.style.setProperty("--b", bk.b);
-      el.innerHTML = '<span class="lib-spine"></span><span class="lib-em">' + bk.e + '</span><b>' + bk.t + '</b><small>' + bk.s + '</small>';
-      el.addEventListener("click", function(){ sfx("tap"); bk.go(); });
-      shelf.appendChild(el);
-    });
-    body.appendChild(shelf);
+    var secBooks = books.filter(function(bk){ return cur.keys.indexOf(bk.k) >= 0; });
+    shelf.classList.add("paged");
+    var libPager = document.createElement("div"); libPager.className = "pgr lib-pgr";
+    body.appendChild(shelf); body.appendChild(libPager);
+    var libPg = { page:0, rows:3 };
+    function drawLibPage(){
+      var per = libPg.rows * 2, pages = Math.max(1, Math.ceil(secBooks.length / per));
+      libPg.page = Math.min(libPg.page, pages - 1); shelf.innerHTML = "";
+      secBooks.slice(libPg.page * per, libPg.page * per + per).forEach(function(bk){
+        var el = document.createElement("button"); el.className = "lib-book";
+        el.style.setProperty("--a", bk.a); el.style.setProperty("--b", bk.b);
+        el.innerHTML = '<span class="lib-spine"></span><span class="lib-em">' + bk.e + '</span><b>' + bk.t + '</b><small>' + bk.s + '</small>';
+        el.addEventListener("click", function(){ sfx("tap"); bk.go(); });
+        shelf.appendChild(el);
+      });
+      pgBuild(libPager, libPg.page, pages, function(n){ libPg.page = n; drawLibPage(); });
+    }
+    function fitLibPages(){
+      var first = libPg.page * libPg.rows * 2;
+      libPg.rows = 4; drawLibPage();
+      while(libPg.rows > 1 && (body.scrollHeight > body.clientHeight + 1 || document.documentElement.scrollHeight > window.innerHeight + 1)){ libPg.rows--; drawLibPage(); }
+      libPg.page = Math.floor(first / (libPg.rows * 2)); drawLibPage();
+    }
+    libFit = function(){ if(!libBodyOk(shelf)) return; fitLibPages(); };
+    fitLibPages();
   }
 
   function usulHome(bk){

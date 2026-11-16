@@ -1520,3 +1520,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
   .br-lamps{max-width:min(300px,calc(100vh - 330px));gap:10px;margin:8px auto}
 }
 @media (max-height:600px){ #view-brain .br-title{display:none} .br-grid{margin:6px auto} }
+
+/* r8: صفحات المكتبة بلا تمرير */
+.lib-shelf.paged{background:none;gap:10px;padding:4px 2px 2px;flex:1 1 auto;min-height:0;grid-auto-rows:minmax(96px,1fr);max-height:640px}
+.lib-shelf.paged .lib-book{min-height:0;height:auto;padding:8px 10px 8px 14px;gap:2px;overflow:hidden}
+.lib-shelf.paged .lib-em{font-size:clamp(28px,5vh,40px)}
+.lib-shelf.paged .lib-book b{font-size:clamp(15px,2.4vh,18px);line-height:1.25}
+.lib-shelf.paged .lib-book small{font-size:12px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-height:700px){.lib-shelf.paged .lib-book small{display:none}}
+#view-library:has(.lib-shelf.paged) .intro p{display:none}
+#view-library:has(.lib-shelf.paged) .intro{margin:0 0 4px}
+.lib-pgr{margin:6px 0 0;min-height:48px;flex:none}
