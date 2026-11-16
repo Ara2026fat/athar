@@ -99,3 +99,4 @@ html.rw-warm::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:n
 .rw-day.full i svg{filter:drop-shadow(0 0 4px rgba(255,190,40,.95))}
 @media (prefers-reduced-motion:reduce){.rw-day i.pop{animation:none}}
 @media (max-width:340px){html.rw-home .rw-chip{left:68px;min-width:56px;padding:0 8px 0 7px;gap:3px}html.rw-home .rw-chip svg{width:23px;height:23px}}
+.rw-toast{width:max-content}

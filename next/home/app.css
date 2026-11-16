@@ -1538,3 +1538,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 #view-library:has(.lib-shelf.paged) .intro p{display:none}
 #view-library:has(.lib-shelf.paged) .intro{margin:0 0 4px}
 .lib-pgr{margin:6px 0 0;min-height:48px;flex:none}
+
+/* r9: child-journey gentle guidance */
+.hc-home{margin-top:10px;min-height:48px;padding:0 28px;border:0;border-radius:24px;background:rgba(255,255,255,.7);color:#1d5a3a;font:800 18px 'Tajawal',system-ui,sans-serif;cursor:pointer}
+.hc-home:active{transform:translateY(2px)}
+@keyframes rvNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.rv-nudge{animation:rvNudge 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.rv-nudge{animation:none;outline:3px solid #FFC93C;outline-offset:3px}}

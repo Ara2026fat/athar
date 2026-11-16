@@ -4248,6 +4248,8 @@
     $("rvPlay").addEventListener("click", function(){ rvPlay(it); });
     $("rvOk").addEventListener("click", function(){ rvMark(it); });
     $("rvLater").addEventListener("click", function(){ rvNext(); });
+    var pl = $("rvPlay"); setTimeout(function(){ if(pl.isConnected && !rv.audio) pl.classList.add("rv-nudge"); }, 3500);
+    pl.addEventListener("click", function(){ pl.classList.remove("rv-nudge"); var ok = $("rvOk"); setTimeout(function(){ if(ok && ok.isConnected) ok.classList.add("rv-nudge"); }, 4500); });
   }
   function rvPlay(it){
     var b = $("rvPlay"), m = $("rvMsg");
@@ -10118,6 +10120,7 @@
         '<p class="hc-sub">' + (whole ? "أتممتَ سورة " + sd.name : "أتممتَ الآيات المحدّدة") + '</p>' +
         '<div class="ge-stars hc-stars" role="img" aria-label="ثلاث نجوم">' + STAR_SVG + STAR_SVG + STAR_SVG + '</div>' +
         '<button class="hc-btn" id="hcBack" type="button">العودة للسور</button>' +
+        '<button class="hc-home" id="hcHome" type="button">الرئيسية</button>' +
       '</div>';
     document.body.appendChild(w);
     var ss = w.querySelectorAll(".ge-stars svg"), card = w.querySelector(".hc-card");
@@ -10127,6 +10130,7 @@
     w.dataset.key = "r:hifzdone:" + player.surah + ":" + player.rangeFrom + "-" + player.rangeTo + ":" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
     var b = $("hcBack");
     b.addEventListener("click", function(){ leaveSurah(false); });
+    var hb = $("hcHome"); if(hb) hb.addEventListener("click", function(){ leaveSurah(true); });
     try{ b.focus({ preventScroll:true }); }catch(e){}
   }
   var holdTimer = null;
