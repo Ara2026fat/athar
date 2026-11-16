@@ -100,7 +100,7 @@ html.sc-sub .sc-w .ct1,html.sc-sub .sc-w .ct2{text-shadow:0 1px 0 rgba(0,0,0,.35
 /* أزرار ثابتة اللون */
 html.sc-sub :is(.view,#view-numbers) .seg-btn.active{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.1)),#1b7a3a;text-shadow:none}
 html.sc-sub .lq-say{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.08)),#1f5fd8}
-html.sc-sub .pill-btn,html.sc-sub .glass-card .pill-btn{background:linear-gradient(180deg,#a8690f,#8a5a12);color:#fff}
+html.sc-sub .pill-btn,html.sc-sub .glass-card .pill-btn{background:linear-gradient(180deg,#FFD75E,#F2B632);color:#3a2c00;text-shadow:none;box-shadow:0 5px 0 #c98f12,inset 0 2px 0 rgba(255,255,255,.5)}
 html.sc-sub .nm-chip{color:#3f3a55}
 html.sc-sub .nm-chip.on{background:#5b2fc4;color:#fff}
 html.sc-sub .muted,html.sc-sub .pin-hint,html.sc-sub small{color:#4f4a66}
@@ -309,3 +309,6 @@ html.sc-sub #view-door .sc-hub.g2 .choice-icon{width:84px;height:84px;border-rad
 
 /* جولة ٦: زر رجوع شاشة الرمز بنفس شكل وموضع بقية الشاشات */
 html.sc-sub #view-pin #btnPinBack{position:absolute;top:4px;right:0;margin:0!important;width:56px;min-width:56px;height:56px;padding:0;font-size:30px;z-index:5}
+/* noor lesson cards: keep the lamp badge clear of the title */
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls{padding-left:40px}
+html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .sc-lamp{top:50%;left:6px;width:28px;height:28px;margin-top:-14px}
