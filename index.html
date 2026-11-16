@@ -265,6 +265,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         <p>اضغط على السورة لتبدأ الحفظ.</p>
       </div>
       <div class="surah-grid" id="surahGrid"></div>
+      <div class="pgr" id="surahPager"></div>
     </section>
 
     <!-- اختيار آيات محدّدة -->
@@ -287,6 +288,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           <button class="mini-btn" id="btnPickAll">السورة كاملة</button>
         </div>
         <div class="ayah-pick-grid" id="ayahPickGrid"></div>
+        <div class="pgr" id="ayahPager"></div>
         <div class="ayah-pick-summary" id="ayahPickSummary"></div>
       </div>
       <button class="start-btn shine-sweep" id="btnAyahStart">ابدأ الحفظ</button>
@@ -1026,10 +1028,38 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     return done / s.ayahs;
   }
 
+  /* تقسيم القوائم الطويلة إلى صفحات تتسع لشاشة الهاتف بلا تمرير (قرار دائم) */
+  function pgFit(grid, cols, pager, minRows, maxRows){
+    var first = grid.firstElementChild; if(!first) return cols * minRows;
+    var gap = parseFloat(getComputedStyle(grid).rowGap) || 0, pitch = first.offsetHeight + gap;
+    var top = grid.getBoundingClientRect().top + (window.pageYOffset || 0);
+    var ft = document.querySelector("footer"), endY = ft ? ft.getBoundingClientRect().bottom + (window.pageYOffset || 0) + 28 : document.documentElement.scrollHeight;
+    var below = endY - (top + grid.offsetHeight) + (pager && pager.style.display === "none" ? 60 : 0);
+    var rows = Math.floor((window.innerHeight - top - below + gap) / Math.max(pitch, 1));
+    return Math.max(minRows, Math.min(maxRows, rows)) * cols;
+  }
+  function pgBuild(el, page, pages, go){
+    el.innerHTML = ""; el.style.display = pages > 1 ? "" : "none";
+    if(pages < 2) return;
+    function mk(cls, label, txt, to){
+      var b = document.createElement("button"); b.className = "pgr-b " + cls; b.setAttribute("aria-label", label); b.textContent = txt;
+      if(to < 0 || to >= pages) b.disabled = true; else b.addEventListener("click", function(){ sfx("tap"); go(to); });
+      return b;
+    }
+    var dots = document.createElement("div"); dots.className = "pgr-dots";
+    for(var i = 0; i < pages; i++){ var d = document.createElement("i"); if(i === page) d.className = "on"; dots.appendChild(d); }
+    el.appendChild(mk("pgr-prev", "الصفحة السابقة", "→", page - 1));
+    el.appendChild(dots);
+    el.appendChild(mk("pgr-next", "الصفحة التالية", "←", page + 1));
+  }
+  var surahPg = { page:0, per:12 };
   function renderHomeGrid(){
     var grid = $("surahGrid");
     grid.innerHTML = "";
-    JUZ_AMMA.forEach(function(s, i){
+    var per = surahPg.per, pages = Math.max(1, Math.ceil(JUZ_AMMA.length / per));
+    if(surahPg.page >= pages) surahPg.page = pages - 1;
+    var from = surahPg.page * per;
+    JUZ_AMMA.slice(from, from + per).forEach(function(s, i){
       var ratio = surahProgressRatio(s.num);
       var dotClass = ratio===0 ? "" : (ratio>=1 ? "done" : "some");
       var col = SURAH_COLOR[s.num] || "#22A04B";
@@ -1044,7 +1074,33 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       card.addEventListener("click", function(){ openSurah(s.num); });
       grid.appendChild(card);
     });
+    pgBuild($("surahPager"), surahPg.page, pages, function(n){ surahPg.page = n; renderHomeGrid(); });
   }
+  function relayoutPaged(){
+    var act = document.querySelector(".view.active"), id = act ? act.id : "";
+    if(id === "view-surahs"){
+      var g = $("surahGrid"); if(!g.firstElementChild) renderHomeGrid();
+      var per = pgFit(g, 3, $("surahPager"), 2, 8);
+      if(per !== surahPg.per){ var firstIdx = surahPg.page * surahPg.per; surahPg.per = per; surahPg.page = Math.floor(firstIdx / per); renderHomeGrid(); }
+    } else if(id === "view-ayahs"){
+      var ag = $("ayahPickGrid"); if(!ag.firstElementChild) renderAyahChips();
+      var cols = Math.max(1, getComputedStyle(ag).gridTemplateColumns.split(" ").length);
+      var ap = pgFit(ag, cols, $("ayahPager"), 1, 6);
+      if(ap !== ayahPg.per){ var fi = ayahPg.page * ayahPg.per; ayahPg.per = ap; ayahPg.page = Math.floor(fi / ap); renderAyahChips(); }
+    }
+    pgShrink();
+  }
+  /* احتياط: إن بقي تمرير بعد الحساب نُنقص صفًّا حتى تتّسع الصفحة */
+  function pgShrink(){
+    var act = document.querySelector(".view.active"), id = act ? act.id : "";
+    var o = id === "view-surahs" ? surahPg : (id === "view-ayahs" ? ayahPg : null); if(!o) return;
+    var cols = id === "view-surahs" ? 3 : Math.max(1, getComputedStyle($("ayahPickGrid")).gridTemplateColumns.split(" ").length);
+    for(var k = 0; k < 4 && o.per > cols && document.documentElement.scrollHeight > window.innerHeight + 1; k++){
+      var fi = o.page * o.per; o.per -= cols; o.page = Math.floor(fi / o.per);
+      if(id === "view-surahs") renderHomeGrid(); else renderAyahChips();
+    }
+  }
+  window.addEventListener("resize", function(){ try{ relayoutPaged(); }catch(e){} });
 
   /* ================= ربط قارئ المصحف (iframe) ================= */
   var mushafFrame;
@@ -1269,6 +1325,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     if(which === "ayahs"){ renderAyahStrip(); renderAyahChips(); }
     else { renderHomeGrid(); }
     showView(browseView);
+    try{ relayoutPaged(); }catch(e){}
     if(which === "ayahs"){ centerActivePill(); }
     window.scrollTo(0,0);
   }
@@ -1289,17 +1346,22 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
       b.textContent = s.name;
       b.addEventListener("click", function(){
         ayahPick.surah = s.num; ayahPick.from = 1; ayahPick.to = 1; ayahPick.step = 0;
-        renderAyahStrip(); renderAyahChips(); centerActivePill();
+        renderAyahStrip(); renderAyahChips(); relayoutPaged(); centerActivePill();
       });
       strip.appendChild(b);
     });
   }
+  var ayahPg = { page:0, per:18, surah:0 };
   function renderAyahChips(){
     var s = pickSurahData(); if(!s) return;
     $("ayahPickSurahName").textContent = "سورة " + s.name + " — " + s.ayahs + " آية";
     var grid = $("ayahPickGrid");
     grid.innerHTML = "";
-    for(var a=1;a<=s.ayahs;a++){
+    var per = ayahPg.per, pages = Math.max(1, Math.ceil(s.ayahs / per));
+    if(ayahPg.surah !== s.num){ ayahPg.surah = s.num; ayahPg.page = 0; }
+    if(ayahPg.page >= pages) ayahPg.page = pages - 1;
+    var a0 = ayahPg.page * per + 1, a1 = Math.min(s.ayahs, a0 + per - 1);
+    for(var a=a0;a<=a1;a++){
       (function(n){
         var c = document.createElement("button");
         var inR = n >= ayahPick.from && n <= ayahPick.to;
@@ -1318,6 +1380,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         grid.appendChild(c);
       })(a);
     }
+    pgBuild($("ayahPager"), ayahPg.page, pages, function(n){ ayahPg.page = n; renderAyahChips(); });
     var f = ayahPick.from, t = ayahPick.to;
     $("ayahPickSummary").textContent = (f === t)
       ? ("الآية " + f + " فقط — اضغط آية أخرى لتمديد النطاق")

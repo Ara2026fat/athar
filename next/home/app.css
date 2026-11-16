@@ -1348,3 +1348,28 @@
 .choice-tile.door{padding-block:20px;}
 .home-hero{display:flex;justify-content:center;margin:2px 0 6px;}
 .home-hero img{width:132px;height:132px;border-radius:30px;box-shadow:0 10px 26px rgba(40,82,47,.28),0 0 0 4px rgba(255,255,255,.7);}
+
+/* r4: ترقيم صفحات القوائم الطويلة (سور / آيات) بلا تمرير */
+.pgr{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0 4px;min-height:52px}
+.pgr-b{width:64px;height:48px;border-radius:24px;border:2px solid rgba(255,238,185,.85);font-family:inherit;font-weight:800;font-size:26px;line-height:1;color:#fff;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(0,0,0,.12)),#1b7a3a;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 4px 0 rgba(0,0,0,.28)}
+.pgr-b:active{transform:translateY(3px);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 1px 0 rgba(0,0,0,.28)}
+.pgr-b:disabled{opacity:.35;cursor:default;box-shadow:none;transform:none}
+.pgr-dots{display:flex;gap:8px;align-items:center}
+.pgr-dots i{width:10px;height:10px;border-radius:50%;background:rgba(36,64,43,.25)}
+.pgr-dots i.on{width:24px;border-radius:6px;background:#1b7a3a}
+.ayah-pick-card .pgr{margin:10px 0 0;min-height:48px}
+@media (max-height:700px){
+  .ayah-pick-card{padding:12px 12px 10px;margin-bottom:10px}
+  .ayah-pick-title{margin-bottom:8px}
+  .ayah-pick-summary{margin-top:8px}
+  .pgr-b{height:44px}
+}
+@media (max-height:700px){ #surahGrid .surah-icon-badge{aspect-ratio:1.5/1;border-radius:24px} #surahGrid .surah-card{gap:6px} }
+@media (max-height:920px){
+  #view-surahs .intro,#view-ayahs .intro{display:none}
+  #ayahSurahStrip{padding-top:4px;padding-bottom:10px}
+  #view-ayahs .start-btn{padding:13px 0;bottom:8px}
+  html.sc-sub #view-ayahs .ayah-pick-grid{grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}
+  html.sc-sub #view-ayahs .ayah-pick-chip{min-width:44px;min-height:44px}
+}
