@@ -91,7 +91,7 @@
 
   /* ───────── واجهة: الشريحة ───────── */
   var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17l-6 3.3 1.3-6.6L2.4 9.1l6.7-.8z" fill="#F2B71F" stroke="#B07A00" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 5.4l1.5 3.3" stroke="#FFF3B0" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>';
-  var chip, cnt, live, toast, tT, shown = 0, sheet = null, tab = "lamp", confirmI = -1, confirmT = 0;
+  var chip, cnt, dayEl, live, toast, tT, shown = 0, sheet = null, tab = "lamp", confirmI = -1, confirmT = 0;
   function mode() { return $("view-home") ? "home" : ($("scene") ? "valley" : "none"); }
   function cur() { return prof(load(), pid()); }
   function build() {
@@ -103,15 +103,33 @@
     live = D.createElement("div"); live.className = "rw-live"; live.setAttribute("role", "status"); live.setAttribute("aria-live", "polite");
     toast = D.createElement("div"); toast.className = "rw-toast"; toast.setAttribute("aria-hidden", "true");
     D.body.appendChild(chip); D.body.appendChild(live); D.body.appendChild(toast);
+    /* نجم اليوم (الرئيسية فقط): ثلاث نجوم صغيرة تمتلئ بقدر ما كسبه الطفل اليوم (الهدف ٣) */
+    if (m === "home") {
+      dayEl = D.createElement("span"); dayEl.className = "rw-day"; dayEl.setAttribute("aria-hidden", "true");
+      dayEl.innerHTML = '<i></i><i></i><i></i>'; for (var q = 0; q < 3; q++) dayEl.children[q].innerHTML = STAR;
+      chip.appendChild(dayEl);
+    }
     syncChip(true); gifts();
   }
   function syncChip(noAnim) {
     if (!chip) return;
     var p = cur(); shown = p.stars; cnt.textContent = num(p.stars);
-    chip.setAttribute("aria-label", "نجومي: " + sTxt(p.stars) + ". افتح مقتنياتي");
+    var e = syncDay(p);
+    chip.setAttribute("aria-label", "نجومي: " + sTxt(p.stars) + (dayEl ? ". اليوم: " + num(Math.min(e, GOAL)) + " من " + num(GOAL) : "") + ". افتح مقتنياتي");
+  }
+  function syncDay(p) {
+    var e = (p.day && p.day.date === today()) ? (+p.day.earned || 0) : 0;
+    if (!dayEl) return e;
+    var n = Math.min(e, GOAL), prev = +dayEl.getAttribute("data-n") || 0, k, el;
+    dayEl.setAttribute("data-n", n); dayEl.classList.toggle("full", e >= GOAL);
+    for (k = 0; k < 3; k++) {
+      el = dayEl.children[k]; el.classList.toggle("on", k < n);
+      if (k >= prev && k < n && !reduced()) { el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+    }
+    return e;
   }
   function countTo(to) {
-    var from = shown; shown = to;
+    var from = shown; shown = to; try { syncDay(cur()); } catch (e) {}
     if (!cnt) return;
     if (reduced() || from === to) { cnt.textContent = num(to); return; }
     var t0 = Date.now(), dur = 520;

@@ -87,3 +87,14 @@ html.rw-warm::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:n
 /* الصفر العربي «٠» يظهر كنقطة صغيرة: نكبّر العدّاد ليُقرأ بوضوح */
 .rw-chip #rwCnt{font-size:21px;font-weight:800;line-height:1;min-width:16px;text-align:center}
 .rw-toast{text-wrap:balance}
+/* r4 · نجم اليوم: ثلاث نجوم صغيرة داخل شريحة العدّاد في الرئيسية، تمتلئ بقدر ما كسبه الطفل اليوم (بلا نص) */
+.rw-day{display:inline-flex;gap:1px;align-items:center;direction:ltr;margin-inline-start:2px;padding-inline-start:8px;border-inline-start:2px solid rgba(58,46,36,.22);height:28px}
+.rw-chip .rw-day i{display:block;width:19px;height:19px;filter:none;opacity:1}
+.rw-chip .rw-day i svg{width:100%;height:100%;filter:none}
+.rw-day i:not(.on) svg path:first-child{fill:#E9DDBA;stroke:#BBA971;stroke-width:1.4}
+.rw-day i:not(.on) svg path:last-child{display:none}
+.rw-day i.on svg{filter:drop-shadow(0 1px 0 rgba(58,46,36,.35))}
+.rw-day i.pop{animation:rwDayPop .7s var(--mx-spring) both}
+@keyframes rwDayPop{0%{transform:scale(.3) rotate(-30deg)}60%{transform:scale(1.5) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+.rw-day.full i svg{filter:drop-shadow(0 0 4px rgba(255,190,40,.95))}
+@media (prefers-reduced-motion:reduce){.rw-day i.pop{animation:none}}
