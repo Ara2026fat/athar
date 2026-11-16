@@ -8863,7 +8863,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var ex = document.createElement("button"); ex.className = "lq-say"; ex.style.marginTop = "14px"; ex.textContent = "خروج"; ex.addEventListener("click", function(){ openQuiz("brain"); }); body.appendChild(ex);
   }
 
-  /* 3) من الدخيل؟ */
+  /* 3) من لا يشبه الباقي؟ */
   var BR_CATS = [
     { n:"فواكه", a:["🍎", "🍌", "🍇", "🍊", "🍉", "🍓", "🍐"] },
     { n:"مركبات", a:["🚗", "🚌", "🚲", "✈️", "🚀", "⛵", "🚂"] },
@@ -8877,7 +8877,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     var items = shuffle(main.a.slice()).slice(0, k - 1).map(function(e){ return { e:e, odd:false }; });
     items.push({ e:shuffle(other.a.slice())[0], odd:true }); shuffle(items);
     var wrong = 0, removed = 0, busy = false;
-    body.appendChild(nmDots(round - 1, 3)); body.appendChild(brHead("من الدخيل؟"));
+    body.appendChild(nmDots(round - 1, 3)); body.appendChild(brHead("من لا يشبه الباقي؟"));
     var msg = brMsg("أيّها لا يشبه الباقي؟"); body.appendChild(msg);
     var row = document.createElement("div"); row.className = "br-odd"; body.appendChild(row);
     var btns = items.map(function(it){
@@ -8889,7 +8889,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
           wrong++; b.classList.add("shake"); haptic(20); brT(tok, function(){ b.classList.remove("shake"); }, 400);
           if(wrong === 1){ msg.textContent = "فكّر قليلًا: ما الذي يجمع الباقي؟"; }
           else if(wrong === 2){ b.disabled = true; b.classList.add("gone"); var rest = btns.filter(function(x, i){ return !items[i].odd && !x.disabled; }); if(rest.length > 1){ rest[0].disabled = true; rest[0].classList.add("gone"); } msg.textContent = "أزلتُ لك خيارًا، حاول مجددًا"; }
-          else { b.disabled = true; b.classList.add("gone"); btns.forEach(function(x, i){ if(items[i].odd) x.classList.add("good"); }); busy = true; msg.textContent = "الدخيل ليس من «" + main.n + "». تعلّمتَ شيئًا جديدًا!"; brT(tok, function(){ brNext("odd", round, tok, res, false); }, 2600); }
+          else { b.disabled = true; b.classList.add("gone"); btns.forEach(function(x, i){ if(items[i].odd) x.classList.add("good"); }); busy = true; msg.textContent = "هذا ليس من «" + main.n + "». تعلّمتَ شيئًا جديدًا!"; brT(tok, function(){ brNext("odd", round, tok, res, false); }, 2600); }
         }
       });
       row.appendChild(b); return b;
@@ -9014,7 +9014,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     } else if(quizTab === "brain"){
       body.appendChild(quizTile("#F2B705", "🏮", "ذاكرة الفوانيس", "شاهد الفوانيس تضيء ثم أعد الترتيب", function(){ brStart("mem"); }));
       body.appendChild(quizTile("#8B5CF6", "🧩", "أزواج متطابقة", "اقلب البطاقات وابحث عن الأزواج", function(){ brStart("pairs"); }));
-      body.appendChild(quizTile("#E5489B", "🔍", "من الدخيل؟", "اكتشف الشيء الذي لا يشبه الباقي", function(){ brStart("odd"); }));
+      body.appendChild(quizTile("#E5489B", "🔍", "من لا يشبه الباقي؟", "اختر الشيء المختلف", function(){ brStart("odd"); }));
       body.appendChild(quizTile("#18B87A", "💎", "طريق الكنز", "ارسم الطريق بالأسهم لتصل إلى الجوهرة", function(){ brStart("path"); }));
     } else if(quizTab === "stories"){
       var all = ["sqsh", "sqs2", "sqsa", "sqsb", "sqsg", "sqnb", "sqrh", "sqsd", "sqbr", "sqan", "sqib", "sqi2"].filter(function(k){ return BKS[k]; });
