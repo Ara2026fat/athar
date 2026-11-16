@@ -1432,3 +1432,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 #brainBody>*,#lettersBody>*,#numbersBody>*{animation:gFade .22s ease both}
 @media (prefers-reduced-motion: reduce){#brainBody>*,#lettersBody>*,#numbersBody>*{animation:none}}
 @keyframes gFade{from{opacity:0}to{opacity:1}}
+@media (max-width:340px){
+  .ps-nav{gap:4px;max-width:100%;padding:0 4px;box-sizing:border-box}
+  .ps-nav>*{flex:0 1 auto;min-width:0;white-space:nowrap}
+  #libBody .us-wrap .ps-nav .lq-say,#libBody .us-wrap .ps-nav .pill-btn,#libBody .us-wrap .ps-nav button{padding-inline:9px;font-size:14px}
+}
+@media (max-height:720px){
+  .rdh-intro p,.rdh-par{display:none}
+  .rdh-intro h1{font-size:22px;margin:0 0 2px}
+  .rdh-big{gap:8px;flex-wrap:nowrap!important}
+  .rdh-big .letter-tile.huge{width:30%;height:92px;min-height:0;padding:0}
+  .rdh-big .letter-tile.huge .lt-ch{font-size:44px;line-height:1.1}
+  .rdh-pick{display:grid!important;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:4px!important}
+  .rdh-pick .letter-tile.small{width:100%;height:34px;min-width:0;min-height:0;padding:0;border-radius:10px}
+  .rdh-pick .letter-tile.small .lt-ch{font-size:20px;line-height:1}
+  .rdh-h{margin:4px 0 0!important;font-size:13px}
+  .rdh-g{margin:8px 0 0!important}
+}
+@media (max-height:720px){
+  .rdh-big .letter-tile.huge{height:80px}
+  .rdh-g{flex-wrap:nowrap!important;gap:6px!important}
+  .rdh-g .pill-btn{padding-inline:10px;font-size:14px;white-space:nowrap;min-width:0}
+}
