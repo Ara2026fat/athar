@@ -1551,23 +1551,32 @@
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     ctx.strokeStyle = "#C9973A"; ctx.lineWidth = 14; ctx.strokeRect(34, 34, W - 68, H - 68);
     ctx.lineWidth = 3; ctx.strokeRect(62, 62, W - 124, H - 124);
-    ctx.fillStyle = "rgba(201,151,58,.16)";
+    /* حزام الزخرفة: نجوم كاملة فقط داخل الإطار، ثم لوحة داخلية بحدّ ذهبي ورقيق */
+    ctx.fillStyle = "rgba(201,151,58,.2)";
     for(var i = 0; i < 9; i++){ for(var j = 0; j < 6; j++){
-      drawStar(ctx, 150 + i * 138, 190 + j * 120, 30, 15, 8, Math.PI / 8); ctx.fill(); } }
-    ctx.fillStyle = "#FFFBEA"; ctx.fillRect(150, 160, W - 300, H - 320);
+      var sx = 150 + i * 138, sy = 190 + j * 120;
+      if(sx > 110 && sx < W - 110 && sy > 110 && sy < H - 110){ drawStar(ctx, sx, sy, 30, 15, 8, Math.PI / 8); ctx.fill(); } } }
+    ctx.fillStyle = "#FFFBEA"; ctx.fillRect(150, 150, W - 300, H - 300);
+    ctx.strokeStyle = "#C9973A"; ctx.lineWidth = 4; ctx.strokeRect(150, 150, W - 300, H - 300);
+    ctx.lineWidth = 2; ctx.strokeRect(162, 162, W - 324, H - 324);
+    ctx.fillStyle = "#C9973A";
+    [[162, 162], [W - 162, 162], [162, H - 162], [W - 162, H - 162]].forEach(function(c){ drawStar(ctx, c[0], c[1], 26, 12, 8, Math.PI / 8); ctx.fill(); });
     ctx.fillStyle = "#E09A00"; drawStar(ctx, W / 2, 205, 66, 34, 8, Math.PI / 8); ctx.fill();
     ctx.fillStyle = "#FFE27A"; drawStar(ctx, W / 2, 205, 38, 20, 8, 0); ctx.fill();
+    ctx.strokeStyle = "#C9973A"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(W / 2 - 300, 390); ctx.lineTo(W / 2 - 40, 390); ctx.moveTo(W / 2 + 40, 390); ctx.lineTo(W / 2 + 300, 390); ctx.stroke();
+    ctx.fillStyle = "#C9973A"; drawStar(ctx, W / 2, 390, 16, 8, 8, Math.PI / 8); ctx.fill();
     ctx.direction = "rtl"; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "#1F5A2B"; ctx.font = "800 96px " + FF; ctx.fillText("شهادة مواظبة", W / 2, 360);
-    ctx.fillStyle = "#6B5A2E"; ctx.font = "600 40px " + FF; ctx.fillText("تُمنح هذه الشهادة إلى", W / 2, 450);
-    ctx.fillStyle = "#B26A00"; ctx.font = "800 116px " + FF; ctx.fillText(name, W / 2, 590);
+    ctx.fillStyle = "#1F5A2B"; ctx.font = "800 96px " + FF; ctx.fillText("شهادة مواظبة", W / 2, 350);
+    ctx.fillStyle = "#6B5A2E"; ctx.font = "600 42px " + FF; ctx.fillText("تُمنح هذه الشهادة إلى", W / 2, 462);
+    ctx.fillStyle = "#B26A00"; ctx.font = "800 116px " + FF; ctx.fillText(name, W / 2, 595, W - 420);
     ctx.fillStyle = "#3D3A2A"; ctx.font = "600 44px " + FF;
-    ctx.fillText("تقديرًا للمواظبة على حفظ القرآن الكريم سبعة أيام", W / 2, 690);
+    ctx.fillText("تقديرًا للمواظبة على حفظ القرآن الكريم سبعة أيام", W / 2, 695, W - 380);
     ctx.fillStyle = "#1F5A2B"; ctx.font = "700 46px " + FF; ctx.fillText("بارك الله فيك ونفع بك", W / 2, 765);
-    ctx.fillStyle = "#6B5A2E"; ctx.font = "500 32px " + FF;
+    ctx.fillStyle = "#6B5A2E"; ctx.font = "600 36px " + FF;
     ctx.fillText("الشهادة رقم " + arNum(num) + "  ·  " + dateStr, W / 2, 830);
-    ctx.fillStyle = "#A08A55"; ctx.font = "500 26px " + FF; ctx.direction = "ltr";
-    ctx.fillText("أثر  ·  ARAFAT ALRAJHI © 2026", W / 2, 905);
+    ctx.fillStyle = "#8E7842"; ctx.font = "600 30px " + FF; ctx.direction = "ltr";
+    ctx.fillText("أثر  ·  ARAFAT ALRAJHI © 2026", W / 2, 888);
   }
   function showCertificate(){
     var d = loadDays(), certs = Math.floor(d.length / 7);
