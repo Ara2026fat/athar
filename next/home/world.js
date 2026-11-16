@@ -374,7 +374,8 @@ function badges(){
 try{
 var p=pid(),pg=jget(p==="p1"?"athar_quran_progress_v1":"athar_quran_progress_v1_"+p);
 var q=cnt(pg,function(v){return v==="trained"||v==="memorized"||v==="review"});
-INFO.hifz=q;setBd("hifz",q?nm(q)+" آية":"");
+INFO.hifz=q;var rd=0;try{rd=W.AtharReview?W.AtharReview.due():0}catch(e){}
+setBd("hifz",rd?"مراجعة اليوم":(q?nm(q)+" آية":""));bEl.hifz.querySelector(".bd").classList.toggle("rv",!!rd);
 var n=cnt(jget("athar_noor_v1_"+p),function(v){return +v>0});INFO.noor=n;setBd("noor",n?nm(n)+"/"+nm(105):"");
 n=cnt(jget("athar_adhkar_v1_"+p),function(v){return +v>0});INFO.adhkar=n;setBd("adhkar",n?nm(n)+"/"+nm(13):"");
 n=cnt(jget("athar_ayq_v1_"+p),function(v){return +v>0});INFO.quiz=n;setBd("quiz",n?nm(n)+"/"+nm(10):"");
