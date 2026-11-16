@@ -1414,12 +1414,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
   html.sc-sub .seg .seg-btn{min-height:44px;padding-top:4px;padding-bottom:4px}
   html.sc-sub #view-numbers .seg .seg-btn{min-height:50px;padding:3px 2px}
   #view-numbers .intro{margin-bottom:0}
-  #view-numbers .nm-chips{margin-bottom:4px}
+  #view-numbers .nm-chips{margin-bottom:2px}
   #view-numbers .dots-prog{margin-top:4px}
   #view-numbers .nm-stars{margin:4px 0}
-  #view-numbers .nm-eq{margin:2px 0}
+  #view-numbers .nm-eq{margin:0}
   #view-numbers .lq-say{margin-bottom:6px;padding-top:6px;padding-bottom:6px}
-  #view-numbers .lq-opts .letter-tile.huge{height:72px}
+  #view-numbers .lq-opts .letter-tile.huge{height:68px}
+  #view-numbers .lq-opts .lt-ch{font-size:42px;line-height:.9}
+  #view-numbers .nm-eq{font-size:44px;line-height:1.2}
   #view-ayahs .back-btn{width:44px;height:44px}
   #view-ayahs .start-btn{margin-top:0}
   footer.sig{margin-top:2px;padding-bottom:2px;line-height:1.2}
@@ -1538,3 +1540,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 #view-library:has(.lib-shelf.paged) .intro p{display:none}
 #view-library:has(.lib-shelf.paged) .intro{margin:0 0 4px}
 .lib-pgr{margin:6px 0 0;min-height:48px;flex:none}
+
+/* r9-art: مدى الحفظ والتكرار داخل لوح قابل للطي حتى تتسع شاشة السورة بلا تمرير */
+#view-surah .rep-toggle{flex:none;border:2px solid var(--sage);background:#fff;color:var(--forest-dark);font:700 12.5px inherit;font-family:inherit;border-radius:16px;padding:5px 12px;min-height:44px;cursor:pointer;}
+#view-surah .rep-toggle[aria-expanded="true"]{background:var(--forest);border-color:var(--forest);color:#fff;}
+#view-surah .meta-row{position:relative;}
+#view-surah .rep-panel{display:none;position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:6;flex-direction:column;gap:6px;background:#fff;border:2px solid var(--sage);border-radius:18px;padding:8px;box-shadow:0 10px 24px rgba(0,0,0,.22);}
+#view-surah .rep-panel.open{display:flex;}
+#view-surah .rep-panel .rep-picker{margin:0;gap:6px;flex-direction:column;flex-wrap:nowrap;}
+#view-surah .rep-panel .rep-grp{justify-content:space-between;border-width:1.5px;padding:2px 8px;font-size:13px;}
+#view-surah .rep-panel .range-picker{justify-content:center;}
+#view-surah .mushaf-frame{min-height:96px;}
+body.child-lock #view-surah .rep-toggle,body.child-lock #view-surah .rep-panel{display:none;}
+
+/* r9-art: دروس النور على 320px: عنوان مقروء (3 أسطر) بدل «الـ…»، والأيقونة الزخرفية تُخفى */
+@media (max-width:340px){
+  html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls{min-height:76px;padding:6px 8px 6px 30px}
+  html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .choice-icon{display:none}
+  html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .ct1{-webkit-line-clamp:3;font-size:14px}
+}

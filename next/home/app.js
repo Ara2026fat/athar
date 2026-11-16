@@ -10461,6 +10461,8 @@
     $("rangeFromInput").addEventListener("change", applyRange);
     $("rangeToInput").addEventListener("change", applyRange);
     $("btnRangeReset").addEventListener("click", resetRange);
+    (function(){ var t = $("btnRepToggle"), pn = $("repPanel"); if (!t || !pn) return;
+      t.addEventListener("click", function(){ var o = !pn.classList.contains("open"); pn.classList.toggle("open", o); t.setAttribute("aria-expanded", o ? "true" : "false"); }); })();
 
     $("choiceSurah").addEventListener("click", function(){ goBrowse("surahs"); });
     $("choiceAyah").addEventListener("click", function(){ goBrowse("ayahs"); });

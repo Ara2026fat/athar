@@ -221,7 +221,7 @@
   }
   function swapNode(tn){
     var t = tn.nodeValue; if(!t || !EMRE.test(t)) return;
-    var par = tn.parentNode; if(!par || par.closest && par.closest("#view-letters,.lt-em,.nm-stars,script,style,textarea")) return;
+    var par = tn.parentNode; if(!par || par.closest && par.closest("#view-letters,.lt-em,.nm-stars,.br-opt,.br-card,.br-cell,script,style,textarea")) return;
     var inIcon = par.closest && par.closest(".choice-icon,.lib-em,.adk-e,.adk-hero-e");
     var out = [], buf = "", changed = false;
     Array.from(t).forEach(function(c){
