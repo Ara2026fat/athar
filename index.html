@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<script>/* error safety net: silent log + gentle recovery to home if screen is left blank */
+(function(){var K="athar_last_error",n=0;
+function rec(m,src,ln){try{if(++n>20)return;var o={t:Date.now(),m:String(m&&m.message||m||"").slice(0,160),s:String(src||"").split("/").pop().split("?")[0].slice(0,40),l:ln|0,n:n};localStorage.setItem(K,JSON.stringify(o).slice(0,400))}catch(e){}chk()}
+var tm=0;function chk(){if(tm)return;tm=setTimeout(function(){tm=0;try{var a=document.querySelector(".view.active"),b=document.getElementById("wBoot"),blank=!a||a.offsetHeight<30||(b&&!b.classList.contains("off")&&document.readyState==="complete"&&Date.now()-t0>6000);if(!blank)return;var c=+sessionStorage.getItem("athar_recov")||0;if(c>=2)return;sessionStorage.setItem("athar_recov",c+1);location.replace(location.pathname)}catch(e){}},900)}
+var t0=Date.now();
+window.addEventListener("error",function(e){if(e&&e.target&&e.target!==window)return;rec(e.error||e.message,e.filename,e.lineno)});
+window.addEventListener("unhandledrejection",function(e){rec(e&&e.reason,"promise",0)});
+setTimeout(function(){try{sessionStorage.removeItem("athar_recov")}catch(e){}},15000);
+})();</script>
 <script>/* tablet fit: scale the phone layout proportionally on portrait touch tablets */
 (function(){try{var m=document.querySelector('meta[name=viewport]'),base=m.content;
 function f(){var s=screen,a=Math.min(s.width,s.height),b=Math.max(s.width,s.height);
@@ -605,6 +614,13 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
         </ul>
       </div>
 
+      <div class="section-card" id="supCard" data-grp="parent" data-sub="sup">
+        <h3>معلومات الدعم</h3>
+        <p class="muted" style="margin:0 0 8px">للأهل فقط: إن واجه التطبيق مشكلة، أرسلوا هذا السطر لمن يدعمكم.</p>
+        <p class="muted" id="supErr" dir="ltr" style="margin:0;word-break:break-all;font-size:12px">—</p>
+        <button type="button" class="repeat-chip" id="supClr" style="margin-top:8px">مسح السجل</button>
+      </div>
+
       <div class="section-card about-card" data-grp="parent" data-sub="ref">
         <h3>عن التطبيق</h3>
         <p class="muted">أثر — أول تطبيقات سلسلة «أثر»، لتحفيظ جزء عمّ للأطفال من عمر ٣ سنوات فما فوق.</p>
@@ -649,7 +665,7 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
 (function(){
   var tabs=document.getElementById("setTabs"); if(!tabs) return; var cur;
   var view=document.getElementById("view-dashboard");
-  var SUBS={child:[["rep","التكرار"],["exp","الجلسة"],["opt","خيارات"],["view","العرض"]],prog:[["grow","النمو"],["list","السور"]],parent:[["sec","الرمز"],["prof","الملفات"],["priv","الخصوصية"],["ref","المراجع"]]};
+  var SUBS={child:[["rep","التكرار"],["exp","الجلسة"],["opt","خيارات"],["view","العرض"]],prog:[["grow","النمو"],["list","السور"]],parent:[["sec","الرمز"],["prof","الملفات"],["priv","الخصوصية"],["ref","المراجع"],["sup","دعم"]]};
   var subCur={child:"rep",prog:"grow",parent:"sec"},subBar=document.createElement("div");
   subBar.className="sub-tabs";subBar.setAttribute("role","tablist");subBar.setAttribute("aria-label","أقسام");
   tabs.parentNode.insertBefore(subBar,tabs.nextSibling);
@@ -680,6 +696,10 @@ html.hw-pre #app .gear-btn{width:48px;height:48px}html.hw-pre #app .brand{paddin
     c.onclick=function(e){var b=e.target.closest("button");if(!b)return;try{localStorage.setItem("athar_num_fmt",b.dataset.f)}catch(x){}digits()};
   }
   digits();
+  (function(){var c=document.getElementById("supCard");if(!c)return;var e=document.getElementById("supErr");
+  function r(){var t="—";try{var o=JSON.parse(localStorage.getItem("athar_last_error")||"null");if(o)t=new Date(o.t).toISOString().slice(0,16).replace("T"," ")+" | "+o.s+":"+o.l+" | "+o.m}catch(x){}e.textContent=t}
+  r();new MutationObserver(r).observe(c,{attributes:true,attributeFilter:["class"]});
+  document.getElementById("supClr").onclick=function(){try{localStorage.removeItem("athar_last_error")}catch(x){}r()}})();
 })();
 </script>
 <link rel="stylesheet" href="next/home/pathlan.css?v=edf4df7851">
