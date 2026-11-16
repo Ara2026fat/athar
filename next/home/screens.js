@@ -47,6 +47,7 @@
     var dots = view.querySelectorAll(".dots-prog i");
     if(dots.length > 1 && (id === "view-letters" || id === "view-numbers" || id === "view-adhkar")){
       var on = view.querySelectorAll(".dots-prog i.on").length, cur = view.querySelectorAll(".dots-prog i.cur").length ? 0 : 0;
+      if(!on) return null;
       return {p: on / dots.length, label: on + " / " + dots.length};
     }
     var P = pid();
