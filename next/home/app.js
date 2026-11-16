@@ -924,16 +924,31 @@
     if(actx && actx.state === "suspended"){ try{ actx.resume(); }catch(e){} }
     return actx;
   }
+  /* سلسلة رئيسية واحدة لكل نغمات التطبيق: مرشّح علوي ناعم + ضاغط خفيف + مستوى رئيسي، فلا يعلو صوت فجأة مهما تراكمت النغمات */
+  var toneBus = null;
+  function getBus(c){
+    if(toneBus && toneBus.ctx === c) return toneBus.in;
+    try{
+      var lp = c.createBiquadFilter(), cp = c.createDynamicsCompressor(), m = c.createGain();
+      lp.type = "lowpass"; lp.frequency.value = 2200;
+      cp.threshold.value = -26; cp.knee.value = 20; cp.ratio.value = 6; cp.attack.value = 0.003; cp.release.value = 0.15;
+      m.gain.value = 0.8;
+      lp.connect(cp); cp.connect(m); m.connect(c.destination);
+      toneBus = { ctx:c, in:lp };
+      return lp;
+    }catch(e){ toneBus = null; return c.destination; }
+  }
   function tone(f, t0, d, v, type){
     if(!settings.sfx || settings.bedtime || (document.body && document.body.classList.contains("bedtime"))) return;   /* الأصوات مغلقة أو وقت النوم: صمت */
     var c = ac(); if(!c) return;
     try{
       var o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
+      v = Math.min(v, 0.06) * (f > 800 ? 0.75 : 1);   /* سقف للمستوى، والنغمات الحادّة أخفّ لأن الأذن تسمعها أعلى */
       o.type = type || "sine"; o.frequency.value = f;
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(v, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(v, t + 0.03);   /* بداية ناعمة بلا طقطقة */
       g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-      o.connect(g); g.connect(c.destination);
+      o.connect(g); g.connect(getBus(c));
       o.start(t); o.stop(t + d + 0.05);
     }catch(e){}
   }
@@ -974,10 +989,11 @@
     if(kind === "tap" && window.__atharQuietTap > Date.now()) return;   /* نقر باب العالم: صوت «الطرق» الجديد يكفي، فلا نغمة قديمة فوقه */
     if(kind === "tap"){ tone(660, 0, 0.12, 0.07); haptic(8); }
     else if(kind === "turn"){ tone(523, 0, 0.18, 0.08); tone(784, 0.14, 0.3, 0.08); haptic(16); }
+    else if(kind === "ok"){ tone(587, 0, 0.16, 0.05); tone(784, 0.1, 0.22, 0.05); haptic(10); }
     else if(kind === "done"){
       oopsRun.n = 0;
       var _t = document.getElementById("toast"); if(_t) _t.classList.remove("show");   /* لا تبقى «جرّب مرة أخرى» فوق الاحتفال */
-      [523, 659, 784, 1047].forEach(function(f, i){ tone(f, i * 0.12, 0.35, 0.07); });
+      [523, 659, 784, 1047].forEach(function(f, i){ tone(f, i * 0.12, 0.3, 0.05); });
       haptic([20, 40, 20]);
     }
   }
@@ -8593,9 +8609,10 @@
   /* تهنئة مرئية ومسموعة ثم الانتقال بعد انتهاء الصوت */
   function brWin(tok, body, fn){
     var p = NM_PRAISE[nmRand(NM_PRAISE.length)];
-    var bn = brMsg(p, "win"); body.appendChild(bn); sfx("ok"); burst(["⭐", "✨"], 8);
+    var bn = body.querySelector(".br-msg"); if(bn){ bn.textContent = p; bn.classList.add("win"); } else { bn = brMsg(p, "win"); body.appendChild(bn); }   /* نعيد استعمال سطر الرسالة كي لا تتجاوز الشاشة */
+    sfx("ok"); burst(["⭐", "✨"], 8);
     var gone = false; function go(){ if(gone) return; gone = true; if(brLive(tok)) fn(); }
-    speak(p, function(){ setTimeout(go, 500); }); setTimeout(go, 4500);
+    speak(p, function(){ setTimeout(go, 300); }); setTimeout(go, 2800);   /* لا انتظار طويل بين الجولات لطفل صغير */
   }
   function brStart(g){ brTok++; brG = g; showView("view-brain"); window.scrollTo(0, 0); ({ mem:brMem, pairs:brPairs, odd:brOdd, path:brPath })[g](1, brTok, []); }
   function brNext(g, round, tok, res, first){
@@ -8640,7 +8657,7 @@
       });
       box.appendChild(b); lamps.push(b);
     });
-    function flash(k){ lamps[k].classList.add("lit"); tone(BR_LAMPS[k][1], 0, .35, .12); brT(tok, function(){ lamps[k].classList.remove("lit"); }, 380); }
+    function flash(k){ lamps[k].classList.add("lit"); tone(BR_LAMPS[k][1], 0, .35, .06); brT(tok, function(){ lamps[k].classList.remove("lit"); }, 380); }
     function show(hint){
       busy = true; pos = 0; msg.textContent = "انتبه للفوانيس…";
       lamps.forEach(function(l){ var n = l.querySelector("i"); n.textContent = ""; });
@@ -8652,7 +8669,8 @@
   }
 
   /* 2) أزواج متطابقة */
-  var BR_PAIR_SET = ["⭐", "🌙", "☀️", "🔔", "🔑", "🎈", "🪁", "⚽", "🚗", "📖", "🧩", "🎁", "🕌", "🏮", "🚀", "⏰"];
+  /* كل أيقونة هنا ترسم شكلًا مختلفًا (🌙 و☀️ و🏮 كانت تُرسم فانوسًا واحدًا فيتعذّر التمييز) */
+  var BR_PAIR_SET = ["⭐", "💎", "🎲", "🔔", "🔑", "🎈", "🪁", "⚽", "🚗", "📖", "🧩", "🎁", "🕌", "🏮", "🚀", "⏰"];
   function brPairs(round, tok, res){
     var body = brBody(); body.innerHTML = "";
     var n = Math.min(2 + brLvl("pairs") + (round > 2 ? 1 : 0), 8), faces = shuffle(BR_PAIR_SET.slice()).slice(0, n), deck = shuffle(faces.concat(faces)), open = [], done = 0, mis = 0, lock = false;
