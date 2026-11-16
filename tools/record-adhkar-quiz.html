@@ -1,0 +1,52 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تسجيل أذكاري</title>
+<style>body{margin:0;font-family:system-ui,Tahoma,sans-serif;background:#fffaf0;color:#2b2140;line-height:1.7}
+header{padding:14px 16px;background:#14b8a6;color:#fff;position:sticky;top:0;z-index:2}h1{margin:0;font-size:1.2rem}
+main{max-width:640px;margin:auto;padding:12px 16px 90px}.row{background:#fff;border-radius:14px;padding:12px 14px;margin:10px 0;box-shadow:0 1px 6px #0002}
+.row.done{border-right:6px solid #22a04b}.t{font-size:1.5rem;font-weight:700}.n{opacity:.7;font-size:.9rem}
+button{font:inherit;font-weight:700;border:0;border-radius:99px;padding:9px 16px;margin:6px 4px 0 0;cursor:pointer;color:#fff;background:#3b82f6}
+button.rec{background:#e5484d}button.ok{background:#22a04b}button.gh{background:#94a3b8}
+.who{display:flex;gap:8px;margin-top:8px}.who button{flex:1;background:#94a3b8}.who button.on{background:#8b5cf6}
+#bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px;box-shadow:0 -2px 8px #0002;display:flex;gap:8px;align-items:center}
+#bar span{flex:1}</style></head><body>
+<header><h1>تسجيل أذكاري — لعبة «متى أقول؟»</h1><div id="who" class="who"><button data-v="muhammad">محمد</button><button data-v="aws">أوس</button></div></header>
+<main><p class="n">اختر القارئ، ثم اضغط «سجّل» وقل الجملة، «أوقف»، «اسمع»، وإن أعجبتك «اعتمد». في مكان هادئ وقرّب الجوال. في النهاية «نزّل الملف» وأرسله إليّ.</p><div id="list"></div></main>
+<div id="bar"><span id="cnt"></span><button class="ok" id="dl">نزّل الملف</button></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+var UNITS=[{"k":"q","t":"ماذا نقول","n":"اسأل بفضول لطيف وبهدوء."},{"k":"w","t":"عندما أستيقظ","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما أنام","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"قبل الأكل","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"بعد الأكل","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عند دخول الخلاء","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عند دخول المسجد","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما ألقى أحدًا","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما أعطس","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما يعطس أحدٌ ويقول الحمد لله","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما ندعو لأمي وأبي","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما أغضب","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما ينزل المطر","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"w","t":"عندما أريد أن أُسبّح الله","n":"جزء من السؤال: بصوت لطيف واضح."},{"k":"d","t":"الحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"بِسْمِ اللَّهِ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"الحَمْدُ لِلَّهِ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"يَرْحَمُكَ اللَّهُ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"صَيِّبًا نَافِعًا","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."},{"k":"d","t":"سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ","n":"ذكر واضح وبطيء؛ لفظ الجلالة بتفخيم."}];
+function vNorm(t){return String(t).replace(/ﷺ/g,"صلى الله عليه وسلم").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[!؟?.,،:؛]+/g," ").replace(/\s+/g," ").replace(/^ | $/g,"")}
+function vHash(t){var n=vNorm(t),x=5381;for(var i=0;i<n.length;i++)x=(((x<<5)+x)^n.charCodeAt(i))>>>0;return x.toString(16)}
+var voice="",rec={},cur=null;
+try{voice=localStorage.getItem("aq_voice")||""}catch(e){}
+var wb=document.querySelectorAll("#who button");
+function setV(v){voice=v;try{localStorage.setItem("aq_voice",v)}catch(e){}wb.forEach(function(b){b.classList.toggle("on",b.dataset.v==v)})}
+wb.forEach(function(b){b.onclick=function(){setV(b.dataset.v)}});setV(voice);
+var L=document.getElementById("list");
+UNITS.forEach(function(u,i){
+ u.h=vHash(u.t);var d=document.createElement("div");d.className="row";
+ d.innerHTML='<div class="t"></div><div class="n"></div><div class="c"></div>';
+ d.querySelector(".t").textContent=u.t;d.querySelector(".n").textContent=u.n;
+ var c=d.querySelector(".c"),st=document.createElement("button");st.className="rec";st.textContent="سجّل";
+ var sp=document.createElement("button");sp.textContent="اسمع";sp.className="gh";sp.disabled=true;
+ var ok=document.createElement("button");ok.textContent="اعتمد";ok.className="ok";ok.disabled=true;
+ c.appendChild(st);c.appendChild(sp);c.appendChild(ok);u.el=d;
+ var mr=null,ch=[];
+ st.onclick=function(){
+  if(mr&&mr.state=="recording"){mr.stop();return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){
+   ch=[];mr=new MediaRecorder(s);mr.ondataavailable=function(e){ch.push(e.data)};
+   mr.onstop=function(){s.getTracks().forEach(function(t){t.stop()});u.blob=new Blob(ch,{type:mr.mimeType});u.ok=false;d.classList.remove("done");st.textContent="أعد التسجيل";st.className="rec";sp.disabled=false;ok.disabled=false;cnt()};
+   mr.start();st.textContent="أوقف";st.className="gh"}).catch(function(){alert("اسمح بالميكروفون")})};
+ sp.onclick=function(){if(u.blob){var a=new Audio(URL.createObjectURL(u.blob));a.play()}};
+ ok.onclick=function(){u.ok=true;d.classList.add("done");cnt()};
+ L.appendChild(d)});
+function cnt(){var n=UNITS.filter(function(u){return u.ok}).length;document.getElementById("cnt").textContent=n+" من "+UNITS.length}
+cnt();
+document.getElementById("dl").onclick=function(){
+ if(!voice){alert("اختر القارئ أولًا");return}
+ var done=UNITS.filter(function(u){return u.ok&&u.blob});if(!done.length){alert("لا توجد تسجيلات معتمدة");return}
+ var z=new JSZip(),idx=[];
+ done.forEach(function(u){var ext=/mp4|aac/.test(u.blob.type)?"m4a":/ogg/.test(u.blob.type)?"ogg":"webm";var f=u.h+"."+ext;z.file(f,u.blob);idx.push({file:f,hash:u.h,text:u.t,kind:u.k,voice:voice})});
+ z.file("index.json",JSON.stringify(idx,null,1));
+ z.generateAsync({type:"blob"}).then(function(b){var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="adhkar-quiz-"+voice+".zip";a.click()})};
+</script></body></html>
