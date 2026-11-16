@@ -1559,3 +1559,9 @@ body.child-lock #view-surah .rep-toggle,body.child-lock #view-surah .rep-panel{d
   html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .choice-icon{display:none}
   html.sc-sub #noorBody.sc-hub.g2>.choice-tile.noor-ls .ct1{-webkit-line-clamp:3;font-size:14px}
 }
+/* r9: child-journey gentle guidance */
+.hc-home{margin-top:10px;min-height:48px;padding:0 28px;border:0;border-radius:24px;background:rgba(255,255,255,.7);color:#1d5a3a;font:800 18px 'Tajawal',system-ui,sans-serif;cursor:pointer}
+.hc-home:active{transform:translateY(2px)}
+@keyframes rvNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.rv-nudge{animation:rvNudge 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.rv-nudge{animation:none;outline:3px solid #FFC93C;outline-offset:3px}}
