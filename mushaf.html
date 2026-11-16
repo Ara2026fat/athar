@@ -6,8 +6,13 @@
 <title>المصحف — مستخرَجٌ من زاحِم لاستخدام «أثر القرآن»</title>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="shortcut icon" href="favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Tajawal";font-weight:400;font-display:swap;src:url("next/assets/fonts/tajawal-400.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-weight:500;font-display:swap;src:url("next/assets/fonts/tajawal-500.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-weight:700;font-display:swap;src:url("next/assets/fonts/tajawal-700.woff2") format("woff2");}
+@font-face{font-family:"Tajawal";font-weight:800 900;font-display:swap;src:url("next/assets/fonts/tajawal-800.woff2") format("woff2");}
+@font-face{font-family:"Amiri";font-weight:400 700;font-display:swap;src:url("next/assets/fonts/amiri-quran.woff2") format("woff2");}
+</style>
 <style>
 /* ═══════════════════════════════════════════════════════════════
    هذا قارئُ المصحف في زاحِم كاملًا — مستخرَجٌ حرفيًّا (الشكل والمنطق
@@ -399,6 +404,17 @@ function musFetchJSON(n){
     });
   }
   var pad = musPad(n);
+  /* الحزمة المحلية أولًا: إن كانت الصفحة محفوظة في كاش الحزم تُقرأ منه دون شبكة */
+  var fromPack = function(){
+    try{
+      if(!window.caches) return Promise.reject();
+      return caches.open('athar-packs-v1').then(function(c){ return c.match(MUS_DATA + '/' + pad + '.json'); })
+        .then(function(r){ if(!r) throw 0; return r.json(); });
+    }catch(e){ return Promise.reject(e); }
+  };
+  return fromPack().catch(function(){ return musFetchNet(pad); });
+}
+function musFetchNet(pad){
   var urls = [MUS_DATA, MUS_DATA.replace('cdn.jsdelivr.net', 'fastly.jsdelivr.net'), MUS_DATA_ALT];
   var k = 0;
   function go(){
@@ -437,15 +453,26 @@ function musPad(n){ return ('00' + n).slice(-3); }
 function musEsc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function musFont(name){
-  if(!name || _musFonts[name]) return;
-  _musFonts[name] = 1;
-  var st = document.createElement('style');
-  st.textContent = "@font-face{font-family:'" + name + "';src:"
-    + "url('" + MUS_CDN + "/" + name + "_W.woff2') format('woff2'),"
-    + "url('" + MUS_CDN.replace('cdn.jsdelivr.net', 'fastly.jsdelivr.net') + "/" + name + "_W.woff2') format('woff2'),"
-    + "url('" + MUS_CDN.replace('cdn.jsdelivr.net', 'gcore.jsdelivr.net') + "/" + name + "_W.woff2') format('woff2'),"
-    + "url('" + MUS_CDN + "/" + name + ".woff2') format('woff2');font-display:block;}";
-  document.head.appendChild(st);
+  if(!name) return Promise.resolve();
+  if(_musFonts[name]) return _musFonts[name];
+  function viaNet(){
+    var st = document.createElement('style');
+    st.textContent = "@font-face{font-family:'" + name + "';src:"
+      + "url('" + MUS_CDN + "/" + name + "_W.woff2') format('woff2'),"
+      + "url('" + MUS_CDN.replace('cdn.jsdelivr.net', 'fastly.jsdelivr.net') + "/" + name + "_W.woff2') format('woff2'),"
+      + "url('" + MUS_CDN.replace('cdn.jsdelivr.net', 'gcore.jsdelivr.net') + "/" + name + "_W.woff2') format('woff2'),"
+      + "url('" + MUS_CDN + "/" + name + ".woff2') format('woff2');font-display:block;}";
+    document.head.appendChild(st);
+  }
+  /* الحزمة المحلية أولًا: إن كان الخط في كاش الحزم يُسجَّل منه دون شبكة، وإلا يُطلب من الشبكة */
+  var p = Promise.resolve().then(function(){
+    if(!window.caches || !window.FontFace) throw 0;
+    return caches.open('athar-packs-v1').then(function(c){ return c.match(MUS_CDN + '/' + name + '_W.woff2'); })
+      .then(function(r){ if(!r) throw 0; return r.arrayBuffer(); })
+      .then(function(buf){ var f = new FontFace(name, buf); return f.load().then(function(){ document.fonts.add(f); }); });
+  }).catch(viaNet);
+  _musFonts[name] = p;
+  return p;
 }
 
 function musBand(inner){
@@ -480,9 +507,9 @@ function musRender(j){
   (j.lines || []).forEach(function(L){
     (L.words || []).forEach(function(w){ if(w.font) _want.push(w.font); });
   });
-  _want.forEach(musFont);
   var _n = _musPage;
-  musFontsReady(_want, function(){
+  Promise.all(_want.map(musFont)).then(function(){ musFontsReady(_want, afterFonts); });
+  function afterFonts(){
     if(_musPage !== _n) return;
     if(!musFontsOK(_want)){
       /* الخطوط لم تُحمَّل (إنترنت بطيء أو غير متوفّر): رسالةٌ واضحة بدل شاشة
@@ -497,7 +524,7 @@ function musRender(j){
       return;
     }
     musPaint(j);
-  });
+  }
 }
 function musFontsOK(names){
   try{

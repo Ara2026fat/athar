@@ -299,7 +299,7 @@
   /* ───────── بطاقة ولي الأمر ───────── */
   function parentCard() {
     var p = cur(), st = p.streak.n && (p.streak.last === today() || p.streak.last === ymd(new Date(Date.now() - 864e5))) ? p.streak.n : 0;
-    var c = D.createElement("div"); c.className = "rw-parent";
+    var c = D.createElement("div"); c.className = "rw-parent"; c.dataset.grp = "prog"; c.dataset.sub = "grow";
     c.innerHTML = '<h3>نجوم الطفل</h3><p>أيام متتالية: ' + num(st) + '<br>مجموع النجوم: ' + num(p.total) + '<br>رصيده الآن: ' + num(p.stars) + '</p><button class="rw-btn soft" type="button">تصفير المكافآت</button>';
     var b = c.querySelector("button"), t = 0, ask = false;
     b.onclick = function () {
@@ -311,7 +311,7 @@
   }
   function parentHook() {
     var dash = $("view-dashboard"), par = $("parent");
-    function putHome() { if (dash && dash.classList.contains("active") && !dash.querySelector(".rw-parent")) { var g = dash.querySelector(".growth-card"); if (g && g.parentNode) g.parentNode.insertBefore(parentCard(), g.nextSibling); } }
+    function putHome() { if (dash && dash.classList.contains("active") && !dash.querySelector(".rw-parent")) { var g = dash.querySelector(".growth-card"); if (g && g.parentNode) var pc = parentCard(); g.parentNode.insertBefore(pc, g.nextSibling); if (g.classList.contains("grp-hide")) pc.classList.add("grp-hide"); } }
     function putValley() { if (par && par.classList.contains("on") && !par.querySelector(".rw-parent")) { var c = par.querySelector(".pcard:not(.pgate)"); if (c) { var tg = c.querySelector(".ptag"); c.insertBefore(parentCard(), tg ? tg.nextSibling : c.firstChild); } } }
     try { if (dash) new MutationObserver(function () { if (!dash.classList.contains("active")) { var x = dash.querySelector(".rw-parent"); if (x) x.remove(); } else putHome(); }).observe(dash, { attributes: true, attributeFilter: ["class"] }); } catch (e) {}
     try { if (par) new MutationObserver(function () { if (par.classList.contains("on")) putValley(); }).observe(par, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] }); } catch (e) {}
