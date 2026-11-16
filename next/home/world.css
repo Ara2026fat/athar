@@ -294,3 +294,4 @@ ellipse.wg{opacity:0;pointer-events:none;animation:wwin 3s ease-in-out infinite 
 /* r16: بلا مستطيل أبيض — نص أبيض بحدّ داكن، وإخفاء الشارات الصغيرة فوق الأبواب */
 #homeWorld .wb .lb,.w-night .wb .lb{background:none!important;border:0!important;box-shadow:none!important;padding:0 2px!important;color:#fff!important;font-size:16px!important;font-weight:800;max-width:170px!important;margin-top:-6px;-webkit-text-stroke:4px #2b2140;paint-order:stroke fill;text-shadow:0 2px 3px rgba(20,10,40,.55)}
 #homeWorld .wb:not(#wb-valley) .bd{display:none!important}
+@media (max-width:340px){#app.hw-on .brand{padding:3px 9px 3px 5px}#app.hw-on .brand-text{font-size:21px}}

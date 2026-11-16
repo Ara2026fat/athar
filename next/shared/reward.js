@@ -217,6 +217,11 @@
       p.streak.last = t;
     }
     save(o);
+    /* قنديل الأيام: أي نجمة (ومنها الوادي) تُضيء قنديل اليوم في الرئيسية */
+    try {
+      var dk = "athar_days_v1_" + pid(), dl = JSON.parse(ls(dk)); if (!Array.isArray(dl)) dl = [];
+      if (dl.indexOf(today()) < 0) { dl.push(today()); lset(dk, JSON.stringify(dl)); }
+    } catch (e) {}
     var line = goalNow ? "goal" : (first && p.streak.n >= 2 ? "streak" : (cat || "lesson"));
     setTimeout(function () { fly(n); }, 150);
     setTimeout(function () { countTo(p.stars); pulse(); }, 750);
