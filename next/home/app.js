@@ -8909,9 +8909,28 @@
       body.appendChild(quizTile("#6D5BEF", "🌙", "السيرة", "نبيّنا ﷺ وهجرته وأخلاقه", function(){ startMix("السيرة", secKeys(["sira"]), 10); }));
     }
   }
+  /* المراجعة المختلطة: سؤال نصّه مطابق لسؤال سبق (وجوابه) يظهر مرة واحدة،
+     وسؤال يعتمد على سياق الدرس («ماذا قال لهم؟»، «وثانيها؟») لا يدخل لأنه
+     يلتبس خارج كتابه. داخل الكتاب نفسه يبقى كل شيء كما هو. */
+  function mixNorm(s){ return String(s||"").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[^\u0621-\u064Aa-z0-9 ]+/gi," ").replace(/\s+/g," ").trim(); }
+  function mixNeedsContext(q){
+    var n = mixNorm(q), w = n ? n.split(" ") : [];
+    if(w.length <= 1) return true;
+    if(/^(و[\u0621-\u064A]|فإن |فبماذا|فماذا|فقالوا)/.test(n) && w.length <= 6) return true;
+    if(/^(ماذا|ما|من|لماذا|كيف|هل|اين|متي) (قال|قالت|فعل|فعلت|حدث|كان|كانت|يقول|يفعل)( لهم| له| لها| بعد ذلك| بعدها| عندها| حينها| اولا| ثانيا)?$/.test(n)) return true;
+    if(/^(ماذا|ما|من|لماذا|كيف|هل) (قال|فعل|كان|حدث)(ت)? (لهم|له|لها|القوم|الرجل|المراه|الولد|الصبي)( بعد ذلك)?$/.test(n)) return true;
+    if(/ (هذا|هذه|ذلك|تلك) (الرجل|الولد|الصبي|الموقف|الدرس|الحديث)$/.test(n)) return true;
+    return false;
+  }
   function mixItems(keys){
-    var out = [];
-    keys.forEach(function(k){ var B = BKS[k]; if(!B) return; B.ch.forEach(function(C){ C.pages.forEach(function(P){ if(P.game === "qa") out.push(P); }); }); });
+    var out = [], seen = {};
+    keys.forEach(function(k){ var B = BKS[k]; if(!B) return; B.ch.forEach(function(C){ C.pages.forEach(function(P){
+      if(P.game !== "qa") return;
+      if(mixNeedsContext(P.q)) return;
+      var id = mixNorm(P.q) + "|" + mixNorm(P.right);
+      if(seen[id]) return; seen[id] = 1;
+      out.push(P);
+    }); }); });
     return out;
   }
   function startMix(title, keys, n){

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أثر — معاينة جولة اليوم</title>
+<style>
+:root{--g:#28522F;--g2:#3c7a49;--cream:#FBF6E9;--gold:#E9B949;--ink:#23301f;--mut:#6b7a66;--card:#fff;--line:#e5dfc9}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;font-size:18px;line-height:1.7;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:480px;margin:0 auto;padding:14px 16px 90px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.badge{background:#fff3c8;border:1px dashed var(--gold);color:#7a5a00;border-radius:10px;padding:2px 10px;font-size:13px}
+.gear{border:0;background:#fff;border:1px solid var(--line);border-radius:12px;width:44px;height:44px;font-size:20px}
+h1{font-size:22px;margin:10px 0 2px}
+.sub{color:var(--mut);font-size:15px;margin:0 0 12px}
+.dots{display:flex;gap:8px;margin:10px 0 16px}
+.dot{flex:1;height:10px;border-radius:6px;background:#e7e1c9}
+.dot.on{background:var(--g2)} .dot.cur{background:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 2px 0 #efe9d2}
+.tag{display:inline-block;background:#e8f2ea;color:var(--g);border-radius:999px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.big{font-size:26px;line-height:1.9;text-align:center;margin:10px 0;color:var(--g)}
+.src{text-align:center;color:var(--mut);font-size:14px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:19px;font-family:inherit;background:var(--g);color:#fff;margin-top:12px;min-height:52px}
+.btn.alt{background:#fff;color:var(--g);border:2px solid var(--g)}
+.btn.soft{background:#eef3ea;color:var(--g)}
+.btn:disabled{opacity:.45}
+.opt{display:block;width:100%;text-align:right;border:2px solid var(--line);background:#fff;border-radius:16px;padding:14px;margin-top:10px;font-size:18px;font-family:inherit;min-height:52px}
+.opt.ok{border-color:var(--g2);background:#eaf5ec}
+.opt.no{border-color:#e0b4a8;background:#fbf0ec}
+.step{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px;margin-top:10px;font-size:18px;width:100%;font-family:inherit;text-align:right}
+.step b{background:var(--g);color:#fff;border-radius:50%;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.step.placed{opacity:.5}
+.slots{min-height:60px;border:2px dashed var(--line);border-radius:16px;padding:6px;margin:8px 0}
+.row{display:flex;gap:10px} .row>*{flex:1}
+.explore{margin-top:18px;text-align:center}
+.explore button{background:none;border:0;color:var(--mut);font-size:15px;font-family:inherit;text-decoration:underline;padding:10px}
+.pin{background:#fff3c8;border-radius:14px;padding:10px 14px;margin:0 0 12px;font-size:15px;color:#6b5200}
+.sheet{position:fixed;inset:0;background:rgba(20,30,18,.5);display:none;align-items:flex-end;z-index:9}
+.sheet.show{display:flex}
+.sheet>div{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:480px;margin:0 auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+.sheet h2{margin:0 0 8px;font-size:20px}
+.kv{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0;font-size:16px;gap:10px}
+.seg{display:flex;gap:6px;margin:6px 0 10px} .seg button{flex:1;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 4px;font-family:inherit;font-size:15px}
+.seg button.on{border-color:var(--g);background:#e8f2ea;color:var(--g)}
+.note{color:var(--mut);font-size:14px}
+.done{text-align:center}.done .lan{font-size:64px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="badge">معاينة تجريبية: لا تُسجَّل شيئًا في التطبيق</span><button class="gear" id="gear" aria-label="لوحة الوالد">⚙️</button></div>
+  <div id="pin" class="pin" hidden></div>
+  <h1 id="hello">جولة اليوم</h1>
+  <p class="sub" id="sub"></p>
+  <div class="dots" id="dots"></div>
+  <div id="stage"></div>
+  <div class="explore"><button id="expl">ركن الاستكشاف ›</button></div>
+</div>
+
+<div class="sheet" id="sheet"><div id="panel"></div></div>
+
+<script>
+/* ===== مسار «آداب الطعام»: خمس شاشات بصيغ مختلفة، توزَّع على أيام المسار لا في جلسة واحدة ===== */
+var FORMATS=["story","say","order","what","try"];
+var BANDS={"3-5":{label:"٣–٥",n:4,mins:"٥–٦"},"6-8":{label:"٦–٨",n:5,mins:"٨–١٠"},"9-12":{label:"٩–١٢",n:6,mins:"١٠–١٢"}};
+var KEY="athar_round_preview_v1";
+function today(){return Math.floor(Date.now()/864e5)+(S?S.off:0)}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var S=load()||{band:"6-8",mode:"guided",off:0,pathDay:0,redo:0,last:null,round:null,log:[],askedExplore:false};
+function plan(){
+  var b=BANDS[S.band],gap=S.last==null?0:today()-S.last;
+  var stations=S.band==="3-5"?["dhikr","review","adab","story"]:S.band==="6-8"?["dhikr","review","new","adab","story"]:["dhikr","review","new","adab","story","adab2"];
+  if(gap>=3){stations=["dhikr","adab","story"];}  /* عودة لطيفة بعد غياب: ثلاث محطات بلا تعويض */
+  return {stations:stations,light:gap>=3};
+}
+function ensureRound(){
+  if(S.round&&S.round.day===today())return;
+  var p=plan();S.round={day:today(),st:p.stations,i:0,light:p.light,stats:{},fin:false};save();
+}
+var NAMES={dhikr:"ذكرنا",review:"راجعنا",new:"جديدنا",adab:"أدبنا",adab2:"أدبنا",story:"قصتنا"};
+var $=function(i){return document.getElementById(i)};
+function el(h){var d=document.createElement("div");d.innerHTML=h;return d.firstElementChild}
+/* ===== قياس صامت: لا يُعرض للطفل ===== */
+function stat(k,tries,hint){var s=S.round.stats[k]||{tries:0,hint:0};s.tries+=tries;s.hint+=hint?1:0;S.round.stats[k]=s;save()}
+function next(){S.round.i++;save();render()}
+function render(){
+  ensureRound();var R=S.round,b=BANDS[S.band];
+  $("sub").textContent=b.mins+" دقائق تقريبًا · "+R.st.length+" محطات"+(R.light?" · جولة خفيفة للعودة":"");
+  $("pin").hidden=true;
+  var dots=$("dots");dots.innerHTML="";R.st.forEach(function(_,k){var d=document.createElement("div");d.className="dot"+(k<R.i?" on":k===R.i&&!R.fin?" cur":"");dots.appendChild(d)});
+  var stage=$("stage");stage.innerHTML="";
+  if(R.i>=R.st.length){return finish(stage)}
+  var k=R.st[R.i];$("hello").textContent=NAMES[k];
+  var fn=ST[k];fn(stage,k+R.i);
+}
+var ST={};
+ST.dhikr=function(st,key){
+  var n=3,c=0,re=0;
+  var card=el('<div class="card"><span class="tag">ذكر اليوم · قل بعدي</span><div class="big">بِسْمِ اللَّهِ</div><div class="src">أثر تقولها، ثم أنت. <b id="cn">٣</b> مرات</div><button class="btn" id="b1">🔊 اسمع</button><button class="btn alt" id="b2" disabled>قلتُها</button><button class="btn soft" id="b3" hidden>مرة أخرى</button></div>');
+  st.appendChild(card);var heard=false;
+  card.querySelector("#b1").onclick=function(){heard=true;card.querySelector("#b2").disabled=false;card.querySelector("#b3").hidden=false};
+  card.querySelector("#b3").onclick=function(){re++};
+  card.querySelector("#b2").onclick=function(){c++;card.querySelector("#cn").textContent=["٣","٢","١","٠"][c];if(c>=n){stat("dhikr",re,false);next()}};
+};
+var REVIEW=[{q:"ما أول شيء نقوله قبل الأكل؟",o:["بسم الله","الحمد لله","سبحان الله"],a:0}];
+ST.review=function(st,key){
+  var due=S.pathDay>0;   /* لا مراجعة قبل أن يكون هناك ما يُراجَع */
+  if(!due){var c=el('<div class="card done"><div class="lan">🏮</div><div class="big" style="font-size:22px">اليوم أول يوم لنا، فلا مراجعة بعد</div><button class="btn" id="go">نكمل</button></div>');st.appendChild(c);c.querySelector("#go").onclick=next;return}
+  var it=REVIEW[0],tries=0;
+  var c=el('<div class="card"><span class="tag">مراجعة</span><div class="big" style="font-size:22px">'+it.q+'</div></div>');
+  it.o.forEach(function(t,j){var b=el('<button class="opt">'+t+'</button>');b.onclick=function(){tries++;if(j===it.a){b.classList.add("ok");setTimeout(function(){stat("review",tries-1,false);next()},500)}else{b.classList.add("no");b.disabled=true}};c.appendChild(b)});
+  st.appendChild(c);
+};
+ST.new=function(st,key){
+  var c=el('<div class="card"><span class="tag">جديد اليوم · قل بعدي</span><div class="big">قُلْ هُوَ اللَّهُ أَحَدٌ</div><div class="src">سورة الإخلاص: ١</div><button class="btn" id="b1">🔊 اسمع، ثم قل</button><button class="btn alt" id="b2" disabled>قلتُها</button></div>');
+  st.appendChild(c);c.querySelector("#b1").onclick=function(){c.querySelector("#b2").disabled=false};
+  c.querySelector("#b2").onclick=function(){stat("new",0,false);next()};
+};
+function adabFormat(){var i=(S.pathDay+S.redo)%FORMATS.length;return FORMATS[i]}
+ST.adab2=function(st,key){ST.adab(st,key)};
+ST.adab=function(st,key){
+  var f=adabFormat();S.round.fmt=f;
+  var tag={story:"اسمع القصة",say:"قل بعدي",order:"رتّب الخطوات",what:"ماذا تفعل لو؟",try:"جرّب اليوم"}[f];
+  var c=el('<div class="card"><span class="tag">أدب اليوم: آداب الطعام · '+tag+'</span></div>');st.appendChild(c);
+  var tries=0;
+  if(f==="story"){
+    c.appendChild(el('<div class="big" style="font-size:21px">قال النبي ﷺ لعمر بن أبي سلمة وهو غلام:</div>'));
+    c.appendChild(el('<div class="big">«يا غلام، سَمِّ اللهَ، وكُلْ بيمينك، وكُلْ مما يليك»</div>'));
+    c.appendChild(el('<div class="src">رواه البخاري (٥٣٧٦) ومسلم (٢٠٢٢)</div>'));
+    c.appendChild(el('<button class="btn soft">🔊 اسمع</button>'));
+    var q=el('<div><div class="big" style="font-size:20px;margin-top:14px">ماذا قال له النبي ﷺ أول شيء؟</div></div>');c.appendChild(q);
+    ["سمِّ الله","كُلْ بسرعة","اجلس هنا"].forEach(function(t,j){var b=el('<button class="opt">'+t+'</button>');b.onclick=function(){tries++;if(j===0){b.classList.add("ok");setTimeout(function(){stat("adab",tries-1,false);next()},500)}else{b.classList.add("no");b.disabled=true}};q.appendChild(b)});
+  }else if(f==="say"){
+    var parts=["بِسْمِ اللَّهِ","بِاليَمِين","مِمَّا يَلِيني"],i=0;
+    var t=el('<div class="big" id="t">'+parts[0]+'</div>');c.appendChild(t);
+    c.appendChild(el('<div class="src">أثر تقولها ثم الطفل</div>'));
+    var b1=el('<button class="btn">🔊 اسمع</button>'),b2=el('<button class="btn alt">قلتُها</button>');c.appendChild(b1);c.appendChild(b2);
+    b2.onclick=function(){i++;if(i>=parts.length){stat("adab",0,false);next()}else t.textContent=parts[i]};
+  }else if(f==="order"){
+    var steps=["أجلس","أسمّي الله","آكل باليمين مما يليني","أحمد الله بعد الأكل"],order=[1,0,3,2],placed=[];
+    var slots=el('<div class="slots"></div>');c.appendChild(slots);
+    var pool=el('<div></div>');c.appendChild(pool);
+    order.forEach(function(si){var b=el('<button class="step"><span>'+steps[si]+'</span></button>');b.onclick=function(){
+      if(si===placed.length){placed.push(si);b.classList.add("placed");b.disabled=true;var m=el('<div class="step"><b>'+(placed.length)+'</b>'+steps[si]+'</div>');slots.appendChild(m);if(placed.length===steps.length)setTimeout(function(){stat("adab",tries,false);next()},600)}
+      else{tries++;b.style.borderColor="#e0b4a8";setTimeout(function(){b.style.borderColor=""},500)}};pool.appendChild(b)});
+  }else if(f==="what"){
+    c.appendChild(el('<div class="big" style="font-size:21px">قُدِّم لك طعام لا يعجبك. ماذا تفعل؟</div>'));
+    var res=el('<div></div>');c.appendChild(res);
+    [["أقول: هذا طعام سيّئ",0],["أتركه ولا أعيبه",1]].forEach(function(o){var b=el('<button class="opt">'+o[0]+'</button>');b.onclick=function(){tries++;if(o[1]){b.classList.add("ok");res.appendChild(el('<div class="src" style="margin-top:12px">«ما عاب النبي ﷺ طعامًا قط» · رواه البخاري (٥٤٠٩)</div>'));setTimeout(function(){stat("adab",tries-1,false);next()},1800)}else{b.classList.add("no");b.disabled=true}};res.appendChild(b)});
+  }else{
+    c.appendChild(el('<div class="big" style="font-size:21px">في غدائك اليوم: سَمِّ الله، وكُلْ بيمينك، ثم احمد الله.</div>'));
+    c.appendChild(el('<div class="note" style="text-align:center">للوالد: ذكِّروه بلطف وعلى انفراد، لا أمام الآخرين.</div>'));
+    var b=el('<button class="btn">فعلناها ✓ (للوالد)</button>');b.onclick=function(){stat("adab",0,false);S.round.stats.adab.confirmed=1;next()};c.appendChild(b);
+    var s=el('<button class="btn soft">سنفعلها لاحقًا</button>');s.onclick=function(){stat("adab",0,false);S.round.stats.adab.later=1;next()};c.appendChild(s);
+  }
+};
+ST.story=function(st,key){
+  var c=el('<div class="card"><span class="tag">قصتنا · اسمع</span><div class="big" style="font-size:21px">كان النبي ﷺ يعلّم الصغار بلطف، ويقول لهم ما ينفعهم دون أن يغضب.</div><div class="src">قصة قصيرة بصوت الراوي · تُستبدل بقصة المكتبة</div><button class="btn" id="b1">🔊 اسمع القصة</button><button class="btn alt" id="b2" disabled>انتهت</button></div>');
+  st.appendChild(c);c.querySelector("#b1").onclick=function(){c.querySelector("#b2").disabled=false};
+  c.querySelector("#b2").onclick=function(){stat("story",0,false);next()};
+};
+/* ===== الحكم الصامت بعد الجولة: ثلاث نتائج فقط، لا تظهر للطفل ===== */
+function verdict(){
+  var st=S.round.stats,adab=st.adab||{tries:0},struggled=(adab.tries>=3)||(adab.later);
+  var smooth=Object.keys(st).every(function(k){return st[k].tries===0});
+  if(struggled)return "redo"; if(smooth)return "up"; return "same";
+}
+function finish(stage){
+  $("hello").textContent="ما شاء الله";
+  var R=S.round;
+  if(!R.fin){R.fin=true;var v=verdict();R.verdict=v;
+    if(v==="redo"){S.redo++;}else{S.pathDay++;S.redo=0}
+    S.last=today();S.log.push({day:today(),v:v,light:R.light,fmt:R.fmt||"say"});save()}
+  stage.appendChild(el('<div class="card done"><div class="lan">🏮</div><div class="big">انتهينا اليوم</div><div class="src">الحمد لله. نلتقي غدًا بإذن الله.</div></div>'));
+  $("sub").textContent="تمّت الجولة";
+  $("dots").querySelectorAll(".dot").forEach(function(d){d.className="dot on"});
+}
+/* ===== ركن الاستكشاف: توجيه لا قفل ===== */
+$("expl").onclick=function(){
+  ensureRound();
+  if(S.round.i>=S.round.st.length){toast("ركن الاستكشاف مفتوح لك");return}
+  if(S.mode==="strict"){toast("الوالد اختار أن نُنهي الجولة أولًا");return}
+  if(S.mode==="guided"&&!S.askedExplore){S.askedExplore=true;save();
+    var p=$("pin");p.hidden=false;p.innerHTML='نكمل جولتنا أولًا؟ <button class="btn soft" style="margin-top:8px" id="y">نكمل</button><button class="btn alt" id="n">أذهب للاستكشاف</button>';
+    $("y").onclick=function(){p.hidden=true};$("n").onclick=function(){p.hidden=true;toast("هنا ينفتح ركن الاستكشاف في التطبيق")};return}
+  toast("هنا ينفتح ركن الاستكشاف في التطبيق");
+};
+function toast(m){var t=el('<div style="position:fixed;bottom:24px;left:16px;right:16px;max-width:448px;margin:auto;background:#23301f;color:#fff;border-radius:14px;padding:12px 16px;z-index:20;text-align:center;font-size:16px">'+m+'</div>');document.body.appendChild(t);setTimeout(function(){t.remove()},2200)}
+/* ===== لوحة الوالد (خلف سؤال بسيط) ===== */
+$("gear").onclick=function(){
+  var a=2+Math.floor(Math.random()*7),b=3+Math.floor(Math.random()*6);
+  var p=$("panel");p.innerHTML='<h2>لوحة الوالد</h2><div class="note">للكبار فقط: كم يساوي '+a+' + '+b+'؟</div><input id="ans" inputmode="numeric" style="font-size:22px;padding:10px;width:100%;border:2px solid var(--line);border-radius:12px;margin-top:8px"><button class="btn" id="ok">دخول</button><button class="btn soft" id="cl">إغلاق</button>';
+  $("sheet").classList.add("show");$("cl").onclick=function(){$("sheet").classList.remove("show")};
+  $("ok").onclick=function(){if(parseInt($("ans").value,10)===a+b)parentPanel();else toast("جرّب مرة أخرى")};
+};
+function parentPanel(){
+  var V={up:"أتقن بسهولة ← يتقدّم المحتوى ويقل التكرار",same:"يسير كما هو ← يستمر الخط",redo:"تعثّر قليلًا ← يعود غدًا بصيغة أخرى"},NM={story:"اسمع القصة",say:"قل بعدي",order:"رتّب الخطوات",what:"ماذا تفعل لو؟",try:"جرّب اليوم"};
+  var p=$("panel");
+  p.innerHTML='<h2>لوحة الوالد</h2>'+
+  '<div class="note">عمر الطفل</div><div class="seg" id="sb">'+Object.keys(BANDS).map(function(k){return '<button data-k="'+k+'" class="'+(S.band===k?"on":"")+'">'+BANDS[k].label+' سنوات</button>'}).join("")+'</div>'+
+  '<div class="note">طريقة التوجيه</div><div class="seg" id="sm">'+[["free","حرّ"],["guided","موجَّه"],["strict","حازم"]].map(function(m){return '<button data-k="'+m[0]+'" class="'+(S.mode===m[0]?"on":"")+'">'+m[1]+'</button>'}).join("")+'</div>'+
+  '<div class="note">حرّ: «هيا نكمل» اقتراح فقط · موجَّه (الافتراضي): تذكير لطيف مرة واحدة · حازم: تُغلق الأبواب الأخرى حتى تنتهي الجولة، وأنت من يقرر.</div>'+
+  '<h2 style="margin-top:16px">ما لاحظه التطبيق بصمت</h2>'+
+  (S.log.length?S.log.slice(-5).reverse().map(function(l,i){return '<div class="kv"><span>'+(l.light?"جولة خفيفة · ":"")+NM[l.fmt]+'</span><span style="text-align:left">'+V[l.v]+'</span></div>'}).join(""):'<div class="note">لا جولات منتهية بعد.</div>')+
+  '<div class="note" style="margin-top:8px">لا شيء من هذا يظهر للطفل: لا نجاح ولا رسوب، ولا فقدان سلسلة أيام.</div>'+
+  '<h2 style="margin-top:16px">للتجربة فقط</h2><button class="btn soft" id="nd">محاكاة يوم جديد</button><button class="btn soft" id="n4">محاكاة غياب أربعة أيام</button><button class="btn soft" id="rs">إعادة البدء</button><button class="btn" id="cl">إغلاق</button>';
+  p.querySelectorAll("#sb button").forEach(function(b){b.onclick=function(){S.band=b.dataset.k;S.round=null;save();parentPanel();render()}});
+  p.querySelectorAll("#sm button").forEach(function(b){b.onclick=function(){S.mode=b.dataset.k;S.askedExplore=false;save();parentPanel()}});
+  $("nd").onclick=function(){S.off++;S.round=null;save();$("sheet").classList.remove("show");render()};
+  $("n4").onclick=function(){S.off+=4;S.round=null;save();$("sheet").classList.remove("show");render()};
+  $("rs").onclick=function(){try{localStorage.removeItem(KEY)}catch(e){};S={band:S.band,mode:"guided",off:0,pathDay:0,redo:0,last:null,round:null,log:[],askedExplore:false};save();$("sheet").classList.remove("show");render()};
+  $("cl").onclick=function(){$("sheet").classList.remove("show")};
+}
+$("sheet").onclick=function(e){if(e.target===$("sheet"))$("sheet").classList.remove("show")};
+render();
+</script>
+</body>
+</html>
