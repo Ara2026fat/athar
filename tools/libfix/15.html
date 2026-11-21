@@ -129,16 +129,16 @@ function est(){
  $("cp").disabled=!bad;
  $("tg").textContent=showAll?"أخفِ المعتمد":"اعرض المعتمد ("+nAr(ok)+")";$("tgb").textContent=showBad?"أخفِ الخاطئة":"اعرض الخاطئة ("+nAr(bad)+")";$("tgs").textContent=showSk?"أخفِ المؤجّلة":"اعرض المؤجّلة ("+nAr(SK.filter(i=>L[i]&&L[i].mark!=="ok"&&L[i].mark!=="bad"&&inB(i)).length)+")";
 }
-let cur=null,showAll=false,showBad=false;let SK=[];try{SK=JSON.parse(localStorage.getItem("athar-skip-"+location.pathname)||"[]")}catch(e){}let showSk=false;const saveSK=()=>{try{localStorage.setItem("athar-skip-"+location.pathname,JSON.stringify(SK))}catch(e){}};const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
+let cur=null,showAll=false,showBad=false;let SK=[];try{SK=JSON.parse(localStorage.getItem("athar-skip-"+location.pathname)||"[]")}catch(e){}let REJ=[];try{REJ=JSON.parse(localStorage.getItem("athar-rej-"+location.pathname)||"[]")}catch(e){}const saveREJ=()=>{try{localStorage.setItem("athar-rej-"+location.pathname,JSON.stringify(REJ))}catch(e){}};let showSk=false;const saveSK=()=>{try{localStorage.setItem("athar-skip-"+location.pathname,JSON.stringify(SK))}catch(e){}};const editing=new Set();function finishBad(i){editing.delete(i);row(i);est();goNext(i)}
 function play(i){try{if(cur){cur.pause()}}catch(e){}cur=new Audio(URL.createObjectURL(L[i].blob));cur.play().catch(()=>{})}
 function row(i){
  let r=$("r"+i);
  if(!r){r=document.createElement("div");r.id="r"+i;$("list").appendChild(r)}
  const l=L[i];r.className="ln"+(l.mark==="ok"?" ok":l.mark==="bad"?" bad":"");
- r.hidden=(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);if(SK.includes(i)){if(l.mark==="ok"||l.mark==="bad"){SK=SK.filter(x=>x!==i);saveSK()}else{$("list").appendChild(r);if(!showSk)r.hidden=true}}
+ r.hidden=(REJ.includes(i)&&!showAll)||(l.mark==="ok"&&!showAll)||(l.mark==="bad"&&!showBad&&!editing.has(i))||!inB(i);if(SK.includes(i)){if(l.mark==="ok"||l.mark==="bad"){SK=SK.filter(x=>x!==i);saveSK()}else{$("list").appendChild(r);if(!showSk)r.hidden=true}}
  r.innerHTML="";
  const tx=document.createElement("div");tx.className="tx";tx.id="tx"+i;r.appendChild(tx);
- const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")+(SK.includes(i)&&!l.mark?"  ⏭ مؤجّلة":"")};setTx();
+ const setTx=()=>{tx.textContent=nAr(i+1)+". "+l.text+(l.mark==="ok"?"  ✓ صح":l.mark==="bad"?"  ✗ خطأ":l.blob?"  (بانتظار حكمك)":"")+(SK.includes(i)&&!l.mark?"  ⏭ مؤجّلة":"")+(REJ.includes(i)?"  🗑 محذوف":"")};setTx();
  {const cx=document.createElement("div"),e=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])),g=k=>nAr(k+1)+". "+e(L[k].text);cx.style.cssText="background:#f4f1e6;border-radius:10px;padding:8px 12px;margin-top:6px;font-size:15px;line-height:1.8;color:#555";const P=[i-2,i-1].filter(k=>k>=0&&inB(k)).map(g),N=[i+1,i+2].filter(k=>k<L.length&&inB(k)).map(g);cx.innerHTML="<b>قبلها:</b> "+(P.join("<br>")||"— أول الكتاب —")+"<br><b>بعدها:</b> "+(N.join("<br>")||"— آخر الكتاب —");r.appendChild(cx)}
  const ta=document.createElement("textarea");ta.rows=8;ta.dir="rtl";ta.style.cssText="width:100%;min-height:220px;line-height:2;font-size:21px;padding:14px;border-radius:12px;border:2px solid #2d7f68;box-sizing:border-box;resize:vertical;margin:8px 0";ta.value=sentOf(i);ta.id="ta"+i;
  ta.addEventListener("input",()=>{
@@ -180,6 +180,7 @@ function row(i){
   mk("✓ صح","good",()=>{l.mark="ok";l.note="";save(i);row(i);est();goNext(i)});
   mk("✗ خطأ","badb",()=>{l.mark="bad";editing.add(i);save(i);row(i);est();setTimeout(()=>{const t=$("nt"+i);if(t){t.focus();t.scrollIntoView({block:"center"})}},50)});
  }
+ if(true){const rj=REJ.includes(i);mk(rj?"↩ ألغِ حذف السؤال":"🗑 احذف السؤال من التطبيق","s",()=>{if(rj)REJ=REJ.filter(x=>x!==i);else REJ.push(i);saveREJ();row(i);est();if(!rj)goNext(i)})}
  if(l.mark!=="ok"&&l.mark!=="bad"){if(SK.includes(i))mk("↩ أعدها للمراجعة","s",()=>{SK=SK.filter(x=>x!==i);saveSK();row(i);est()});else mk("⏭ أشكّلها لاحقًا","s",()=>{SK.push(i);saveSK();row(i);est();goNext(i)})}
  const vsel=document.createElement("select");vsel.style.cssText="width:auto;flex:1 1 130px;min-height:42px";
  [["","الصوت: الافتراضي"],["1","١ أثر"],["2","٢ تعليمات"],["3","٣ أذكار"],["4","٤ شبيه أوس"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;vsel.appendChild(o)});
@@ -265,7 +266,7 @@ function dlz(only){try{_bk0=L.filter(l=>l.mark==="ok"&&l.bytes).length;localStor
  const okL=L.filter((l,i)=>l.mark==="ok"&&l.bytes&&(!only||inB(i)));if(!okL.length)return;const chunks=[],e={},texts={};let off=0;
  okL.forEach(l=>{const h=vHash(l.text);if(e[h])return;e[h]=[0,off,l.bytes.length];texts[h]=l.text;chunks.push(l.bytes);off+=l.bytes.length});
  const bin=new Uint8Array(off);let p=0;chunks.forEach(c=>{bin.set(c,p);p+=c.length});
- const meta={schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("v"+$("vslot").value).value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts,count:okL.length,total:L.length};
+ const meta={rejected:REJ.map(i=>L[i].text),schema:"athar-usul-voice/1",created:new Date().toISOString(),voice:$("v"+$("vslot").value).value.trim(),model:$("mo").value,stability:+$("st").value,allah_variant:+$("al").value,e,texts,count:okL.length,total:L.length};
  const z=zipBuild([{name:"sp_usul.bin",data:bin},{name:"usul-index.json",data:new TextEncoder().encode(JSON.stringify(meta))}]);
  const a=document.createElement("a");a.href=URL.createObjectURL(z);a.download=(only?"athar-libfix15"+"b"+(curB+1):"athar-libfix15")+"-voice-"+okL.length+"of"+(only?BOOKS[curB][2]-BOOKS[curB][1]:L.length)+".zip";document.body.appendChild(a);a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);

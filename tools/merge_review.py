@@ -23,4 +23,11 @@ for z in sys.argv[1:]:
     pi = d["packs"].index(pn)
     for h, (_, off, ln) in ne.items(): d["e"][h] = [pi, off, ln]
     print(z, "->", pn, len(meta["e"]), "lines")
+    if meta.get("rejected"):
+        rp = os.path.join(root, "docs", "rejected-lines.json")
+        old = json.load(open(rp, encoding="utf-8")) if os.path.exists(rp) else []
+        for t in meta["rejected"]:
+            if t not in old: old.append(t)
+        json.dump(old, open(rp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print("rejected lines recorded:", len(meta["rejected"]))
 json.dump(d, open(ip, "w", encoding="utf-8"), separators=(",", ":"))
