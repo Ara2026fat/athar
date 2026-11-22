@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#28522F">
+<title>أثر — معاينة الرئيسية الجديدة</title>
+<!-- معاينة مستقلة: لا ترتبط بالتطبيق الحي. الصور بمسارات نسبية من المستودع.
+     ?s=normal|first|locked  ·  ?dev=1 لإظهار مبدّل الحالات  ·  ARAFAT ALRAJHI © 2026 -->
+<style>
+:root{
+  --green:#28522F; --green-d:#1d3d23; --green-l:#3E6A46;
+  --gold:#E0A526; --gold-l:#F2C14E; --gold-d:#8a5f0a;
+  --cream:#FFF8E7; --cream-2:#F6EBCF; --ink:#23312a; --mute:#4a5a4d;
+  --bar:calc(max(10px,env(safe-area-inset-top,0px)) + 58px);
+  --u:min(calc(min(100vw,480px) / 390), calc((100svh - var(--bar)) / 714));
+  --fs:"Tajawal","Baloo Bhaijaan 2","Noto Sans Arabic","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:#8fb56a;font-family:var(--fs);color:var(--ink);overflow:hidden;-webkit-user-select:none;user-select:none}
+.bg{position:fixed;inset:0;background:#8fb56a url(../../next/home/img/map/day1.webp) center top/cover no-repeat}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,248,231,.0) 0,rgba(255,248,231,0) 60%,rgba(255,240,200,.18) 100%)}
+.board{position:relative;width:calc(390*var(--u));height:calc(780*var(--u));margin:0 auto;top:calc(var(--bar) - 66*var(--u));overflow:visible}
+@supports not (height:100svh){:root{--u:min(calc(min(100vw,480px) / 390), calc((100vh - var(--bar)) / 714))}}
+.abs{position:absolute}
+
+/* ===== الشريط العلوي الموحّد ===== */
+.bar{position:fixed;z-index:10;top:max(10px,env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));max-width:456px;margin:0 auto;height:56px;display:flex;align-items:center;gap:0;padding:4px 6px;border-radius:30px;
+  background:rgba(255,248,231,.96);border:2px solid rgba(224,165,38,.75);box-shadow:0 4px 0 rgba(40,82,47,.28),0 10px 22px rgba(40,60,30,.22);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.bar .sep{width:1.5px;align-self:stretch;margin:9px 2px;background:rgba(40,82,47,.18);border-radius:2px;flex:none}
+.brand{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 4px 0 12px;border:0;background:none;font-family:inherit;color:var(--green);cursor:pointer}
+.brand img{width:44px;height:44px;border-radius:50%;border:2px solid var(--gold);display:block;background:#fff;object-fit:cover}
+.brand b{font-size:25px;font-weight:800;line-height:1;color:var(--green)}
+.stars{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:2px;min-height:48px;border:0;background:none;font-family:inherit;color:var(--green);cursor:pointer}
+.stars svg{width:24px;height:24px;flex:none}
+.stars .tot{display:flex;align-items:center;gap:3px;font-weight:800;font-size:19px;padding-inline-start:6px}
+.stars .tot svg{width:26px;height:26px}
+.gear{width:48px;height:48px;border:0;border-radius:50%;background:var(--green);display:grid;place-items:center;cursor:pointer;flex:none;box-shadow:0 2px 0 var(--green-d)}
+.gear svg{width:26px;height:26px}
+.gear:active,.stars:active,.brand:active{transform:scale(.96)}
+
+/* ===== التاريخ: لوح خاص أسفل الشريط، بعيدًا عن المنارة والفوانيس ===== */
+.date{position:absolute;left:50%;top:calc(76*var(--u));transform:translateX(-50%);z-index:5;white-space:nowrap;display:flex;align-items:center;gap:8px;
+  background:rgba(255,248,231,.94);border:1.5px solid rgba(40,82,47,.35);color:var(--green);border-radius:16px;padding:3px 12px;font-weight:800;font-size:max(14px,calc(15*var(--u)));line-height:1.35;box-shadow:0 2px 6px rgba(40,60,30,.18)}
+.date i{width:4px;height:4px;border-radius:50%;background:var(--gold);display:block}
+
+/* ===== فوانيس الأسبوع ===== */
+.rope{position:absolute;left:0;right:0;top:calc(120*var(--u));height:calc(30*var(--u));pointer-events:none}
+.lans{position:absolute;left:calc(10*var(--u));right:calc(10*var(--u));top:calc(126*var(--u));display:flex;justify-content:space-between;z-index:4}
+.ln{width:calc(48*var(--u));display:flex;flex-direction:column;align-items:center;gap:2px}
+.ln symbol,.ln svg{overflow:visible}
+.ln svg{width:calc(38*var(--u));height:calc(56*var(--u));overflow:visible}
+.ln span{font-size:max(12.5px,calc(13*var(--u)));font-weight:800;line-height:1.2;color:var(--green);background:rgba(255,248,231,.92);border-radius:9px;padding:0 6px;white-space:nowrap}
+.ln.today span{background:var(--gold-l);color:#3a2c00;box-shadow:0 0 0 2px var(--green)}
+.ln{--lf:#d9d0b4;--lh:0}.ln.on{--lf:#F2C14E;--lh:.9}
+.ln.today svg{filter:drop-shadow(0 0 6px rgba(255,214,90,.9))}
+
+/* ===== الوادي: هدف اليوم ===== */
+.valley{position:absolute;left:50%;transform:translateX(-50%);top:calc(212*var(--u));width:calc(150*var(--u));display:flex;flex-direction:column;align-items:center;border:0;background:none;padding:0;font-family:inherit;cursor:pointer;z-index:3}
+.ribbon{background:linear-gradient(var(--gold-l),var(--gold));color:#3a2c00;font-weight:800;font-size:max(15px,calc(16*var(--u)));border-radius:14px;padding:2px 14px;border:2px solid var(--green);box-shadow:0 3px 0 rgba(40,82,47,.4);position:relative;z-index:2;margin-bottom:calc(-6*var(--u))}
+.arch{position:relative;width:calc(124*var(--u));height:calc(112*var(--u));border-radius:calc(62*var(--u)) calc(62*var(--u)) calc(10*var(--u)) calc(10*var(--u));border:calc(5*var(--u)) solid var(--green);outline:calc(3*var(--u)) solid var(--gold-l);background:#cfe2b8 url(../../next/home/img/doors/valley_win.webp) center/cover;box-shadow:0 6px 0 rgba(40,82,47,.45),0 12px 20px rgba(30,50,20,.3)}
+.arch::before{content:"";position:absolute;inset:calc(-16*var(--u));border-radius:50%;background:radial-gradient(circle,rgba(255,226,120,.75),rgba(255,226,120,0) 68%);z-index:-1;animation:pulse 2.8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.14);opacity:.75}}
+.valley .plate{margin-top:calc(2*var(--u));position:relative;z-index:2}
+.valley:active .arch{transform:scale(.97)}
+
+/* ===== الطريق ===== */
+.road{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+
+/* ===== الأبواب ===== */
+.door{--dw:calc(108*var(--u));position:absolute;width:var(--dw);display:flex;flex-direction:column;align-items:center;gap:calc(2*var(--u));border:0;background:none;padding:0;font-family:inherit;cursor:pointer;z-index:3}
+.door .art{position:relative;width:100%;aspect-ratio:480/384;display:block}
+.door .art img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 4px 3px rgba(30,40,20,.35))}
+.door:active .art{transform:scale(.96)}
+.plate{background:var(--cream);color:var(--green);font-weight:800;font-size:max(15px,calc(17*var(--u)));line-height:1.3;border-radius:14px;padding:1px 10px 2px;border:2px solid rgba(40,82,47,.85);box-shadow:0 2px 0 rgba(40,82,47,.35);white-space:nowrap}
+.bd{position:absolute;top:calc(24*var(--u));inset-inline-end:calc(0*var(--u));z-index:2;border-radius:12px;font-weight:800;font-size:max(13px,calc(13*var(--u)));padding:0 9px;line-height:1.5;border:2px solid var(--green)}
+.bd.new{background:var(--gold-l);color:#3a2c00}
+.lock{position:absolute;top:calc(4*var(--u));inset-inline-end:calc(2*var(--u));z-index:2;width:calc(32*var(--u));height:calc(32*var(--u));min-width:28px;min-height:28px;border-radius:50%;background:var(--cream);border:2px solid var(--green);display:grid;place-items:center}
+.lock svg{width:60%;height:60%}
+.door[data-st=locked] .art img{filter:saturate(.45) brightness(1.04) drop-shadow(0 4px 3px rgba(30,40,20,.3))}
+.door[data-st=locked] .plate{background:#efe6cc;color:#44543f;border-color:rgba(68,84,63,.8);border-style:dashed}
+.sub{display:none;font-size:max(12.5px,calc(13*var(--u)));font-weight:700;color:#44543f;background:rgba(255,248,231,.92);border-radius:9px;padding:0 8px;margin-top:calc(-1*var(--u))}
+.p-noor{right:auto;left:calc(24*var(--u));top:calc(392*var(--u))}
+.p-hifz{left:auto;right:calc(18*var(--u));top:calc(392*var(--u))}
+.p-lib{left:calc(24*var(--u));top:calc(512*var(--u))}
+.p-adhkar{right:calc(18*var(--u));top:calc(512*var(--u))}
+.p-math{left:calc(24*var(--u));top:calc(632*var(--u))}
+.p-quiz{right:calc(18*var(--u));top:calc(632*var(--u))}
+.hifz-art img{transform:scale(.9)}
+.d3o{position:absolute;inset:0;pointer-events:none}
+.d3o b{position:absolute;transform:translate(-50%,-50%);font-weight:800;line-height:1;font-size:calc(var(--dw)*var(--fs));color:var(--c);text-shadow:0 2px 0 rgba(40,28,70,.55);-webkit-text-stroke:.6px rgba(40,28,70,.35)}
+
+/* ===== الطفل ===== */
+.kid{position:absolute;left:50%;bottom:calc(14*var(--u));transform:translateX(-50%);width:calc(86*var(--u));z-index:4;pointer-events:none}
+.kid img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 5px rgba(30,40,20,.35))}
+.kid::before{content:"";position:absolute;left:50%;bottom:-6px;width:150%;height:34%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(255,230,140,.7),rgba(255,230,140,0) 70%);z-index:-1}
+.hint{position:absolute;left:50%;bottom:calc(172*var(--u));transform:translateX(-50%);z-index:6;display:none;background:var(--cream);color:var(--green);border:2px solid var(--green);border-radius:18px;padding:3px 14px;font-weight:800;font-size:max(16px,calc(17*var(--u)));white-space:nowrap;box-shadow:0 3px 0 rgba(40,82,47,.4)}
+.hint::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border:8px solid transparent;border-top-color:var(--green);border-bottom:0}
+body[data-s=first] .hint{display:block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,-4px)}}
+body[data-s=first] .ln.on{--lf:#d9d0b4;--lh:0}
+body[data-s=first] .ln.today svg{filter:none}
+
+.sig{position:absolute;left:50%;transform:translateX(-50%);bottom:max(2px,env(safe-area-inset-bottom));z-index:5;white-space:nowrap;font-size:11.5px;font-weight:700;color:var(--green);background:rgba(255,248,231,.88);border-radius:10px 10px 0 0;padding:0 12px;pointer-events:none}
+.snd{position:absolute;left:calc(16*var(--u));top:calc(222*var(--u));width:48px;height:48px;border-radius:50%;border:2px solid var(--green);background:var(--cream);display:grid;place-items:center;cursor:pointer;z-index:5;padding:0;box-shadow:0 3px 0 rgba(40,82,47,.35)}
+.snd svg{width:26px;height:26px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 44px);transform:translate(-50%,20px);opacity:0;background:var(--green);color:#fff;font-weight:800;font-size:17px;border-radius:18px;padding:8px 18px;z-index:30;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.dev{position:fixed;z-index:40;left:8px;top:calc(env(safe-area-inset-top) + 76px);display:none;flex-direction:column;gap:4px}
+.dev button{font:700 13px var(--fs);padding:6px 10px;border-radius:10px;border:1.5px solid var(--green);background:var(--cream);color:var(--green)}
+.dev.on{display:flex}
+:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+@media (max-width:374px){.ln:not(.today) span{display:none}.ln.today span{font-size:13px}}
+@media (max-width:340px){.stars .tot{display:none}.stars svg{width:22px;height:22px}.brand{padding-inline-start:6px}.brand b{font-size:22px}}
+@media (prefers-reduced-motion:reduce){.arch::before,body[data-s=first] .hint{animation:none}.toast{transition:none}}
+</style>
+</head>
+<body data-s="normal">
+<div class="bg" aria-hidden="true"></div>
+
+<!-- شريط موحّد: يمين = هوية أثر/الطفل، وسط = النجوم، يسار = الإعدادات -->
+<header class="bar" role="banner">
+  <button class="brand" type="button" aria-label="ملف الطفل">
+    <img src="../../icons-athar/brand-96.png" alt="" width="44" height="44"><b>أثر</b>
+  </button>
+  <i class="sep" aria-hidden="true"></i>
+  <button class="stars" type="button" aria-label="نجوم اليوم: واحدة من ثلاث، والمجموع ٢٤">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2 6.3 20.3l1.2-6.4L2.8 9.5l6.4-.8z" fill="#E0A526" stroke="#8a5f0a" stroke-width="1.2" stroke-linejoin="round"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2 6.3 20.3l1.2-6.4L2.8 9.5l6.4-.8z" fill="none" stroke="#8a5f0a" stroke-width="1.6" stroke-linejoin="round" opacity=".75"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2 6.3 20.3l1.2-6.4L2.8 9.5l6.4-.8z" fill="none" stroke="#8a5f0a" stroke-width="1.6" stroke-linejoin="round" opacity=".75"/></svg>
+    <span class="tot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2 6.3 20.3l1.2-6.4L2.8 9.5l6.4-.8z" fill="#F2C14E" stroke="#8a5f0a" stroke-width="1.2" stroke-linejoin="round"/></svg>٢٤</span>
+  </button>
+  <i class="sep" aria-hidden="true"></i>
+  <button class="gear" type="button" aria-label="الإعدادات (للوالدين)">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFF8E7" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><circle cx="15" cy="7" r="2.6" fill="#FFF8E7" stroke="none"/><line x1="3" y1="17" x2="21" y2="17"/><circle cx="9" cy="17" r="2.6" fill="#FFF8E7" stroke="none"/></svg>
+  </button>
+</header>
+
+<main class="board" id="board">
+  <div class="date" id="date"><span>الأحد</span><i></i><span>١٢ جمادى الآخرة</span><i></i><span>٢٢ نوفمبر</span></div>
+
+  <svg class="rope" viewBox="0 0 390 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q195 30 390 8" fill="none" stroke="#6b4a1f" stroke-width="2.4" opacity=".85"/></svg>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <symbol id="lan" viewBox="0 0 38 56" style="overflow:visible"><circle cx="19" cy="30" r="22" fill="#ffe38a" opacity="var(--lh,0)"/><path d="M19 0v8" stroke="#6b4a1f" stroke-width="2"/><rect x="11" y="7" width="16" height="6" rx="3" fill="#8a5f0a"/><path d="M10 15h18c4 6 5 15 0 24H10c-5-9-4-18 0-24z" fill="var(--lf,#d9d0b4)" stroke="#8a5f0a" stroke-width="2"/><rect x="12" y="39" width="14" height="5" rx="2.5" fill="#8a5f0a"/><path d="M19 44v6" stroke="#8a5f0a" stroke-width="2"/></symbol>
+  </defs></svg>
+  <div class="lans" id="lans"></div>
+
+  <button class="snd" type="button" id="snd" aria-label="الصوت"><svg viewBox="0 0 24 24" fill="none" stroke="#28522F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h4l5 4v-13l-5 4.5z" fill="#28522F"/><path d="M16.5 9a4 4 0 010 6M18.8 6.5a7.5 7.5 0 010 11"/></svg></button>
+
+  <svg class="road" viewBox="0 0 390 780" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M195 372 C 150 420, 250 470, 200 520 S 150 610, 195 690" fill="none" stroke="rgba(110,82,35,.55)" stroke-width="40" stroke-linecap="round"/>
+    <path d="M195 372 C 150 420, 250 470, 200 520 S 150 610, 195 690" fill="none" stroke="#efe0b0" stroke-width="30" stroke-linecap="round"/>
+    <path d="M195 372 C 150 420, 250 470, 200 520 S 150 610, 195 690" fill="none" stroke="#fffaf0" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>
+  </svg>
+
+  <button class="valley" type="button" data-k="valley" aria-label="الوادي، حصة اليوم">
+    <span class="ribbon">حصة اليوم</span>
+    <span class="arch"></span>
+    <span class="plate">الوادي</span>
+  </button>
+
+  <button class="door p-hifz" type="button" data-k="hifz" data-st="open" aria-label="أحفظ القرآن"><span class="art hifz-art"><img src="../../next/home/img/doors/hifz.webp" alt=""></span><span class="plate">أحفظ القرآن</span></button>
+  <button class="door p-noor" type="button" data-k="noor" data-st="open" aria-label="القاعدة النورانية"><span class="art"><img src="../../next/home/img/doors/noor.webp" alt=""><span class="d3o" aria-hidden="true" style="--fs:0.27;--c:#fff8d6"><b style="left:76%;top:50%">أ</b><b style="left:50%;top:50%">ب</b><b style="left:24%;top:50%">ج</b></span></span><span class="plate">القاعدة النورانية</span></button>
+  <button class="door p-adhkar" type="button" data-k="adhkar" data-st="open" aria-label="أذكاري"><span class="art"><img src="../../next/home/img/doors/adhkar.webp" alt=""></span><span class="plate">أذكاري</span></button>
+  <button class="door p-lib" type="button" data-k="lib" data-st="new" aria-label="مكتبتي، جديد"><span class="art"><img src="../../next/home/img/doors/lib.webp" alt=""><span class="bd new">جديد</span></span><span class="plate">مكتبتي</span></button>
+  <button class="door p-math" type="button" data-k="math" data-st="open" aria-label="عالم الأرقام"><span class="art"><img src="../../next/home/img/doors/math.webp" alt=""><span class="d3o" aria-hidden="true" style="--fs:0.2;--c:#fff"><b style="left:28%;top:80%">١</b><b style="left:50%;top:80%">٢</b><b style="left:72%;top:80%">٣</b><b style="left:50%;top:46%">٤</b></span></span><span class="plate">عالم الأرقام</span></button>
+  <button class="door p-quiz" type="button" data-k="quiz" data-st="open" aria-label="المسابقات"><span class="art"><img src="../../next/home/img/doors/quiz.webp" alt=""><span class="d3o" aria-hidden="true" style="--fs:0.18;--c:#fff"><b style="left:20%;top:86%">٣</b><b style="left:50%;top:70%">١</b><b style="left:80%;top:82%">٢</b></span></span><span class="plate">المسابقات</span></button>
+
+  <div class="hint" id="hint">المس لنبدأ رحلتنا</div>
+  <div class="kid"><img src="../../next/home/img/idle.webp" alt="" id="kid"></div>
+  <div class="sig">أثر — ARAFAT ALRAJHI © 2026</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="dev" id="dev"><button data-s="normal">عادي</button><button data-s="first">أول مرة</button><button data-s="locked">أبواب مقفلة</button></div>
+
+<script>
+(function(){
+  var q=new URLSearchParams(location.search),B=document.body;
+  var days=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"]; // RTL: يبدأ من اليمين
+  var lit=[1,0,0,0,0,0,0],today=1;
+  var L=document.getElementById("lans");
+  days.forEach(function(d,i){
+    var e=document.createElement("div");e.className="ln"+(lit[i]?" on":"")+(i===today?" today":"");
+    e.innerHTML='<svg viewBox="0 0 38 56" aria-hidden="true"><use href="#lan"/></svg><span>'+(i===today?"اليوم":d)+'</span>';
+    L.appendChild(e);
+  });
+  var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="#28522F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="#28522F"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+  function apply(s){
+    B.setAttribute("data-s",s);
+    var locked=s==="locked";
+    document.querySelectorAll(".door").forEach(function(d){
+      var k=d.getAttribute("data-k"),lk=locked&&(k==="math"||k==="quiz");
+      d.querySelectorAll(".lock,.sub").forEach(function(x){x.remove()});
+      d.setAttribute("data-st",lk?"locked":(k==="lib"?"new":"open"));
+      if(lk){
+        d.querySelector(".art").insertAdjacentHTML("beforeend",'<span class="lock">'+LOCK+'</span>');
+        d.insertAdjacentHTML("beforeend",'<span class="sub">نصل إليه قريبًا</span>');
+        d.setAttribute("aria-label",d.querySelector(".plate").textContent+"، يُفتح بعد حصة اليوم");
+      }
+    });
+    document.getElementById("kid").src="../../next/home/img/"+(s==="first"?"think":"idle")+".webp";
+  }
+  var T,tm=document.getElementById("toast");
+  function toast(t){tm.textContent=t;tm.classList.add("on");clearTimeout(T);T=setTimeout(function(){tm.classList.remove("on")},1800)}
+  document.addEventListener("click",function(e){
+    var d=e.target.closest(".door,.valley");if(!d)return;
+    if(d.getAttribute("data-st")==="locked")toast("نصل إليه بعد حصة اليوم، بإذن الله");
+    else toast("نفتح: "+d.querySelector(".plate").textContent);
+  });
+  document.getElementById("hint").addEventListener("click",function(){apply("normal")});
+  document.querySelector(".kid").style.pointerEvents="none";
+  if(q.get("dev")==="1"){var dv=document.getElementById("dev");dv.classList.add("on");dv.addEventListener("click",function(e){var s=e.target.getAttribute&&e.target.getAttribute("data-s");if(s)apply(s)})}
+  apply(["normal","first","locked"].indexOf(q.get("s"))>-1?q.get("s"):"normal");
+})();
+</script>
+</body>
+</html>
