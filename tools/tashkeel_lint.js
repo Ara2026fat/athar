@@ -106,7 +106,8 @@ function checkWord(w, ctx, errs, warns) {
     const prev = i > 0 ? L[i - 1] : null;
     const pm = prev ? prev.marks : [];
     const pvow = pm.find(c => VOWEL.test(c));
-    if (x.ch === 'ا' && core.length) errs.push(['d', 'ألف تحمل حركة: ' + w]);
+    const alifMarks = core.filter(c => !(ctx.verse && c === SUKUN));   // علامة الألف الساكنة في رسم المصحف داخل ﴿﴾ مسموحة
+    if (x.ch === 'ا' && alifMarks.length) errs.push(['d', 'ألف تحمل حركة: ' + w]);
     if (x.ch === 'و' && m.includes(SUKUN) && prev && (pvow === DAMMA || pvow === KASRA)) errs.push(['d', 'واو ساكنة بعد ' + (pvow === DAMMA ? 'ضمّة' : 'كسرة') + ': ' + w]);
     if (x.ch === 'ي' && m.includes(SUKUN) && prev && (pvow === DAMMA || pvow === KASRA)) errs.push(['d', 'ياء ساكنة بعد ' + (pvow === DAMMA ? 'ضمّة' : 'كسرة') + ': ' + w]);
     if (x.ch === 'و' && prev && pvow === DAMMA && m.includes(DAMMA) && !m.includes(SHADDA)) warns.push(['d2', 'واو بحركة بعد ضمّة (تأكد أنها حرف أصلي): ' + w]);
@@ -121,7 +122,7 @@ function checkWord(w, ctx, errs, warns) {
       const k = mm[1].length + 2;               // فهرس الحرف بعد «ال»
       const nxt = Lw[k];
       const lamM = Lw[k - 1] ? Lw[k - 1].marks : [];
-      const lamIsArticle = !lamM.some(c => VOWEL.test(c) || c === SUKUN) || lamM.includes(SHADDA); // وَالِدَيْنِ: ليست أداة تعريف
+      const lamIsArticle = !lamM.some(c => VOWEL.test(c)) || lamM.includes(SHADDA); // وَالِدَيْنِ: ليست أداة تعريف
       if (nxt && lamIsArticle && !lamM.includes(SHADDA)) {
         const sun = /[تثدذرزسشصضطظلن]/.test(nxt.ch);
         const hasSh = nxt.marks.includes(SHADDA);
@@ -171,7 +172,7 @@ function lintLine(d) {
     if (!LETTER.test(w) && !/[ً-ٟ]/.test(w)) continue;
     const after = d.slice(end).replace(/^\s+/, '');
     const atEnd = after === '' || /^[.،؟?!:؛…»﴾)]/.test(after);
-    checkWord(w, { atEnd }, errs, warns);
+    checkWord(w, { atEnd, verse: /[﴿﴾]/.test(d) }, errs, warns);
   }
   // (هـ) سكون آخر الكلمة قبل همزة وصل في الكلمة التالية (مِنْ الـ → مِنَ الـ)
   for (let i = 0; i + 1 < words.length; i++) {
