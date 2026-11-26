@@ -87,7 +87,7 @@ function checkWord(w, ctx, errs, warns) {
     if (!x.ch) { errs.push(['c', 'علامة بلا حرف: ' + w]); continue; }
     const core = m.filter(c => c !== DAGGER && !/[ۖ-ۭٓ-ٟ]/.test(c));
     const vow = core.filter(c => VOWEL.test(c) || TANWEEN.test(c) || c === SUKUN);
-    if (vow.length > 1) errs.push(['c', 'حركتان على حرف واحد: ' + w]);
+    if (vow.length > 1 && !w.includes('ـ')) errs.push(['c', 'حركتان على حرف واحد: ' + w]); // التطويل: رسم المصحف يضع حركة على الحرف وأخرى على الكشيدة
     const sh = core.filter(c => c === SHADDA).length;
     if (sh > 1) errs.push(['c', 'شدّة مكررة: ' + w]);
     const si = m.indexOf(SHADDA);
