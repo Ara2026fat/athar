@@ -16,6 +16,7 @@
  *       (ب٢) [تحذير] اكتمال: حرف يُفترض أن يحمل حركة ولا يحملها (heuristic).
  *  (ج) [خطأ]  حركتان متتاليتان على حرف واحد، أو ترتيب شدّة قبل حركة (اصطلاح المشروع: الحركة ثم الشدّة)،
  *             أو شدّة مكرّرة، أو تنوين في غير آخر الكلمة، أو علامة بلا حرف.
+ *       (و) [تحذير] لام شمسية بلا شدّة، أو قمرية والحرف مشدّد، أو تنوين على اسم معرّف بـ«ال».
  *       (هـ) [تحذير] سكون على آخر الكلمة قبل همزة وصل (مِنْ الغار ← مِنَ الغار).
  *  (د) [خطأ]  حرف علّة بحركة متعارضة: ألف تحمل حركة؛ واو ساكنة بعد غير فتحة (لا يصح بعد ضمّة)؛
  *             ياء ساكنة بعد ضمّة/كسرة. [تحذير] واو بضمّة بعد ضمّة، أو ياء بكسرة بعد كسرة (غير ذلك مقبول لأنها حرف أصلي: هُوَ، قِيَام، لِيُشْفَى).
@@ -112,6 +113,25 @@ function checkWord(w, ctx, errs, warns) {
     if (x.ch === 'ي' && prev && pvow === KASRA && m.includes(KASRA) && !m.includes(SHADDA)) warns.push(['d2', 'ياء بحركة بعد كسرة (تأكد أنها حرف أصلي): ' + w]);
   }
 
+  // ---- (و) لام شمسية بلا شدّة / قمرية بشدّة / تنوين على معرّف ----
+  {
+    const Lw = L.filter(x => x.ch);
+    const mm = bare(w).match(/^([وفبكل]?)(ا|ٱ)ل/);
+    if (mm && !isAllahWord(b) && !/^[وفبكل]?(ا|ٱ)لل[ّ]?ه/.test(b)) {
+      const k = mm[1].length + 2;               // فهرس الحرف بعد «ال»
+      const nxt = Lw[k];
+      const lamM = Lw[k - 1] ? Lw[k - 1].marks : [];
+      const lamIsArticle = !lamM.some(c => VOWEL.test(c) || c === SUKUN) || lamM.includes(SHADDA); // وَالِدَيْنِ: ليست أداة تعريف
+      if (nxt && lamIsArticle && !lamM.includes(SHADDA)) {
+        const sun = /[تثدذرزسشصضطظلن]/.test(nxt.ch);
+        const hasSh = nxt.marks.includes(SHADDA);
+        if (sun && !hasSh) warns.push(['s', 'لام شمسية بلا شدّة: ' + w]);
+        if (!sun && hasSh && Lw.length > k + 1) warns.push(['s', 'لام قمرية والحرف مشدّد: ' + w]);
+      }
+      const lastL = Lw[Lw.length - 1];
+      if (lastL && lastL.marks.some(c => TANWEEN.test(c)) && Lw.length > 3) warns.push(['s', 'تنوين على اسم معرّف بـ«ال»: ' + w]);
+    }
+  }
   // ---- (ب٢) اكتمال: heuristic ----
   if (letters.length > 1 && hasMark && !isAllahWord(b)) {
     const n = L.length;
@@ -174,7 +194,7 @@ function lintLine(d) {
 
 function lintPage(n, opts) {
   const { LINES, DRAFT } = loadPage(n);
-  const res = { page: n, lines: LINES.length, draft: DRAFT.length, a: [], a2: [], b: [], b2: [], c: [], d: [], d2: [], w: [], locked: [] };
+  const res = { page: n, lines: LINES.length, draft: DRAFT.length, a: [], a2: [], b: [], b2: [], c: [], d: [], d2: [], w: [], s: [], locked: [] };
   if (LINES.length !== DRAFT.length) res.a.push({ i: -1, msg: 'اختلاف العدد ' + LINES.length + ' ≠ ' + DRAFT.length });
   const lk = lockedHashes();
   const N = Math.min(LINES.length, DRAFT.length);
@@ -200,17 +220,17 @@ function main() {
   const all = pages.map(p => lintPage(p));
   if (json) { console.log(JSON.stringify(all)); }
   else {
-    console.log('الصفحة | سطور | (أ) | (ب) | (ج) | (د) | مقفل | تحذير ب٢ | تحذير د٢ | سكون قبل وصل | تغيّر ترقيم');
-    const tot = { a: 0, b: 0, c: 0, d: 0, locked: 0, b2: 0, d2: 0, a2: 0, w: 0 };
+    console.log('الصفحة | سطور | (أ) | (ب) | (ج) | (د) | مقفل | تحذير ب٢ | تحذير د٢ | سكون قبل وصل | شمسية/تنوين | تغيّر ترقيم');
+    const tot = { a: 0, b: 0, c: 0, d: 0, locked: 0, b2: 0, d2: 0, a2: 0, w: 0, s: 0 };
     for (const r of all) {
-      console.log([r.page, r.lines, r.a.length, r.b.length, r.c.length, r.d.length, r.locked.length, r.b2.length, r.d2.length, r.w.length, r.a2.length].join(' | '));
+      console.log([r.page, r.lines, r.a.length, r.b.length, r.c.length, r.d.length, r.locked.length, r.b2.length, r.d2.length, r.w.length, r.s.length, r.a2.length].join(' | '));
       for (const k of Object.keys(tot)) tot[k] += r[k].length;
       if (verbose || warn) {
         for (const k of ['a', 'b', 'c', 'd']) if (verbose) for (const e of r[k]) console.log('   [' + k + '] #' + e.i + ' ' + e.msg + (e.D ? '  ‹' + e.D + '›' : ''));
-        if (warn) for (const k of ['b2', 'd2', 'w', 'a2']) for (const e of r[k]) console.log('   [' + k + '] #' + e.i + ' ' + e.msg + '  ‹' + e.D + '›');
+        if (warn) for (const k of ['b2', 'd2', 'w', 's', 'a2']) for (const e of r[k]) console.log('   [' + k + '] #' + e.i + ' ' + e.msg + '  ‹' + e.D + '›');
       }
     }
-    console.log('المجموع: (أ)=' + tot.a + ' (ب)=' + tot.b + ' (ج)=' + tot.c + ' (د)=' + tot.d + ' | مقفل=' + tot.locked + ' | تحذيرات ب٢=' + tot.b2 + ' د٢=' + tot.d2 + ' سكون-قبل-وصل=' + tot.w + ' ترقيم=' + tot.a2);
+    console.log('المجموع: (أ)=' + tot.a + ' (ب)=' + tot.b + ' (ج)=' + tot.c + ' (د)=' + tot.d + ' | مقفل=' + tot.locked + ' | تحذيرات ب٢=' + tot.b2 + ' د٢=' + tot.d2 + ' سكون-قبل-وصل=' + tot.w + ' شمسية/تنوين=' + tot.s + ' ترقيم=' + tot.a2);
   }
   const bad = all.some(r => r.a.length);
   process.exit(bad ? 2 : (all.some(r => r.b.length || r.c.length || r.d.length) ? 1 : 0));
