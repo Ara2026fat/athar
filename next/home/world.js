@@ -66,6 +66,8 @@ return '<svg class="art" viewBox="0 0 120 96" width="120" height="96" aria-hidde
 '<path d="M16 90V12H104" fill="none" stroke="#3a2b4d" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 90V12H104" fill="none" stroke="#2fc9b5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+
 '<ellipse cx="60" cy="86" rx="30" ry="6" fill="#14b8a6"'+S2+'/>'+lantern(40,24,1.1,"#14b8a6",[3.4,7,0])+lantern(66,30,1.3,"#0fa090",[4.1,6,1.3])+lantern(92,22,1.0,"#14b8a6",[3.7,8,2.1])+'</svg>'}
 };
+var LOCKSVG='<svg viewBox="0 0 24 24" fill="none" stroke="#28522F" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="#28522F"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+var NEWK=["lib"];   /* أبواب أُضيفت حديثًا: شارة «جديد» حتى يفتحها الطفل أو يبدأ فيها */
 var B=[
 {k:"valley",d:"doorValley",x:149,y:236,w:126,h:100,l:"الوادي",ax:195,ay:318},
 {k:"hifz",d:"doorHifz",x:290,y:296,w:148,h:119,l:"أحفظ القرآن",ax:300,ay:480},
@@ -105,14 +107,14 @@ CL.forEach(function(c,i){h+='<div class="w-cl" style="top:'+c[0]+'px;width:'+c[1
 h+='<div id="wFall" aria-hidden="true"></div><div id="wLanterns"></div><div class="w-lower" id="wLower"><svg class="w-path" viewBox="0 0 390 704" height="704" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="g" stroke-width="15" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/><path class="d" stroke-width="4" stroke-dasharray="1 13" d="M195 704C200 650 190 610 195 572S198 480 195 442M195 442C130 434 52 404 66 300M195 442C260 434 338 404 324 300M195 590H138M195 590H252M195 690H138M195 690H252"/></g></svg>';
 B.forEach(function(b){
 var big=b.k==="valley";
-h+='<button type="button" class="wb" id="wb-'+b.k+'" data-k="'+b.k+'" aria-label="'+b.l+'" style="left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px">'+ART[b.k]()+'<i class="bd" hidden></i><span class="lb">'+b.l+'</span></button>'});
+h+='<button type="button" class="wb" id="wb-'+b.k+'" data-k="'+b.k+'" aria-label="'+b.l+'" style="left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px">'+ART[b.k]()+'<i class="bd" hidden></i><span class="nw" hidden>جديد</span><span class="lk" hidden>'+LOCKSVG+'</span><span class="lb">'+b.l+'</span></button>'});
 h+='<button type="button" class="ath" id="wAthar" aria-label="أثر"><span class="ath-sh"></span><span class="ath-nl"></span><span class="ath-j"><span class="ath-b"><span class="ath-br"><span class="ath-halo"></span>'+
 '<img class="p pp" data-p="idle" src="next/home/img/idle.webp" width="348" height="640" alt="" draggable="false">'+
 [['wkb','walk-back'],['wks','walk-side'],['wkf','walk-front']].map(function(n){return '<img class="p" data-p="'+n[0]+'" src="next/home/img/'+n[1]+'.webp" width="348" height="640" alt="" draggable="false" loading="lazy">'}).join('')+
-'<span class="ath-hint"></span><span class="ath-core"></span></span></span></span><i class="ath-dot"></i></button>'+
+'<span class="ath-hint"></span><span class="ath-core"></span></span></span></span><i class="ath-dot"></i><span class="ath-say" aria-hidden="true">المس لنبدأ رحلتنا</span></button>'+
 '<div class="w-pop w-peek" id="wPeek" role="status" aria-live="polite" hidden><b></b><span></span><button type="button" class="go">افتح</button></div>'+
 '<div class="w-pop w-bub" id="wBub" role="status" aria-live="polite" hidden><span>نتابع؟</span><small></small><button type="button" class="go" aria-label="نعم، نتابع">نعم</button></div>'+
-'<div class="w-pop w-pal" id="wPal" hidden>'+COLS.map(function(c,i){return '<button type="button" class="sw" data-i="'+i+'" aria-label="لون الفانوس: '+CN[i]+'" style="background:radial-gradient(circle at 35% 30%,rgb('+c[1]+'),rgb('+c[0]+'))"></button>'}).join('')+'</div></div></div><div id="wDusk" role="button" tabindex="0" aria-label="أضئ الفانوس"></div><div id="wProf"></div><div id="wDock"><button type="button" id="wPkX" aria-label="إخفاء">×</button></div>';
+'<div class="w-pop w-pal" id="wPal" hidden>'+COLS.map(function(c,i){return '<button type="button" class="sw" data-i="'+i+'" aria-label="لون الفانوس: '+CN[i]+'" style="background:radial-gradient(circle at 35% 30%,rgb('+c[1]+'),rgb('+c[0]+'))"></button>'}).join('')+'</div></div></div><div id="wDusk" role="button" tabindex="0" aria-label="أضئ الفانوس"></div><div class="w-date" id="wDate"></div><div id="wProf"></div><div id="wDock"><button type="button" id="wPkX" aria-label="إخفاء">×</button></div>';
 world.innerHTML=h;
 view.insertBefore(world,view.firstChild);
 var sb=$("wSnd");function sbU(){sb.textContent=(!W.HomeAudio||W.HomeAudio.on)?"🔊":"🔇"}sbU();sb.addEventListener("click",function(e){e.stopPropagation();var A=W.HomeAudio;if(A){A.unlock();A.set(!A.on);sbU()}});
@@ -180,22 +182,24 @@ var lastL=0;
 function layout(){lastL=Date.now();
 if(!view.classList.contains("active"))return;
 var vh=D.documentElement.clientHeight||W.innerHeight,top=world.getBoundingClientRect().top;
-var hd=D.querySelector("header"),stTop=hd?Math.max(44,hd.offsetHeight-6):52;
+var hd=D.querySelector("header"),hr=hd?hd.getBoundingClientRect():null,stTop=hr?Math.max(44,Math.round(hr.bottom-top-16)):52;
 var show=dockShow();$("wDock").style.display=show?"":"none";app.classList.toggle("hw-pk",show);
 var res=show?52:0,ls=W.innerWidth>W.innerHeight&&vh<430,H=Math.max(ls?280:420,vh-top),Hs=H-stTop-res;
 world.style.height=H+"px";
 var w=world.clientWidth;
 sc=Math.min(w/390,Hs/704);if(ls)sc=Math.max(sc,.56);world.style.overflowY=ls?"auto":"";
 ex=Math.max(0,Hs/sc-704);
+world.style.setProperty("--u",sc.toFixed(4));world.style.setProperty("--k",(1/sc).toFixed(4));
+var dt=$("wDate"),dB=hr?hr.bottom-top+8:stTop+24;dt.style.top=Math.round(dB)+"px";var lanT=Math.max(0,Math.round((dB+dt.offsetHeight+12-stTop)/sc-10));$("wLanterns").style.top=lanT+"px";world.style.setProperty("--lt",lanT+"px");
 stage.style.top=stTop+"px";
 stage.style.height=(704+ex)+"px";
 stage.style.transform="translate("+((w-390*sc)/2)+"px,0) scale("+sc+")";
 var mp=$("wMap"),mt=stTop/sc;mp.style.top=(-mt)+"px";mp.style.height=(704+ex+mt)+"px";mp.style.left="-"+Math.max(0,((w/sc)-390)/2)+"px";mp.style.width=Math.max(390,w/sc)+"px";var wd=(w/sc)>440;world.classList.toggle("w-wide",wd);mp.style.setProperty("--mw",(wd?390:0)+"px");
 lower.style.top=ex+"px";
 $("wSky").style.height=(180+ex*.85)+"px";
-$("wProf").style.top=(stTop+2)+"px";
+var pbr=$("profileBar");world.classList.toggle("w-multi",!!(pbr&&pbr.style.display!=="none"&&pbr.childElementCount>1));$("wProf").style.top=Math.round(dB)+"px";
 placeHalo();
-setPose(curPose);
+setPose(curPose);lanSoon();
 }
 var curPose="idle",ax=HOME.ax,ay=HOME.ay;
 var PW={idle:151/425*AH,hello:239/560*AH,joy:305/560*AH,think:186/560*AH};
@@ -250,7 +254,7 @@ var zb=0,pending=null,guard=0,PV=/home-next/.test(location.pathname)||qs.get("pr
 function go(b){
 if(zb)return;if(W.AtharLand&&qs.get("nl")!=="1"&&!b._ok){W.AtharLand.open(b.k,function(){b._ok=1;go(b);b._ok=0});return}
 var el=$(b.d);
-var s=jget(KEY());s.seen=1;s.last=b.k;s.t=Date.now();lset(KEY(),JSON.stringify(s));
+var s=jget(KEY());s.seen=1;s.last=b.k;s.t=Date.now();s.op=s.op||{};s.op[b.k]=1;lset(KEY(),JSON.stringify(s));
 pending=null;world.classList.remove("w-busy");ath.classList.remove("walk");
 if(b.k==="valley"&&(PV||!el)){try{W.__atharGateSync&&W.__atharGateSync()}catch(e){}location.href=PV?"valley/next.html":"valley/";return}
 var wb=bEl[b.k];
@@ -272,7 +276,7 @@ B.forEach(function(b,i){
 var el=bEl[b.k];el.style.setProperty("--i",i);
 el.addEventListener("pointerdown",function(){el.classList.add("pr")});
 ["pointerup","pointercancel","pointerleave"].forEach(function(n){el.addEventListener(n,function(){el.classList.remove("pr")})});
-el.addEventListener("click",function(){if(first){ignite();return}if(Date.now()>guard&&!wasLP(el)){sparks(b.x+b.w/2,b.y+b.h*.45);walkTo(b)}});
+el.addEventListener("click",function(){if(first){ignite();return}if(el.getAttribute("data-st")==="locked"){if(Date.now()>guard&&!wasLP(el))say("نصل إليه قريبًا، بإذن الله",3200);return}if(Date.now()>guard&&!wasLP(el)){sparks(b.x+b.w/2,b.y+b.h*.45);walkTo(b)}});
 lp(el,420,function(){if(!first&&!pending)peek(b)});
 });
 var lt=0;
@@ -350,7 +354,7 @@ var v=bEl.valley;v.classList.add("pulse");setTimeout(function(){v.classList.remo
 armLook(9000);
 }
 function ignite(){
-if(!first||seq)return;guard=Date.now()+600;
+if(!first||seq)return;guard=Date.now()+600;world.classList.add("w-ign");
 var s=jget(KEY());s.seen=1;lset(KEY(),JSON.stringify(s));
 clearTimeout(T.nudge);world.classList.remove("w-nudge");placeHalo();dusk.classList.add("off");dusk.style.pointerEvents="none";dusk.setAttribute("aria-hidden","true");dusk.tabIndex=-1;
 ath.classList.add("glow");setPose("hello");later("gl",function(){ath.classList.remove("glow");setPose("idle")},1400);
@@ -368,6 +372,16 @@ setTimeout(function(){stage.addEventListener("pointerdown",skip,true)},350);
 }
 dusk.addEventListener("pointerdown",function(e){e.preventDefault();ignite()});
 dusk.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();ignite()}});
+function doorStates(){
+var lk=(qs.get("lock")||"").split(","),op=jget(KEY()).op||{};
+B.forEach(function(b){var e=bEl[b.k],k=b.k,st="open";
+if(k!=="valley"){
+if(lk.indexOf(k)>=0)st="locked";
+else if(NEWK.indexOf(k)>=0&&!op[k]&&!(INFO[k]>0))st="new"}
+e.setAttribute("data-st",st);
+e.querySelector(".nw").hidden=st!=="new";e.querySelector(".lk").hidden=st!=="locked";
+var al=b.l+(k==="valley"&&INFO.valley?"، حصة اليوم بانتظارك":"")+(st==="new"?"، جديد":"")+(st==="locked"?"، يُفتح لاحقًا":"");
+e.setAttribute("aria-label",al);e.setAttribute("aria-disabled",st==="locked"?"true":"false")})}
 function setBd(k,t){var e=bEl[k].querySelector(".bd");if(t){e.textContent=t;e.hidden=false}else e.hidden=true}
 function cnt(o,f){var n=0;for(var k in o){if(f?f(o[k]):o[k])n++}return n}
 var INFO={};
@@ -386,7 +400,7 @@ var ch=0,re=new RegExp("^athar_([a-z0-9]+)_v1_"+p+"$"),ex2={noor:1,adhkar:1,ayq:
 for(var i=0;i<localStorage.length;i++){var kk=localStorage.key(i),mm=re.exec(kk||"");if(mm&&!ex2[mm[1]])ch+=cnt(jget(kk))}
 INFO.lib=ch;setBd("lib",ch?nm(ch)+" فصل":"");
 }catch(e){}
-var vb=$("doorValleyBadge"),vv=!!(vb&&!vb.hidden&&!vb.hasAttribute("hidden"));INFO.valley=vv;setBd("valley",vv?"حصة اليوم":"");
+var vb=$("doorValleyBadge"),vv=!!(vb&&!vb.hidden&&!vb.hasAttribute("hidden"));INFO.valley=vv;setBd("valley",vv?"حصة اليوم":"تمّت حصة اليوم");bEl.valley.querySelector(".bd").classList.toggle("dn",!vv);doorStates();
 }
 $("wPal").addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".sw");if(!b)return;var i=+b.dataset.i;setCol(i);saveSt({col:i});closePops();jump()});
 var clouds=[],drag=null,tx=0,ty=0,cx=0,cy=0,raf=0;
@@ -474,12 +488,41 @@ if(Date.now()-ot>800&&!first){jump();poseFor(1400,"hello");say("اضغط مطو�
 var br=D.querySelector("header .brand");
 if(br)br.addEventListener("click",function(){if(active&&!first){jump();poseFor(1500,"hello")}});
 })();
+function dnum(t){return ls("athar_num_fmt")==="en"?t.replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}):t.replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})}
+function paintDate(){
+var d=new Date(),a="",h="",g="";
+try{a=d.toLocaleDateString("ar-SA-u-ca-gregory",{weekday:"long"});h=d.toLocaleDateString("ar-SA-u-ca-islamic-umalqura",{day:"numeric",month:"long"}).replace(/\s*هـ\s*$/,"");g=d.toLocaleDateString("ar-SA-u-ca-gregory",{day:"numeric",month:"long"})}catch(e){}
+var o=$("wDate");if(!o)return;
+var t=[a,h,g].filter(Boolean).map(dnum),html=t.map(function(x){return "<span>"+x+"</span>"}).join("<i></i>");
+if(o.innerHTML!==html)o.innerHTML=html;o.hidden=!t.length}
+/* فوانيس الأسبوع: لوح اسم لكل فانوس (اليوم بلوح ذهبي «اليوم») */
+var lanBusy=false;
+function lanDeco(){
+if(lanBusy)return;lanBusy=true;
+try{var L=$("wLanterns");if(!L)return;L.classList.remove("nn");
+var td=L.querySelector(".al-ln.today .al-tx");if(td){var f=td.firstElementChild;if(f&&f.textContent!=="اليوم")f.textContent="اليوم"}
+Array.prototype.forEach.call(L.querySelectorAll(".al-ln"),function(g){
+var tx=g.querySelector(".al-tx");if(!tx)return;
+var r=g.querySelector(".al-pl");if(!r){r=D.createElementNS("http://www.w3.org/2000/svg","rect");r.setAttribute("class","al-pl");g.insertBefore(r,tx)}
+try{var bb=tx.getBBox();if(bb.width>0){var px=g.classList.contains("today")?7:4;r.setAttribute("x",(bb.x-px).toFixed(1));r.setAttribute("y",(bb.y-1).toFixed(1));r.setAttribute("width",(bb.width+px*2).toFixed(1));r.setAttribute("height",(bb.height+2).toFixed(1));r.setAttribute("rx",((bb.height+2)/2).toFixed(1))}}catch(e){}});
+/* إن تلامست ألواح الأسماء (شاشة قصيرة/ضيقة) تُخفى أسماء غير اليوم بدل أن تتراكب */
+var ps=Array.prototype.map.call(L.querySelectorAll(".al-pl"),function(r){return r.getBoundingClientRect()}).filter(function(r){return r.width>0}).sort(function(a,b){return a.left-b.left}),i;
+for(i=1;i<ps.length;i++)if(ps[i].left<ps[i-1].right+1){L.classList.add("nn");break}
+}catch(e){}
+finally{lanBusy=false}}
+var lanT=0;function lanSoon(){clearTimeout(lanT);lanT=setTimeout(lanDeco,30)}
+(function(){var L=$("wLanterns");if(!L)return;new MutationObserver(function(){if(!lanBusy)lanSoon()}).observe(L,{childList:true,subtree:true,characterData:true});
+if(D.fonts&&D.fonts.ready)D.fonts.ready.then(lanSoon)})();
+/* الشريط العلوي الموحّد: شريحة النجوم (من reward.js) تُنقل إلى الشريط بين الهوية والإعدادات */
+function mountBar(){
+var hd=D.querySelector("header"),c=$("rwChip"),g=$("btnParent");
+if(!hd||!c||!g||c.parentNode===hd)return;hd.insertBefore(c,g)}
 var active=false,wasAway=false;
 function enter(){
 if(active)return;active=true;if(W.HomeAudio){W.HomeAudio.hold(false);if(wasAway){wasAway=false;setTimeout(function(){if(active&&!first)W.HomeAudio.back()},900)}}
-app.classList.add("hw-on");D.documentElement.classList.remove("hw-pre");D.body.classList.add("hw-home");world.classList.remove("w-paused");svgs(1);if(skyApi)try{skyApi.resume()}catch(e){}
+mountBar();paintDate();app.classList.add("hw-on");D.documentElement.classList.remove("hw-pre");D.body.classList.add("hw-home");world.classList.remove("w-paused");svgs(1);if(skyApi)try{skyApi.resume()}catch(e){}
 period();layout();badges();var t0=lastL;setTimeout(function(){if(lastL-t0<100)layout()},400);if(skyApi)try{skyApi.refresh()}catch(e){}
-if(first){world.classList.add("w-first");dusk.classList.remove("off");put(HOME.ax,HOME.ay,0,true);setPose("think");
+if(first){world.classList.add("w-first");world.classList.remove("w-ign");dusk.classList.remove("off");put(HOME.ax,HOME.ay,0,true);setPose("think");
 B.forEach(function(b){bEl[b.k].classList.remove("on")});placeHalo();dusk.removeAttribute("aria-hidden");dusk.tabIndex=0;later("nudge",function(){if(first&&!seq)world.classList.add("w-nudge")},6000)}
 else{world.classList.remove("w-first");placeLast();armLook(8000)}
 var gb=$("btnParent");if(gb&&!gb.getAttribute("aria-label"))gb.setAttribute("aria-label","وضع ولي الأمر");
@@ -511,8 +554,9 @@ function mountSky(){
 if(mounted||!W.AtharSky||!W.AtharSky.mount)return;
 try{skyApi=W.AtharSky.mount({lanterns:$("wLanterns"),sky:$("wSky"),time:skyTime(),background:false});mounted=true;if(!active){skyApi.pause&&skyApi.pause()}}catch(e){}
 }
-W.addEventListener("load",function(){mountSky();layoutSoon()});
-W.AtharWorld={mountSky:mountSky,refresh:function(){period();badges()}};
+W.addEventListener("load",function(){mountBar();mountSky();layoutSoon();lanSoon()});
+(function(){var n=0,t=setInterval(function(){mountBar();if($("rwChip")&&$("rwChip").parentNode===D.querySelector("header")||++n>40){clearInterval(t);layoutSoon()}},150)})();
+W.AtharWorld={mountSky:mountSky,refresh:function(){period();badges();layoutSoon()}};
 sync();
 if(!active)world.classList.add("w-paused");
 })();

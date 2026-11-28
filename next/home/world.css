@@ -69,11 +69,11 @@
 .ath.lk .ath-b{animation:wlook 2.7s ease-in-out}
 .ath-hint{position:absolute;width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,236,170,.9);opacity:0;pointer-events:none}
 .w-first .ath-hint{animation:whint 2.2s ease-out infinite}
-#wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:radial-gradient(circle at var(--lx,50%) var(--ly,80%),rgba(255,236,150,.5) 0,rgba(255,246,214,.38) 90px,rgba(255,252,238,.46) 260px)}
+#wDusk{position:absolute;inset:0;z-index:20;opacity:1;transition:opacity 1.5s ease;pointer-events:none;background:none}   /* r20: بلا غطاء مرئي؛ طبقة لمس شفافة فقط لوضع «أول مرة» */
 .w-first #wDusk{pointer-events:auto}
 #wDusk.off{opacity:0}
 #homeWorld:not(.w-first) #wDusk{display:none}
-.w-first .wb:not(.on){opacity:.4;pointer-events:none}
+.w-first .wb:not(.on){pointer-events:none}   /* r20: الأبواب كاملة الظهور في أول مرة */
 .wb{transition:opacity .6s}
 .wb.on.flash{z-index:4}
 #wProf{position:absolute;left:8px;right:8px;top:6px;z-index:30}
@@ -300,3 +300,86 @@ ellipse.wg{opacity:0;pointer-events:none;animation:wwin 3s ease-in-out infinite 
 #homeWorld.w-wide .w-map::before{content:"";position:absolute;inset:-6%;background:var(--mapimg) center bottom/cover no-repeat;filter:blur(14px) saturate(.9) brightness(.94)}
 #homeWorld.w-wide .w-map .mi{left:50%;margin-left:calc(var(--mw)*-.525);width:calc(var(--mw)*1.05);animation:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%),linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 14%),linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);-webkit-mask-composite:source-in;mask-composite:intersect}
 #homeWorld #wb-hifz .bd.rv:not([hidden]){display:block!important}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   r20 · إعادة تصميم الشاشة الرئيسية (home-redesign-live)
+   شريط واحد · لوح التاريخ · فوانيس · الوادي هدف اليوم · أبواب بألواح اسم · أول مرة بلا غطاء
+   --u = مقياس المشهد (sc)، --k = 1/sc لتثبيت الأحجام الفعلية بالبكسل داخل المشهد المُصغَّر
+   ═══════════════════════════════════════════════════════════════════ */
+:root{--hcream:#FFF8E7;--hg:#28522F;--hgd:#1d3d23;--hgold:#E0A526;--hgl:#F2C14E}
+
+/* ===== الشريط العلوي الموحّد: الهوية يمينًا، النجوم وسطًا، الإعدادات يسارًا ===== */
+#app.hw-on header{position:fixed;z-index:40;top:max(10px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));max-width:456px;margin:0 auto;height:56px;box-sizing:border-box;padding:4px 6px;display:flex;align-items:center;justify-content:space-between;gap:0;border-radius:30px;
+  background:rgba(255,248,231,.96);border:2px solid rgba(224,165,38,.75);box-shadow:0 4px 0 rgba(40,82,47,.28),0 10px 22px rgba(40,60,30,.22);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);pointer-events:auto}
+#app.hw-on .brand{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0;min-height:48px;padding:0 4px 0 10px;gap:8px;cursor:pointer;flex:none}
+#app.hw-on .brand-mark{width:44px;height:44px;border:2px solid var(--hgold);background:#fff;box-shadow:none;animation:none}
+#app.hw-on .brand-mark::after{display:none}
+#app.hw-on .brand-mark img{width:100%!important;height:100%!important;border-radius:50%!important;object-fit:cover}
+#app.hw-on .brand-text{font-size:25px;font-weight:800;color:var(--hg);text-shadow:none}
+#app.hw-on .brand-text span{color:var(--hg);text-shadow:none}
+#app.hw-on .gear-btn{width:48px;height:48px;flex:none;background:var(--hg)!important;opacity:1;border:0!important;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 2px 0 var(--hgd)!important}
+#app.hw-on .gear-btn svg{opacity:1;filter:none;width:26px;height:26px}
+#app.hw-on .gear-btn svg.gr{opacity:1;width:100%;height:100%}
+#app.hw-on header .rw-chip{position:static;flex:1;min-width:0;height:48px;margin:0 3px;padding:0 4px;background:none;border:0;border-inline:1.5px solid rgba(40,82,47,.18);border-radius:0;box-shadow:none;color:var(--hg);font-size:19px;gap:4px}
+#app.hw-on header .rw-chip:active{box-shadow:none}
+#app.hw-on header .rw-chip svg{filter:none}
+#app.hw-on header .rw-chip .rw-day{order:-1;direction:rtl;margin:0 0 0 2px;padding:0 0 0 8px;border-inline-start:0;border-inline-end:2px solid rgba(40,82,47,.18)}
+#app.hw-on .brand:active,#app.hw-on header .rw-chip:active{transform:scale(.96)}
+@media (max-width:340px){
+  #app.hw-on header{padding:4px 4px}
+  #app.hw-on .brand{padding:0 2px 0 6px;gap:6px}#app.hw-on .brand-text{font-size:22px}
+  #app.hw-on header .rw-chip{margin:0 2px;padding:0 2px;font-size:17px;gap:3px}
+  #app.hw-on header .rw-chip .rw-day{padding-inline-end:5px}
+  #app.hw-on header .rw-chip .rw-day i{width:16px;height:16px}
+  #app.hw-on header .rw-chip svg{width:21px;height:21px}
+}
+
+/* ===== لوح التاريخ: تحت الشريط، بعيدًا عن المنارة والفوانيس ===== */
+#wDate{position:absolute;left:50%;transform:translateX(-50%);z-index:8;white-space:nowrap;max-width:calc(100% - 24px);display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,248,231,.94);border:1.5px solid rgba(40,82,47,.35);color:var(--hg);border-radius:16px;padding:3px 12px;font:800 max(14px,calc(15px*var(--u,1)))/1.35 Tajawal,'Baloo Bhaijan 2','Noto Sans Arabic',system-ui,sans-serif;box-shadow:0 2px 6px rgba(40,60,30,.18);pointer-events:none}
+#wDate i{width:4px;height:4px;border-radius:50%;background:var(--hgold);display:block;flex:none}
+#wDate[hidden],#homeWorld.w-multi #wDate{display:none}
+#homeWorld.w-multi #wProf{display:flex;justify-content:center}
+@media (max-width:340px){#wDate span:last-of-type,#wDate i:last-of-type{display:none}}
+
+/* ===== فوانيس الأسبوع: لوح اسم، اليوم بلوح ذهبي، غير المضاءة محايدة ===== */
+#wLanterns .al-sw{scale:.8;transform-box:fill-box;transform-origin:50% 0}
+#wLanterns .al-ln .al-tx,#wLanterns .al-ln:not(.today) .al-tx,#wLanterns [data-time] .al-tx{fill:var(--hg);stroke:none;paint-order:normal;opacity:1;transition:none;font-size:calc(12.5px*var(--k,1));font-weight:800;translate:0 -10px;transform:none}
+#wLanterns .al-ln:not(.today):active .al-tx,#wLanterns .al-ln:not(.today):hover .al-tx{opacity:1}
+#homeWorld #wLanterns .al-ln.today .al-tx{translate:-8px -10px;fill:#3a2c00;font-size:calc(13.5px*var(--k,1));transform:none;filter:none;font-weight:800!important}
+#wLanterns .al-pl{fill:var(--hcream);fill-opacity:.94;stroke:rgba(40,82,47,.35);stroke-width:1.2;pointer-events:none;translate:0 -10px}
+#wLanterns .al-ln.today .al-pl{translate:-8px -10px;fill:var(--hgl);fill-opacity:1;stroke:var(--hg);stroke-width:2}
+#wLanterns .al-dt,#wLanterns .al-hj{display:none}
+#wLanterns .al-ln:not(.on) .al-sw{filter:grayscale(.85) brightness(1.04)}
+#wLanterns .al-ln.today .al-sw{filter:drop-shadow(0 0 6px rgba(255,214,90,.9))}
+#wLanterns .al-ln.today:not(.on) .al-sw{filter:grayscale(.85) brightness(1.04) drop-shadow(0 0 6px rgba(255,214,90,.9))}
+@media (max-width:374px){#wLanterns .al-ln:not(.today) .al-tx,#wLanterns .al-ln:not(.today) .al-pl{display:none}}
+#wLanterns.nn .al-ln:not(.today) .al-tx,#wLanterns.nn .al-ln:not(.today) .al-pl{display:none}
+#homeWorld .w-snd{left:12px;top:calc(var(--lt,52px) + 118px);width:calc(48px*var(--k,1));height:calc(48px*var(--k,1));font-size:calc(22px*var(--k,1));background:var(--hcream);border:2px solid var(--hg);color:var(--hg);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 3px 0 rgba(40,82,47,.35)}
+
+/* ===== الوادي: هدف اليوم ===== */
+#homeWorld .wb[data-k]{--ds:.82;--m:calc(var(--k,1)/var(--ds));scale:var(--ds)}
+#homeWorld #wb-valley[data-k]{--ds:1.12;--m:calc(var(--k,1)/var(--ds))}
+#homeWorld #wb-valley .bd{top:calc(-12px*var(--m));left:50%;height:auto;padding:calc(1px*var(--m)) calc(14px*var(--m));line-height:1.35;font:800 calc(16px*var(--m))/1.35 Tajawal,'Baloo Bhaijan 2',sans-serif;background:linear-gradient(var(--hgl),var(--hgold));color:#3a2c00;border:calc(2px*var(--m)) solid var(--hg);border-radius:calc(14px*var(--m));box-shadow:0 calc(3px*var(--m)) 0 rgba(40,82,47,.4);z-index:3}
+#homeWorld #wb-valley .bd.dn{background:var(--hcream);color:var(--hg)}
+#homeWorld:not(.w-mapon) #wb-valley:not(.flash):not(.pulse)::before,#homeWorld.w-mapon .wb#wb-valley:not(.flash):not(.pulse)::before{left:-16%;right:-16%;top:-12%;bottom:-8%;opacity:.75;transform:none;background:radial-gradient(closest-side,rgba(255,226,120,.8),rgba(255,226,120,0) 70%);animation:wvg 2.8s ease-in-out infinite}
+@keyframes wvg{50%{transform:scale(1.1);opacity:.5}}
+
+/* ===== الأبواب: لوح اسم كريمي دائمًا، وحالات: متاح / جديد / مقفل ===== */
+#homeWorld .wb .lb,.w-night #homeWorld .wb .lb{background:var(--hcream)!important;border:calc(2px*var(--m)) solid rgba(40,82,47,.85)!important;border-radius:calc(14px*var(--m));box-shadow:0 calc(2px*var(--m)) 0 rgba(40,82,47,.35)!important;padding:calc(1px*var(--m)) calc(10px*var(--m)) calc(2px*var(--m))!important;color:var(--hg)!important;font-size:calc(15px*var(--m))!important;line-height:1.3;font-weight:800;max-width:none!important;-webkit-text-stroke:0;paint-order:normal;text-shadow:none;bottom:auto!important;top:100%;margin-top:calc(-6px*var(--m))}
+#homeWorld .wb .nw{position:absolute;left:calc(-2px*var(--m));top:calc(20px*var(--m));z-index:3;border-radius:calc(12px*var(--m));background:var(--hgl);color:#3a2c00;font:800 calc(13px*var(--m))/1.5 Tajawal,'Baloo Bhaijan 2',sans-serif;padding:0 calc(9px*var(--m));border:calc(2px*var(--m)) solid var(--hg);white-space:nowrap;pointer-events:none}
+#homeWorld .wb .lk{position:absolute;right:calc(2px*var(--m));top:calc(2px*var(--m));z-index:3;width:calc(32px*var(--m));height:calc(32px*var(--m));border-radius:50%;background:var(--hcream);border:calc(2px*var(--m)) solid var(--hg);display:grid;place-items:center;pointer-events:none}
+#homeWorld .wb .lk svg{width:60%;height:60%}
+#homeWorld .wb .nw[hidden],#homeWorld .wb .lk[hidden]{display:none}
+#homeWorld .wb#wb-valley .lb{margin-top:calc(-2px*var(--m))}
+#homeWorld .wb[data-st=locked] .art{filter:saturate(.45) brightness(1.04)}
+#homeWorld .wb[data-st=locked] .lb{background:#efe6cc!important;color:#44543f!important;border-style:dashed!important;border-color:rgba(68,84,63,.8)!important}
+
+/* ===== أول مرة: بلا غطاء ولا تعتيم، وفقاعة «المس لنبدأ رحلتنا» قرب الطفل ===== */
+.ath-say{display:none;position:absolute;left:50%;bottom:calc(100% + 4px*var(--k,1));transform:translateX(-50%);z-index:7;white-space:nowrap;pointer-events:none;background:var(--hcream);color:var(--hg);border:calc(2px*var(--k,1)) solid var(--hg);border-radius:calc(18px*var(--k,1));padding:calc(3px*var(--k,1)) calc(14px*var(--k,1));font:800 calc(16px*var(--k,1))/1.3 Tajawal,'Baloo Bhaijan 2',sans-serif;box-shadow:0 calc(3px*var(--k,1)) 0 rgba(40,82,47,.4);animation:wsay 2.4s ease-in-out infinite}
+.ath-say::after{content:"";position:absolute;left:50%;bottom:calc(-9px*var(--k,1));margin-left:calc(-8px*var(--k,1));border:calc(8px*var(--k,1)) solid transparent;border-top-color:var(--hg);border-bottom:0}
+.w-first .ath-say{display:block}
+.w-first.w-ign .ath-say{display:none}
+@keyframes wsay{50%{transform:translate(-50%,calc(-4px*var(--k,1)))}}
+@media (max-width:340px){#homeWorld .w-snd{left:auto;right:12px}}
+#app.hw-on .sig{z-index:2}
